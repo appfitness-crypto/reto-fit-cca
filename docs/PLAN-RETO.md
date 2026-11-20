@@ -44,6 +44,12 @@ Maquetas del panel de control: `docs/maquetas/frontdesk.html` (ábrelo en el nav
 - [x] **Separado del Firebase de la app original**: usa su propio proyecto `reto-fit-cca` (`js/config.js`, `.firebaserc` y el flujo de publicación).
 - [x] La foto de la portada ya no dice "Fitness Pro" (provisional, hasta que subas fotos del CCA).
 
+- [x] **🏆 Tablero del reto** en el panel del staff (`js/54-tablero-reto.js`). El director ve a todos y cada entrenador solo a sus socios:
+  - indicadores: socios, quién entrenó en los últimos 7 días, sesiones de la semana y socios en riesgo (5 días o más sin entrenar);
+  - gráfica de sesiones por día, socios por objetivo y seguimiento por entrenador;
+  - **ranking por objetivo** (una tabla para cada uno de los 3). Puntos = constancia (sesiones, semanas con 3 o más sesiones, mediciones) + progreso según el objetivo (% de grasa estimado o cintura, peso, fuerza ganada y brazo). Se exporta a CSV;
+  - los puntos se pueden ajustar en `js/config.js` → `reto.puntos` (por ejemplo `{ sesion: 40 }`).
+
 **Para probarlo completo** faltan los pasos de la consola de la sección 3 (reglas, autenticación y tu cuenta de director).
 
 ## 3. Base de datos: conectar el Firebase `reto-fit-cca`

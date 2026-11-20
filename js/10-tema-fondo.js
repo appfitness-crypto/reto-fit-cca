@@ -4,13 +4,13 @@
 // ═════════════════════════════════════════
 // TEMA — claro / oscuro (se recuerda en el dispositivo)
 // ═════════════════════════════════════════
-const LS_TEMA='fitkiosk_tema_v2';   // v2: el oscuro pasó a ser el tema principal (se ignora la elección anterior)
+const LS_TEMA='retofit_tema_v1';   // Reto Fit CCA: el tema Salvia (light2) es el principal
 function temaActual(){ const t=document.documentElement.getAttribute('data-theme'); return (t==='dark'||t==='light2')?t:'light'; }
 function pintarSelectorTema(){
   const t=temaActual();
   document.querySelectorAll('.theme-seg button,.seg2 button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.t===t)));
   const m=document.querySelector('meta[name="theme-color"]');
-  if(m) m.setAttribute('content', t==='dark'?'#0A0E13':(t==='light2'?'#F3EEFC':'#EEF1F4'));
+  if(m) m.setAttribute('content', t==='dark'?'#0A0E13':(t==='light2'?'#DCE6E2':'#EEF1F4'));
 }
 function setTema(t){
   if(t!=='light'&&t!=='dark'&&t!=='light2') return;
@@ -43,7 +43,7 @@ function temaToque(){
 (function initTema(){
   const html=`<div class="theme-seg" role="group" aria-label="Tema de color">
     <button type="button" data-t="light" aria-label="Tema claro (verde)" onclick="setTema('light')"><svg class="ico" aria-hidden="true"><use href="#i-sun"/></svg></button>
-    <button type="button" data-t="light2" aria-label="Tema claro nuevo (prueba)" onclick="setTema('light2')"><svg class="ico" aria-hidden="true"><use href="#i-spark"/></svg></button>
+    <button type="button" data-t="light2" aria-label="Tema salvia (principal)" onclick="setTema('light2')"><svg class="ico" aria-hidden="true"><use href="#i-spark"/></svg></button>
     <button type="button" data-t="dark" aria-label="Tema oscuro" onclick="setTema('dark')"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></button>
   </div>`;
   document.querySelectorAll('.theme-slot').forEach(el=>{ el.innerHTML=html; });

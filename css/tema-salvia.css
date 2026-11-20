@@ -1,0 +1,86 @@
+/* ═══ Reto Fit CCA · Tema "Salvia" ═══
+   Paleta de la referencia que eligió el club: fondo verde salvia, tarjetas de vidrio blanco,
+   verde casi negro para lo activo y naranja para los acentos.
+   Ocupa el lugar del tema claro "light2" (mismas reglas de vidrio de css/estilos.css) y solo cambia colores.
+   Se carga después de css/estilos.css. Para quitarlo, borra este archivo de index.html y sw.js. */
+
+html[data-theme="light2"]{
+  color-scheme:light;
+  /* acentos */
+  --lime:#22332F;                 /* verde casi negro: botones, pestaña activa */
+  --v:#2A4A41;--v2:#4E6E64;       /* verde salvia oscuro para textos positivos */
+  --n:#2F5D55;--g:#A35A00;--r:#C42B37;--p:#3F5F57;
+  --heat:#F07A2B;                 /* naranja de la referencia */
+  /* superficies */
+  --dk:#DCE6E2;--dk2:#FFFFFF;--dk3:#F5F8F7;
+  --tx:#17231F;--mu:color-mix(in srgb,#17231F 66%,transparent);
+  --gl:rgba(255,255,255,.52);--gl2:color-mix(in srgb,#F07A2B 18%,transparent);
+  --b:rgba(255,255,255,.62);--b2:#C3D1CB;
+  --in-bg:rgba(255,255,255,.6);--in-bg2:rgba(255,255,255,.45);
+  --topbar:rgba(226,235,231,.78);
+  --btn-tx:#FFFFFF;
+  --grad:linear-gradient(180deg,#2C403A 0%,#1D2B27 100%);
+  --grad-txt:linear-gradient(135deg,#22332F,#22332F);
+  --hi:rgba(255,255,255,.92);
+  --shadow:0 1px 2px rgba(23,40,35,.06),0 10px 26px -12px rgba(23,40,35,.28);
+  --glow:0 10px 22px -10px rgba(23,40,35,.55);
+  --scrim:rgba(14,24,21,.5);
+  --fill-track:rgba(34,51,47,.12);
+  --ring1:#F07A2B;--ring2:#FFB07A;
+  --chart1:#22332F;--chart2:#F07A2B;
+  --acc:var(--lime);--acc-tx:#22332F;--acc-ink:#FFFFFF;--acc-soft:rgba(34,51,47,.10);
+  --mesh:
+    radial-gradient(80% 55% at 10% -8%, rgba(255,255,255,.75), transparent 60%),
+    radial-gradient(70% 50% at 95% 10%, rgba(232,241,237,.7), transparent 60%),
+    radial-gradient(90% 70% at 85% 110%, rgba(110,138,129,.55), transparent 65%),
+    linear-gradient(172deg,#E6EEEB 0%,#CCDAD5 46%,#A3B8B1 100%);
+  --gx-a:rgba(255,255,255,.55);--gx-b:rgba(240,122,43,.10);--gx-c:rgba(120,150,140,.22);
+  --gx-glass:rgba(255,255,255,.55);--gx-glass2:rgba(255,255,255,.7);--gx-modal:rgba(246,250,248,.9);
+  --gx-line:rgba(255,255,255,.85);--gx-hi:rgba(255,255,255,.95);--gx-sh:0 10px 30px -14px rgba(23,40,35,.3);
+}
+
+/* Etiquetas con color de acento */
+html[data-theme="light2"] .today-k,
+html[data-theme="light2"] .det-dl,
+html[data-theme="light2"] .ej-ms{color:#2F5D55;}
+html[data-theme="light2"] .today::before{background:radial-gradient(circle,rgba(240,122,43,.22),transparent 68%);}
+
+/* Vidrio: borde blanco y sombra verdosa (las reglas de desenfoque vienen de estilos.css) */
+html[data-theme="light2"] .glass,html[data-theme="light2"] .card,html[data-theme="light2"] .kpi,html[data-theme="light2"] .macro-c,
+html[data-theme="light2"] .ej-card,html[data-theme="light2"] .day-row,html[data-theme="light2"] .opt,html[data-theme="light2"] .ic,
+html[data-theme="light2"] .login-card,html[data-theme="light2"] .pend-card,html[data-theme="light2"] .today,html[data-theme="light2"] .stat,
+html[data-theme="light2"] .hero-extras,html[data-theme="light2"] .chk{
+  border-color:rgba(255,255,255,.7);
+  box-shadow:0 1px 0 rgba(255,255,255,.75) inset,0 4px 10px -4px rgba(23,40,35,.18),0 20px 38px -18px rgba(23,40,35,.35);
+}
+
+/* Interacciones */
+html[data-theme="light2"] .ck:focus-visible,html[data-theme="light2"] .set-d:focus-visible{outline-color:#F07A2B;}
+@media(hover:hover) and (pointer:fine){html[data-theme="light2"] .ck:hover,html[data-theme="light2"] .set-d:hover{border-color:#22332F;}}
+html[data-theme="light2"] .day-row.today .dn{color:#FFFFFF;text-shadow:0 1px 4px rgba(10,20,17,.5);}
+html[data-theme="light2"] .day-row.today .dl,html[data-theme="light2"] .day-row.today .ds{color:#FFFFFF;text-shadow:0 1px 4px rgba(10,20,17,.45);}
+html[data-theme="light2"] .wk.hoy .wk-d,html[data-theme="light2"] .wk.hoy .wk-m{color:#FFFFFF;}
+
+/* Tarjetas con foto y portada: verde profundo con una franja naranja */
+html[data-theme="light2"] .hero-card,
+html[data-theme="light2"] .det-hero,
+html[data-theme="light2"] .wc-hero{background:linear-gradient(135deg,#1D2B27 0%,#2C403A 60%,#3B5750 100%);}
+html[data-theme="light2"] .hero-card::after{background:linear-gradient(115deg,transparent 30%,rgba(240,122,43,.85) 30% 38%,transparent 38%);}
+html[data-theme="light2"] .det-hero::after,
+html[data-theme="light2"] .wc-hero::after{background:linear-gradient(115deg,transparent 32%,rgba(240,122,43,.85) 32% 39%,transparent 39%);}
+html[data-theme="light2"] .hero-ov{background:linear-gradient(90deg,rgba(14,24,21,.55) 0%,rgba(14,24,21,.2) 60%,transparent 100%);}
+html[data-theme="light2"] .det-ov{background:linear-gradient(0deg,rgba(14,24,21,.66) 0%,rgba(14,24,21,.28) 50%,rgba(14,24,21,.06) 100%);}
+html[data-theme="light2"] .wc-ov{background:linear-gradient(0deg,rgba(14,24,21,.64) 0%,rgba(14,24,21,.28) 46%,rgba(14,24,21,.05) 75%,rgba(14,24,21,.14) 100%);}
+html[data-theme="light2"] .ic-pri .ic-label,html[data-theme="light2"] .ic-pri .ic-sub{text-shadow:none;}
+
+/* Reto Fit CCA: tarjeta del reto en el inicio del socio */
+html[data-theme="light2"] .reto-banner .rb-bar i{background:#F07A2B;}
+
+/* Pestaña activa: blanco sobre la píldora verde casi negro, como en la referencia */
+html[data-theme="light2"] .bn-i.ac{color:#FFFFFF;}
+html[data-theme="light2"] .bn-ind::after{background:#F07A2B;}
+
+/* Portada: la parte de abajo en verde profundo (no negro), fundida con la foto */
+html[data-theme="light2"] #s-inicio,
+html[data-theme="light2"] #s-inicio .wc-hero{background:#1D2B27;}
+html[data-theme="light2"] #s-inicio .wc-ov{background:linear-gradient(0deg,#1D2B27 0%,#1D2B27 6%,rgba(29,43,39,.74) 26%,rgba(29,43,39,.12) 50%,rgba(29,43,39,0) 72%,rgba(29,43,39,.4) 100%);}

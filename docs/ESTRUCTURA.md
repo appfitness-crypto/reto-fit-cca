@@ -55,6 +55,7 @@ Los archivos de `js/` son scripts normales y comparten el mismo ámbito global; 
 | `js/51-carga-dia.js` | Duración y carga real de cada día; etiqueta pesado / medio / ligero comparando la semana. |
 | `js/52-navegacion.js` | Botón Atrás del celular (cierra la ventana abierta o regresa un paso; en la pantalla principal pide un segundo Atrás para salir) y pestaña / socio abiertos al recargar. |
 | `js/53-reto.js` | Reto Fit CCA: día, semana y fase del reto (`GYM.reto` en `config.js`) en la portada, el inicio del socio y el panel; link `?ent=CÓDIGO` que deja escrito el código del entrenador en el registro. |
+| `js/54-tablero-reto.js` | Reto Fit CCA: 🏆 Tablero del reto en el panel del staff (indicadores, sesiones de la semana, riesgo de abandono, seguimiento por entrenador) y ranking por objetivo con puntos de constancia y progreso; exporta el ranking a CSV. Puntos configurables en `GYM.reto.puntos`. |
 | `js/99-arranque.js` | Ajustes finales que dependen de funciones de varios módulos (siempre al final). |
 
 ## Investigación de nutrición deportiva

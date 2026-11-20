@@ -44,6 +44,7 @@ function actualizarBotonMiFilosofia(){
   const bE=document.getElementById('btn-eliminar-cuenta'); if(bE) bE.style.display = staffRol!=='coordinador' ? 'inline-block' : 'none';
   const bC=document.getElementById('btn-mi-codigo'); if(bC) bC.style.display = (staffRol!=='coordinador' && miCodigoEntrenador()) ? 'inline-block' : 'none';
   const bV=document.getElementById('btn-ver-ent'); if(bV) bV.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
+  const bTr=document.getElementById('btn-tablero'); if(bTr) bTr.style.display = (staffRol==='coordinador' || staffActivoEntId) ? 'inline-block' : 'none';   // Reto Fit CCA (js/54-tablero-reto.js)
   const bRes=document.getElementById('btn-resumen'); if(bRes) bRes.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bAp=document.getElementById('btn-apariencia'); if(bAp) bAp.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bLu=document.getElementById('btn-lugares'); if(bLu) bLu.style.display = (staffRol==='coordinador' && GYM.geofence) ? 'inline-block' : 'none';
