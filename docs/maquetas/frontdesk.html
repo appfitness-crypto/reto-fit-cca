@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reto Fit CCA · Maquetas de recepción</title>
+<title>Reto Fit CCA · Panel de control del reto</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Kanit:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -44,7 +44,7 @@ main{padding:22px 30px 40px;min-width:0}
 .search svg{width:16px;height:16px}
 .kbd{margin-left:auto;font-size:11px;border:1px solid var(--b2);border-radius:6px;padding:1px 6px}
 .reto{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--b);border-radius:12px;padding:7px 14px 7px 8px}
-.reto .ring{width:34px;height:34px;border-radius:50%;background:conic-gradient(var(--lime) 0 37%,var(--b2) 0);display:grid;place-items:center}
+.reto .ring{width:34px;height:34px;border-radius:50%;background:conic-gradient(var(--lime) 0 39%,var(--b2) 0);display:grid;place-items:center}
 .reto .ring i{width:26px;height:26px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:700}
 .reto b{font-size:13px;display:block}.reto small{color:var(--mu);font-size:12px}
 .btn{display:inline-flex;align-items:center;gap:8px;border-radius:11px;padding:10px 16px;font-weight:700;font-size:14px;border:1px solid var(--b2);background:var(--card2);color:var(--tx)}
@@ -167,30 +167,30 @@ tr:last-child td{border-bottom:0}
 
 <div class="app">
   <aside class="side">
-    <div class="brand"><div class="logo">CCA</div><div><b>Reto Fit CCA</b><small>Recepción</small></div></div>
+    <div class="brand"><div class="logo">CCA</div><div><b>Reto Fit CCA</b><small>Control del reto</small></div></div>
     <button class="nav on" data-s="tablero"><svg><use href="#i-home"/></svg>Tablero</button>
     <button class="nav" data-s="checkin"><svg><use href="#i-qr"/></svg>Check-in</button>
-    <button class="nav" data-s="inscripcion"><svg><use href="#i-plus"/></svg>Inscribir socio</button>
+    <button class="nav" data-s="registro"><svg><use href="#i-qr"/></svg>Registro y QR</button>
     <button class="nav" data-s="socios"><svg><use href="#i-users"/></svg>Socios del reto</button>
     <button class="nav" data-s="clases"><svg><use href="#i-cal"/></svg>Clases de hoy</button>
     <button class="nav" data-s="evaluaciones"><svg><use href="#i-ruler"/></svg>Evaluaciones<span class="pill">14</span></button>
     <div class="navsep">Director</div>
     <button class="nav" data-s="entrenadores"><svg><use href="#i-whistle"/></svg>Entrenadores</button>
     <button class="nav" data-s="ranking"><svg><use href="#i-trophy"/></svg>Ranking del reto</button>
-    <div class="me"><div class="av" style="background:#B7A3FF">AR</div><div><b>Ana Rosales</b><small>Recepción · turno mañana</small></div></div>
+    <div class="me"><div class="av" style="background:#B7A3FF">AR</div><div><b>Ana Rosales</b><small>Control · turno mañana</small></div></div>
   </aside>
 
   <main>
     <div class="top">
       <div><h1 id="ttl">Tablero</h1><div class="sub" id="sub">Viernes 20 de noviembre · Semana 5 de 12</div></div>
       <div class="search"><svg><use href="#i-search"/></svg>Buscar socio por nombre, teléfono o folio<span class="kbd">/</span></div>
-      <div class="reto"><div class="ring"><i>33</i></div><div><b>Día 33 de 90</b><small>Fase 2 · Fuerza</small></div></div>
+      <div class="reto"><div class="ring"><i>33</i></div><div><b>Día 33 de 84</b><small>Fase 2 · Fuerza</small></div></div>
     </div>
 
     <!-- ============ TABLERO ============ -->
     <section class="screen on" id="tablero">
       <div class="grid g4">
-        <div class="card kpi"><div class="lab">Inscritos al reto</div><div class="val">287 <small>/ 300</small></div><div class="bar"><i style="width:95.6%"></i></div><div class="d">13 lugares disponibles</div></div>
+        <div class="card kpi"><div class="lab">Registrados en la app</div><div class="val">287 <small>/ 298 pagados</small></div><div class="bar"><i style="width:96.3%"></i></div><div class="d">11 pagaron en caja y no se han registrado</div></div>
         <div class="card kpi"><div class="lab">Check-ins hoy</div><div class="val">142</div><div class="d"><span class="up">▲ 12%</span> vs. viernes pasado · pico 7:00–8:00</div></div>
         <div class="card kpi"><div class="lab">Registraron su entreno (7 días)</div><div class="val">81<small>%</small></div><div class="d">233 socios con pesos registrados</div></div>
         <div class="card kpi"><div class="lab">En riesgo de abandono</div><div class="val" style="color:var(--bad)">19</div><div class="d">5 días o más sin venir</div></div>
@@ -214,16 +214,16 @@ tr:last-child td{border-bottom:0}
             <tr><td><div class="who"><div class="av" style="background:#C8F23A">LM</div><div><b>Laura Medina</b><small>RF-0142</small></div></div></td><td>9:41</td><td>Día B · Pierna</td><td>Coach Diego</td><td><span class="tag t-ok">Al corriente</span></td></tr>
             <tr><td><div class="who"><div class="av" style="background:#4CC3D9">JC</div><div><b>Jorge Castañeda</b><small>RF-0087</small></div></div></td><td>9:38</td><td>Clase Spinning 10:00</td><td>Coach Paty</td><td><span class="tag t-warn">Evaluación pendiente</span></td></tr>
             <tr><td><div class="who"><div class="av" style="background:#FFC857">MS</div><div><b>Mariana Soto</b><small>RF-0219</small></div></div></td><td>9:35</td><td>Día A · Empuje</td><td>Coach Diego</td><td><span class="tag t-ok">Al corriente</span></td></tr>
-            <tr><td><div class="who"><div class="av" style="background:#FF6B7A">RG</div><div><b>Ricardo Gómez</b><small>RF-0031</small></div></div></td><td>9:30</td><td>Día C · Jalón</td><td>Coach Alan</td><td><span class="tag t-bad">Pago parcial</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FF6B7A">RG</div><div><b>Ricardo Gómez</b><small>RF-0031</small></div></div></td><td>9:30</td><td>Día C · Jalón</td><td>Coach Alan</td><td><span class="tag t-info">Sin código</span></td></tr>
           </table>
         </div>
         <div class="grid" style="align-content:start">
           <div class="card">
-            <h3>Pendientes de recepción</h3>
+            <h3>Pendientes del reto</h3>
             <div class="list">
               <div class="it"><div class="ic t-warn"><svg><use href="#i-ruler"/></svg></div><div><b>14 evaluaciones de semana 6</b><div class="mu sm">Agendar antes del 4 de diciembre</div></div></div>
-              <div class="it"><div class="ic t-bad"><svg><use href="#i-alert"/></svg></div><div><b>6 pagos parciales</b><div class="mu sm">Saldo total $5,400</div></div></div>
-              <div class="it"><div class="ic t-info"><svg><use href="#i-plus"/></svg></div><div><b>3 socios sin entrenador</b><div class="mu sm">Inscritos ayer</div></div></div>
+              <div class="it"><div class="ic t-bad"><svg><use href="#i-alert"/></svg></div><div><b>11 pagaron y no se registran</b><div class="mu sm">Reenviar link o QR · lista de caja</div></div></div>
+              <div class="it"><div class="ic t-info"><svg><use href="#i-plus"/></svg></div><div><b>3 sin código de entrenador</b><div class="mu sm">Asignarles entrenador</div></div></div>
               <div class="it"><div class="ic t-vio"><svg><use href="#i-msg"/></svg></div><div><b>19 socios en riesgo</b><div class="mu sm">Avisar a su entrenador</div></div></div>
             </div>
           </div>
@@ -273,59 +273,70 @@ tr:last-child td{border-bottom:0}
             <h3 style="margin-top:14px">Avisos</h3>
             <div class="list">
               <div class="it"><div class="ic t-warn"><svg><use href="#i-ruler"/></svg></div><div style="flex:1"><b>Evaluación de semana 6 sin agendar</b><div class="mu sm">Peso, medidas y fotos de progreso</div></div><button class="btn sm">Agendar</button></div>
-              <div class="it"><div class="ic t-ok"><svg><use href="#i-check"/></svg></div><div style="flex:1"><b>Inscripción pagada completa</b><div class="mu sm">$1,800 · 2 de octubre</div></div></div>
+              <div class="it"><div class="ic t-ok"><svg><use href="#i-check"/></svg></div><div style="flex:1"><b>Objetivo: Bajar porcentaje de grasa</b><div class="mu sm">−3.2 kg desde la semana 0</div></div></div>
             </div>
           </div>
           <div class="card" style="margin-top:14px;display:flex;align-items:center;gap:14px;border-color:color-mix(in srgb,var(--bad) 40%,transparent)">
             <div class="ic t-bad"><svg><use href="#i-x"/></svg></div>
-            <div style="flex:1"><b>Ejemplo de entrada rechazada</b><div class="mu sm">Ricardo Gómez · saldo pendiente $900 — la recepción decide si deja pasar con aviso</div></div>
-            <button class="btn sm">Cobrar</button><button class="btn sm ghost">Dejar pasar</button>
+            <div style="flex:1"><b>Ejemplo: no aparece en la app</b><div class="mu sm">Pagó en caja pero no ha creado su cuenta. Se le manda el link o se le muestra el QR para que se registre ahí mismo.</div></div>
+            <button class="btn sm">Mostrar QR</button><button class="btn sm ghost">Mandar link</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ============ INSCRIPCIÓN ============ -->
-    <section class="screen" id="inscripcion">
-      <div class="steps">
-        <div class="done"><i>✓</i>Datos personales</div>
-        <div class="done"><i>✓</i>Salud y objetivo</div>
-        <div class="on"><i>3</i>Entrenador y horario</div>
-        <div><i>4</i>Pago</div>
-        <div><i>5</i>Evaluación inicial</div>
+    <!-- ============ REGISTRO Y QR ============ -->
+    <section class="screen" id="registro">
+      <div class="grid g4">
+        <div class="card kpi"><div class="lab">1 · Pagaron en caja</div><div class="val">298</div><div class="d">Lista de caja al día</div></div>
+        <div class="card kpi"><div class="lab">2 · Crearon su cuenta</div><div class="val">291</div><div class="bar"><i style="width:97.6%"></i></div><div class="d">7 sin cuenta</div></div>
+        <div class="card kpi"><div class="lab">3 · Contestaron la evaluación</div><div class="val">287</div><div class="bar"><i style="width:96.3%"></i></div><div class="d">4 la dejaron a medias</div></div>
+        <div class="card kpi"><div class="lab">4 · Tienen rutina y entrenador</div><div class="val">284</div><div class="bar"><i style="width:95.3%"></i></div><div class="d">3 sin código de entrenador</div></div>
       </div>
-      <div class="grid g2">
-        <div class="card">
-          <h3>Horario y modalidad</h3>
-          <div class="field" style="margin-bottom:14px"><label>¿Cuándo entrena normalmente?</label>
-            <div class="seg"><span>6–9 am</span><span class="on">9–12 pm</span><span>4–7 pm</span><span>7–10 pm</span></div></div>
-          <div class="field" style="margin-bottom:14px"><label>Modalidad del reto</label>
-            <div class="seg"><span>Solo pesas</span><span class="on">Pesas + clases</span><span>Solo clases</span></div></div>
-          <div class="grid g2" style="gap:12px">
-            <div class="field"><label>Días por semana</label><div class="inp">5 días</div></div>
-            <div class="field"><label>Clases favoritas</label><div class="inp">Spinning, Glúteo y core</div></div>
+      <div class="grid g21" style="margin-top:16px">
+        <div class="grid" style="align-content:start">
+          <div class="card">
+            <h3>Cómo se registra un socio</h3>
+            <div class="grid g4" style="gap:10px">
+              <div style="background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:12px"><span class="tag t-mu">Caja</span><div style="margin-top:8px;font-weight:700">Paga su inscripción</div><div class="mu sm">Le dan el QR o el link de la app.</div></div>
+              <div style="background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:12px"><span class="tag t-info">App</span><div style="margin-top:8px;font-weight:700">Crea su cuenta</div><div class="mu sm">Con su correo y una contraseña.</div></div>
+              <div style="background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:12px"><span class="tag t-info">App</span><div style="margin-top:8px;font-weight:700">Contesta la evaluación</div><div class="mu sm">Elige uno de los 3 objetivos y escribe el código de su entrenador.</div></div>
+              <div style="background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:12px"><span class="tag t-ok">Listo</span><div style="margin-top:8px;font-weight:700">Sale su rutina</div><div class="mu sm">Con la filosofía de su entrenador, que la puede ajustar.</div></div>
+            </div>
           </div>
-          <div class="note"><b>Sugerencia automática:</b> la app propone al entrenador con menos socios en el horario elegido. La recepción puede cambiarlo.</div>
+          <div class="card" style="padding:6px 8px">
+            <table>
+              <tr><th>Necesitan ayuda</th><th>Pagó</th><th>Dónde se quedó</th><th></th></tr>
+              <tr><td><div class="who"><div class="av" style="background:#FF6B7A">PM</div><div><b>Pablo Muñoz</b><small>Recibo de caja 10482</small></div></div></td><td>18 nov</td><td><span class="tag t-bad">No ha creado su cuenta</span></td><td><button class="btn sm">Reenviar link</button></td></tr>
+              <tr><td><div class="who"><div class="av" style="background:#FFC857">SI</div><div><b>Sara Ibarra</b><small>sara.i@correo.com</small></div></div></td><td>17 nov</td><td><span class="tag t-warn">Evaluación a medias (paso 6 de 11)</span></td><td><button class="btn sm">Recordarle</button></td></tr>
+              <tr><td><div class="who"><div class="av" style="background:#B7A3FF">VC</div><div><b>Valeria Cruz</b><small>Recomposición corporal</small></div></div></td><td>19 nov</td><td><span class="tag t-info">Sin código de entrenador</span></td><td><button class="btn sm pri">Asignar entrenador</button></td></tr>
+            </table>
+          </div>
+          <div class="card">
+            <h3>Socios por objetivo</h3>
+            <div class="load"><div style="width:150px">Bajar % de grasa</div><div class="bar"><i style="width:41%"></i></div><b>118</b></div>
+            <div class="load"><div style="width:150px">Masa muscular</div><div class="bar"><i style="width:32%;background:var(--info)"></i></div><b>92</b></div>
+            <div class="load"><div style="width:150px">Recomposición</div><div class="bar"><i style="width:27%;background:var(--vio)"></i></div><b>77</b></div>
+          </div>
         </div>
-        <div class="card">
-          <h3>Asignar entrenador <span class="act">Horario 9–12 pm</span></h3>
-          <div class="coachopt on"><div class="av" style="background:#C8F23A">DR</div><div><b>Coach Diego Ramírez</b> <span class="tag t-ok">Sugerido</span><div class="mu sm">Fuerza e hipertrofia · 24 de 32 socios</div></div><div class="radio"></div></div>
-          <div class="coachopt"><div class="av" style="background:#FFC857">SL</div><div><b>Coach Sofía López</b><div class="mu sm">Glúteo y clases · 29 de 32 socios</div></div><div class="radio"></div></div>
-          <div class="coachopt"><div class="av" style="background:#4CC3D9">PH</div><div><b>Coach Paty Hernández</b><div class="mu sm">Cardio y spinning · 31 de 32 socios</div></div><div class="radio"></div></div>
-          <div class="coachopt" style="opacity:.5"><div class="av" style="background:#FF6B7A">AV</div><div><b>Coach Alan Vega</b> <span class="tag t-bad">Lleno</span><div class="mu sm">Funcional · 32 de 32 socios</div></div><div class="radio"></div></div>
-          <div class="row" style="justify-content:flex-end;margin-top:16px;gap:8px"><button class="btn ghost">Atrás</button><button class="btn pri">Continuar al pago →</button></div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:16px">
-        <h3>Resumen del nuevo socio</h3>
-        <div class="row" style="gap:28px;flex-wrap:wrap">
-          <div><div class="mu sm">Nombre</div><b>Fernanda Ortiz</b></div>
-          <div><div class="mu sm">Edad · sexo</div><b>29 · Mujer</b></div>
-          <div><div class="mu sm">Objetivo</div><b>Bajar grasa y tonificar</b></div>
-          <div><div class="mu sm">Nivel</div><b>Principiante</b></div>
-          <div><div class="mu sm">Salud</div><span class="tag t-warn">Molestia rodilla izq.</span></div>
-          <div><div class="mu sm">Folio</div><b>RF-0288</b></div>
-          <div><div class="mu sm">Acceso a la app</div><b>Se envía por WhatsApp al terminar</b></div>
+        <div class="grid" style="align-content:start">
+          <div class="card" style="text-align:center">
+            <h3>QR general del reto</h3>
+            <div style="width:170px;height:170px;margin:4px auto 10px;border-radius:14px;background:#fff;display:grid;place-items:center;color:#0A0E13;font-weight:800;font-family:var(--fd)">
+              <svg viewBox="0 0 29 29" width="146" height="146" shape-rendering="crispEdges"><path fill="#0A0E13" d="M0 0h7v7H0zM1 1v5h5V1zM2 2h3v3H2zM22 0h7v7h-7zm1 1v5h5V1zm1 1h3v3h-3zM0 22h7v7H0zm1 1v5h5v-5zm1 1h3v3H2zM9 0h2v2H9zm3 1h2v3h-2zm4 0h1v2h-1zm2 2h2v2h-2zM9 4h2v2H9zm5 2h3v1h-3zM8 8h3v2H8zm5 0h2v3h-2zm4 1h3v1h-3zm4 0h2v2h-2zM1 9h3v2H1zm24 0h3v3h-3zM9 12h2v2H9zm5 0h4v2h-4zm6 1h2v3h-2zM2 13h2v3H2zm4 0h2v2H6zm17 2h3v2h-3zm-14 1h3v2H9zm6 1h2v3h-2zm-6 4h2v3H9zm4-1h3v2h-3zm5 1h3v1h-3zm4 1h2v3h-2zm4 0h3v2h-3zm-8 3h2v3h-2zm4 1h3v2h-3zM9 26h3v2H9zm4 1h2v2h-2z"/></svg>
+            </div>
+            <div class="mu sm">Para la caja y los carteles. Sin código: al final el socio escribe el código de su entrenador.</div>
+            <div class="row" style="justify-content:center;margin-top:12px;gap:8px"><button class="btn sm"><svg><use href="#i-dl"/></svg>Descargar cartel</button><button class="btn sm">Copiar link</button></div>
+          </div>
+          <div class="card">
+            <h3>Links por entrenador</h3>
+            <div class="mu sm" style="margin-bottom:8px">Con este link el código del entrenador ya viene escrito.</div>
+            <div class="list">
+              <div class="it"><div class="av" style="background:#C8F23A;width:28px;height:28px;font-size:11px">DR</div><div style="flex:1"><b>Diego</b><div class="mu sm">…/reto-fit-cca/?ent=ENT-4K7Q</div></div><button class="btn sm">Copiar</button></div>
+              <div class="it"><div class="av" style="background:#FFC857;width:28px;height:28px;font-size:11px">SL</div><div style="flex:1"><b>Sofía</b><div class="mu sm">…/reto-fit-cca/?ent=ENT-9PX2</div></div><button class="btn sm">Copiar</button></div>
+              <div class="it"><div class="av" style="background:#4CC3D9;width:28px;height:28px;font-size:11px">PH</div><div style="flex:1"><b>Paty</b><div class="mu sm">…/reto-fit-cca/?ent=ENT-2MZ8</div></div><button class="btn sm">Copiar</button></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -338,20 +349,20 @@ tr:last-child td{border-bottom:0}
         <span class="tag t-warn" style="padding:7px 12px">Evaluación pendiente · 14</span>
         <span class="tag t-info" style="padding:7px 12px">Sin entrenador · 3</span>
         <span class="tag t-mu" style="padding:7px 12px">Entrenador: todos ▾</span>
-        <span class="tag t-mu" style="padding:7px 12px">Horario: todos ▾</span>
-        <div style="margin-left:auto" class="row"><button class="btn sm"><svg><use href="#i-dl"/></svg>Exportar Excel</button><button class="btn sm pri"><svg><use href="#i-plus"/></svg>Inscribir</button></div>
+        <span class="tag t-mu" style="padding:7px 12px">Objetivo: todos ▾</span>
+        <div style="margin-left:auto" class="row"><button class="btn sm"><svg><use href="#i-dl"/></svg>Exportar Excel</button><button class="btn sm pri"><svg><use href="#i-qr"/></svg>Link de registro</button></div>
       </div>
       <div class="grid g21">
         <div class="card" style="padding:6px 8px">
           <table>
             <tr><th>Socio</th><th>Entrenador</th><th>Asistencia</th><th>Último entreno</th><th>Progreso</th><th>Estado</th></tr>
-            <tr><td><div class="who"><div class="av" style="background:#C8F23A">LM</div><div><b>Laura Medina</b><small>RF-0142 · Mañana</small></div></div></td><td>Diego</td><td><b>27</b>/33</td><td>Hoy · pesos ✓</td><td class="up">−3.2 kg</td><td><span class="tag t-ok">Activa</span></td></tr>
-            <tr><td><div class="who"><div class="av" style="background:#FF6B7A">ET</div><div><b>Eduardo Treviño</b><small>RF-0064 · Tarde</small></div></div></td><td>Alan</td><td><b>11</b>/33</td><td>Hace 7 días</td><td class="mu">−0.4 kg</td><td><span class="tag t-bad">En riesgo</span></td></tr>
-            <tr><td><div class="who"><div class="av" style="background:#4CC3D9">JC</div><div><b>Jorge Castañeda</b><small>RF-0087 · Mañana</small></div></div></td><td>Paty</td><td><b>22</b>/33</td><td>Ayer · sin pesos</td><td class="up">−1.8 kg</td><td><span class="tag t-warn">Eval. pendiente</span></td></tr>
-            <tr><td><div class="who"><div class="av" style="background:#FFC857">MS</div><div><b>Mariana Soto</b><small>RF-0219 · Mañana</small></div></div></td><td>Diego</td><td><b>30</b>/33</td><td>Hoy · pesos ✓</td><td class="up">−4.1 kg</td><td><span class="tag t-ok">Activa</span></td></tr>
-            <tr><td><div class="who"><div class="av" style="background:#B7A3FF">VC</div><div><b>Valeria Cruz</b><small>RF-0285 · Noche</small></div></div></td><td><span class="tag t-info">Sin asignar</span></td><td><b>1</b>/1</td><td>Ayer</td><td class="mu">—</td><td><span class="tag t-info">Nueva</span></td></tr>
-            <tr><td><div class="who"><div class="av" style="background:#5FD38A">HN</div><div><b>Héctor Navarro</b><small>RF-0011 · Noche</small></div></div></td><td>Sofía</td><td><b>25</b>/33</td><td>Ayer · pesos ✓</td><td class="up">+1.1 kg músc.</td><td><span class="tag t-ok">Activo</span></td></tr>
-            <tr><td><div class="who"><div class="av" style="background:#FF6B7A">RG</div><div><b>Ricardo Gómez</b><small>RF-0031 · Mañana</small></div></div></td><td>Alan</td><td><b>19</b>/33</td><td>Hoy</td><td class="up">−2.0 kg</td><td><span class="tag t-bad">Pago parcial</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#C8F23A">LM</div><div><b>Laura Medina</b><small>RF-0142 · Bajar grasa</small></div></div></td><td>Diego</td><td><b>27</b>/33</td><td>Hoy · pesos ✓</td><td class="up">−3.2 kg</td><td><span class="tag t-ok">Activa</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FF6B7A">ET</div><div><b>Eduardo Treviño</b><small>RF-0064 · Masa muscular</small></div></div></td><td>Alan</td><td><b>11</b>/33</td><td>Hace 7 días</td><td class="mu">−0.4 kg</td><td><span class="tag t-bad">En riesgo</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#4CC3D9">JC</div><div><b>Jorge Castañeda</b><small>RF-0087 · Recomposición</small></div></div></td><td>Paty</td><td><b>22</b>/33</td><td>Ayer · sin pesos</td><td class="up">−1.8 kg</td><td><span class="tag t-warn">Eval. pendiente</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FFC857">MS</div><div><b>Mariana Soto</b><small>RF-0219 · Bajar grasa</small></div></div></td><td>Diego</td><td><b>30</b>/33</td><td>Hoy · pesos ✓</td><td class="up">−4.1 kg</td><td><span class="tag t-ok">Activa</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#B7A3FF">VC</div><div><b>Valeria Cruz</b><small>RF-0285 · Recomposición</small></div></div></td><td><span class="tag t-info">Sin código</span></td><td><b>1</b>/1</td><td>Ayer</td><td class="mu">—</td><td><span class="tag t-info">Nueva</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#5FD38A">HN</div><div><b>Héctor Navarro</b><small>RF-0011 · Masa muscular</small></div></div></td><td>Sofía</td><td><b>25</b>/33</td><td>Ayer · pesos ✓</td><td class="up">+1.1 kg músc.</td><td><span class="tag t-ok">Activo</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FF6B7A">RG</div><div><b>Ricardo Gómez</b><small>RF-0031 · Bajar grasa</small></div></div></td><td>Alan</td><td><b>19</b>/33</td><td>Hoy</td><td class="up">−2.0 kg</td><td><span class="tag t-ok">Activo</span></td></tr>
           </table>
         </div>
         <div class="grid" style="align-content:start">
@@ -372,6 +383,7 @@ tr:last-child td{border-bottom:0}
               <button class="btn sm">Cambiar de entrenador</button>
               <button class="btn sm">Avisar a su entrenador</button>
               <button class="btn sm">Mandar recordatorio por WhatsApp</button>
+              <button class="btn sm">Reenviar link de registro</button>
             </div>
           </div>
         </div>
@@ -481,7 +493,7 @@ tr:last-child td{border-bottom:0}
             <div class="field"><label>Horario</label><div class="seg"><span>Mañana</span><span class="on">Tarde</span><span>Noche</span></div></div>
             <div class="field"><label>Máximo de socios</label><div class="inp">30</div></div>
           </div>
-          <div class="note"><b>Entrenador:</b> ve y edita solo a sus socios (rutina, pesos, notas). <b>Recepción:</b> inscribe, hace check-in y agenda, pero no edita rutinas. <b>Director:</b> ve todo.</div>
+          <div class="note"><b>Entrenador:</b> ve y edita solo a sus socios (rutina, pesos, notas). <b>Recepción:</b> hace check-in, reserva clases y agenda evaluaciones; no edita rutinas. <b>Director:</b> ve todo.</div>
           <button class="btn pri" style="margin-top:14px;width:100%;justify-content:center">Crear y enviar acceso</button>
         </div>
       </div>
@@ -489,12 +501,17 @@ tr:last-child td{border-bottom:0}
 
     <!-- ============ RANKING ============ -->
     <section class="screen" id="ranking">
+      <div class="row" style="margin-bottom:14px">
+        <span class="tag t-ok" style="padding:7px 14px">Bajar porcentaje de grasa · 118</span>
+        <span class="tag t-mu" style="padding:7px 14px">Incremento de masa muscular · 92</span>
+        <span class="tag t-mu" style="padding:7px 14px">Recomposición corporal · 77</span>
+      </div>
       <div class="grid g21">
         <div class="card" style="padding:6px 8px">
           <table>
             <tr><th>#</th><th>Socio</th><th>Asistencia</th><th>Entrenos registrados</th><th>Cambio corporal</th><th>Puntos</th></tr>
             <tr><td><b style="color:var(--lime);font-family:var(--fd);font-size:18px">1</b></td><td><div class="who"><div class="av" style="background:#FFC857">MS</div><div><b>Mariana Soto</b><small>Coach Diego</small></div></div></td><td>30/33</td><td>30</td><td class="up">−4.1 kg · −5 cm cintura</td><td><b>2,410</b></td></tr>
-            <tr><td><b style="font-family:var(--fd);font-size:18px">2</b></td><td><div class="who"><div class="av" style="background:#5FD38A">HN</div><div><b>Héctor Navarro</b><small>Coach Sofía</small></div></div></td><td>29/33</td><td>28</td><td class="up">+1.1 kg músculo</td><td><b>2,295</b></td></tr>
+            <tr><td><b style="font-family:var(--fd);font-size:18px">2</b></td><td><div class="who"><div class="av" style="background:#5FD38A">HN</div><div><b>Héctor Navarro</b><small>Coach Sofía</small></div></div></td><td>29/33</td><td>28</td><td class="up">−3.8 kg · −2.4% grasa</td><td><b>2,295</b></td></tr>
             <tr><td><b style="font-family:var(--fd);font-size:18px">3</b></td><td><div class="who"><div class="av" style="background:#4CC3D9">AP</div><div><b>Alejandra Peña</b><small>Coach Paty</small></div></div></td><td>28/33</td><td>27</td><td class="up">−3.5 kg</td><td><b>2,180</b></td></tr>
             <tr><td><b class="mu" style="font-family:var(--fd);font-size:18px">4</b></td><td><div class="who"><div class="av" style="background:#C8F23A">KR</div><div><b>Karla Ríos</b><small>Coach Diego</small></div></div></td><td>27/33</td><td>27</td><td class="up">−2.9 kg</td><td><b>2,050</b></td></tr>
             <tr><td><b class="mu" style="font-family:var(--fd);font-size:18px">12</b></td><td><div class="who"><div class="av" style="background:#C8F23A">LM</div><div><b>Laura Medina</b><small>Coach Diego</small></div></div></td><td>27/33</td><td>25</td><td class="up">−3.2 kg</td><td><b>1,840</b></td></tr>
@@ -510,7 +527,7 @@ tr:last-child td{border-bottom:0}
             <div class="it"><div style="flex:1">Hacer su evaluación a tiempo</div><b>+200</b></div>
             <div class="it"><div style="flex:1">Mejora en evaluación final</div><b>hasta +1,000</b></div>
           </div>
-          <div class="note">El director define los valores. El socio ve su lugar en la app; la tabla completa se puede mostrar en la pantalla del gimnasio.</div>
+          <div class="note">Cada objetivo tiene su propia tabla y su ganador: en bajar grasa cuenta el % de grasa perdido, en masa muscular los kg de músculo ganados y en recomposición los dos. El director define los valores. El socio ve su lugar en la app; la tabla completa se puede mostrar en la pantalla del gimnasio.</div>
         </div>
       </div>
     </section>
@@ -518,11 +535,12 @@ tr:last-child td{border-bottom:0}
 </div>
 
 <script>
-const T={tablero:['Tablero','Viernes 20 de noviembre · Semana 5 de 12'],checkin:['Check-in','Escanea el QR o busca al socio'],inscripcion:['Inscribir socio','Alta al Reto Fit · 13 lugares disponibles'],socios:['Socios del reto','287 inscritos · 10 entrenadores'],clases:['Clases de hoy','Viernes 20 de noviembre · 6 clases programadas'],evaluaciones:['Evaluaciones','Semana 0, 6 y 12 del reto'],entrenadores:['Entrenadores','Alta de entrenadores y su seguimiento'],ranking:['Ranking del reto','Puntos acumulados al día 33']};
+const T={tablero:['Tablero','Viernes 20 de noviembre · Semana 5 de 12'],checkin:['Check-in','Escanea el QR o busca al socio'],registro:['Registro y QR','El socio paga en caja y se registra él mismo en la app'],socios:['Socios del reto','287 registrados · 10 entrenadores'],clases:['Clases de hoy','Viernes 20 de noviembre · 6 clases programadas'],evaluaciones:['Evaluaciones','Semana 0, 6 y 12 del reto'],entrenadores:['Entrenadores','Alta de entrenadores y su seguimiento'],ranking:['Ranking del reto','Cada objetivo compite en su propia categoría · día 33']};
 function show(id){
   if(!T[id]) id='tablero';
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
   document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.s===id));
+  window.scrollTo(0,0);
   document.getElementById('ttl').textContent=T[id][0];document.getElementById('sub').textContent=T[id][1];
 }
 document.querySelectorAll('.nav').forEach(n=>n.addEventListener('click',()=>{location.hash=n.dataset.s;show(n.dataset.s);}));
