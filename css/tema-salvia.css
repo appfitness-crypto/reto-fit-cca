@@ -79,3 +79,8 @@ html[data-theme="light2"] .reto-banner .rb-bar i{background:#F07A2B;}
 /* Pestaña activa: blanco sobre la píldora verde casi negro, como en la referencia */
 html[data-theme="light2"] .bn-i.ac{color:#FFFFFF;}
 html[data-theme="light2"] .bn-ind::after{background:#F07A2B;}
+
+/* Portada: la parte de abajo en verde profundo (no negro), fundida con la foto */
+html[data-theme="light2"] #s-inicio,
+html[data-theme="light2"] #s-inicio .wc-hero{background:#1D2B27;}
+html[data-theme="light2"] #s-inicio .wc-ov{background:linear-gradient(0deg,#1D2B27 0%,#1D2B27 6%,rgba(29,43,39,.74) 26%,rgba(29,43,39,.12) 50%,rgba(29,43,39,0) 72%,rgba(29,43,39,.4) 100%);}

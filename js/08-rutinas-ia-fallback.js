@@ -1320,12 +1320,10 @@ const IMG_BASE='img/', IMG_EXT=['webp','jpg'];
 function slugImg(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
 function imgCands(bases){ const o=[]; bases.filter(Boolean).forEach(b=>IMG_EXT.forEach(x=>o.push(b+'.'+x))); return o; }
 function imgSrc(p){ const D=window.IMG_DATA; return (D&&D.k[p]!=null)?D.u[D.k[p]]:IMG_BASE+p; }
-// Portada de Inicio: video en bucle y sin sonido, grande y detrás de la tarjeta de vidrio "Entrenamiento de hoy".
-// Con "reducir movimiento" o ahorro de datos se queda la imagen fija; se pausa cuando sale de la pantalla.
+// Portada de Inicio: foto fija (img/hero/inicio.webp, o la que suba el director en Apariencia), grande y detrás de la
+// tarjeta de vidrio "Entrenamiento de hoy". Reto Fit CCA: reemplaza al video en bucle de la app original.
 function heroVideoHTML(){
-  const quieto=(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)||!!(navigator.connection&&navigator.connection.saveData);
-  return `<div class="pic fill hero-pv"><video ${quieto?'':'autoplay data-auto="1"'} muted loop playsinline disablepictureinpicture preload="metadata" poster="img/hero/inicio-cuerdas-video.webp" aria-hidden="true" tabindex="-1">
-    <source src="video/inicio-cuerdas.webm" type="video/webm"><source src="video/inicio-cuerdas.mp4" type="video/mp4"></video></div>`;
+  return `<div class="pic fill hero-pv"><img src="${imgSrc('hero/inicio.webp')}" alt="" aria-hidden="true" decoding="async" style="object-position:70% 40%"></div>`;
 }
 const heroObs=('IntersectionObserver' in window)?new IntersectionObserver(ents=>ents.forEach(en=>{
   const v=en.target; if(!v.dataset.auto) return;
