@@ -198,6 +198,8 @@ components:
     textColor: "{colors.card}"
     height: "380px"
 ---
+> **Aviso (20 nov 2026):** el club eligió después el tema **Salvia** (`css/tema-salvia.css`) sobre la estructura de la app actual. Este documento describe la propuesta anterior de la tarjeta de score y se actualizará cuando el tema Salvia quede aprobado.
+
 
 # Design System: Reto Fit CCA
 
