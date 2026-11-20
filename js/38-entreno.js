@@ -891,7 +891,7 @@ function finCine(s, info, est){
   if(!(gan>0)) return null;
   // Mascota en su etapa actual; si con esta sesión subió de etapa, se avisa
   let pet='', subio='';
-  const m=typeof mascotaEstado==='function'?mascotaEstado(s):null;
+  const m=(typeof mascotaEstado==='function' && !s.mascotaOculta)?mascotaEstado(s):null;
   if(m){
     pet=mascotaImgHTML(m.m, m.etapa.n, 'fn-pet');
     if(desde!=null && typeof mascotaEtapas==='function'){

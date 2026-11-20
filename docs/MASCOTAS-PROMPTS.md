@@ -1,31 +1,44 @@
-# Mascotas del Reto Fit CCA: descripciones para ChatGPT
+# Mascotas del Reto Fit CCA: descripciones para ChatGPT (estilo "de club")
 
-Son 9 mascotas. Para cada una se pide **una sola imagen** con sus 5 etapas en fila (de izquierda a derecha). Yo la recorto en 5 imágenes (`img/mascotas/<id>-1.webp` … `-5.webp`).
+Son 9 mascotas. Para cada una se pide **una sola imagen** con sus 5 etapas en fila (de izquierda a derecha). Yo la recorto en 5 imágenes (`img/mascotas/<id>-1.webp` … `-5.webp`) con `herramientas/recortar-mascota.py`.
+
+**Dirección de estilo:** el reto es del **gimnasio** del Club Campestre (club privado, social y deportivo de tradición). Cada mascota evoluciona practicando **una disciplina del gimnasio** (pesas, funcional, spinning, yoga…), porque de ahí salen los puntos del reto. El toque del club está en el **estilo**: piezas coleccionables limpias y elegantes, paleta del club, y en la etapa final el polo del club con un detalle dorado, como un trofeo. Nada chillón ni de videojuego.
 
 ## Cómo pedirlas
-1. Abre un chat nuevo en ChatGPT y pega primero el bloque **Estilo (igual para todas)**.
+1. Abre un chat nuevo en ChatGPT y pega el bloque **Estilo de club**.
 2. En el mismo mensaje, pega debajo la línea de la mascota.
-3. Pide las 9 en el mismo chat, para que salgan con el mismo estilo.
-4. Si sale con texto, números o con las etapas desordenadas, pídele: "sin texto, las 5 figuras en una sola fila, mismo tamaño de cuadro, fondo liso".
+3. Pide las 9 en el mismo chat, para que todas salgan con el mismo estilo.
+4. Si sale con texto, letras o desordenada, pídele: "sin texto ni letras, las 5 figuras en una sola fila, mismo tamaño de cuadro, fondo liso".
 
-## Estilo (igual para todas)
-> Ilustración 3D estilo juguete de vinil coleccionable, con acabado suave y mate, formas redondeadas y amigables, y ojos grandes y expresivos. Iluminación de estudio suave con una ligera sombra debajo de cada figura. Imagen horizontal muy ancha (proporción 5:1) con **5 figuras del mismo personaje en una sola fila**, de izquierda a derecha, mostrando su evolución en 5 etapas: 1) Cría: bebé pequeño y tierno; 2) Joven: más grande y curioso; 3) Entrenado: en forma, con una banda deportiva; 4) Atleta: musculoso y seguro, con ropa deportiva; 5) Leyenda: su mejor versión, poderoso, con un detalle dorado. Cada figura ocupa un cuadro del mismo tamaño, centrada, de cuerpo completo y sin tocarse con las demás. Fondo liso gris muy claro (#F2F2F2), sin escenario. **Sin texto, sin números, sin logotipos y sin marcas de agua.** Que no se parezca a ningún personaje de marcas, caricaturas o videojuegos existentes: diseño original.
+## Estilo de club (igual para todas)
+> Ilustración 3D estilo figura coleccionable premium de vinil, con acabado mate y suave como porcelana, proporciones amigables y elegantes, ojos expresivos pero no exagerados. Iluminación de estudio cálida y suave, con una sombra ligera debajo de cada figura. Paleta sobria de club deportivo campestre: verde campestre, azul marino y blanco hueso. El dorado solo aparece en la última etapa. Nada de neón ni colores chillones. Imagen horizontal muy ancha (proporción 5:1) con **5 figuras del mismo personaje en una sola fila**, de izquierda a derecha, mostrando su evolución:
+> 1) **Cría**: bebé pequeño y tierno, con un accesorio diminuto de gimnasio de su disciplina;
+> 2) **Joven**: más grande, con playera blanca del club, empezando a entrenar;
+> 3) **Entrenado**: en forma, con ropa de gimnasio verde y azul marino, practicando su disciplina;
+> 4) **Atleta**: atlético y seguro, con su equipo completo y en plena ejecución del ejercicio;
+> 5) **Leyenda**: su mejor versión, con polo azul marino del club, un pequeño escudo verde en el pecho **sin letras** y un detalle dorado (medalla, trofeo o ribete), en pose serena y orgullosa.
+>
+> Cada figura ocupa un cuadro del mismo tamaño, centrada, de cuerpo completo y sin tocarse con las demás. Fondo liso azul grisáceo muy claro (#DDE7EE), sin escenario. **Sin texto, sin letras, sin números, sin logotipos de marcas y sin marcas de agua.** Diseño original que no se parezca a ningún personaje de marcas, caricaturas o videojuegos existentes.
 
-## Las 9 mascotas
-**Divertidos**
-- **Ajolote** (`ajolote`): ajolote mexicano rosa claro con branquias plumosas; muy alegre. En Leyenda, con branquias doradas y una pequeña capa de héroe.
-- **Xolo** (`xolo`): perrito xoloitzcuintle gris oscuro, sin pelo y con una cresta pequeña; juguetón. En Leyenda, con collar dorado y tenis.
-- **Panda** (`panda`): panda blanco y negro, tranquilo y bonachón. En Leyenda, con cinta de karate dorada.
+## Las 9 mascotas y su disciplina del gimnasio
+**Divertidos** (para chavitos y jóvenes)
+- **Ajolote** (`ajolote`) · **Funcional y saltos**: ajolote mexicano rosa claro con branquias plumosas, alegre. Lleva cuerda para saltar; en Atleta, saltando a un cajón pliométrico; en Leyenda, cuerda con mangos dorados.
+- **Xolo** (`xolo`) · **Cardio (caminadora y carrera)**: perrito xoloitzcuintle gris oscuro, sin pelo y con una pequeña cresta, juguetón. Lleva tenis y una botella de agua; en Atleta, trotando con banda en la cabeza; en Leyenda, medalla dorada de constancia.
+- **Panda** (`panda`) · **Kettlebell**: panda blanco y negro, tranquilo y bonachón. Lleva una pesa rusa pequeña; en Atleta, haciendo swing con kettlebell; en Leyenda, kettlebell con asa dorada.
 
-**Enérgicos**
-- **Jaguar** (`jaguar`): jaguar amarillo dorado con manchas negras; veloz y decidido. En Leyenda, en pose de sprint con muñequeras doradas.
-- **Lobo** (`lobo`): lobo gris azulado; leal y fuerte. En Leyenda, con sudadera deportiva y mirada segura.
-- **Colibrí** (`colibri`): colibrí verde esmeralda con garganta rosa brillante; rápido e incansable. En Leyenda, con alas tornasol y un brillo dorado.
+**Enérgicos** (deportistas)
+- **Jaguar** (`jaguar`) · **HIIT (alta intensidad)**: jaguar amarillo dorado con manchas negras, veloz. Lleva cronómetro y tenis; en Atleta, en pose de sprint o burpee; en Leyenda, cronómetro dorado al cuello.
+- **Lobo** (`lobo`) · **Entrenamiento funcional**: lobo gris azulado, leal y fuerte. Lleva una cuerda de batalla corta; en Atleta, ondeando cuerdas de batalla; en Leyenda, cuerdas con puntas doradas.
+- **Colibrí** (`colibri`) · **Spinning**: colibrí verde esmeralda con garganta rosa, rápido. Lleva casco ligero de ciclismo; en Atleta, pedaleando en una bicicleta de spinning; en Leyenda, bicicleta con detalles dorados.
 
-**Serenos (estilo profesional)**
-- **Búho** (`buho`): búho café con lentes redondos; sabio y calmado. En Leyenda, con chaleco y corbata de moño, elegante.
-- **Águila real** (`aguila`): águila real café oscuro con la cabeza dorada; porte firme. En Leyenda, con un saco deportivo elegante y mirada al horizonte.
-- **Venado** (`venado`): venado café claro con cornamenta; elegante y sereno. En Leyenda, con cornamenta dorada y una bufanda fina.
+**Serenos** (estilo profesional)
+- **Águila real** (`aguila`) · **Pesas (fuerza)**: águila real café oscuro con la cabeza dorada, porte firme. Lleva mancuernas pequeñas; en Atleta, con barra olímpica y cinturón de levantamiento; en Leyenda, polo azul marino del club y discos dorados en la barra.
+- **Búho** (`buho`) · **Yoga y movilidad**: búho café con lentes redondos, sabio y calmado. Lleva tapete de yoga enrollado; en Atleta, en postura de equilibrio de yoga; en Leyenda, sentado en meditación sobre el tapete, con un detalle dorado sereno.
+- **Venado** (`venado`) · **Pilates y estiramiento**: venado café claro con cornamenta, elegante y sereno. Lleva una pelota de pilates; en Atleta, en postura de estiramiento elegante; en Leyenda, cornamenta con brillo dorado y polo azul marino del club.
+
+## Nombres de las etapas en la app
+- **Con mascota:** Cría → Joven → Entrenado → Atleta → Leyenda.
+- **Modo discreto (sin mascota):** Bronce → Plata → Oro → Platino → Leyenda.
 
 ## Después
-Mándame las 9 imágenes por aquí. Las recorto, ajusto el tamaño y las subo a `img/mascotas/`. Las imágenes provisionales se reemplazan solas, sin tocar código.
+Mándame las imágenes por aquí. Las recorto, les quito el fondo y las subo a `img/mascotas/`. Las imágenes provisionales se reemplazan solas.

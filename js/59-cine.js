@@ -105,6 +105,7 @@ function cineInicio(){
 
 /* ═══ MASCOTA ═══ Pantalla propia: nombre gigante detrás, la mascota en su luz y las etapas que faltan en silueta */
 function mascotaInicioHTML(s){
+  if(s && s.mascotaOculta) return '';   // modo discreto: medalla en vez de mascota
   const st=typeof mascotaEstado==='function'?mascotaEstado(s):null; if(!st) return '';
   const sub=st.antes?'Empieza a crecer cuando arranque el reto'
     : st.sig?`Te faltan ${st.faltan.toLocaleString('es-MX')} pts para ${esc(st.sig.nm)}`:'Llegó a su forma final';
@@ -115,6 +116,7 @@ function mascotaInicioHTML(s){
 let _msOrigen='inicio';
 function mascotaAbrir(){
   const s=activeSocio, w=document.getElementById('ms-w'); if(!s||!w) return;
+  if(s.mascotaOculta){ dashTab('perfil'); return; }
   const st=mascotaEstado(s);
   if(!st){ mascotaAbrirSelector(false); return; }
   const tabOn=document.querySelector('.dash-section.on'); _msOrigen=tabOn?tabOn.id.replace('dsec-',''):'inicio';
@@ -167,12 +169,12 @@ function mascotaSaltar(){
 // La miniatura de arriba y la tarjeta del Perfil abren la pantalla de la mascota
 if(typeof mascotaMiniHTML==='function'){
   const _mm=mascotaMiniHTML;
-  window.mascotaMiniHTML=mascotaMiniHTML=function(s){ return _mm.apply(this,arguments).replace(`onclick="dashTab('perfil')"`,'onclick="mascotaAbrir()"'); };
+  window.mascotaMiniHTML=mascotaMiniHTML=function(s){ const h=_mm.apply(this,arguments); if(s && s.mascotaOculta) return h; return h.replace(`onclick="dashTab('perfil')"`,'onclick="mascotaAbrir()"'); };
 }
 if(typeof mascotaPerfilHTML==='function'){
   const _mp=mascotaPerfilHTML;
   window.mascotaPerfilHTML=mascotaPerfilHTML=function(s){
-    const h=_mp.apply(this,arguments); if(!h) return h;
+    const h=_mp.apply(this,arguments); if(!h || (s && s.mascotaOculta)) return h;
     return h.replace('<div class="masc-fig">','<button type="button" class="masc-fig masc-abrir" onclick="mascotaAbrir()" aria-label="Ver a mi compañero">').replace(/(<div class="masc-tx">)/,'$1').replace('</div>\n    <div class="masc-tx">','</button>\n    <div class="masc-tx">');
   };
 }
