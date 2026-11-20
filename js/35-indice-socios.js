@@ -39,6 +39,9 @@ function idxDeSocio(s){
   };
   if(typeof huellaRutina==='function' && s.rutina){ o.k=unicaSegmento(s.objetivo,s.nivel); o.h=huellaRutina(s.rutina); }   // rutina única (js/42)
   if(m.vence||m.ancla||m.suspendido) o.m={v:m.vence||null, a:m.ancla||null, su:m.suspendido||null};
+  // Reto Fit CCA: resumen de puntos para que el tablero no tenga que descargar el expediente completo (js/54)
+  try{ if(typeof trResumenIndice==='function'){ const rt=trResumenIndice(s); if(rt) o.rt=rt; } }catch(e){}
+  if(s.mascota && s.mascota.id && !s.mascotaOculta) o.mc={i:s.mascota.id, n:s.mascota.nombre||''};
   return limpio(o);
 }
 /* ── Ficha ligera para la lista (misma forma que un socio, sin rutina ni historial pesado) ── */
@@ -55,7 +58,8 @@ function idxLite(code){
     progresion:x.pe?{estado:x.pe}:undefined,
     membresia:x.m?{vence:x.m.v||undefined, ancla:x.m.a||undefined, suspendido:x.m.su||undefined}:undefined,
     logs:{sesiones:ses, asistencia:[], pesoCorporal:[], medidas:[], lesiones:[], prs:{}},
-    limitaciones:[], zonas:[], _lite:true, _est:x.x||0};
+    limitaciones:[], zonas:[], _lite:true, _est:x.x||0,
+    _rt:x.rt||null, mascota:x.mc?{id:x.mc.i, nombre:x.mc.n}:undefined};
   IDX_LITE[code]=lite;
   return lite;
 }
