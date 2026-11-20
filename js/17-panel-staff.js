@@ -60,7 +60,7 @@ function actualizarFbBadge(){
 // ── Menú del staff (celular): agrupa las acciones que antes ocupaban toda la barra ──
 function staffMenu(){
   const grupos=[
-    ['Reto',['btn-tablero','btn-demo-cargar','btn-demo-borrar']],
+    ['Reto',['btn-tablero','btn-avisos','btn-demo-cargar','btn-demo-borrar']],
     ['Personas',['btn-mi-codigo','btn-mi-filosofia','btn-ver-ent','btn-nuevo-ent','btn-conocimiento']],
     ['Datos y sistema',['btn-resumen','btn-apariencia','btn-lugares','btn-respaldo','btn-firebase','btn-reset']],
     ['Cuenta',['btn-eliminar-cuenta','btn-logout']]

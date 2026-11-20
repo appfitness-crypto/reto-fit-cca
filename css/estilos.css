@@ -2952,3 +2952,36 @@ html[data-theme="light"] .hero-card.estilo-poster+.today-c,html[data-theme="ligh
 .rb-pts small{font-size:11px;font-weight:600;opacity:.85;margin-top:2px;white-space:nowrap}
 .rb-pts.sube{transform:scale(1.08)}
 html[data-theme="dark"] .rb-pts{color:#0A0E13}
+
+/* ═══ Reto Fit CCA: avisos del director (js/57-avisos.js) ═══ */
+#avisos-socio:empty{display:none}
+#avisos-socio{display:flex;flex-direction:column;gap:8px;margin:12px 16px 0;position:relative;z-index:1}
+.aviso{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:start;padding:12px 12px 12px 14px;border-radius:var(--r-md);
+  background:var(--gl);border:1px solid var(--b);box-shadow:var(--shadow);animation:avisoEntra .5s cubic-bezier(.23,1,.32,1) both}
+.aviso-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--acc-soft,var(--gl2));color:var(--v)}
+.aviso-k{font-size:var(--fs-2xs);font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--mu)}
+.aviso-t{font-weight:700;font-size:var(--fs-lg);line-height:1.25;margin-top:2px}
+.aviso-m{font-size:var(--fs-sm);color:var(--mu);margin-top:3px;line-height:1.45}
+.aviso-x{width:36px;height:36px;border-radius:10px;border:0;background:none;color:var(--mu);display:grid;place-items:center;cursor:pointer}
+.aviso-clase .aviso-ic{background:color-mix(in srgb,var(--heat) 18%,transparent);color:var(--heat)}
+.aviso-importante{border-color:color-mix(in srgb,var(--r) 45%,transparent)}
+.aviso-importante .aviso-ic{background:color-mix(in srgb,var(--r) 14%,transparent);color:var(--r)}
+@keyframes avisoEntra{from{opacity:0;transform:translateY(-6px)}}
+@media(prefers-reduced-motion:reduce){.aviso{animation:none}}
+.av-form{display:flex;flex-direction:column;gap:12px}
+.av-tipos{display:flex;gap:6px;flex-wrap:wrap}
+.av-tipos .tr-tab{display:inline-flex;align-items:center;gap:6px}
+.av-tipos .ico{width:16px;height:16px}
+.av-l{display:flex;flex-direction:column;gap:6px;font-size:var(--fs-sm);font-weight:600;color:var(--mu)}
+.av-in{font:inherit;font-weight:500;color:var(--tx);background:var(--in-bg);border:1px solid var(--b2);border-radius:12px;padding:11px 13px;min-height:44px;resize:vertical}
+.av-in:focus{outline:2px solid var(--v2);outline-offset:1px}
+.av-fechas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.av-err{color:var(--r);font-size:var(--fs-sm);min-height:0}
+.av-err:empty{display:none}
+.av-pub{align-self:flex-start;padding:11px 18px;font-weight:700}
+.av-row{display:grid;grid-template-columns:32px 1fr auto auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--b)}
+.av-row:last-child{border-bottom:0}
+.av-row .tr-av .ico{width:16px;height:16px}
+.av-row-t{min-width:0}.av-row-t b{display:block}.av-row-t small{display:block;color:var(--mu);font-size:var(--fs-xs)}
+.av-row-t span{display:block;font-size:var(--fs-sm);color:var(--mu);margin-top:2px}
+@media(max-width:520px){.av-row{grid-template-columns:32px 1fr;}.av-row .tr-tag,.av-row .tb-btn{grid-column:2;justify-self:start}}
