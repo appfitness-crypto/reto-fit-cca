@@ -1,45 +1,50 @@
-/* ═══ Reto Fit CCA · Tema "Claro" (colores del logo del CCA) ═══
-   Fondo blanco azulado, azul del club en los botones y lo activo, lima del logo para el progreso
-   y verde para lo cumplido. Solo cambia colores del tema claro ("light"); la estructura es la misma.
+/* ═══ Reto Fit CCA · Tema "Claro" ═══
+   Paleta elegida por el club: Pale Mint #CFE8E1 (fondo), Midnight Navy #002941 (texto, botones y lo activo)
+   y Coral #FD6E6E (acento: progreso, anillos, detalles). El coral se usa en rellenos y formas, no en texto
+   pequeño (sobre blanco no alcanza el contraste mínimo). Solo cambia colores del tema "light".
    Se carga después de css/estilos.css. Para quitarlo, borra este archivo de index.html y sw.js. */
 
 html[data-theme="light"]{
   color-scheme:light;
-  --lime:#0E4294;                 /* azul del club: pestaña activa, acentos */
-  --v:#0A3576;--v2:#1E7A3C;       /* azul profundo para textos de acento; verde para lo cumplido */
-  --n:#0E4294;--g:#9A5B00;--r:#C02A36;--p:#3D5BB8;
-  --heat:#7DBF2A;                 /* lima del logo (versión legible sobre blanco) */
-  --dk:#EEF3F8;--dk2:#FFFFFF;--dk3:#FFFFFF;
-  --tx:#0E1B2C;--mu:color-mix(in srgb,#0E1B2C 62%,transparent);
-  --gl:#FFFFFF;--gl2:color-mix(in srgb,#A6E241 32%,transparent);
-  --b:#DCE5EE;--b2:#C9D6E3;
-  --in-bg:#F3F7FB;--in-bg2:#EDF2F8;
-  --topbar:rgba(255,255,255,.92);
+  --lime:#002941;                 /* navy: pestaña activa, botones */
+  --v:#0B4A6E;--v2:#1F7F86;       /* navy medio para acentos de texto; azul petróleo para lo cumplido */
+  --n:#0B4A6E;--g:#9A5B00;--r:#C9353E;--p:#3A5A86;
+  --heat:#FD6E6E;                 /* coral */
+  --dk:#DCEEE9;--dk2:#FFFFFF;--dk3:#FFFFFF;
+  --tx:#002941;--mu:color-mix(in srgb,#002941 64%,transparent);
+  --gl:#FFFFFF;--gl2:color-mix(in srgb,#FD6E6E 18%,transparent);
+  --b:#D3E6E0;--b2:#BFD9D2;
+  --in-bg:#F2F9F7;--in-bg2:#EAF5F2;
+  --topbar:rgba(240,248,246,.92);
   --btn-tx:#FFFFFF;
-  --grad:linear-gradient(180deg,#1452B8 0%,#0A3576 100%);
-  --grad-txt:linear-gradient(135deg,#0E4294,#0A3576);
+  --grad:linear-gradient(180deg,#0A3A57 0%,#002941 100%);
+  --grad-txt:linear-gradient(135deg,#002941,#002941);
   --hi:rgba(255,255,255,.95);
-  --shadow:0 1px 2px rgba(10,40,90,.05),0 8px 20px -10px rgba(10,40,90,.18);
-  --glow:0 10px 22px -10px rgba(14,66,148,.55);
-  --scrim:rgba(8,20,40,.5);
-  --fill-track:#E1E9F2;
-  --ring1:#7DBF2A;--ring2:#A6E241;
-  --chart1:#0E4294;--chart2:#7DBF2A;
-  --acc:#0E4294;--acc-tx:#0A3576;--acc-ink:#FFFFFF;--acc-soft:rgba(14,66,148,.10);
+  --shadow:0 1px 2px rgba(0,41,65,.05),0 8px 20px -10px rgba(0,41,65,.18);
+  --glow:0 10px 22px -10px rgba(0,41,65,.5);
+  --scrim:rgba(0,20,32,.5);
+  --fill-track:#D6E8E3;
+  --ring1:#FD6E6E;--ring2:#FF9B8F;
+  --chart1:#002941;--chart2:#FD6E6E;
+  --acc:#002941;--acc-tx:#002941;--acc-ink:#FFFFFF;--acc-soft:rgba(0,41,65,.08);
   --mesh:
-    radial-gradient(70% 45% at 100% -5%, rgba(166,226,65,.22), transparent 60%),
-    radial-gradient(70% 50% at -10% 0%, rgba(14,66,148,.10), transparent 60%),
-    linear-gradient(180deg,#F5F8FC 0%,#ECF2F8 100%);
-  --gx-a:rgba(166,226,65,.24);--gx-b:rgba(14,66,148,.14);--gx-c:rgba(30,122,60,.12);
+    radial-gradient(70% 45% at 100% -5%, rgba(253,110,110,.14), transparent 60%),
+    radial-gradient(80% 55% at -10% 0%, rgba(255,255,255,.7), transparent 60%),
+    linear-gradient(180deg,#E4F2EE 0%,#CFE8E1 100%);
+  --gx-a:rgba(255,255,255,.55);--gx-b:rgba(253,110,110,.12);--gx-c:rgba(0,41,65,.08);
 }
-html[data-theme="light"] .it{background:color-mix(in srgb,#0E4294 10%,#fff);color:#0A3576;}
-html[data-theme="light"] .btn-go.soft{color:#0A3576;}
-html[data-theme="light"] .st-l,html[data-theme="light"] .memb-k{color:#4A5A6E;}
+html[data-theme="light"] .it{background:#E3F1EE;color:#002941;}
+html[data-theme="light"] .btn-go.soft{color:#002941;}
+html[data-theme="light"] .st-l,html[data-theme="light"] .memb-k{color:#3E5A6B;}
 html[data-theme="light"] .bn-i.ac{color:#FFFFFF;}
-html[data-theme="light"] .bn-ind::after{background:#A6E241;}
+html[data-theme="light"] .bn-ind::after{background:#FD6E6E;}
 html[data-theme="light"] .ic-pri .ic-label,html[data-theme="light"] .ic-pri .ic-sub,html[data-theme="light"] .ic-pri .ic-arrow{color:#FFFFFF;}
-html[data-theme="light"] .reto-banner .rb-bar i{background:linear-gradient(90deg,#7DBF2A,#A6E241);}
-/* Portada: verde azulado del logo en lugar de negro */
+html[data-theme="light"] .reto-banner .rb-bar i{background:#FD6E6E;}
+/* Tarjetas con foto: franja coral */
+html[data-theme="light"] .hero-card::after{background:linear-gradient(115deg,transparent 30%,rgba(253,110,110,.85) 30% 38%,transparent 38%);}
+/* Portada: navy en lugar de negro */
 html[data-theme="light"] #s-inicio,
-html[data-theme="light"] #s-inicio .wc-hero{background:#0A2F5E;}
-html[data-theme="light"] #s-inicio .wc-ov{background:linear-gradient(0deg,#0A2F5E 0%,#0A2F5E 6%,rgba(10,47,94,.74) 26%,rgba(10,47,94,.12) 50%,rgba(10,47,94,0) 72%,rgba(10,47,94,.4) 100%);}
+html[data-theme="light"] #s-inicio .wc-hero{background:#002941;}
+html[data-theme="light"] #s-inicio .wc-ov{background:linear-gradient(0deg,#002941 0%,#002941 6%,rgba(0,41,65,.74) 26%,rgba(0,41,65,.12) 50%,rgba(0,41,65,0) 72%,rgba(0,41,65,.4) 100%);}
+html[data-theme="light"] #s-inicio .ic-pri{background:#FD6E6E;border-color:#FD6E6E;}
+html[data-theme="light"] #s-inicio .ic-pri .ic-label,html[data-theme="light"] #s-inicio .ic-pri .ic-sub,html[data-theme="light"] #s-inicio .ic-pri .ic-arrow,html[data-theme="light"] #s-inicio .ic-pri .ic-icon{color:#002941;}
