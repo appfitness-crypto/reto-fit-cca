@@ -8,7 +8,7 @@
    → Los datos de Firebase NUNCA pasan por aquí (van directo).
    → Al desplegar cambios, sube CACHE_VERSION.
    ════════════════════════════════════════════════════════ */
-const CACHE_VERSION = 'retofit-cca-v1';
+const CACHE_VERSION = 'retofit-cca-v2';
 const PRECACHE_LOCAL = [
   './',
   './index.html',
@@ -60,6 +60,7 @@ const PRECACHE_LOCAL = [
   './js/51-carga-dia.js',
   './js/52-navegacion.js',
   './js/53-reto.js',
+  './js/54-tablero-reto.js',
   './img/qr/app.png',
   './js/22-resumen-coordinacion.js',
   './js/23-conocimiento-staff.js',
