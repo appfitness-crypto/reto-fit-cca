@@ -1509,60 +1509,61 @@ function refreshDash(){
       <span class="wk-d">${esc(sc(DIAS_NAMES[k]).substring(0,3))}</span><span class="wk-n">${fechas[i]}</span><i class="wk-m">${sem[i]?ico('check'):''}</i></button>`;
   }).join('');
 
+  // Inicio "cine" (css/cine.css, js/59-cine.js): el entrenamiento de hoy en letra gigante detrás del socio de la foto
+  const ent=s.entrenadorId?getEntrenador(s.entrenadorId):null;
+  const coach=ent&&ent.nombre&&ent.rol!=='coordinador'?`<p class="ci-coach"><i aria-hidden="true">${esc(iniciales(ent.nombre).slice(0,1))}</i><span>Plan de <b>${esc(tc(ent.nombre).split(' ')[0])}</b>, tu entrenador</span></p>`:'';
+  const hoyTxt=`${sc(DIAS_NAMES[HOY_KEY])} ${new Date().getDate()}`;
+  const slots=Array.from({length:meta},(_,i)=>`<i class="${i<ev.estaSemana?'ok':(i===ev.estaSemana&&!esDescanso&&!hechoHoy?'hoy':'')}" style="--i:${i}"></i>`).join('');
   cont.innerHTML=`
-    <div class="app-h home">
-      <div class="app-h-l">${logoMiniHTML()}<div>
-        <div class="app-t">Hola, ${esc(primer)}</div>
-        <div class="app-sub">Tu mejor versión, cada día.</div>
-      </div></div>
-      <div class="app-act">
-        <button type="button" class="ib" onclick="temaToque()" aria-label="Cambiar tema. Toca para claro u oscuro; doble toque desde oscuro para el tema nuevo en prueba">${ico(temaActual()==='dark'?'sun':'moon')}</button>
-        <button type="button" class="av" onclick="dashTab('perfil')" aria-label="Mi perfil">${esc(iniciales(s.nombre))}</button>
+    <section class="ci-scene" id="ci-scene">
+      <div class="ci-cam">
+        <img class="ci-ph ci-bg" src="${imgSrc('hero/inicio.webp')}" alt="" decoding="async">
+        <h1 class="ci-title" aria-label="Hoy: ${titulo}">${cineLineas(titulo)}</h1>
+        <img class="ci-ph ci-cut" src="img/hero/inicio-recorte.webp" alt="" decoding="async" onerror="this.remove()">
+      </div>
+      <div class="app-h home">
+        <div class="app-h-l">${logoMiniHTML()}<div>
+          <div class="app-t">Hola, ${esc(primer)}</div>
+          <div class="app-sub">Tu mejor versión, cada día.</div>
+        </div></div>
+        <div class="app-act">
+          <button type="button" class="ib" onclick="temaToque()" aria-label="Cambiar tema. Toca para claro u oscuro; doble toque desde oscuro para el tema nuevo en prueba">${ico(temaActual()==='dark'?'sun':'moon')}</button>
+          <button type="button" class="av" onclick="dashTab('perfil')" aria-label="Mi perfil">${esc(iniciales(s.nombre))}</button>
+        </div>
+      </div>
+      <div class="ci-tags"><span class="ci-tag">${ico('calendar')}Hoy, ${esc(hoyTxt.toLowerCase())}</span><span class="ci-tag">${ico(icoT)}${detalle}</span></div>
+    </section>
+
+    <div class="ci-body${hechoHoy?' done':''}">
+      ${coach}
+      <div class="today-cta">${cta}</div>
+      <div class="ci-wk">
+        <div><h2>Vas <span id="ring-num">${ev.estaSemana}</span> de ${meta}</h2><p>esta semana${ev.estaSemana>=meta?' · ¡semana cumplida!':''}</p></div>
+        <div class="ci-racha" aria-label="Racha de ${ev.racha} semanas">${ico('flame')}<b>${ev.racha}</b><small>${ev.racha===1?'semana':'semanas'}</small></div>
+        <div class="ci-slots" aria-hidden="true">${slots}</div>
       </div>
     </div>
+
     ${asist?`<div class="asist-w">${asist}</div>`:''}
     ${pqCardSocio(s)}
     ${evalCardSocio(s)}
     ${typeof objMetaCardHTML==='function'?objMetaCardHTML(s):''}
     ${typeof instTarjetaHTML==='function'?instTarjetaHTML():''}
     ${rmAvisoHTML(s)}
-
-    <div class="hero-card estilo-poster">
-      <div class="hero-beam" aria-hidden="true"></div>${heroVideoHTML()}
-      <div class="hero-ov"></div>
-      <div class="hero-tx">${typeof aparHeroPanelHTML==='function'?aparHeroPanelHTML():'<b>Disciplina hoy,</b><b>resultados mañana.</b>'}</div>
-    </div>
-
-    <div class="today-c${hechoHoy?' done':''}">
-      <div class="today-l">
-        <div class="today-k">${ico('bolt')}Entrenamiento de hoy</div>
-        <div class="today-t">${titulo}</div>
-        <div class="today-m">${detalle}</div>
-      </div>
-      <div class="ring-wrap">
-        <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-track" cx="60" cy="60" r="50"/><circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="50"/></svg>
-        <div class="ring-c"><b id="ring-num">0</b><span>de ${meta}<br>esta semana</span></div>
-      </div>
-      <div class="today-cta">${cta}</div>
-    </div>
-
-    <div class="stats3">
-      <div class="st">${it('calendar')}<div class="st-l">Sesiones totales</div><div class="st-v" id="dash-k1">0</div></div>
-      <div class="st heat">${it('flame')}<div class="st-l">Racha</div><div class="st-v"><span id="dash-k3">0</span><small> sem</small></div></div>
-      <div class="st">${it('target')}<div class="st-l">Adherencia</div><div class="st-v"><span id="hero-adh-v">0</span><small>%</small></div></div>
-    </div>
+    ${typeof mascotaInicioHTML==='function'?mascotaInicioHTML(s):''}
 
     <div class="sec-row"><div class="sec-t">Tu semana</div><button type="button" class="sec-link" onclick="dashTab('rutina')">Ver plan${ico('chev')}</button></div>
     <div class="wk-strip">${semana}</div>`;
-  heroVideoVigilar();
+  if(typeof cineInicio==='function') cineInicio();
+}
 
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    const rf=document.getElementById('ring-fill'); if(rf) rf.style.strokeDashoffset=String(314.16*(1-pct));
-    contarHasta(document.getElementById('ring-num'),ev.estaSemana,900);
-  }));
-  contarHasta(document.getElementById('dash-k1'),ev.total,800);
-  contarHasta(document.getElementById('dash-k3'),ev.racha,800);
-  contarHasta(document.getElementById('hero-adh-v'),ev.adherencia,800);
+// Título gigante de Inicio en dos líneas: "Hombro + Trapecio" → "Hombro" / "+Trapecio"; si no, parte las palabras a la mitad
+function cineLineas(t){
+  let ls;
+  const m=String(t).split(/\s*\+\s*/);
+  if(m.length>1) ls=[m[0], '<span class="ci-plus">+</span>'+m.slice(1).join(' + ')];
+  else { const w=String(t).split(/\s+/); if(w.length<2) ls=[t]; else { let best=1,dif=1e9; for(let i=1;i<w.length;i++){ const d=Math.abs(w.slice(0,i).join(' ').length-w.slice(i).join(' ').length); if(d<dif){dif=d;best=i;} } ls=[w.slice(0,best).join(' '), w.slice(best).join(' ')]; } }
+  return ls.map((l,i)=>`<span class="ci-ln"><span data-fit="0.70" style="--i:${i}">${l}</span></span>`).join('');
 }
 
 // ── RUTINA (Mi plan) ──
