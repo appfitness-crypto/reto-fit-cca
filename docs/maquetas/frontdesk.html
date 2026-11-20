@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reto Fit CCA · Maquetas de recepción</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Kanit:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lime:#C8F23A;--lime2:#8FD100;
+  --bg:#0A0E13;--bg2:#0F151C;--card:#121A22;--card2:#16202A;
+  --b:#1F2933;--b2:#2C3946;
+  --tx:#F1F5F7;--mu:#9AA6B0;--mu2:#6B7884;
+  --ok:#5FD38A;--warn:#FFC857;--bad:#FF6B7A;--info:#4CC3D9;--vio:#B7A3FF;
+  --fd:'Kanit','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+/* Sidebar */
+.side{background:var(--bg2);border-right:1px solid var(--b);padding:20px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 18px}
+.logo{width:38px;height:38px;border-radius:11px;background:var(--lime);color:#0A0E13;display:grid;place-items:center;font-family:var(--fd);font-weight:800;font-size:15px;letter-spacing:-.02em}
+.brand b{font-family:var(--fd);font-size:17px;font-weight:700;display:block;letter-spacing:-.01em}
+.brand small{color:var(--mu);font-size:12px}
+.nav{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;color:var(--mu);text-decoration:none;font-weight:600;font-size:14px;border:0;background:none;width:100%;text-align:left}
+.nav svg{width:18px;height:18px;flex-shrink:0}
+.nav:hover{background:var(--card);color:var(--tx)}
+.nav.on{background:color-mix(in srgb,var(--lime) 13%,transparent);color:var(--lime)}
+.nav .pill{margin-left:auto;background:var(--bad);color:#fff;font-size:11px;padding:1px 7px;border-radius:99px}
+.navsep{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--mu2);padding:16px 12px 6px;font-weight:700}
+.side .me{margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--b)}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;flex-shrink:0;color:#0A0E13}
+.me b{font-size:13px;display:block}.me small{color:var(--mu);font-size:12px}
+/* Main */
+main{padding:22px 30px 40px;min-width:0}
+.top{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.top h1{font-family:var(--fd);font-weight:700;font-size:26px;letter-spacing:-.02em}
+.top .sub{color:var(--mu);font-size:13px}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--b);border-radius:12px;padding:9px 14px;width:340px;color:var(--mu)}
+.search svg{width:16px;height:16px}
+.kbd{margin-left:auto;font-size:11px;border:1px solid var(--b2);border-radius:6px;padding:1px 6px}
+.reto{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--b);border-radius:12px;padding:7px 14px 7px 8px}
+.reto .ring{width:34px;height:34px;border-radius:50%;background:conic-gradient(var(--lime) 0 37%,var(--b2) 0);display:grid;place-items:center}
+.reto .ring i{width:26px;height:26px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:700}
+.reto b{font-size:13px;display:block}.reto small{color:var(--mu);font-size:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:11px;padding:10px 16px;font-weight:700;font-size:14px;border:1px solid var(--b2);background:var(--card2);color:var(--tx)}
+.btn svg{width:16px;height:16px}
+.btn.pri{background:var(--lime);border-color:var(--lime);color:#0A0E13}
+.btn.sm{padding:6px 11px;font-size:13px;border-radius:9px}
+.btn.ghost{background:none}
+/* Cards & grid */
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}
+.g21{grid-template-columns:2fr 1fr}.g12{grid-template-columns:1fr 1.6fr}
+.card{background:var(--card);border:1px solid var(--b);border-radius:var(--r);padding:18px}
+.card h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.card h3 .act{margin-left:auto;color:var(--mu);font-size:13px;font-weight:600}
+.kpi .lab{color:var(--mu);font-size:13px;font-weight:600}
+.kpi .val{font-family:var(--fd);font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-top:4px}
+.kpi .val small{font-size:16px;color:var(--mu);font-weight:600}
+.kpi .d{font-size:12px;margin-top:4px;color:var(--mu)}
+.up{color:var(--ok)}.dn{color:var(--bad)}
+.bar{height:8px;border-radius:99px;background:var(--b);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:var(--lime);border-radius:99px}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.t-ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.t-warn{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn)}
+.t-bad{background:color-mix(in srgb,var(--bad) 15%,transparent);color:var(--bad)}
+.t-info{background:color-mix(in srgb,var(--info) 15%,transparent);color:var(--info)}
+.t-vio{background:color-mix(in srgb,var(--vio) 15%,transparent);color:var(--vio)}
+.t-mu{background:var(--card2);color:var(--mu)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+table{width:100%;border-collapse:collapse}
+th{font-size:12px;color:var(--mu);font-weight:700;text-align:left;padding:9px 10px;border-bottom:1px solid var(--b);text-transform:uppercase;letter-spacing:.04em}
+td{padding:11px 10px;border-bottom:1px solid var(--b);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.who{display:flex;align-items:center;gap:10px}.who b{display:block;font-size:14px}.who small{color:var(--mu);font-size:12px}
+.row{display:flex;align-items:center;gap:10px}
+.mu{color:var(--mu)}.sm{font-size:12px}
+.list .it{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b)}
+.list .it:last-child{border-bottom:0}
+.ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex-shrink:0}
+.ic svg{width:18px;height:18px}
+.chart{display:flex;align-items:flex-end;gap:8px;height:150px;padding-top:10px}
+.chart .c{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.chart .c i{width:100%;border-radius:7px 7px 3px 3px;background:color-mix(in srgb,var(--lime) 30%,transparent)}
+.chart .c.hoy i{background:var(--lime)}
+.chart .c span{font-size:11px;color:var(--mu)}
+/* Forms */
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:600;color:var(--mu)}
+.inp{background:var(--bg2);border:1px solid var(--b2);border-radius:11px;padding:11px 13px;color:var(--tx);font-size:14px;min-height:43px;display:flex;align-items:center}
+.inp.ph{color:var(--mu2)}
+.inp.foc{border-color:var(--lime);box-shadow:0 0 0 3px color-mix(in srgb,var(--lime) 20%,transparent)}
+.seg{display:flex;background:var(--bg2);border:1px solid var(--b2);border-radius:11px;padding:3px;gap:3px}
+.seg span{flex:1;text-align:center;padding:8px;border-radius:8px;font-weight:600;color:var(--mu);font-size:13px}
+.seg span.on{background:var(--card2);color:var(--tx);box-shadow:inset 0 0 0 1px var(--b2)}
+.steps{display:flex;gap:8px;margin-bottom:18px}
+.steps div{flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:11px;background:var(--card);border:1px solid var(--b);font-weight:600;font-size:13px;color:var(--mu)}
+.steps div i{width:22px;height:22px;border-radius:50%;background:var(--b2);display:grid;place-items:center;font-style:normal;font-size:12px;color:var(--tx)}
+.steps div.done i{background:var(--ok);color:#0A0E13}
+.steps div.on{border-color:var(--lime);color:var(--tx)}.steps div.on i{background:var(--lime);color:#0A0E13}
+.coachopt{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--b2);border-radius:12px;margin-bottom:8px}
+.coachopt.on{border-color:var(--lime);background:color-mix(in srgb,var(--lime) 7%,transparent)}
+.radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--b2);margin-left:auto;flex-shrink:0}
+.coachopt.on .radio{border:5px solid var(--lime)}
+/* Check-in */
+.scan{border-radius:20px;background:radial-gradient(circle at 50% 40%,#16202A,#0C1218);border:1px solid var(--b);aspect-ratio:1/0.8;display:grid;place-items:center;position:relative;overflow:hidden}
+.scan .frame{width:52%;aspect-ratio:1;position:relative}
+.scan .frame::before,.scan .frame::after{content:'';position:absolute;inset:0;border:3px solid var(--lime);border-radius:18px;clip-path:polygon(0 0,30% 0,30% 6%,6% 6%,6% 30%,0 30%,0 70%,6% 70%,6% 94%,30% 94%,30% 100%,70% 100%,70% 94%,94% 94%,94% 70%,100% 70%,100% 30%,94% 30%,94% 6%,70% 6%,70% 0,100% 0,100% 100%,0 100%)}
+.scan .line{position:absolute;left:24%;right:24%;top:48%;height:2px;background:var(--lime);box-shadow:0 0 18px 4px color-mix(in srgb,var(--lime) 60%,transparent)}
+.scan .cap{position:absolute;bottom:16px;left:0;right:0;text-align:center;color:var(--mu);font-size:13px}
+.okcard{border:1px solid color-mix(in srgb,var(--ok) 45%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--ok) 10%,var(--card)),var(--card))}
+.bigav{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-family:var(--fd);font-size:26px;font-weight:700;color:#0A0E13}
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.stat3 div{background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:10px 12px}
+.stat3 small{color:var(--mu);font-size:12px;display:block}.stat3 b{font-size:17px;font-family:var(--fd)}
+/* Classes */
+.sched{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cls{border:1px solid var(--b);border-radius:14px;padding:14px;background:var(--card);position:relative}
+.cls.now{border-color:var(--lime)}
+.cls .h{font-family:var(--fd);font-size:20px;font-weight:700}
+.cls .n{font-weight:700;margin-top:2px}
+.cls .cap{display:flex;justify-content:space-between;font-size:12px;color:var(--mu);margin-top:10px}
+.att{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.att .p{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:11px;background:var(--bg2);border:1px solid var(--b)}
+.chk{width:24px;height:24px;border-radius:7px;margin-left:auto;display:grid;place-items:center;flex-shrink:0;border:2px solid var(--b2)}
+.chk.y{background:var(--ok);border-color:var(--ok);color:#0A0E13}
+.chk.n{background:color-mix(in srgb,var(--bad) 20%,transparent);border-color:var(--bad);color:var(--bad)}
+.chk svg{width:14px;height:14px}
+/* Coach load */
+.load{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b)}
+.load:last-child{border-bottom:0}
+.load .bar{flex:1;margin:0}
+.screen{display:none}.screen.on{display:block}
+.note{margin-top:18px;padding:12px 14px;border-radius:12px;border:1px dashed var(--b2);color:var(--mu);font-size:13px}
+.note b{color:var(--lime)}
+.ph-photo{aspect-ratio:4/3;border-radius:12px;background:repeating-linear-gradient(45deg,var(--bg2) 0 10px,var(--card2) 10px 20px);border:1px solid var(--b);display:grid;place-items:center;color:var(--mu);font-size:12px;font-weight:600}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3M17 21v-1"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M19 8v6M16 11h6"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M16 3.5a4 4 0 0 1 0 9M22 21a7 7 0 0 0-4-6.3"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></symbol>
+    <symbol id="i-ruler" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></symbol>
+    <symbol id="i-whistle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/><path d="m16 3 3-1M19 8h2"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.01"/></symbol>
+    <symbol id="i-dumb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 7v10M3 9.5v5M18 7v10M21 9.5v5M6 12h12"/></symbol>
+    <symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></symbol>
+    <symbol id="i-dl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="4"/></symbol>
+    <symbol id="i-shuffle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="logo">CCA</div><div><b>Reto Fit CCA</b><small>Recepción</small></div></div>
+    <button class="nav on" data-s="tablero"><svg><use href="#i-home"/></svg>Tablero</button>
+    <button class="nav" data-s="checkin"><svg><use href="#i-qr"/></svg>Check-in</button>
+    <button class="nav" data-s="inscripcion"><svg><use href="#i-plus"/></svg>Inscribir socio</button>
+    <button class="nav" data-s="socios"><svg><use href="#i-users"/></svg>Socios del reto</button>
+    <button class="nav" data-s="clases"><svg><use href="#i-cal"/></svg>Clases de hoy</button>
+    <button class="nav" data-s="evaluaciones"><svg><use href="#i-ruler"/></svg>Evaluaciones<span class="pill">14</span></button>
+    <div class="navsep">Director</div>
+    <button class="nav" data-s="entrenadores"><svg><use href="#i-whistle"/></svg>Entrenadores</button>
+    <button class="nav" data-s="ranking"><svg><use href="#i-trophy"/></svg>Ranking del reto</button>
+    <div class="me"><div class="av" style="background:#B7A3FF">AR</div><div><b>Ana Rosales</b><small>Recepción · turno mañana</small></div></div>
+  </aside>
+
+  <main>
+    <div class="top">
+      <div><h1 id="ttl">Tablero</h1><div class="sub" id="sub">Viernes 20 de noviembre · Semana 5 de 12</div></div>
+      <div class="search"><svg><use href="#i-search"/></svg>Buscar socio por nombre, teléfono o folio<span class="kbd">/</span></div>
+      <div class="reto"><div class="ring"><i>33</i></div><div><b>Día 33 de 90</b><small>Fase 2 · Fuerza</small></div></div>
+    </div>
+
+    <!-- ============ TABLERO ============ -->
+    <section class="screen on" id="tablero">
+      <div class="grid g4">
+        <div class="card kpi"><div class="lab">Inscritos al reto</div><div class="val">287 <small>/ 300</small></div><div class="bar"><i style="width:95.6%"></i></div><div class="d">13 lugares disponibles</div></div>
+        <div class="card kpi"><div class="lab">Check-ins hoy</div><div class="val">142</div><div class="d"><span class="up">▲ 12%</span> vs. viernes pasado · pico 7:00–8:00</div></div>
+        <div class="card kpi"><div class="lab">Registraron su entreno (7 días)</div><div class="val">81<small>%</small></div><div class="d">233 socios con pesos registrados</div></div>
+        <div class="card kpi"><div class="lab">En riesgo de abandono</div><div class="val" style="color:var(--bad)">19</div><div class="d">5 días o más sin venir</div></div>
+      </div>
+
+      <div class="grid g21" style="margin-top:16px">
+        <div class="card">
+          <h3>Asistencia de la semana <span class="act">Gimnasio + clases</span></h3>
+          <div class="chart">
+            <div class="c"><i style="height:78%"></i><span>Lun</span></div>
+            <div class="c"><i style="height:85%"></i><span>Mar</span></div>
+            <div class="c"><i style="height:70%"></i><span>Mié</span></div>
+            <div class="c"><i style="height:80%"></i><span>Jue</span></div>
+            <div class="c hoy"><i style="height:62%"></i><span>Hoy</span></div>
+            <div class="c"><i style="height:0"></i><span>Sáb</span></div>
+            <div class="c"><i style="height:0"></i><span>Dom</span></div>
+          </div>
+          <h3 style="margin-top:20px">Últimos check-ins <span class="act">Ver todos →</span></h3>
+          <table>
+            <tr><th>Socio</th><th>Hora</th><th>Va a</th><th>Entrenador</th><th>Estado</th></tr>
+            <tr><td><div class="who"><div class="av" style="background:#C8F23A">LM</div><div><b>Laura Medina</b><small>RF-0142</small></div></div></td><td>9:41</td><td>Día B · Pierna</td><td>Coach Diego</td><td><span class="tag t-ok">Al corriente</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#4CC3D9">JC</div><div><b>Jorge Castañeda</b><small>RF-0087</small></div></div></td><td>9:38</td><td>Clase Spinning 10:00</td><td>Coach Paty</td><td><span class="tag t-warn">Evaluación pendiente</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FFC857">MS</div><div><b>Mariana Soto</b><small>RF-0219</small></div></div></td><td>9:35</td><td>Día A · Empuje</td><td>Coach Diego</td><td><span class="tag t-ok">Al corriente</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FF6B7A">RG</div><div><b>Ricardo Gómez</b><small>RF-0031</small></div></div></td><td>9:30</td><td>Día C · Jalón</td><td>Coach Alan</td><td><span class="tag t-bad">Pago parcial</span></td></tr>
+          </table>
+        </div>
+        <div class="grid" style="align-content:start">
+          <div class="card">
+            <h3>Pendientes de recepción</h3>
+            <div class="list">
+              <div class="it"><div class="ic t-warn"><svg><use href="#i-ruler"/></svg></div><div><b>14 evaluaciones de semana 6</b><div class="mu sm">Agendar antes del 4 de diciembre</div></div></div>
+              <div class="it"><div class="ic t-bad"><svg><use href="#i-alert"/></svg></div><div><b>6 pagos parciales</b><div class="mu sm">Saldo total $5,400</div></div></div>
+              <div class="it"><div class="ic t-info"><svg><use href="#i-plus"/></svg></div><div><b>3 socios sin entrenador</b><div class="mu sm">Inscritos ayer</div></div></div>
+              <div class="it"><div class="ic t-vio"><svg><use href="#i-msg"/></svg></div><div><b>19 socios en riesgo</b><div class="mu sm">Avisar a su entrenador</div></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Clases de hoy</h3>
+            <div class="list">
+              <div class="it"><div style="font-family:var(--fd);font-weight:700;width:52px">10:00</div><div style="flex:1"><b>Spinning</b><div class="mu sm">Coach Paty · Sala 2</div></div><span class="tag t-warn">18/20</span></div>
+              <div class="it"><div style="font-family:var(--fd);font-weight:700;width:52px">18:00</div><div style="flex:1"><b>HIIT Funcional</b><div class="mu sm">Coach Alan · Área funcional</div></div><span class="tag t-bad">25/25</span></div>
+              <div class="it"><div style="font-family:var(--fd);font-weight:700;width:52px">19:00</div><div style="flex:1"><b>Glúteo y core</b><div class="mu sm">Coach Sofi · Sala 1</div></div><span class="tag t-ok">12/22</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHECK-IN ============ -->
+    <section class="screen" id="checkin">
+      <div class="grid g12">
+        <div>
+          <div class="scan"><div class="frame"></div><div class="line"></div><div class="cap">Acerca el QR de la app del socio a la cámara</div></div>
+          <div class="card" style="margin-top:14px">
+            <div class="field"><label>¿No trae el celular? Busca por nombre, teléfono o folio</label><div class="inp foc">Laura Med|</div></div>
+            <div class="list" style="margin-top:8px">
+              <div class="it"><div class="av" style="background:#C8F23A">LM</div><div style="flex:1"><b>Laura Medina Ruiz</b><div class="mu sm">RF-0142 · 33 12 45 67 89</div></div><button class="btn sm pri">Registrar entrada</button></div>
+              <div class="it"><div class="av" style="background:#4CC3D9">LM</div><div style="flex:1"><b>Luis Medrano</b><div class="mu sm">RF-0256 · 33 98 11 20 44</div></div><button class="btn sm">Registrar entrada</button></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card okcard">
+            <div class="row" style="gap:16px">
+              <div class="bigav" style="background:#C8F23A">LM</div>
+              <div style="flex:1"><div class="tag t-ok" style="margin-bottom:6px"><svg width="13" height="13"><use href="#i-check"/></svg> Entrada registrada · 9:41</div>
+                <div style="font-family:var(--fd);font-size:24px;font-weight:700">Laura Medina Ruiz</div>
+                <div class="mu">RF-0142 · Entrenador: <b style="color:var(--tx)">Coach Diego</b> · Grupo Mañana A</div></div>
+            </div>
+            <div class="stat3">
+              <div><small>Asistencias</small><b>27 / 33 días</b></div>
+              <div><small>Racha</small><b>🔥 9 días</b></div>
+              <div><small>Puntos del reto</small><b>1,840 · #12</b></div>
+            </div>
+            <h3>Hoy le toca</h3>
+            <div class="list">
+              <div class="it"><div class="ic" style="background:color-mix(in srgb,var(--lime) 15%,transparent);color:var(--lime)"><svg><use href="#i-dumb"/></svg></div><div style="flex:1"><b>Día B · Pierna y glúteo</b><div class="mu sm">6 ejercicios · ~55 min · semana 5 de fuerza</div></div><span class="tag t-mu">Sala de pesas</span></div>
+              <div class="it"><div class="ic t-info"><svg><use href="#i-cal"/></svg></div><div style="flex:1"><b>Reservó: Glúteo y core 19:00</b><div class="mu sm">Coach Sofi · Sala 1</div></div><span class="tag t-ok">Lugar 7</span></div>
+            </div>
+            <h3 style="margin-top:14px">Avisos</h3>
+            <div class="list">
+              <div class="it"><div class="ic t-warn"><svg><use href="#i-ruler"/></svg></div><div style="flex:1"><b>Evaluación de semana 6 sin agendar</b><div class="mu sm">Peso, medidas y fotos de progreso</div></div><button class="btn sm">Agendar</button></div>
+              <div class="it"><div class="ic t-ok"><svg><use href="#i-check"/></svg></div><div style="flex:1"><b>Inscripción pagada completa</b><div class="mu sm">$1,800 · 2 de octubre</div></div></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px;display:flex;align-items:center;gap:14px;border-color:color-mix(in srgb,var(--bad) 40%,transparent)">
+            <div class="ic t-bad"><svg><use href="#i-x"/></svg></div>
+            <div style="flex:1"><b>Ejemplo de entrada rechazada</b><div class="mu sm">Ricardo Gómez · saldo pendiente $900 — la recepción decide si deja pasar con aviso</div></div>
+            <button class="btn sm">Cobrar</button><button class="btn sm ghost">Dejar pasar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ INSCRIPCIÓN ============ -->
+    <section class="screen" id="inscripcion">
+      <div class="steps">
+        <div class="done"><i>✓</i>Datos personales</div>
+        <div class="done"><i>✓</i>Salud y objetivo</div>
+        <div class="on"><i>3</i>Entrenador y horario</div>
+        <div><i>4</i>Pago</div>
+        <div><i>5</i>Evaluación inicial</div>
+      </div>
+      <div class="grid g2">
+        <div class="card">
+          <h3>Horario y modalidad</h3>
+          <div class="field" style="margin-bottom:14px"><label>¿Cuándo entrena normalmente?</label>
+            <div class="seg"><span>6–9 am</span><span class="on">9–12 pm</span><span>4–7 pm</span><span>7–10 pm</span></div></div>
+          <div class="field" style="margin-bottom:14px"><label>Modalidad del reto</label>
+            <div class="seg"><span>Solo pesas</span><span class="on">Pesas + clases</span><span>Solo clases</span></div></div>
+          <div class="grid g2" style="gap:12px">
+            <div class="field"><label>Días por semana</label><div class="inp">5 días</div></div>
+            <div class="field"><label>Clases favoritas</label><div class="inp">Spinning, Glúteo y core</div></div>
+          </div>
+          <div class="note"><b>Sugerencia automática:</b> la app propone al entrenador con menos socios en el horario elegido. La recepción puede cambiarlo.</div>
+        </div>
+        <div class="card">
+          <h3>Asignar entrenador <span class="act">Horario 9–12 pm</span></h3>
+          <div class="coachopt on"><div class="av" style="background:#C8F23A">DR</div><div><b>Coach Diego Ramírez</b> <span class="tag t-ok">Sugerido</span><div class="mu sm">Fuerza e hipertrofia · 24 de 32 socios</div></div><div class="radio"></div></div>
+          <div class="coachopt"><div class="av" style="background:#FFC857">SL</div><div><b>Coach Sofía López</b><div class="mu sm">Glúteo y clases · 29 de 32 socios</div></div><div class="radio"></div></div>
+          <div class="coachopt"><div class="av" style="background:#4CC3D9">PH</div><div><b>Coach Paty Hernández</b><div class="mu sm">Cardio y spinning · 31 de 32 socios</div></div><div class="radio"></div></div>
+          <div class="coachopt" style="opacity:.5"><div class="av" style="background:#FF6B7A">AV</div><div><b>Coach Alan Vega</b> <span class="tag t-bad">Lleno</span><div class="mu sm">Funcional · 32 de 32 socios</div></div><div class="radio"></div></div>
+          <div class="row" style="justify-content:flex-end;margin-top:16px;gap:8px"><button class="btn ghost">Atrás</button><button class="btn pri">Continuar al pago →</button></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3>Resumen del nuevo socio</h3>
+        <div class="row" style="gap:28px;flex-wrap:wrap">
+          <div><div class="mu sm">Nombre</div><b>Fernanda Ortiz</b></div>
+          <div><div class="mu sm">Edad · sexo</div><b>29 · Mujer</b></div>
+          <div><div class="mu sm">Objetivo</div><b>Bajar grasa y tonificar</b></div>
+          <div><div class="mu sm">Nivel</div><b>Principiante</b></div>
+          <div><div class="mu sm">Salud</div><span class="tag t-warn">Molestia rodilla izq.</span></div>
+          <div><div class="mu sm">Folio</div><b>RF-0288</b></div>
+          <div><div class="mu sm">Acceso a la app</div><b>Se envía por WhatsApp al terminar</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SOCIOS ============ -->
+    <section class="screen" id="socios">
+      <div class="row" style="margin-bottom:14px;flex-wrap:wrap">
+        <span class="tag t-mu" style="padding:7px 12px">Todos · 287</span>
+        <span class="tag t-bad" style="padding:7px 12px">En riesgo · 19</span>
+        <span class="tag t-warn" style="padding:7px 12px">Evaluación pendiente · 14</span>
+        <span class="tag t-info" style="padding:7px 12px">Sin entrenador · 3</span>
+        <span class="tag t-mu" style="padding:7px 12px">Entrenador: todos ▾</span>
+        <span class="tag t-mu" style="padding:7px 12px">Horario: todos ▾</span>
+        <div style="margin-left:auto" class="row"><button class="btn sm"><svg><use href="#i-dl"/></svg>Exportar Excel</button><button class="btn sm pri"><svg><use href="#i-plus"/></svg>Inscribir</button></div>
+      </div>
+      <div class="grid g21">
+        <div class="card" style="padding:6px 8px">
+          <table>
+            <tr><th>Socio</th><th>Entrenador</th><th>Asistencia</th><th>Último entreno</th><th>Progreso</th><th>Estado</th></tr>
+            <tr><td><div class="who"><div class="av" style="background:#C8F23A">LM</div><div><b>Laura Medina</b><small>RF-0142 · Mañana</small></div></div></td><td>Diego</td><td><b>27</b>/33</td><td>Hoy · pesos ✓</td><td class="up">−3.2 kg</td><td><span class="tag t-ok">Activa</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FF6B7A">ET</div><div><b>Eduardo Treviño</b><small>RF-0064 · Tarde</small></div></div></td><td>Alan</td><td><b>11</b>/33</td><td>Hace 7 días</td><td class="mu">−0.4 kg</td><td><span class="tag t-bad">En riesgo</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#4CC3D9">JC</div><div><b>Jorge Castañeda</b><small>RF-0087 · Mañana</small></div></div></td><td>Paty</td><td><b>22</b>/33</td><td>Ayer · sin pesos</td><td class="up">−1.8 kg</td><td><span class="tag t-warn">Eval. pendiente</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FFC857">MS</div><div><b>Mariana Soto</b><small>RF-0219 · Mañana</small></div></div></td><td>Diego</td><td><b>30</b>/33</td><td>Hoy · pesos ✓</td><td class="up">−4.1 kg</td><td><span class="tag t-ok">Activa</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#B7A3FF">VC</div><div><b>Valeria Cruz</b><small>RF-0285 · Noche</small></div></div></td><td><span class="tag t-info">Sin asignar</span></td><td><b>1</b>/1</td><td>Ayer</td><td class="mu">—</td><td><span class="tag t-info">Nueva</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#5FD38A">HN</div><div><b>Héctor Navarro</b><small>RF-0011 · Noche</small></div></div></td><td>Sofía</td><td><b>25</b>/33</td><td>Ayer · pesos ✓</td><td class="up">+1.1 kg músc.</td><td><span class="tag t-ok">Activo</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FF6B7A">RG</div><div><b>Ricardo Gómez</b><small>RF-0031 · Mañana</small></div></div></td><td>Alan</td><td><b>19</b>/33</td><td>Hoy</td><td class="up">−2.0 kg</td><td><span class="tag t-bad">Pago parcial</span></td></tr>
+          </table>
+        </div>
+        <div class="grid" style="align-content:start">
+          <div class="card">
+            <h3>Carga por entrenador <span class="act">máx. 32</span></h3>
+            <div class="load"><div class="av" style="background:#FF6B7A;width:28px;height:28px;font-size:11px">AV</div><div style="width:64px">Alan</div><div class="bar"><i style="width:100%;background:var(--bad)"></i></div><b>32</b></div>
+            <div class="load"><div class="av" style="background:#4CC3D9;width:28px;height:28px;font-size:11px">PH</div><div style="width:64px">Paty</div><div class="bar"><i style="width:97%;background:var(--warn)"></i></div><b>31</b></div>
+            <div class="load"><div class="av" style="background:#FFC857;width:28px;height:28px;font-size:11px">SL</div><div style="width:64px">Sofía</div><div class="bar"><i style="width:91%"></i></div><b>29</b></div>
+            <div class="load"><div class="av" style="background:#C8F23A;width:28px;height:28px;font-size:11px">DR</div><div style="width:64px">Diego</div><div class="bar"><i style="width:75%"></i></div><b>24</b></div>
+            <div class="load"><div class="av" style="background:#B7A3FF;width:28px;height:28px;font-size:11px">MT</div><div style="width:64px">Memo</div><div class="bar"><i style="width:84%"></i></div><b>27</b></div>
+            <div class="mu sm" style="margin-top:6px">+ 5 entrenadores más · 287 socios en 10 entrenadores</div>
+            <button class="btn sm" style="margin-top:12px;width:100%;justify-content:center"><svg><use href="#i-shuffle"/></svg>Balancear asignaciones</button>
+          </div>
+          <div class="card">
+            <h3>Acción rápida</h3>
+            <div class="mu sm" style="margin-bottom:10px">Con varios socios seleccionados:</div>
+            <div class="grid" style="gap:8px">
+              <button class="btn sm">Cambiar de entrenador</button>
+              <button class="btn sm">Avisar a su entrenador</button>
+              <button class="btn sm">Mandar recordatorio por WhatsApp</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CLASES ============ -->
+    <section class="screen" id="clases">
+      <div class="sched">
+        <div class="cls"><div class="row"><div class="h">7:00</div><span class="tag t-mu" style="margin-left:auto">Terminada</span></div><div class="n">Spinning</div><div class="mu sm">Coach Paty · Sala 2</div><div class="cap"><span>Asistieron 19 de 20</span><span>95%</span></div><div class="bar"><i style="width:95%"></i></div></div>
+        <div class="cls now"><div class="row"><div class="h">10:00</div><span class="tag t-ok" style="margin-left:auto">● En 15 min</span></div><div class="n">Spinning</div><div class="mu sm">Coach Paty · Sala 2</div><div class="cap"><span>18 reservaron · 2 libres</span><span>90%</span></div><div class="bar"><i style="width:90%"></i></div></div>
+        <div class="cls"><div class="row"><div class="h">18:00</div><span class="tag t-bad" style="margin-left:auto">Llena · 4 en espera</span></div><div class="n">HIIT Funcional</div><div class="mu sm">Coach Alan · Área funcional</div><div class="cap"><span>25 de 25</span><span>100%</span></div><div class="bar"><i style="width:100%;background:var(--bad)"></i></div></div>
+      </div>
+      <div class="grid g21" style="margin-top:16px">
+        <div class="card">
+          <h3>Pase de lista · Spinning 10:00 <span class="act">Toca para marcar</span></h3>
+          <div class="att">
+            <div class="p"><div class="av" style="background:#4CC3D9;width:30px;height:30px;font-size:11px">JC</div><div><b>Jorge Castañeda</b><div class="mu sm">Bici 4</div></div><div class="chk y"><svg><use href="#i-check"/></svg></div></div>
+            <div class="p"><div class="av" style="background:#FFC857;width:30px;height:30px;font-size:11px">AP</div><div><b>Alejandra Peña</b><div class="mu sm">Bici 7</div></div><div class="chk y"><svg><use href="#i-check"/></svg></div></div>
+            <div class="p"><div class="av" style="background:#C8F23A;width:30px;height:30px;font-size:11px">KR</div><div><b>Karla Ríos</b><div class="mu sm">Bici 2</div></div><div class="chk y"><svg><use href="#i-check"/></svg></div></div>
+            <div class="p"><div class="av" style="background:#B7A3FF;width:30px;height:30px;font-size:11px">OM</div><div><b>Óscar Mendoza</b><div class="mu sm">Bici 11</div></div><div class="chk"></div></div>
+            <div class="p"><div class="av" style="background:#5FD38A;width:30px;height:30px;font-size:11px">DS</div><div><b>Daniela Salas</b><div class="mu sm">Bici 9</div></div><div class="chk"></div></div>
+            <div class="p"><div class="av" style="background:#FF6B7A;width:30px;height:30px;font-size:11px">BF</div><div><b>Bruno Flores</b><div class="mu sm">Bici 15 · faltó 2 veces</div></div><div class="chk n"><svg><use href="#i-x"/></svg></div></div>
+            <div class="p"><div class="av" style="background:#4CC3D9;width:30px;height:30px;font-size:11px">IG</div><div><b>Itzel García</b><div class="mu sm">Bici 1</div></div><div class="chk"></div></div>
+            <div class="p"><div class="av" style="background:#FFC857;width:30px;height:30px;font-size:11px">TA</div><div><b>Tomás Aguilar</b><div class="mu sm">Bici 13</div></div><div class="chk"></div></div>
+          </div>
+          <div class="mu sm" style="margin-top:12px">Mostrando 8 de 18 · el check-in con QR marca la asistencia sola</div>
+        </div>
+        <div class="grid" style="align-content:start">
+          <div class="card">
+            <h3>Lista de espera · HIIT 18:00</h3>
+            <div class="list">
+              <div class="it"><b style="width:18px">1</b><div style="flex:1">Fernanda Ortiz</div><button class="btn sm">Dar lugar</button></div>
+              <div class="it"><b style="width:18px">2</b><div style="flex:1">Luis Medrano</div><button class="btn sm">Dar lugar</button></div>
+              <div class="it"><b style="width:18px">3</b><div style="flex:1">Sara Ibarra</div><button class="btn sm">Dar lugar</button></div>
+            </div>
+            <div class="note">Si alguien cancela, el primer lugar de la lista recibe aviso en la app.</div>
+          </div>
+          <div class="card"><h3>Reservar para un socio</h3><div class="field"><div class="inp ph">Buscar socio…</div></div><div class="field" style="margin-top:10px"><div class="inp">Glúteo y core · 19:00 · 10 libres</div></div><button class="btn pri" style="margin-top:12px;width:100%;justify-content:center">Reservar lugar</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EVALUACIONES ============ -->
+    <section class="screen" id="evaluaciones">
+      <div class="grid g3">
+        <div class="card kpi"><div class="lab">Semana 0 · Inicial</div><div class="val">284 <small>/ 287</small></div><div class="bar"><i style="width:99%"></i></div><div class="d">3 nuevos por evaluar</div></div>
+        <div class="card kpi"><div class="lab">Semana 6 · Intermedia</div><div class="val">0 <small>/ 287</small></div><div class="bar"><i style="width:0"></i></div><div class="d">Del 30 nov al 5 dic · 14 ya agendadas</div></div>
+        <div class="card kpi"><div class="lab">Semana 12 · Final</div><div class="val mu">—</div><div class="bar"><i style="width:0"></i></div><div class="d">Del 11 al 16 de enero</div></div>
+      </div>
+      <div class="grid g12" style="margin-top:16px">
+        <div class="card">
+          <h3>Agenda de evaluaciones <span class="act">Lun 30 nov</span></h3>
+          <div class="list">
+            <div class="it"><b style="width:52px;font-family:var(--fd)">7:00</b><div style="flex:1"><b>Mariana Soto</b><div class="mu sm">Coach Diego · Semana 6</div></div><span class="tag t-ok">Confirmó</span></div>
+            <div class="it"><b style="width:52px;font-family:var(--fd)">7:15</b><div style="flex:1"><b>Laura Medina</b><div class="mu sm">Coach Diego · Semana 6</div></div><span class="tag t-ok">Confirmó</span></div>
+            <div class="it"><b style="width:52px;font-family:var(--fd)">7:30</b><div style="flex:1"><b>Jorge Castañeda</b><div class="mu sm">Coach Paty · Semana 6</div></div><span class="tag t-warn">Sin confirmar</span></div>
+            <div class="it"><b style="width:52px;font-family:var(--fd)">7:45</b><div style="flex:1" class="mu">Libre</div><button class="btn sm">Agendar</button></div>
+            <div class="it"><b style="width:52px;font-family:var(--fd)">8:00</b><div style="flex:1"><b>Héctor Navarro</b><div class="mu sm">Coach Sofía · Semana 6</div></div><span class="tag t-ok">Confirmó</span></div>
+            <div class="it"><b style="width:52px;font-family:var(--fd)">8:15</b><div style="flex:1" class="mu">Libre</div><button class="btn sm">Agendar</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Capturar evaluación · Fernanda Ortiz <span class="act">Semana 0</span></h3>
+          <div class="grid g3" style="gap:12px">
+            <div class="field"><label>Peso (kg)</label><div class="inp foc">71.4</div></div>
+            <div class="field"><label>% grasa</label><div class="inp">31.2</div></div>
+            <div class="field"><label>Masa muscular (kg)</label><div class="inp">24.8</div></div>
+            <div class="field"><label>Cintura (cm)</label><div class="inp">84</div></div>
+            <div class="field"><label>Cadera (cm)</label><div class="inp">104</div></div>
+            <div class="field"><label>Brazo (cm)</label><div class="inp ph">—</div></div>
+            <div class="field"><label>Sentadilla 1 min</label><div class="inp">32 reps</div></div>
+            <div class="field"><label>Plancha</label><div class="inp">0:48</div></div>
+            <div class="field"><label>Lagartijas</label><div class="inp ph">—</div></div>
+          </div>
+          <div class="field" style="margin-top:14px"><label>Fotos de progreso (solo las ve el socio y su entrenador)</label></div>
+          <div class="grid g3" style="gap:10px;margin-top:6px">
+            <div class="ph-photo"><span><svg width="20" height="20"><use href="#i-cam"/></svg><br>Frente</span></div>
+            <div class="ph-photo"><span><svg width="20" height="20"><use href="#i-cam"/></svg><br>Lado</span></div>
+            <div class="ph-photo"><span><svg width="20" height="20"><use href="#i-cam"/></svg><br>Espalda</span></div>
+          </div>
+          <div class="row" style="justify-content:flex-end;margin-top:14px;gap:8px"><button class="btn ghost">Guardar borrador</button><button class="btn pri">Guardar evaluación</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ENTRENADORES ============ -->
+    <section class="screen" id="entrenadores">
+      <div class="grid g21">
+        <div class="card" style="padding:6px 8px">
+          <table>
+            <tr><th>Entrenador</th><th>Rol</th><th>Horario</th><th>Socios</th><th>Seguimiento (7 días)</th><th>Socios en riesgo</th></tr>
+            <tr><td><div class="who"><div class="av" style="background:#C8F23A">DR</div><div><b>Diego Ramírez</b><small>ENT-4K7Q</small></div></div></td><td><span class="tag t-vio">Pesas</span></td><td>Mañana</td><td>24</td><td><div class="bar" style="margin:0"><i style="width:92%"></i></div><small class="mu">92% revisados</small></td><td><span class="tag t-ok">1</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FFC857">SL</div><div><b>Sofía López</b><small>ENT-9PX2</small></div></div></td><td><span class="tag t-info">Pesas + clases</span></td><td>Tarde</td><td>29</td><td><div class="bar" style="margin:0"><i style="width:80%"></i></div><small class="mu">80% revisados</small></td><td><span class="tag t-warn">3</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#4CC3D9">PH</div><div><b>Paty Hernández</b><small>ENT-2MZ8</small></div></div></td><td><span class="tag t-info">Clases</span></td><td>Mañana</td><td>31</td><td><div class="bar" style="margin:0"><i style="width:71%"></i></div><small class="mu">71% revisados</small></td><td><span class="tag t-warn">4</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#FF6B7A">AV</div><div><b>Alan Vega</b><small>ENT-7TQ1</small></div></div></td><td><span class="tag t-vio">Funcional</span></td><td>Tarde</td><td>32</td><td><div class="bar" style="margin:0"><i style="width:55%;background:var(--warn)"></i></div><small class="mu">55% revisados</small></td><td><span class="tag t-bad">7</span></td></tr>
+            <tr><td><div class="who"><div class="av" style="background:#B7A3FF">MT</div><div><b>Guillermo Torres</b><small>ENT-5RD4</small></div></div></td><td><span class="tag t-vio">Pesas</span></td><td>Noche</td><td>27</td><td><div class="bar" style="margin:0"><i style="width:88%"></i></div><small class="mu">88% revisados</small></td><td><span class="tag t-ok">2</span></td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Nuevo entrenador</h3>
+          <div class="grid" style="gap:12px">
+            <div class="field"><label>Nombre completo</label><div class="inp foc">Karen Ibáñez|</div></div>
+            <div class="field"><label>Correo (para entrar a la app)</label><div class="inp ph">correo@ejemplo.com</div></div>
+            <div class="field"><label>Teléfono / WhatsApp</label><div class="inp ph">33 0000 0000</div></div>
+            <div class="field"><label>Qué puede hacer</label><div class="seg"><span class="on">Entrenador</span><span>Recepción</span><span>Director</span></div></div>
+            <div class="field"><label>Horario</label><div class="seg"><span>Mañana</span><span class="on">Tarde</span><span>Noche</span></div></div>
+            <div class="field"><label>Máximo de socios</label><div class="inp">30</div></div>
+          </div>
+          <div class="note"><b>Entrenador:</b> ve y edita solo a sus socios (rutina, pesos, notas). <b>Recepción:</b> inscribe, hace check-in y agenda, pero no edita rutinas. <b>Director:</b> ve todo.</div>
+          <button class="btn pri" style="margin-top:14px;width:100%;justify-content:center">Crear y enviar acceso</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RANKING ============ -->
+    <section class="screen" id="ranking">
+      <div class="grid g21">
+        <div class="card" style="padding:6px 8px">
+          <table>
+            <tr><th>#</th><th>Socio</th><th>Asistencia</th><th>Entrenos registrados</th><th>Cambio corporal</th><th>Puntos</th></tr>
+            <tr><td><b style="color:var(--lime);font-family:var(--fd);font-size:18px">1</b></td><td><div class="who"><div class="av" style="background:#FFC857">MS</div><div><b>Mariana Soto</b><small>Coach Diego</small></div></div></td><td>30/33</td><td>30</td><td class="up">−4.1 kg · −5 cm cintura</td><td><b>2,410</b></td></tr>
+            <tr><td><b style="font-family:var(--fd);font-size:18px">2</b></td><td><div class="who"><div class="av" style="background:#5FD38A">HN</div><div><b>Héctor Navarro</b><small>Coach Sofía</small></div></div></td><td>29/33</td><td>28</td><td class="up">+1.1 kg músculo</td><td><b>2,295</b></td></tr>
+            <tr><td><b style="font-family:var(--fd);font-size:18px">3</b></td><td><div class="who"><div class="av" style="background:#4CC3D9">AP</div><div><b>Alejandra Peña</b><small>Coach Paty</small></div></div></td><td>28/33</td><td>27</td><td class="up">−3.5 kg</td><td><b>2,180</b></td></tr>
+            <tr><td><b class="mu" style="font-family:var(--fd);font-size:18px">4</b></td><td><div class="who"><div class="av" style="background:#C8F23A">KR</div><div><b>Karla Ríos</b><small>Coach Diego</small></div></div></td><td>27/33</td><td>27</td><td class="up">−2.9 kg</td><td><b>2,050</b></td></tr>
+            <tr><td><b class="mu" style="font-family:var(--fd);font-size:18px">12</b></td><td><div class="who"><div class="av" style="background:#C8F23A">LM</div><div><b>Laura Medina</b><small>Coach Diego</small></div></div></td><td>27/33</td><td>25</td><td class="up">−3.2 kg</td><td><b>1,840</b></td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Cómo se ganan puntos</h3>
+          <div class="list">
+            <div class="it"><div style="flex:1">Asistir (check-in)</div><b>+50</b></div>
+            <div class="it"><div style="flex:1">Registrar pesos del entreno completo</div><b>+30</b></div>
+            <div class="it"><div style="flex:1">Asistir a una clase reservada</div><b>+40</b></div>
+            <div class="it"><div style="flex:1">Racha de 7 días hábiles</div><b>+150</b></div>
+            <div class="it"><div style="flex:1">Hacer su evaluación a tiempo</div><b>+200</b></div>
+            <div class="it"><div style="flex:1">Mejora en evaluación final</div><b>hasta +1,000</b></div>
+          </div>
+          <div class="note">El director define los valores. El socio ve su lugar en la app; la tabla completa se puede mostrar en la pantalla del gimnasio.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const T={tablero:['Tablero','Viernes 20 de noviembre · Semana 5 de 12'],checkin:['Check-in','Escanea el QR o busca al socio'],inscripcion:['Inscribir socio','Alta al Reto Fit · 13 lugares disponibles'],socios:['Socios del reto','287 inscritos · 10 entrenadores'],clases:['Clases de hoy','Viernes 20 de noviembre · 6 clases programadas'],evaluaciones:['Evaluaciones','Semana 0, 6 y 12 del reto'],entrenadores:['Entrenadores','Alta de entrenadores y su seguimiento'],ranking:['Ranking del reto','Puntos acumulados al día 33']};
+function show(id){
+  if(!T[id]) id='tablero';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
+  document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.s===id));
+  document.getElementById('ttl').textContent=T[id][0];document.getElementById('sub').textContent=T[id][1];
+}
+document.querySelectorAll('.nav').forEach(n=>n.addEventListener('click',()=>{location.hash=n.dataset.s;show(n.dataset.s);}));
+window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
+show(location.hash.slice(1));
+</script>
+</body>
+</html>
