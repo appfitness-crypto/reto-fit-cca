@@ -6,6 +6,17 @@
 <title>Reto Fit CCA</title>
 <meta name="theme-color" content="#0A0E13">
 <meta name="color-scheme" content="light dark">
+<script>
+/* Reto Fit CCA: almacenamiento propio. La app original vive en el mismo dominio (appfitness-crypto.github.io)
+   y el navegador comparte localStorage entre ambas; sin esto, el reto leería (y subiría a su Firebase) los datos,
+   la sesión y los cambios pendientes de la otra app. Todas las claves de este sitio llevan el prefijo "retofit:". */
+(function(){try{var P="retofit:",S=Storage.prototype,g=S.getItem,st=S.setItem,r=S.removeItem,L=window.localStorage;
+function k(x){x=String(x);return x.indexOf(P)===0?x:P+x;}
+S.getItem=function(x){return this===L?g.call(this,k(x)):g.call(this,x);};
+S.setItem=function(x,v){return this===L?st.call(this,k(x),v):st.call(this,x,v);};
+S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
+}catch(e){}})();
+</script>
 <script>(function(){var t="light2";try{t=localStorage.getItem("retofit_tema_v1");if(t!=="light"&&t!=="dark"&&t!=="light2")t="light2";}catch(e){t="light2";}document.documentElement.setAttribute("data-theme",t);})();</script>
 <meta name="description" content="Rutinas personalizadas, evolución y nutrición">
 <link rel="manifest" href="manifest.json">
