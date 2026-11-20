@@ -8,13 +8,14 @@
    → Los datos de Firebase NUNCA pasan por aquí (van directo).
    → Al desplegar cambios, sube CACHE_VERSION.
    ════════════════════════════════════════════════════════ */
-const CACHE_VERSION = 'retofit-cca-v13';
+const CACHE_VERSION = 'retofit-cca-v14';
 const PRECACHE_LOCAL = [
   './',
   './index.html',
   './css/estilos.css',
   './css/tema-salvia.css',
   './css/tema-claro.css',
+  './css/cine.css',
   './js/config.js',
   './js/00-conocimiento.js',
   './js/01-datos-firebase.js',
@@ -67,6 +68,7 @@ const PRECACHE_LOCAL = [
   './js/56-demo-reto.js',
   './js/57-avisos.js',
   './js/58-mascotas.js',
+  './js/59-cine.js',
   './img/qr/app.png',
   './js/22-resumen-coordinacion.js',
   './js/23-conocimiento-staff.js',
@@ -103,6 +105,7 @@ const PRECACHE_LOCAL = [
   './img/grupos/trapecio.webp',
   './img/grupos/triceps.webp',
   './img/hero/bienvenida.webp',
+  './img/hero/bienvenida-recorte.webp',
   './img/hero/inicio.webp',
   './img/sesiones/accesorios.webp',
   './img/sesiones/cardio.webp',

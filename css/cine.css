@@ -1,0 +1,172 @@
+/* ═══ Reto Fit CCA · Portada y fin de sesión "cine" ═══
+   La foto o la mascota llenan la escena y el número gigante queda DETRÁS de la persona o la mascota.
+   Una sola entrada animada por pantalla (clase .cine-play que pone js/59-cine.js) y nada si el teléfono
+   pide menos movimiento. Funciona con los tres temas: cada uno define su fondo profundo y su acento.
+   Se carga al final (después de css/tema-claro.css). Para quitarlo: borrar este archivo y js/59-cine.js
+   de index.html y sw.js, y regresar el marcado de #s-inicio. ═══ */
+
+html{
+  --cine-deep:#1D2B27;--cine-deep2:#2C403A;--cine-night:#111A17;
+  --cine-top:#DCE6E2;--cine-top-tx:#17231F;--cine-chip:rgba(255,255,255,.66);--cine-chip-b:rgba(255,255,255,.8);
+  --cine-acc:#F07A2B;--cine-acc2:#FFB07A;
+  --cine-on:#EEF4F1;--cine-on2:rgba(226,236,232,.76);--cine-line:rgba(238,244,241,.14);
+  --cine-expo:cubic-bezier(.16,1,.3,1);--cine-out:cubic-bezier(.23,1,.32,1);
+}
+html[data-theme="light"]{
+  --cine-deep:#002941;--cine-deep2:#0B3A57;--cine-night:#001A2B;
+  --cine-top:#CFE8F6;--cine-top-tx:#002941;
+  --cine-acc:#FD6E6E;--cine-acc2:#FFA8A8;
+  --cine-on:#F2F8FC;--cine-on2:rgba(225,238,247,.8);--cine-line:rgba(242,248,252,.16);
+}
+html[data-theme="dark"]{
+  --cine-deep:#0A0E13;--cine-deep2:#18212B;--cine-night:#05070A;
+  --cine-top:#0A0E13;--cine-top-tx:#EEF2F6;--cine-chip:rgba(10,14,19,.55);--cine-chip-b:rgba(255,255,255,.16);
+  --cine-acc:#C8F23A;--cine-acc2:#C8F23A;
+  --cine-on:#EEF2F6;--cine-on2:rgba(226,232,240,.74);--cine-line:rgba(238,242,246,.14);
+}
+
+/* ═══ PORTADA ═══ */
+html[data-theme] #s-inicio{
+  --wc-top:calc(64px + env(safe-area-inset-top,0px));
+  position:relative;min-height:100vh;min-height:100svh;padding:0;display:none;flex-direction:column;justify-content:flex-end;overflow:hidden;
+  background:linear-gradient(180deg,var(--cine-top) 0%,var(--cine-top) 16%,var(--cine-deep) 64%);
+}
+html[data-theme] #s-inicio.on{display:flex;}
+html[data-theme] #s-inicio .wc-hero{position:absolute;inset:0;height:auto;border-radius:0;background:transparent;overflow:hidden;}
+html[data-theme] #s-inicio .wc-hero::after{display:none;}
+html[data-theme] #s-inicio .wc-cam{position:absolute;inset:0;transform-origin:50% 38%;}
+/* Foto y recorte comparten caja y encuadre para encimarse exactos */
+html[data-theme] #s-inicio .wc-pic,
+html[data-theme] #s-inicio .wc-cut{position:absolute;left:0;right:0;top:var(--wc-top);bottom:0;width:100%;height:calc(100% - var(--wc-top));}
+html[data-theme] #s-inicio .wc-pic{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 84px);mask-image:linear-gradient(180deg,transparent 0,#000 84px);}
+html[data-theme] #s-inicio .wc-pic .pic.fill{background:transparent;}
+html[data-theme] #s-inicio .wc-pic .pic.fill img,
+html[data-theme] #s-inicio .wc-cut{object-fit:cover;object-position:46% 0;}
+html[data-theme] #s-inicio .wc-num,
+html[data-theme] #s-inicio .wc-cut{display:none;}
+html[data-theme] #s-inicio.con-recorte .wc-num,
+html[data-theme] #s-inicio.con-recorte .wc-cut{display:block;}
+html[data-theme] #s-inicio .wc-num{
+  position:absolute;left:0;right:0;top:calc(var(--wc-top) - 16px);margin:0;text-align:center;color:var(--cine-acc);
+  font-family:var(--fd);font-style:italic;font-weight:800;font-size:min(91vw,calc((100svh - 64px)*.46),480px);line-height:.74;letter-spacing:-.06em;
+  padding-right:5.6%;pointer-events:none;user-select:none;-webkit-user-select:none;
+}
+html[data-theme] #s-inicio .wc-ov{background:linear-gradient(180deg,transparent 50%,color-mix(in srgb,var(--cine-deep) 70%,transparent) 100%);}
+/* La barra superior de la app ya lleva el logo: la fila propia de la foto se queda oculta, como antes */
+html[data-theme] #s-inicio .wc-top{display:none;}
+/* Texto y botones abajo, sobre el degradado profundo */
+html[data-theme] #s-inicio .inicio-wrap{position:relative;z-index:2;width:100%;max-width:560px;margin:0 auto;padding:96px 20px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:0;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--cine-deep) 0%,transparent) 0,color-mix(in srgb,var(--cine-deep) 78%,transparent) 64px,var(--cine-deep) 150px);}
+html[data-theme] #s-inicio .wc-tx{position:static;color:var(--cine-on);margin:0 0 18px;}
+html[data-theme] #s-inicio .wc-tx h1{color:var(--cine-on);text-shadow:none;font-size:clamp(28px,8.2vw,40px);line-height:1;margin:0 0 10px;text-wrap:balance;}
+html[data-theme] #s-inicio .wc-tx p{display:block;color:var(--cine-on2);font-size:15px;margin:0;max-width:34ch;}
+html[data-theme] #s-inicio .inicio-cards{display:grid;gap:10px;margin:0;}
+html[data-theme] #s-inicio .ic{border:0;border-radius:22px;-webkit-backdrop-filter:none;backdrop-filter:none;}
+html[data-theme] #s-inicio .ic-pri{min-height:70px;padding:10px 10px 10px 20px;background:#FFFFFF;color:#17231F;box-shadow:0 14px 30px -14px rgba(0,0,0,.6);}
+html[data-theme] #s-inicio .ic-pri .ic-icon{display:none;}
+html[data-theme] #s-inicio .ic-pri .ic-txt{flex:1;}
+html[data-theme] #s-inicio .ic-pri .ic-label{color:#17231F;font-weight:700;font-size:20px;line-height:1.1;}
+html[data-theme] #s-inicio .ic-pri .ic-sub{color:#4A5954;font-size:13px;margin-top:2px;}
+html[data-theme] #s-inicio .ic-pri .ic-arrow{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--cine-deep);color:#FFFFFF;margin-left:auto;}
+html[data-theme] #s-inicio .ic-pri .ic-arrow .ico{width:20px;height:20px;}
+html[data-theme] #s-inicio .ic-ya{min-height:56px;padding:0 18px;justify-content:center;gap:10px;background:transparent;color:var(--cine-on);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--cine-on) 30%,transparent);}
+html[data-theme] #s-inicio .ic-ya .ic-icon{width:22px;height:22px;background:transparent;color:inherit;}
+html[data-theme] #s-inicio .ic-ya .ic-icon .ico{width:20px;height:20px;stroke-width:2;}
+html[data-theme] #s-inicio .ic-ya .ic-txt{flex:none;}
+html[data-theme] #s-inicio .ic-ya .ic-label{color:var(--cine-on);font-weight:700;font-size:17px;}
+html[data-theme] #s-inicio .ic-ya .ic-sub,
+html[data-theme] #s-inicio .ic-ya .ic-arrow{display:none;}
+html[data-theme] #s-inicio .wc-staff{text-align:center;}
+html[data-theme] #s-inicio .staff-link{margin-top:6px;min-height:44px;color:var(--cine-on2);}
+@media (hover:hover) and (pointer:fine){
+  html[data-theme] #s-inicio .ic-ya:hover{background:color-mix(in srgb,var(--cine-on) 8%,transparent);}
+  html[data-theme] #s-inicio .staff-link:hover{color:var(--cine-on);}
+}
+/* Teléfonos bajitos: sin el párrafo para que quepan los botones */
+@media (max-height:700px){ html[data-theme] #s-inicio .wc-tx p{display:none;} }
+/* Tableta y computadora: la escena se queda del ancho de un teléfono, centrada */
+@media (min-width:700px){
+  html[data-theme] #s-inicio .wc-hero{position:absolute;inset:0;height:auto;left:50%;right:auto;width:560px;margin-left:-280px;}
+  html[data-theme] #s-inicio .wc-pic{left:0;right:0;width:100%;}
+  html[data-theme] #s-inicio .wc-hero{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);}
+  html[data-theme] #s-inicio .wc-num{font-size:min(480px,calc((100svh - 64px)*.46));}
+  html[data-theme] #s-inicio .inicio-wrap{margin:0 auto;max-width:560px;}
+}
+
+/* Entrada de la portada: la cámara se aleja y el número sube de borroso a nítido */
+#s-inicio.cine-play .wc-cam{animation:cine-cam 1900ms var(--cine-expo) both;}
+#s-inicio.cine-play .wc-num{animation:cine-num 1300ms var(--cine-expo) 180ms both;}
+#s-inicio.cine-play .wc-tx{animation:cine-txt 900ms var(--cine-expo) 520ms both;}
+#s-inicio.cine-play .inicio-cards{animation:cine-up 800ms var(--cine-expo) 900ms both;}
+#s-inicio.cine-play .wc-staff{animation:cine-up 800ms var(--cine-expo) 1000ms both;}
+
+/* ═══ FIN DE SESIÓN ═══
+   Toda la pantalla pasa al fondo profundo del tema: se cambian las variables solo dentro de #s-fin,
+   así las secciones de siempre (récords, semana, sensación, dolor) se ven bien sin tocarlas. */
+#s-fin{
+  --tx:var(--cine-on);--mu:var(--cine-on2);--gl:rgba(255,255,255,.07);--b:var(--cine-line);--b2:var(--cine-line);
+  --fill-track:rgba(255,255,255,.14);--acc:var(--cine-on);--acc-tx:var(--cine-acc2);--acc-ink:var(--cine-deep);
+  --acc-soft:color-mix(in srgb,var(--cine-acc) 18%,transparent);--grad:#FFFFFF;--btn-tx:#17231F;--shadow:none;--glow:0 14px 28px -14px rgba(0,0,0,.6);
+  --v:var(--cine-acc2);--v2:var(--cine-on);--in-bg:rgba(255,255,255,.08);--in-bg2:rgba(255,255,255,.05);
+  color:var(--tx);
+  background:radial-gradient(120% 60% at 50% 16%,var(--cine-deep2) 0%,var(--cine-deep) 46%,var(--cine-night) 100%);
+  background-attachment:fixed;
+}
+#s-fin .en-slots i.nueva{background:var(--cine-acc);}
+#s-fin .en-feel button[aria-pressed="true"]{background:var(--cine-on);color:#17231F;}
+#s-fin .en-btn-p{box-shadow:var(--glow);}
+
+.fn-stage{position:relative;height:404px;margin:0 -16px -6px;pointer-events:none;}
+.fn-tot{position:absolute;top:2px;right:16px;z-index:3;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:99px;background:rgba(255,255,255,.1);font-size:13px;font-weight:600;color:var(--cine-on2);}
+.fn-tot b{font-family:var(--fd);font-weight:700;font-size:16px;color:var(--cine-on);}
+.fn-tot .ico{width:15px;height:15px;color:var(--cine-acc);}
+.fn-light{position:absolute;left:50%;top:292px;width:520px;height:250px;margin-left:-260px;border-radius:50%;
+  background:radial-gradient(closest-side,color-mix(in srgb,var(--cine-acc) 42%,transparent),color-mix(in srgb,var(--cine-acc) 12%,transparent) 55%,transparent 100%);}
+.fn-num{position:absolute;left:0;right:0;top:52px;margin:0;display:flex;justify-content:center;align-items:flex-start;gap:6px;color:var(--cine-on);user-select:none;-webkit-user-select:none;}
+.fn-num b{font-family:var(--fd);font-style:italic;font-weight:800;font-size:min(196px,50vw);line-height:.74;letter-spacing:-.05em;font-variant-numeric:tabular-nums;}
+.fn-num .fn-mas{color:var(--cine-acc);}
+.fn-num small{font-family:var(--fd);font-style:italic;font-weight:800;font-size:26px;line-height:1;text-transform:uppercase;color:var(--cine-acc);margin-top:6px;}
+.fn-ring,.fn-pulse{position:absolute;left:50%;top:348px;width:232px;height:52px;margin-left:-116px;border-radius:50%;box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--cine-acc2) 90%,transparent);}
+.fn-pulse{opacity:0;}
+.fn-sh{position:absolute;left:50%;top:360px;width:150px;height:26px;margin-left:-75px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);}
+.fn-pet{position:absolute;left:50%;top:142px;width:236px;height:236px;margin-left:-118px;object-fit:contain;filter:drop-shadow(0 14px 12px rgba(0,0,0,.35));}
+.fn-stage.sin-pet{height:300px;}
+.fn-stage.sin-pet .fn-num{top:74px;}
+.fn-stage.sin-pet .fn-light{top:150px;}
+.fn-stage.sin-pet .fn-ring,.fn-stage.sin-pet .fn-pulse{top:232px;}
+.fn-stage.sin-pet .fn-sh{display:none;}
+.en-fin-hero.con-cine{padding-top:0;}
+.fn-why{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.fn-why span{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:99px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px var(--cine-line);font-size:13px;color:var(--cine-on2);}
+.fn-why b{font-family:var(--fd);font-weight:700;font-size:15px;color:var(--cine-acc2);}
+.fn-why .fn-sube{background:var(--cine-acc);color:#17231F;box-shadow:none;font-weight:700;}
+.fn-why .fn-sube .ico{width:15px;height:15px;}
+.fn-nota{margin:4px 0 0;font-size:13px;color:var(--cine-on2);}
+
+/* Entrada: el número sube, la mascota aterriza sobre su luz y el resto aparece después */
+.en-fin.cine-play .fn-light{animation:cine-bloom 1100ms var(--cine-expo) 150ms both;}
+.en-fin.cine-play .fn-num{animation:cine-numin 1000ms var(--cine-expo) 120ms both;}
+.en-fin.cine-play .fn-pet{animation:cine-land 900ms var(--cine-out) 420ms both;}
+.en-fin.cine-play .fn-sh{animation:cine-shadow 900ms var(--cine-out) 420ms both;}
+.en-fin.cine-play .fn-ring{animation:cine-ring 700ms var(--cine-expo) 860ms both;}
+.en-fin.cine-play .fn-pulse{animation:cine-pulse 1100ms var(--cine-out) 900ms both;}
+.en-fin.cine-play .fn-tot{animation:cine-fade 600ms var(--cine-out) 900ms both;}
+.en-fin.con-cine.cine-play > :not(.fn-stage){animation:cine-up 800ms var(--cine-expo) 1000ms both;}
+.en-fin.cine-play .en-slots i.nueva{animation:cine-grow 800ms var(--cine-expo) 1700ms both;transform-origin:left;}
+
+@keyframes cine-cam{from{transform:scale(1.14);}}
+@keyframes cine-num{from{transform:translateY(110px) scale(.94);opacity:0;filter:blur(16px);}}
+@keyframes cine-txt{from{opacity:0;transform:translateY(20px);filter:blur(10px);}}
+@keyframes cine-up{from{opacity:0;transform:translateY(16px);}}
+@keyframes cine-fade{from{opacity:0;}}
+@keyframes cine-bloom{from{transform:scale(.3);opacity:0;}}
+@keyframes cine-numin{from{transform:translateY(40px);opacity:0;filter:blur(14px);}}
+@keyframes cine-land{0%{transform:translateY(-120px) scale(.8);opacity:0;}55%{transform:translateY(8px) scale(1.03,.95);opacity:1;}75%{transform:translateY(-6px) scale(.99,1.02);}100%{transform:none;}}
+@keyframes cine-shadow{0%{transform:scale(.3);opacity:0;}55%{transform:scale(1.08);opacity:1;}100%{transform:none;}}
+@keyframes cine-ring{from{transform:scale(.4);opacity:0;}}
+@keyframes cine-pulse{0%{transform:scale(1);opacity:.9;}100%{transform:scale(1.9);opacity:0;}}
+@keyframes cine-grow{from{transform:scaleX(0);}}
+
+@media (prefers-reduced-motion:reduce){
+  #s-inicio.cine-play *,.en-fin.cine-play,.en-fin.cine-play *{animation:none!important;}
+}
