@@ -3,7 +3,7 @@
     "roles": {
       "$uid": {
         ".read": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador')",
-        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $uid && auth.provider !== 'anonymous' && !data.exists() && newData.val() === 'entrenador') || (auth.uid === $uid && !newData.exists() && data.val() === 'entrenador'))",
+        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $uid && !newData.exists() && data.val() === 'entrenador'))",
         ".validate": "newData.val() === 'coordinador' || newData.val() === 'entrenador'"
       }
     },

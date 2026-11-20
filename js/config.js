@@ -24,9 +24,17 @@ const GYM = {
   geofence: null,
 
   // ── Firebase de ESTE gimnasio (Configuración del proyecto → Tus apps → Configuración) ──
-  // null = todavía sin base de datos: la app trabaja solo con datos locales del dispositivo.
-  // Al crear el Firebase del reto, pega aquí su bloque firebaseConfig (ver docs/PLAN-RETO.md → Base de datos).
-  firebase: null,
+  // ── Firebase del reto (Configuración del proyecto → Tus apps → Configuración) ──
+  // databaseURL: Realtime Database → Datos (confirmada).
+  firebase: {
+    apiKey: "AIzaSyCeI2xG0bHZJKEEzxUQkW0pM-YBwq2lO0o",
+    authDomain: "reto-fit-cca.firebaseapp.com",
+    databaseURL: "https://reto-fit-cca-default-rtdb.firebaseio.com",
+    projectId: "reto-fit-cca",
+    storageBucket: "reto-fit-cca.firebasestorage.app",
+    messagingSenderId: "493559478325",
+    appId: "1:493559478325:web:17437208bc0abcc669197c"
+  },
 
   // ── Link público de la app (QR y mensajes de invitación). Cambia si se publica en otro dominio ──
   urlApp: 'https://appfitness-crypto.github.io/reto-fit-cca/',

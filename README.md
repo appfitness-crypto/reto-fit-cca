@@ -16,4 +16,4 @@ App del reto fitness de 12 semanas (gimnasio y clases) del CCA. Está hecha a pa
 - Maquetas del panel de control: `docs/maquetas/`.
 - Estructura del código: [`docs/ESTRUCTURA.md`](docs/ESTRUCTURA.md).
 
-> **Base de datos pendiente.** `js/config.js` tiene `firebase: null`, así que la app funciona solo con los datos del dispositivo. La creación de cuentas y la validación de códigos se activan cuando se conecte el Firebase del reto.
+> **Base de datos:** proyecto de Firebase `reto-fit-cca` (configurado en `js/config.js`). Los pasos de la consola (reglas, autenticación y la cuenta del director) están en `docs/PLAN-RETO.md`, sección 3.

@@ -41,24 +41,44 @@ Maquetas del panel de control: `docs/maquetas/frontdesk.html` (ábrelo en el nav
 - [x] **Link con código del entrenador**: `?ent=ENT-XXXX` deja el código escrito en el último paso. El mensaje de "Mi código" del entrenador ya manda ese link.
 - [x] QR nuevo (`img/qr/app.png`) que apunta a `https://appfitness-crypto.github.io/reto-fit-cca/` (se cambia en `GYM.urlApp` y regenerando el QR si se publica en otro dominio).
 - [x] Los entrenadores ya no se registran solos desde la portada: el director los da de alta (Menú → Entrenadores → Nuevo). En la portada quedó "Soy entrenador del reto: entrar con mi cuenta".
-- [x] **Desconectado del Firebase de la app original** (`firebase: null`, `.firebaserc` y el flujo de publicación apuntan a `reto-fit-cca`), para no mezclar datos con tu app pública.
+- [x] **Separado del Firebase de la app original**: usa su propio proyecto `reto-fit-cca` (`js/config.js`, `.firebaserc` y el flujo de publicación).
 - [x] La foto de la portada ya no dice "Fitness Pro" (provisional, hasta que subas fotos del CCA).
 
-**Qué falta para probarlo completo:** sin base de datos no se pueden crear cuentas ni validar códigos. La evaluación, los objetivos y el link con código ya se ven funcionando.
+**Para probarlo completo** faltan los pasos de la consola de la sección 3 (reglas, autenticación y tu cuenta de director).
 
-## 3. Siguiente etapa: base de datos
+## 3. Base de datos: conectar el Firebase `reto-fit-cca`
 
-1. Crear el proyecto de Firebase **`reto-fit-cca`** (Realtime Database + Authentication con correo y anónimo). Guía: `docs/ALTA-GIMNASIO.md`, partes A y C.
-2. Pegar su `firebaseConfig` en `js/config.js` → `firebase`.
-3. Hacerte director: crea tu cuenta y en `roles/<tu UID>` pon `coordinador`.
-4. **Plan Blaze (pago por uso):** el plan gratuito solo aguanta **100 conexiones simultáneas** y en las horas pico de 300 socios se puede rebasar. A este volumen el costo esperado es de pocos dólares al mes; pon una alerta de presupuesto.
-5. **Reglas:** hoy cualquier cuenta puede darse el rol `entrenador` sola (así funciona la app pública). Para el reto conviene que **solo el director** cree entrenadores: hay que cambiar `roles` en `firebase-rules.json` y volver a probarlo con el emulador.
-6. Datos nuevos que se agregan:
-   - `/reto/config`: fechas, fases y puntos (para cambiarlos sin publicar código).
-   - `/asistencia/<fecha>/<uid>`: check-in.
-   - `/clases`, `/reservas`: horario, cupo y lista de espera.
-   - `/evaluaciones/<uid>/<semana>`: peso, % de grasa, masa muscular, medidas, pruebas y fotos (en Storage, privadas).
-   - `/caja/<recibo>` (opcional): lista de pagos de caja para cruzarla con los registrados y saber quién pagó y no se ha registrado.
+**Ya hecho en el código**
+- [x] `js/config.js` → `firebase` con la configuración del proyecto `reto-fit-cca`.
+- [x] `databaseURL` = `https://reto-fit-cca-default-rtdb.firebaseio.com` (confirmada).
+- [x] Reglas (`firebase-rules.json`): ya nadie puede darse el rol de entrenador solo; **solo el director** crea entrenadores. Se probaron con el emulador de Firebase (10 de 10 casos):
+  - un socio no puede ponerse rol de entrenador ni de director;
+  - un entrenador no puede volverse director;
+  - un socio no ve el expediente de otro;
+  - un entrenador no ve a socios que no son suyos;
+  - una sesión anónima no puede crear expedientes;
+  - el director sí puede crear entrenadores y reservar su código;
+  - el entrenador sí puede borrar su propia cuenta.
+- [x] Los usuarios del staff que crea el director entran solo con su usuario (internamente `usuario@staff.retofitcca.app`).
+
+**Pasos en la consola de Firebase (una sola vez)**
+1. **Realtime Database → Crear base de datos** (si no existe): ubicación Estados Unidos, modo bloqueado.
+2. **Realtime Database → Reglas**: pega todo `firebase-rules.json` → **Publicar**.
+3. **Authentication → Comenzar → Método de acceso**: habilita **Correo electrónico/contraseña** y **Anónimo** (la sesión anónima sirve para validar el código del entrenador antes de que el socio tenga cuenta).
+4. **Authentication → Configuración → Dominios autorizados**: agrega `appfitness-crypto.github.io` (o el dominio donde se publique la app).
+5. **Tu cuenta de director**: Authentication → Usuarios → **Agregar usuario** con tu correo y una contraseña. Copia el **UID**. En Realtime Database → Datos agrega `roles` → `<tu UID>` = `coordinador`.
+6. Entra a la app con **"Soy entrenador del reto: entrar con mi cuenta"** usando ese correo. Verás el panel del director.
+7. En el panel: **🧬 Mi filosofía** (es el plan para los socios que entren sin código) y **➕ Nuevo entrenador** para cada entrenador. Cada uno recibe su código `ENT-XXXX` y, desde "Mi código", el link con su código ya puesto.
+8. **Plan Blaze (pago por uso)**: el plan gratuito aguanta solo **100 conexiones simultáneas**; con 300 socios conviene cambiarlo antes del arranque y poner una alerta de presupuesto.
+
+**Publicar la app**: GitHub → Settings → Pages → rama `main`, carpeta raíz. Queda en `https://appfitness-crypto.github.io/reto-fit-cca/`, que es a donde apunta el QR. Opcional: el flujo `.github/workflows/firebase-hosting.yml` publica en `https://reto-fit-cca.web.app` y sube las reglas solo; necesita el secreto `FIREBASE_SERVICE_ACCOUNT` (ver `docs/PLAY-STORE.md`).
+
+**Datos nuevos para las siguientes etapas**
+- `/reto/config`: fechas, fases y puntos (para cambiarlos sin publicar código).
+- `/asistencia/<fecha>/<uid>`: check-in.
+- `/clases`, `/reservas`: horario, cupo y lista de espera.
+- `/evaluaciones/<uid>/<semana>`: peso, % de grasa, masa muscular, medidas, pruebas y fotos (en Storage, privadas).
+- `/caja/<recibo>` (opcional): lista de pagos de caja para saber quién pagó y no se ha registrado.
 
 ## 4. Etapas después de la base de datos
 

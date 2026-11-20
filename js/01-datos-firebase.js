@@ -68,7 +68,7 @@ function initFirebase(cfg){
 // AUTENTICACIÓN (v8.2) — staff con correo/contraseña de Firebase, socios con sesión anónima
 // El rol del staff vive en /roles/<uid> ("coordinador" o "entrenador"). Los socios solo leen su propio registro.
 // ═════════════════════════════════════════
-const STAFF_DOM='@staff.fitnesspro.app';
+const STAFF_DOM='@staff.retofitcca.app';   // usuarios del staff creados por el director (entran solo con el usuario)
 let fbAuth=null, fbUid=null, fbRolDB=null, fbEsStaff=false, fbRolListo=false, fbArrancando=false;
 let fbWaiters=[], fbPrimerEstado=null, fbPrimerResolver=null;
 fbPrimerEstado=new Promise(r=>{ fbPrimerResolver=r; });
