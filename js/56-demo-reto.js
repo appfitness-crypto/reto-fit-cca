@@ -75,6 +75,7 @@ function demoSocio(i, ents, plantilla){
     peso:peso0, estatura:est, dias:4, cintura:cin0, status:'activo',
     asignado:ent?ent.nombre:'Plan de la app', entrenadorId:ent?ent.id:'', codigoEnt:ent&&ent.codigo||'',
     fechaRegistro:fechaISO(new Date(inicio)),
+    mascota:(typeof MASCOTAS!=='undefined')?{id:MASCOTAS[i%MASCOTAS.length].id, nombre:MASCOTAS[i%MASCOTAS.length].nm, fecha:fechaISO(new Date(inicio))}:undefined,
     logs:{sesiones:ses, pesoCorporal:pesos, medidas, prs:{}, asistencia:[], lesiones:[]}
   });
 }

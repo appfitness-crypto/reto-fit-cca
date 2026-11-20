@@ -1,0 +1,1 @@
+Imágenes de las mascotas: <id>-<etapa>.webp (etapa 1 a 5). Ver docs/MASCOTAS-PROMPTS.md.
