@@ -38,23 +38,24 @@ function retoTextoCorto(){
 function retoBannerHTML(){
   const e=retoEstado(); if(!e) return '';
   const nom=esc(GYM.reto.nombre||GYM.nombre);
+  const pts=(typeof socioPuntosBannerHTML==='function' && typeof activeSocio!=='undefined' && activeSocio)?socioPuntosBannerHTML():'';
+  let izq;
   if(e.estado==='antes'){
-    return `<div class="reto-banner"><div class="rb-t">${nom}</div><div class="rb-s">Arranca el ${esc(retoFechaTxt(e.inicio))} · ${e.faltan===1?'mañana':'faltan '+e.faltan+' días'}</div></div>`;
-  }
-  if(e.estado==='terminado'){
-    return `<div class="reto-banner"><div class="rb-t">${nom} terminado</div><div class="rb-s">Revisa tu evaluación final con tu entrenador.</div></div>`;
-  }
-  return `<div class="reto-banner">
-    <div class="rb-row"><div class="rb-t">Semana ${e.semana} de ${e.semanas}</div><div class="rb-d">Día ${e.dia}/${e.totalDias}</div></div>
+    izq=`<div class="rb-t">${nom}</div><div class="rb-s">Arranca el ${esc(retoFechaTxt(e.inicio))} · ${e.faltan===1?'mañana':'faltan '+e.faltan+' días'}</div>`;
+  } else if(e.estado==='terminado'){
+    izq=`<div class="rb-t">${nom} terminado</div><div class="rb-s">Revisa tu evaluación final con tu entrenador.</div>`;
+  } else {
+    izq=`<div class="rb-t">Semana ${e.semana} de ${e.semanas}</div>
     <div class="rb-bar"><i style="width:${e.pct}%"></i></div>
-    <div class="rb-s">${e.fase?'Fase: '+esc(e.fase.nombre):''}${e.evalSem?' · Semana de evaluación':''}</div>
-  </div>`;
+    <div class="rb-s">Día ${e.dia}/${e.totalDias}${e.fase?' · '+esc(e.fase.nombre):''}${e.evalSem?' · semana de evaluación':''}</div>`;
+  }
+  return `<div class="reto-banner${pts?' con-pts':''}"><div class="rb-izq">${izq}</div>${pts}</div>`;
 }
 
 function retoPintar(){
   const txt=retoTextoCorto();
   const f=document.getElementById('inicio-fecha'); if(f && txt) f.textContent=txt;
-  const b=document.getElementById('reto-banner-socio'); if(b) b.innerHTML=retoBannerHTML();
+  const b=document.getElementById('reto-banner-socio'); if(b){ b.innerHTML=retoBannerHTML(); if(typeof socioPuntosAnimar==='function') socioPuntosAnimar(); }
   const c=document.getElementById('reto-chip-staff'); if(c){ c.textContent=txt; c.style.display=txt?'':'none'; }
 }
 
