@@ -2915,3 +2915,31 @@ html[data-theme="light"] .hero-card.estilo-poster+.today-c,html[data-theme="ligh
 .tr-tab.on{background:color-mix(in srgb,var(--v2) 16%,transparent);border-color:color-mix(in srgb,var(--v2) 50%,transparent);color:var(--tx)}
 .tr-rules b{font-size:var(--fs-sm)}
 .tr-rules p{font-size:var(--fs-xs);color:var(--mu);line-height:1.6;margin:4px 0 0}
+
+/* ═══ Reto Fit CCA: portada con la foto completa y la barra del logo translúcida encima ═══ */
+@media(max-width:1024px){
+  .tb.tb-bienvenida{position:fixed;left:0;right:0;top:0;background:linear-gradient(180deg,rgba(8,14,12,.42) 0%,rgba(8,14,12,.12) 70%,rgba(8,14,12,0) 100%);
+    -webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:0;}
+  .tb.tb-bienvenida .tb-logo *{color:#fff;}
+  #s-inicio{--wc-h:min(calc(100vw * 4 / 3),88svh);}
+  #s-inicio .wc-pic .pic.fill img{object-fit:cover;object-position:50% 0%;}
+}
+@media(max-width:1024px) and (max-height:700px){ #s-inicio{--wc-h:min(calc(100vw * 4 / 3),80svh);} }
+
+/* ═══ Reto Fit CCA: puntos del reto en el perfil del socio (js/55-socio-reto.js) ═══ */
+.pr-pts{margin:14px 0 4px;padding:16px;border-radius:var(--r-md);background:var(--gl);border:1px solid var(--b);box-shadow:var(--shadow)}
+.pr-pts-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.pr-pts-k{font-size:var(--fs-sm);color:var(--mu);font-weight:600}
+.pr-pts-v{font-family:var(--fd);font-weight:var(--fd-w);letter-spacing:var(--fd-ls);font-size:44px;line-height:1;margin-top:4px;font-variant-numeric:tabular-nums}
+.pr-pts-v small{font-size:var(--fs-lg);color:var(--mu);margin-left:4px}
+.pr-pts-obj{font-size:var(--fs-xs);font-weight:700;padding:5px 10px;border-radius:99px;background:var(--acc-soft,var(--gl2));color:var(--tx);white-space:nowrap}
+.pr-pts-bar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--fill-track);margin-top:14px}
+.pr-pts-bar i:first-child{background:var(--v)}.pr-pts-bar i:last-child{background:var(--heat)}
+.pr-pts-l{display:flex;justify-content:space-between;font-size:var(--fs-xs);color:var(--mu);margin-top:6px}
+.pr-pts-l b{color:var(--tx)}
+.pr-pts-rows{margin-top:10px;border-top:1px solid var(--b)}
+.pr-pts-row{display:grid;grid-template-columns:1fr auto;gap:10px;padding:9px 0;border-bottom:1px solid var(--b);font-size:var(--fs-sm)}
+.pr-pts-row:last-child{border-bottom:0}
+.pr-pts-row span small{display:block;color:var(--mu);font-size:var(--fs-2xs)}
+.pr-pts-row b{font-variant-numeric:tabular-nums}
+.pr-pts-tip{font-size:var(--fs-xs);color:var(--mu);margin-top:8px;line-height:1.5}

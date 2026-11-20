@@ -93,7 +93,9 @@ function trCalcSocio(s, desde, P){
 
   // Fuerza: por ejercicio, peso de la primera vez vs el mejor de las últimas 3 veces (con 7+ días entre ambas)
   const porEj = {};
-  ses.forEach(x=>(x.ejercicios||[]).forEach(e=>{ if(e && e.n && e.kg>0){ (porEj[e.n]=porEj[e.n]||[]).push({ts:x.ts, kg:+e.kg}); } }));
+  // Cada sesión guarda los pesos por ejercicio en "detalle" ({n, s, p, kg}); "ejercicios" es solo el conteo
+  ses.forEach(x=>{ const lista=Array.isArray(x.detalle)?x.detalle:(Array.isArray(x.ejercicios)?x.ejercicios:[]);
+    lista.forEach(e=>{ if(e && e.n && e.kg>0){ (porEj[e.n]=porEj[e.n]||[]).push({ts:x.ts, kg:+e.kg}); } }); });
   const cambios = [];
   Object.values(porEj).forEach(l=>{
     if(l.length<2) return; l.sort((a,b)=>a.ts-b.ts);
