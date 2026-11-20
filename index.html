@@ -37,6 +37,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <link rel="stylesheet" href="css/estilos.css">
 <link rel="stylesheet" href="css/tema-salvia.css">
 <link rel="stylesheet" href="css/tema-claro.css">
+<link rel="stylesheet" href="css/cine.css">
 <!-- Red de seguridad: si la página abrió sin estilos o sin código (señal que se cortó a media actualización), se recarga una vez -->
 <script>window.addEventListener("load",function(){var ok=!!getComputedStyle(document.documentElement).getPropertyValue("--lime").trim()&&typeof showToast==="function";try{if(ok){sessionStorage.removeItem("recargaApp");}else if(!sessionStorage.getItem("recargaApp")){sessionStorage.setItem("recargaApp","1");location.reload();}}catch(e){}});</script>
 </head>
@@ -180,23 +181,28 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 
 <!-- ═══ S0: INICIO ═══ -->
 <div class="sc on" id="s-inicio">
+  <!-- Portada "cine" (css/cine.css, js/59-cine.js): la foto llena la pantalla y la persona recortada queda encima del número de semanas -->
   <div class="wc-hero">
-    <div class="wc-pic" id="wc-hero-pic"></div>
+    <div class="wc-cam">
+      <div class="wc-pic" id="wc-hero-pic"></div>
+      <p class="wc-num" id="wc-num" aria-hidden="true">12</p>
+      <img class="wc-cut" id="wc-cut" src="img/hero/bienvenida-recorte.webp" alt="" decoding="async" onerror="this.remove()">
+    </div>
     <div class="wc-ov"></div>
     <div class="wc-top">
       <div class="ib-tag on-photo wc-gym"><span class="dot-pulse"></span><span data-gym="nombre"></span></div>
       <div class="ib-tag on-photo wc-fecha"><span id="inicio-fecha">—</span></div>
     </div>
+  </div>
+  <div class="inicio-wrap">
     <div class="wc-tx">
       <h1 id="wc-titular">Tu reto de 12 semanas<br>empieza aquí.</h1>
       <p id="wc-sub">Tu rutina, tus pesos y la técnica de cada ejercicio, con tu entrenador.</p>
     </div>
-  </div>
-  <div class="inicio-wrap">
     <div class="inicio-cards">
       <button type="button" class="ic ic-nuevo ic-pri" onclick="abrirRegistro('cliente')">
         <div class="ic-icon"><svg class="ico" aria-hidden="true"><use href="#i-user-plus"/></svg></div>
-        <span class="ic-txt"><span class="ic-label">Soy nuevo</span><span class="ic-sub">Crea tu cuenta con tu correo, contesta la evaluación y recibe la rutina de tu entrenador.</span></span>
+        <span class="ic-txt"><span class="ic-label">Soy nuevo</span><span class="ic-sub">Crea tu cuenta y recibe la rutina de tu entrenador.</span></span>
         <span class="ic-arrow"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
       </button>
       <button type="button" class="ic ic-ya" onclick="go('s-login')">
@@ -205,7 +211,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
         <span class="ic-arrow"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
       </button>
     </div>
-    <div>
+    <div class="wc-staff">
       <!-- Reto Fit CCA: los entrenadores no se registran solos; el director los da de alta (Menú → Entrenadores) -->
       <button type="button" class="staff-link" onclick="go('s-login')">Soy entrenador del reto: entrar con mi cuenta <svg class="ico" aria-hidden="true" style="width:14px;height:14px"><use href="#i-arrow"/></svg></button>
     </div>
@@ -743,6 +749,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <div class="sc" id="s-ses"><main class="en-ses" id="en-ses" aria-label="Sesión en curso"></main></div>
 <!-- RESUMEN AL TERMINAR -->
 <div class="sc" id="s-fin"><main class="en-fin" id="en-fin" aria-label="Resumen de la sesión"></main></div>
+<div class="sc" id="s-mascota"><main class="ms-w" id="ms-w" aria-label="Mi compañero del reto"></main></div>
 <div class="en-desc" id="en-desc" aria-live="polite" aria-hidden="true" inert></div>
 <dialog class="en-ficha" id="en-ficha" onclick="if(event.target===this)cerrarFicha()" oncancel="event.preventDefault();cerrarFicha()"></dialog>
 
@@ -940,6 +947,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <script defer src="js/56-demo-reto.js"></script>
 <script defer src="js/57-avisos.js"></script>
 <script defer src="js/58-mascotas.js"></script>
+<script defer src="js/59-cine.js"></script>
 <script defer src="js/99-arranque.js"></script>
 
 <!-- ═══ MODAL AVISO DE PRIVACIDAD ═══ -->

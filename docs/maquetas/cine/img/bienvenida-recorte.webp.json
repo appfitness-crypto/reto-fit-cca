@@ -1,0 +1,6 @@
+{
+  "fuente": "img/hero/bienvenida.webp (foto del club)",
+  "proceso": "Persona recortada con rembg 2.0.87, modelo u2net_human_seg, alpha matting (fg 240, bg 10, erode 8). Mismo tamaño y posición que la foto original para encimarla exacta.",
+  "uso": "Capa de la persona encima del texto gigante en docs/maquetas/cine/index.html",
+  "createdAt": "2026-11-20"
+}

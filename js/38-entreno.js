@@ -835,11 +835,15 @@ function mostrarResumenSesion(info){
   const prox=DIAS_ORDER.map((k,i)=>({k,i})).filter(o=>o.i>hoyI&&s.rutina[o.k]&&(s.rutina[o.k].ejercicios||[]).length)[0];
   const meta=Math.max(1,parseInt(s.dias)||3), hechas=Math.min(ev.estaSemana,meta);
   const fmt=n=>Math.round(n).toLocaleString('es-MX');
+  const fechaTxt=`${esc(sc(x.tipo))} · ${EN_DIAS[hoyI]} ${new Date(x.ts).getDate()} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][new Date(x.ts).getMonth()]}`;
+  const cine=finCine(s, info, est);
   cont.innerHTML=`
-    <div class="en-fin-hero">
-      <div class="en-fin-ck${est==='completa'?'':' '+est}">${ico(est==='incompleta'?'info':'check')}</div>
+    ${cine?cine.stage:''}
+    <div class="en-fin-hero${cine?' con-cine':''}">
+      ${cine?'':`<div class="en-fin-ck${est==='completa'?'':' '+est}">${ico(est==='incompleta'?'info':'check')}</div>`}
       <h2>${estTit}</h2>
-      <p>${esc(sc(x.tipo))} · ${EN_DIAS[hoyI]} ${new Date(x.ts).getDate()} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][new Date(x.ts).getMonth()]}</p>
+      <p>${fechaTxt}</p>
+      ${cine?cine.chips:''}
     </div>
     ${estNota?`<p class="en-fin-nota">${estNota}</p>`:''}
     <div class="en-fin-stats"><div><b class="num">${min!=null?min:'—'}</b><span>minutos</span></div><div><b class="num">${x.volumen>0?fmt(x.volumen):'—'}</b><span>kg de volumen</span></div><div><b class="num">${tot?ok+'/'+tot:x.ejercicios}</b><span>${tot?'series':'ejercicios'}</span></div></div>
@@ -853,13 +857,59 @@ function mostrarResumenSesion(info){
     <div class="en-goal">
       <div class="en-goal-top"><div><h3>Vas <span>${ev.estaSemana}</span> de ${meta}</h3><p>${ev.estaSemana>=meta?'¡Semana cumplida!':prox?'Próxima: '+esc(sc(s.rutina[prox.k].tipo))+', '+EN_DIAS[prox.i]+'.':'Te faltan '+(meta-ev.estaSemana)+' esta semana.'}</p></div>
         <div class="en-racha" aria-label="Racha de ${ev.racha} semanas">${ico('flame')}<b class="num">${ev.racha}</b><small>${ev.racha===1?'semana':'semanas'}</small></div></div>
-      <div class="en-slots" aria-hidden="true">${Array.from({length:meta},(_,i)=>`<i class="${i<hechas?'ok':''}"></i>`).join('')}</div>
+      <div class="en-slots" aria-hidden="true">${Array.from({length:meta},(_,i)=>`<i class="${i<hechas?(i===hechas-1&&est!=='incompleta'?'ok nueva':'ok'):''}"></i>`).join('')}</div>
     </div>
     <section class="en-sec"><div class="en-sec-h"><h3>¿Cómo te sentiste?</h3><span>Ayuda a ajustar tu plan</span></div>
       <div class="en-feel" role="group" aria-label="Cómo te sentiste">${['Fácil','Bien','Duro','Al límite'].map(f=>`<button type="button" aria-pressed="${x.sensacion===f}" onclick="finSentir(this,'${f}')">${f}</button>`).join('')}</div></section>
     ${dolorHTML(x)}
     <button type="button" class="en-btn en-btn-p" onclick="finListo()">${ico('check')}Listo</button>`;
   go('s-fin');
+  cont.classList.toggle('con-cine',!!cine);
+  if(typeof cineReproducir==='function'){ cineReproducir(cont); cineContar(cont); }
+}
+// Escena "cine" del resumen (css/cine.css): los puntos ganados en grande con la mascota encima.
+// Solo aparece si la sesión suma puntos. Antes del arranque del reto muestra lo que valdrá y avisa cuándo empieza a contar.
+function finCine(s, info, est){
+  if(typeof socioPuntos!=='function') return null;
+  let pd=null; try{ pd=socioPuntos(s); }catch(_){ return null; }
+  if(!pd) return null;
+  const P=pd.P||{}, pa=info.ptsAntes, chips=[];
+  let gan=0, total=null, desde=null;
+  if(!pd.antes && pa && !pa.antes){
+    gan=Math.max(0,pd.r.puntos-pa.r.puntos); total=pd.r.puntos; desde=pa.r.puntos;
+    const dSes=pd.r.sesiones-pa.r.sesiones, dSem=pd.r.semanasOk-pa.r.semanasOk, dMed=pd.r.mediciones-pa.r.mediciones, dProg=pd.r.ptsProg-pa.r.ptsProg;
+    // Lo que queda de la constancia después de sesiones, semanas y medidas son las sesiones completas
+    const dCompl=P.completa?Math.round((pd.r.ptsConst-pa.r.ptsConst-dSes*P.sesion-dSem*P.semana-dMed*P.medicion)/P.completa):0;
+    if(dSes>0) chips.push([P.sesion*dSes,'por registrarla']);
+    if(dCompl>0) chips.push([P.completa*dCompl,'por completarla']);
+    if(dSem>0) chips.push([P.semana*dSem,'semana cumplida']);
+    if(dProg>0) chips.push([dProg,'por tu progreso']);
+  } else if(pd.antes && est!=='incompleta'){
+    gan=(+P.sesion||0)+(est==='completa'?(+P.completa||0):0);
+    chips.push([P.sesion,'por registrarla']); if(est==='completa') chips.push([P.completa,'por completarla']);
+  }
+  if(!(gan>0)) return null;
+  // Mascota en su etapa actual; si con esta sesión subió de etapa, se avisa
+  let pet='', subio='';
+  const m=(typeof mascotaEstado==='function' && !s.mascotaOculta)?mascotaEstado(s):null;
+  if(m){
+    pet=mascotaImgHTML(m.m, m.etapa.n, 'fn-pet');
+    if(desde!=null && typeof mascotaEtapas==='function'){
+      let i0=0; mascotaEtapas().forEach((e,k)=>{ if(desde>=e.pts) i0=k; });
+      if(m.etapa.n>i0+1) subio=`<span class="fn-sube">${ico('spark')}${esc(m.nombre)} subió a ${esc(m.etapa.nm)}</span>`;
+    }
+  }
+  const e=pd.e, cuando=pd.antes&&e&&typeof retoFechaTxt==='function'?retoFechaTxt(e.inicio):'';
+  const stage=`<div class="fn-stage${pet?'':' sin-pet'}">
+      ${total!=null?`<span class="fn-tot">${ico('spark')}Total <b data-count="${total}" data-from="${desde}" data-delay="1500">${total.toLocaleString('es-MX')}</b> pts</span>`:''}
+      <div class="fn-light"></div>
+      <p class="fn-num" aria-label="Ganaste ${gan} puntos"><b><span class="fn-mas">+</span><span data-count="${gan}" data-delay="200">${gan}</span></b><small>pts</small></p>
+      <div class="fn-ring"></div><div class="fn-pulse"></div><div class="fn-sh"></div>
+      ${pet}
+    </div>`;
+  const chipsHTML=`<div class="fn-why">${chips.map(c=>`<span><b>+${(+c[0]||0).toLocaleString('es-MX')}</b> ${c[1]}</span>`).join('')}${subio}</div>
+      ${pd.antes?`<p class="fn-nota">Tus puntos empiezan a contar${cuando?' el '+esc(cuando):' cuando arranque el reto'}.</p>`:''}`;
+  return {stage, chips:chipsHTML};
 }
 function finSentir(btn,f){
   if(!enFin) return; const s=activeSocio;

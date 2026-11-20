@@ -376,6 +376,8 @@ function finalizarSesionConfirmada(reemplazar){
     const idxs=Object.keys(sesionTemp.ej);
     const hechos=idxs.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg||x.seg||x.fc))).length;
     const hoy=fechaISO(new Date());
+    // Puntos del reto antes de guardar: el resumen muestra cuántos ganó con esta sesión (js/38-entreno.js)
+    let ptsAntes=null; try{ ptsAntes=typeof socioPuntos==='function'?socioPuntos(s):null; }catch(_){}
     const previa=s.logs.sesiones.find(x=>x.fecha===hoy && (!x.diaKey || x.diaKey===sesionTemp.diaKey));
     if(previa && !reemplazar){
       uiConfirm('Ya registraste una sesión hoy ('+(previa.tipo||'tu rutina')+'). ¿Quieres reemplazarla con lo que acabas de registrar? Tus récords y pesos calculados se actualizarán con estos datos nuevos.',
@@ -457,7 +459,7 @@ function finalizarSesionConfirmada(reemplazar){
     dbSave(s.code);
     sesionTemp=null;
     if(typeof mostrarResumenSesion==='function'){
-      mostrarResumenSesion({reg, t0, prs:Object.values(nuevosPR), prevVol:anterior?anterior.volumen:0, prevFecha:anterior?anterior.fecha:null});
+      mostrarResumenSesion({reg, t0, ptsAntes, prs:Object.values(nuevosPR), prevVol:anterior?anterior.volumen:0, prevFecha:anterior?anterior.fecha:null});
       return;
     }
     showToast('✓ Sesión guardada'+(volumen>0?' · '+Math.round(volumen).toLocaleString()+' kg de volumen':'')+(tutSes>=20?' · '+fmtTut(tutSes)+' de isométricos':'')+(cardioMinSes>0?' · '+cardioMinSes+' min de cardio':''));
