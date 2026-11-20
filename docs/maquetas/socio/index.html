@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reto Fit CCA · Vista del socio</title>
+<link rel="stylesheet" href="../../../css/fuentes/barlow.css">
+<style>
+:root{
+  --shell:#0A3576;      /* azul del club (logo, profundo) */
+  --shell-2:#0E4294;
+  --shell-tx:#FFFFFF;
+  --shell-mu:#B9CDEE;   /* texto secundario sobre azul */
+  --fair:#1E7A3C;       /* verde fairway: meta cumplida */
+  --lime:#A6E241;       /* lima del logo */
+  --lime-bg:#EAF6D4;
+  --ground:#E9F0EC;     /* fondo frío con tinte de pasto */
+  --card:#FFFFFF;
+  --ink:#0E1B2C;
+  --ink-2:#46566B;
+  --rule:#D2DCE5;
+  --rule-2:#E6ECF1;
+  --amber:#9A5B00;
+  --amber-bg:#FFF0D6;
+  --red:#C02A36;
+  --stage:#0A0D13;      /* fondo del video de técnica */
+  --fd:'Barlow Condensed','Barlow',system-ui,sans-serif;
+  --fb:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--fb);color:var(--ink);background:#DCE5E0;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+::selection{background:var(--lime);color:var(--ink)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--shell-2);outline-offset:2px;border-radius:6px}
+.ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* ── Tablero de presentación ── */
+.board{padding:28px 28px 40px}
+.board-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;max-width:1720px;margin:0 auto 22px}
+.board-h h1{font-family:var(--fd);font-weight:700;font-size:34px;letter-spacing:-.01em;line-height:1}
+.board-h p{color:var(--ink-2);font-size:14px;margin-top:6px;max-width:62ch}
+.sample{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--amber);background:var(--amber-bg);padding:6px 12px;border-radius:99px}
+.phones{display:flex;gap:28px;justify-content:center;max-width:1720px;margin:0 auto;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}
+.phone-wrap{scroll-snap-align:center;flex-shrink:0}
+.phone-cap{font-weight:600;font-size:14px;margin:0 0 10px 6px;color:var(--ink-2)}
+.phone{width:390px;height:844px;border-radius:44px;overflow:hidden;background:var(--ground);position:relative;display:flex;flex-direction:column;box-shadow:0 2px 4px rgba(10,30,60,.08),0 24px 48px -18px rgba(10,30,60,.35);border:8px solid #0B1626}
+@media (max-width:520px){.board{padding:16px 0 32px}.board-h{padding:0 16px}.phones{justify-content:flex-start;padding:0 16px 12px;gap:16px}.phone{width:min(390px,calc(100vw - 32px));height:780px;border-radius:36px;border-width:6px}}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--rule) transparent}
+.status{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-weight:600;font-size:14px;flex-shrink:0}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:4px;border-radius:2px;background:currentColor}
+
+/* ── Banda del club ── */
+.band{background:var(--shell);color:var(--shell-tx);padding:0 20px 42px;position:relative}
+.band .status{padding:0 6px;color:var(--shell-tx)}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 0 14px}
+.brand img{width:34px;height:34px;border-radius:9px}
+.brand b{font-family:var(--fd);font-size:20px;font-weight:700;letter-spacing:.01em}
+.brand .me{margin-left:auto;width:36px;height:36px;border-radius:50%;background:var(--shell-2);display:grid;place-items:center;font-weight:600;font-size:13px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25)}
+.week{font-family:var(--fd);font-weight:700;font-size:44px;line-height:.95;letter-spacing:-.01em}
+.week small{font-size:26px;color:var(--shell-mu);font-weight:600}
+.phase{color:var(--shell-mu);font-size:15px;margin-top:6px}
+.phase b{color:var(--lime);font-weight:600}
+
+/* ── Tarjeta de score (firma) ── */
+.card{background:var(--card);border-radius:18px;box-shadow:0 1px 2px rgba(14,27,44,.06),0 8px 20px -12px rgba(14,27,44,.22)}
+.score{margin:-30px 14px 0;position:relative;padding:14px 12px 12px}
+.score-t{display:flex;justify-content:space-between;align-items:baseline;padding:0 4px 10px}
+.score-t h2{font-family:var(--fd);font-size:19px;font-weight:700}
+.score-t span{font-size:13px;color:var(--ink-2)}
+.sc{width:100%;border-collapse:collapse;table-layout:fixed;font-family:var(--fd)}
+.sc th,.sc td{text-align:center;height:30px;font-size:16px;font-weight:600;border-left:1px solid var(--rule-2)}
+.sc th{font-size:12px;color:var(--ink-2);font-weight:600;height:22px}
+.sc .lab{width:38px;text-align:left;font-family:var(--fb);font-size:12px;font-weight:600;color:var(--ink-2);border-left:0;padding-left:4px}
+.sc tr+tr td{border-top:1px solid var(--rule-2)}
+.sc .ph th{font-family:var(--fb);font-size:11px;letter-spacing:.02em;color:var(--shell-2);height:20px;border-left:1px solid var(--rule);border-bottom:2px solid var(--shell-2)}
+.sc .ph th.lab{border:0}
+.sc th.ev{position:relative}
+.sc th.ev::after{content:"";position:absolute;left:50%;top:-1px;transform:translateX(-50%);border:4px solid transparent;border-top:5px solid var(--amber)}
+.sc .meta td:not(.lab){color:var(--ink-2);font-weight:600}
+.sc .now{background:var(--shell);color:#fff!important;border-left-color:var(--shell)}
+.sc th.now{border-radius:6px 6px 0 0}
+.sc tr:last-child .now{border-radius:0 0 6px 6px}
+.sc .fut{color:#B4C0CC!important}
+.mk{position:relative;display:inline-grid;place-items:center;width:20px;height:20px}
+.mk svg{position:absolute;inset:0;width:20px;height:20px;overflow:visible}
+.mk.ok svg circle{fill:none;stroke:var(--fair);stroke-width:2;stroke-dasharray:66;stroke-dashoffset:0}
+.mk.miss svg rect{fill:none;stroke:var(--amber);stroke-width:2;stroke-dasharray:80;stroke-dashoffset:0}
+.mk.ok{color:var(--fair)} .mk.miss{color:var(--amber)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 4px 0;font-size:12px;color:var(--ink-2);border-top:1px solid var(--rule-2);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend svg{width:14px;height:14px}
+.tot{margin-left:auto;font-weight:600;color:var(--ink)}
+
+/* ── Hoy ── */
+.sec{padding:18px 20px 0}
+.today h2{font-family:var(--fd);font-size:30px;font-weight:700;line-height:1;letter-spacing:-.005em}
+.today .sub{color:var(--ink-2);font-size:14px;margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 10px}
+.today .sub b{color:var(--ink);font-weight:600}
+.exlist{list-style:none;margin-top:14px;padding:4px 14px}
+.exlist li{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule-2)}
+.exlist li:last-child{border-bottom:0}
+.exlist img{width:44px;height:44px;border-radius:10px;object-fit:cover;background:var(--stage)}
+.exlist .n{flex:1;min-width:0}
+.exlist .n b{display:block;font-weight:600;font-size:15px}
+.exlist .n small{color:var(--ink-2);font-size:13px}
+.exlist .more{color:var(--shell-2);font-weight:600;font-size:14px;justify-content:center}
+.cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:58px;border-radius:16px;background:var(--fair);color:#fff;font-size:18px;font-weight:700;letter-spacing:.01em;box-shadow:0 1px 1px rgba(14,27,44,.12),0 10px 22px -10px rgba(30,122,60,.65);transition:transform .16s var(--ease),background .2s}
+.cta:active{transform:scale(.98)}
+@media (hover:hover){.cta:hover{background:#18692F}}
+.cta.blue{background:var(--shell);box-shadow:0 10px 22px -10px rgba(10,53,118,.6)}
+.notice{display:flex;gap:12px;align-items:flex-start;margin:14px 20px 0;padding:12px 14px;border-radius:14px;background:var(--amber-bg);color:#5C3700;font-size:14px}
+.notice b{display:block;color:#3F2600}
+.notice .ico{color:var(--amber);margin-top:1px}
+.facts{display:grid;grid-template-columns:1fr 1fr;margin:14px 20px 0;gap:10px}
+.fact{padding:12px 14px}
+.fact small{display:block;color:var(--ink-2);font-size:13px}
+.fact b{font-family:var(--fd);font-size:26px;font-weight:700;line-height:1.1}
+.fact b em{font-style:normal;font-size:16px;color:var(--ink-2);font-weight:600}
+
+/* ── Barra de pestañas ── */
+.tabs{flex-shrink:0;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border-top:1px solid var(--rule);padding:6px 6px 22px}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:#55657A;padding:6px 0;border-radius:10px}
+.tab.on{color:var(--shell)}
+.tab.on .ico{stroke-width:2.4}
+.tab.on::after{content:'';width:18px;height:3px;border-radius:2px;background:var(--lime);margin-top:1px}
+
+/* ── Sesión ── */
+.topbar{display:flex;align-items:center;gap:10px;padding:2px 14px 10px;background:var(--card)}
+.iconbtn{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--ink)}
+@media (hover:hover){.iconbtn:hover{background:var(--rule-2)}}
+.topbar .tt{flex:1;min-width:0}
+.topbar .tt b{display:block;font-weight:700;font-size:16px}
+.topbar .tt small{color:var(--ink-2);font-size:13px}
+.segs{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:0 16px 12px;background:var(--card);border-bottom:1px solid var(--rule)}
+.segs i{height:5px;border-radius:3px;background:var(--rule-2)}
+.segs i.d{background:var(--fair)} .segs i.c{background:linear-gradient(90deg,var(--fair) 50%,var(--rule-2) 50%)}
+.exh{padding:18px 20px 0}
+.exh h2{font-family:var(--fd);font-size:32px;font-weight:700;line-height:1}
+.exh .rx{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:5px 10px;border-radius:99px;background:var(--card);box-shadow:inset 0 0 0 1px var(--rule)}
+.pill.link{color:var(--shell-2);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--shell-2) 40%,transparent)}
+.pill .ico{width:16px;height:16px}
+.hint{margin:14px 20px 0;font-size:14px;color:var(--fair);display:flex;gap:8px;align-items:flex-start;font-weight:500}
+.hint .ico{width:18px;height:18px;margin-top:1px}
+.sets{margin:12px 14px 0;padding:6px 0}
+.srow{display:grid;grid-template-columns:44px 1fr 74px 64px 44px;align-items:center;gap:4px;padding:0 12px;min-height:50px;border-bottom:1px solid var(--rule-2);font-size:15px}
+.srow:last-child{border-bottom:0}
+.srow.h{min-height:30px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.srow .num{font-family:var(--fd);font-weight:700;font-size:19px}
+.srow .prev{color:var(--ink-2);font-size:14px}
+.srow .v{font-family:var(--fd);font-weight:700;font-size:20px;text-align:center}
+.srow .v .mk{width:30px;height:30px}.srow .v .mk svg{width:30px;height:30px}
+.srow.done{background:var(--lime-bg)}
+.srow.done .num{color:var(--fair)}
+.chk{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;box-shadow:inset 0 0 0 2px var(--rule);justify-self:end;transition:background .2s var(--ease),box-shadow .2s}
+.chk .ico{width:18px;height:18px;stroke-width:3;opacity:0}
+.srow.done .chk{background:var(--fair);box-shadow:none;color:#fff}
+.srow.done .chk .ico{opacity:1}
+.active-set{padding:14px 12px 16px;border-bottom:1px solid var(--rule-2);background:#F4F8FD;box-shadow:inset 0 2px 0 var(--shell-2)}
+.active-set .lbl{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2);font-weight:600;margin-bottom:10px}
+.steppers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stp{background:var(--card);border-radius:14px;box-shadow:inset 0 0 0 1.5px var(--rule);display:grid;grid-template-columns:48px 1fr 48px;align-items:center;height:64px}
+.stp button{height:64px;display:grid;place-items:center;color:var(--shell)}
+.stp button:active{background:var(--rule-2)}
+.stp output{text-align:center;font-family:var(--fd);font-weight:700;font-size:30px;line-height:1}
+.stp output small{display:block;font-family:var(--fb);font-size:11px;font-weight:600;color:var(--ink-2);margin-top:2px}
+.rest{margin:12px 14px 0;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--shell);color:#fff}
+.rest .clock{font-family:var(--fd);font-weight:700;font-size:30px;line-height:1}
+.rest .rl{flex:1;font-size:13px;color:var(--shell-mu);white-space:nowrap}
+.rest .rl b{display:block;color:#fff;font-size:14px}
+.rest button{height:44px;padding:0 12px;white-space:nowrap;border-radius:10px;font-weight:600;font-size:14px;background:rgba(255,255,255,.12);color:#fff}
+.rest .bar{position:absolute;left:0;bottom:0;height:3px;background:var(--lime)}
+.foot{flex-shrink:0;padding:12px 16px 26px;background:var(--card);border-top:1px solid var(--rule)}
+
+/* ── Técnica ── */
+.stage{background:var(--stage);position:relative;height:380px;flex-shrink:0;overflow:hidden;display:flex;justify-content:center}
+.stage video{height:380px;width:auto;max-width:none;display:block}
+.stage .top{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 12px}
+.stage .status{color:#fff;padding:0 14px;position:absolute;top:0;left:0;right:0}
+.stage .iconbtn{color:#fff;background:rgba(255,255,255,.1);position:absolute;top:50px;left:12px}
+.stage .play{position:absolute;right:14px;bottom:14px;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 10px;border-radius:99px;background:rgba(7,20,42,.72);color:#fff;font-weight:600;font-size:14px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.stage .play .ico{width:18px;height:18px;fill:var(--lime);stroke:var(--lime)}
+.tech{padding:18px 20px 22px}
+.tech h2{font-family:var(--fd);font-size:30px;font-weight:700;line-height:1}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tags span{font-size:13px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--lime-bg);color:#2D5A0C}
+.tech h3{font-family:var(--fd);font-size:20px;font-weight:700;margin:22px 0 8px}
+.steps{list-style:none;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:10px;padding:8px 0;font-size:15px}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--shell);color:#fff;display:grid;place-items:center;font-family:var(--fd);font-weight:700;font-size:16px}
+.errs{list-style:none}
+.errs li{display:grid;grid-template-columns:30px 1fr;gap:10px;padding:7px 0;font-size:15px}
+.errs .ico{color:var(--red);width:20px;height:20px;margin:2px 0 0 4px}
+.coach{margin-top:20px;padding:14px 16px;display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start}
+.coach .av{width:40px;height:40px;border-radius:50%;background:var(--shell);color:#fff;display:grid;place-items:center;font-weight:600;font-size:14px}
+.coach b{font-size:14px}
+.coach p{font-size:15px;margin-top:2px}
+
+/* ── Progreso ── */
+.band.short{padding-bottom:20px}
+.band h2{font-family:var(--fd);font-size:34px;font-weight:700;line-height:1}
+.goal{display:inline-flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;font-weight:600;color:var(--ink);background:var(--lime);padding:5px 12px;border-radius:99px}
+.place{margin:14px 14px 0;padding:16px}
+.tot-card{margin-bottom:12px}.tot-card td,.tot-card th{height:34px}.tot-card .lab{width:72px}.tot-card .mk{width:30px;height:30px}.tot-card .mk svg{width:30px;height:30px}
+.place-row{display:flex;align-items:baseline;gap:10px;padding-top:10px;border-top:1px solid var(--rule-2)}
+.place-row .pos{font-family:var(--fd);font-weight:700;font-size:56px;line-height:.9;color:var(--shell)}
+.place-row .pos sup{font-size:22px;vertical-align:top;margin-left:1px}
+.place-row .of{font-size:15px;color:var(--ink-2);line-height:1.25}
+.place-row .of b{color:var(--ink);font-weight:600}
+.place-row .pts{margin-left:auto;text-align:right;font-family:var(--fd);font-weight:700;font-size:26px;line-height:1}
+.place-row .pts small{display:block;font-family:var(--fb);font-size:12px;font-weight:600;color:var(--ink-2)}
+.split{display:flex;height:10px;border-radius:5px;overflow:hidden;margin-top:14px;background:var(--rule-2)}
+.split i:first-child{background:var(--shell-2)} .split i:last-child{background:var(--lime)}
+.split-l{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2);margin-top:6px}
+.split-l b{color:var(--ink);font-weight:600}
+.private{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);margin-top:12px;padding-top:10px;border-top:1px solid var(--rule-2)}
+.private .ico{width:15px;height:15px}
+.chg{margin:14px 14px 0;padding:6px 16px}
+.chg-r{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--rule-2)}
+.chg-r:last-child{border-bottom:0}
+.chg-r span{font-size:15px}
+.chg-r span small{display:block;font-size:12px;color:var(--ink-2)}
+.chg-r .from{font-size:14px;color:var(--ink-2)}
+.chg-r .d{font-family:var(--fd);font-weight:700;font-size:20px;min-width:92px;text-align:right;display:inline-flex;align-items:center;justify-content:flex-end;gap:6px}
+.chg-r .d .mk{width:16px;height:16px}.chg-r .d .mk svg{width:16px;height:16px}
+.good{color:var(--fair)}
+.chart{margin:14px 14px 0;padding:14px 14px 10px}
+.chart h3,.next h3{font-family:var(--fd);font-size:19px;font-weight:700}
+.chart svg{width:100%;height:auto;display:block;margin-top:8px}
+.next{margin:14px 14px 16px;padding:14px 16px}
+.next li{list-style:none;display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--rule-2);font-size:15px}
+.next li:last-child{border-bottom:0}
+.next li b{margin-left:auto;font-family:var(--fd);font-size:19px;color:var(--fair)}
+.next .ico{color:var(--shell-2)}
+
+/* ── Movimiento: la tarjeta de score se anota al abrir ── */
+@media (prefers-reduced-motion:no-preference){
+  .js .mk.ok svg circle{animation:draw .7s var(--ease) both;animation-delay:calc(var(--i)*70ms + 250ms)}
+  .js .mk.miss svg rect{animation:draw2 .7s var(--ease) both;animation-delay:calc(var(--i)*70ms + 250ms)}
+  .js .sc .now{animation:fill .5s var(--ease) both .15s}
+  @keyframes draw{from{stroke-dashoffset:66}}
+  @keyframes draw2{from{stroke-dashoffset:80}}
+  @keyframes fill{from{background:transparent;color:var(--ink)}}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-dumb" viewBox="0 0 24 24"><path d="M6 7v10M3 9.5v5M18 7v10M21 9.5v5M6 12h12"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15zM5 19l7-7"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="17" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M4 17 10 11l4 4 6-7M14 8h6v6"/></symbol>
+    <symbol id="i-ruler" viewBox="0 0 24 24"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></symbol>
+    <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></symbol>
+    <symbol id="m-circ" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></symbol>
+    <symbol id="m-box" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/></symbol>
+  </defs>
+</svg>
+
+<div class="board">
+  <div class="board-h">
+    <div>
+      <h1>Reto Fit CCA · vista del socio</h1>
+      <p>Propuesta de rediseño con los colores y el logo del club. Las 12 semanas se anotan como la tarjeta de score del campo: cada semana es un hoyo y tus sesiones se comparan contra la meta, como los golpes contra el par.</p>
+    </div>
+    <span class="sample">Datos de ejemplo</span>
+  </div>
+
+  <div class="phones">
+    <!-- ═══ 1 · INICIO ═══ -->
+    <div class="phone-wrap">
+      <p class="phone-cap">Inicio: qué me toca hoy</p>
+      <section class="phone" id="inicio" aria-label="Inicio">
+        <div class="scroll">
+          <header class="band">
+            <div class="status"><span>9:41</span><span class="dots"><i style="height:6px"></i><i style="height:9px"></i><i style="height:12px"></i></span></div>
+            <div class="brand"><img src="../../../icons/marca/cca-logo.png" alt=""><b>Reto Fit CCA</b><span class="me" aria-label="Laura Medina">LM</span></div>
+            <div class="week">Semana 5 <small>de 12</small></div>
+            <p class="phase"><b>Fuerza e hipertrofia</b> · día 33 de 84 · racha de 9 días</p>
+          </header>
+
+          <div class="card score" aria-label="Tarjeta del reto">
+            <div class="score-t"><h2>Tu tarjeta</h2><span>sesiones por semana</span></div>
+            <table class="sc">
+              <tr class="ph"><th class="lab"></th><th colspan="4">Fase 1</th><th colspan="4">Fase 2</th><th colspan="4">Fase 3</th></tr>
+              <tr><th class="lab"></th><th>1</th><th>2</th><th>3</th><th>4</th><th class="now">5</th><th class="ev">6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th class="ev">12</th></tr>
+              <tr class="meta"><td class="lab">Meta</td><td>4</td><td>4</td><td>4</td><td>4</td><td class="now">4</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
+              <tr><td class="lab">Tú</td>
+                <td><span class="mk ok" style="--i:0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></svg>4</span></td>
+                <td><span class="mk miss" style="--i:1"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>3</span></td>
+                <td><span class="mk ok" style="--i:2"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></svg>4</span></td>
+                <td><span class="mk ok" style="--i:3"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></svg>5</span></td>
+                <td class="now">2</td>
+                <td class="fut">·</td><td class="fut">·</td><td class="fut">·</td><td class="fut">·</td><td class="fut">·</td><td class="fut">·</td><td class="fut">·</td></tr>
+            </table>
+            <div class="legend">
+              <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="#1E7A3C" stroke-width="2.4"/></svg>cumplida</span>
+              <span><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="#9A5B00" stroke-width="2.4"/></svg>faltó</span>
+              <span><svg viewBox="0 0 24 24"><path d="M5 7h14l-7 9z" fill="#9A5B00"/></svg>evaluación</span><span class="tot">18 de 48</span>
+            </div>
+          </div>
+
+          <div class="sec today">
+            <h2>Hoy: pierna y glúteo</h2>
+            <p class="sub"><span>Día B</span><span><b>6</b> ejercicios</span><span>~<b>55</b> min</span><span>Plan de <b>Coach Diego</b></span></p>
+            <button class="cta" style="margin-top:14px">Empezar sesión <svg class="ico"><use href="#i-arrow"/></svg></button>
+            <ul class="card exlist">
+              <li><img src="../../../img/ejercicios/mini-sentadilla-goblet.webp" alt=""><span class="n"><b>Sentadilla goblet</b><small>4 × 10 · 16 kg</small></span></li>
+              <li><img src="../../../img/ejercicios/mini-sentadilla-bulgara.webp" alt=""><span class="n"><b>Sentadilla búlgara</b><small>4 × 10–12 · 14 kg</small></span></li>
+              <li><img src="../../../img/ejercicios/mini-hip-thrust-con-disco.webp" alt=""><span class="n"><b>Hip thrust con disco</b><small>4 × 12 · 40 kg</small></span></li>
+              <li class="more">y 3 ejercicios más</li>
+            </ul>
+          </div>
+
+          <div class="notice"><svg class="ico"><use href="#i-cal"/></svg><div><b>Evaluación de la semana 6</b>Lunes 15 de febrero. Pídele la hora a tu entrenador.</div></div>
+          <div style="height:18px"></div>
+        </div>
+        <nav class="tabs" aria-label="Secciones">
+          <a class="tab on"><svg class="ico"><use href="#i-home"/></svg>Inicio</a>
+          <a class="tab"><svg class="ico"><use href="#i-dumb"/></svg>Rutina</a>
+          <a class="tab"><svg class="ico"><use href="#i-chart"/></svg>Progreso</a>
+          <a class="tab"><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a>
+          <a class="tab"><svg class="ico"><use href="#i-user"/></svg>Perfil</a>
+        </nav>
+      </section>
+    </div>
+
+    <!-- ═══ 2 · SESIÓN ═══ -->
+    <div class="phone-wrap">
+      <p class="phone-cap">Registrar mi sesión</p>
+      <section class="phone" id="sesion" aria-label="Registrar sesión" style="background:var(--ground)">
+        <div class="status" style="background:var(--card)"><span>10:07</span><span class="dots"><i style="height:6px"></i><i style="height:9px"></i><i style="height:12px"></i></span></div>
+        <div class="topbar">
+          <button class="iconbtn" aria-label="Salir de la sesión"><svg class="ico"><use href="#i-x"/></svg></button>
+          <div class="tt"><b>Pierna y glúteo</b><small>Ejercicio 2 de 6 · 18 min</small></div>
+        </div>
+        <div class="segs" aria-hidden="true"><i class="d"></i><i class="c"></i><i></i><i></i><i></i><i></i></div>
+        <div class="scroll">
+          <div class="exh">
+            <h2>Sentadilla búlgara</h2>
+            <div class="rx">
+              <span class="pill">4 series</span><span class="pill">10–12 reps</span><span class="pill">descanso 90 s</span>
+              <button class="pill link" data-go="tecnica"><svg class="ico"><use href="#i-eye"/></svg>Ver técnica</button>
+            </div>
+          </div>
+          <p class="hint"><svg class="ico"><use href="#i-up"/></svg>La vez pasada hiciste 12 reps con 14 kg: hoy prueba con 16 kg.</p>
+          <div class="card sets" role="table" aria-label="Series">
+            <div class="srow h" role="row"><span>Serie</span><span>Anterior</span><span style="text-align:center">Kg</span><span style="text-align:center">Reps</span><span></span></div>
+            <div class="srow done" role="row"><span class="num">1</span><span class="prev">14 × 12</span><span class="v">16</span><span class="v"><span class="mk ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></svg>11</span></span><span class="chk"><svg class="ico"><use href="#i-check"/></svg></span></div>
+            <div class="srow done" role="row"><span class="num">2</span><span class="prev">14 × 11</span><span class="v">16</span><span class="v"><span class="mk ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></svg>10</span></span><span class="chk"><svg class="ico"><use href="#i-check"/></svg></span></div>
+            <div class="active-set" id="act">
+              <div class="lbl"><span>Serie 3 · anterior 14 × 10</span><span>Meta 10–12</span></div>
+              <div class="steppers">
+                <div class="stp"><button aria-label="Menos peso" data-s="kg" data-d="-2"><svg class="ico"><use href="#i-minus"/></svg></button><output id="kg">16<small>kg</small></output><button aria-label="Más peso" data-s="kg" data-d="2"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+                <div class="stp"><button aria-label="Menos repeticiones" data-s="rp" data-d="-1"><svg class="ico"><use href="#i-minus"/></svg></button><output id="rp">10<small>reps</small></output><button aria-label="Más repeticiones" data-s="rp" data-d="1"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+              </div>
+            </div>
+            <div class="srow" role="row"><span class="num" style="color:var(--ink-2)">4</span><span class="prev">12 × 12</span><span class="v" style="color:#B4C0CC">–</span><span class="v" style="color:#B4C0CC">–</span><span class="chk"></span></div>
+          </div>
+          <div class="rest" style="position:relative;overflow:hidden">
+            <span class="clock" id="clock">1:12</span>
+            <span class="rl"><b>Descanso</b>luego serie 3</span>
+            <button id="plus15">+15 s</button><button id="skip">Saltar</button>
+            <span class="bar" id="rbar" style="width:20%"></span>
+          </div>
+          <div style="height:16px"></div>
+        </div>
+        <div class="foot"><button class="cta" id="save">Guardar serie 3 <svg class="ico"><use href="#i-check"/></svg></button></div>
+      </section>
+    </div>
+
+    <!-- ═══ 3 · TÉCNICA ═══ -->
+    <div class="phone-wrap">
+      <p class="phone-cap">Técnica del ejercicio</p>
+      <section class="phone" id="tecnica" aria-label="Técnica" style="background:var(--card)">
+        <div class="stage">
+          <video id="vid" poster="../../../img/ejercicios/sentadilla-goblet.webp" muted loop playsinline preload="metadata" aria-label="Video: sentadilla goblet"><source src="../../../img/ejercicios/sentadilla-goblet.webm" type="video/webm"><source src="../../../img/ejercicios/sentadilla-goblet.mp4" type="video/mp4"></video>
+          <div class="status"><span>10:09</span><span class="dots"><i style="height:6px"></i><i style="height:9px"></i><i style="height:12px"></i></span></div>
+          <button class="iconbtn" aria-label="Volver a la sesión"><svg class="ico"><use href="#i-back"/></svg></button>
+          <button class="play" id="play"><svg class="ico"><use href="#i-play"/></svg><span>Ver movimiento</span></button>
+        </div>
+        <div class="scroll">
+          <div class="tech">
+            <h2>Sentadilla goblet</h2>
+            <div class="tags"><span>Cuádriceps</span><span>Glúteo</span><span>Core</span></div>
+            <h3>Puntos clave</h3>
+            <ol class="steps">
+              <li>Sostén la mancuerna pegada al pecho, codos hacia abajo.</li>
+              <li>Baja en 3 segundos con el pecho alto, hasta que la cadera pase la rodilla.</li>
+              <li>Empuja con todo el pie y sube aprietando glúteo.</li>
+            </ol>
+            <h3>Errores comunes</h3>
+            <ul class="errs">
+              <li><svg class="ico"><use href="#i-x"/></svg>Rodillas que se van hacia adentro.</li>
+              <li><svg class="ico"><use href="#i-x"/></svg>Despegar los talones al bajar.</li>
+              <li><svg class="ico"><use href="#i-x"/></svg>Redondear la espalda al final.</li>
+            </ul>
+            <div class="card coach"><span class="av">DR</span><div><b>Coach Diego</b><p>Si te molesta la rodilla, baja solo hasta donde no duela y avísame.</p></div></div>
+          </div>
+        </div>
+        <div class="foot"><button class="cta blue">Volver a mi sesión</button></div>
+      </section>
+    </div>
+
+    <!-- ═══ 4 · PROGRESO ═══ -->
+    <div class="phone-wrap">
+      <p class="phone-cap">Mi progreso y mi lugar</p>
+      <section class="phone" id="progreso" aria-label="Progreso">
+        <div class="scroll">
+          <header class="band short">
+            <div class="status"><span>9:41</span><span class="dots"><i style="height:6px"></i><i style="height:9px"></i><i style="height:12px"></i></span></div>
+            <h2 style="margin-top:8px">Mi progreso</h2>
+            <span class="goal">Bajar porcentaje de grasa</span>
+          </header>
+
+          <div class="card place">
+            <table class="sc tot-card">
+              <tr><th class="lab"></th><th>Fase 1</th><th class="now">Fase 2</th><th>Fase 3</th><th>Total</th></tr>
+              <tr class="meta"><td class="lab">Sesiones</td><td><span class="mk ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></svg>16</span></td><td class="now">2</td><td class="fut">·</td><td>18</td></tr>
+              <tr><td class="lab">Puntos</td><td>1,610</td><td class="now">230</td><td class="fut">·</td><td><b>1,840</b></td></tr>
+            </table>
+            <div class="place-row">
+              <span class="pos">12<sup>º</sup></span>
+              <span class="of">lugar de <b>118</b> socios<br>en tu objetivo</span>
+            </div>
+            <p class="private"><svg class="ico"><use href="#i-lock"/></svg>Solo tú ves tu lugar. No se muestran otros socios.</p>
+          </div>
+
+          <div class="card chg" aria-label="Cambios desde la semana 0">
+            <div class="chg-r"><span>Peso<small>semana 0 → hoy</small></span><span class="from">74.6 → 71.4 kg</span><span class="d good"><span class="mk ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></svg></span>−3.2 kg</span></div>
+            <div class="chg-r"><span>Cintura</span><span class="from">88 → 84 cm</span><span class="d good"><span class="mk ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></svg></span>−4 cm</span></div>
+            <div class="chg-r"><span>Grasa<small>estimada</small></span><span class="from">31.2 → 29.4 %</span><span class="d good"><span class="mk ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></svg></span>−1.8 %</span></div>
+            <div class="chg-r"><span>Fuerza<small>kg promedio de tus ejercicios</small></span><span class="from">31 → 35 kg</span><span class="d good"><span class="mk ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5"/></svg></span>+14 %</span></div>
+          </div>
+
+          <div class="card chart">
+            <h3>Peso por semana</h3>
+            <svg viewBox="0 0 360 150" role="img" aria-label="Peso de 74.6 kg en la semana 0 a 71.4 kg en la semana 5; evaluación de la semana 6 pendiente">
+              <g font-family="Barlow" font-size="11" fill="#46566B">
+                <text x="0" y="22">75</text><text x="0" y="72">73</text><text x="0" y="122">71</text>
+              </g>
+              <g stroke="#E6ECF1"><path d="M22 18H356M22 68H356M22 118H356"/></g>
+              <path d="M30 8V128" stroke="#0E4294" stroke-width="1.2" opacity=".35"/>
+              <path d="M350 8V128" stroke="#9A5B00" stroke-dasharray="3 4" stroke-width="1.4"/>
+              <polyline fill="none" stroke="#0E4294" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="30,28 84,38 138,58 192,73 246,93 300,108"/>
+              <g fill="#fff" stroke="#0E4294" stroke-width="2"><circle cx="30" cy="28" r="3.5"/><circle cx="84" cy="38" r="3.5"/><circle cx="138" cy="58" r="3.5"/><circle cx="192" cy="73" r="3.5"/><circle cx="246" cy="93" r="3.5"/></g>
+              <circle cx="300" cy="108" r="5" fill="#A6E241" stroke="#0E4294" stroke-width="2"/>
+              <g font-family="Barlow" font-size="11" fill="#46566B" text-anchor="middle">
+                <text x="30" y="145">S0</text><text x="84" y="145">S1</text><text x="138" y="145">S2</text><text x="192" y="145">S3</text><text x="246" y="145">S4</text><text x="300" y="145" fill="#0E1B2C" font-weight="600">Hoy</text><text x="350" y="145">S6</text>
+              </g>
+              <text x="35" y="12" font-family="Barlow" font-size="10.5" fill="#0E4294">Evaluación inicial</text><text x="346" y="12" font-family="Barlow" font-size="10.5" fill="#9A5B00" text-anchor="end">Evaluación S6</text>
+            </svg>
+          </div>
+
+          <div class="card next">
+            <h3>Suma puntos esta semana</h3>
+            <ul>
+              <li><svg class="ico"><use href="#i-dumb"/></svg>Haz 2 sesiones más para llegar a tu meta de 4<b>+120</b></li>
+              <li><svg class="ico"><use href="#i-ruler"/></svg>Registra cintura, cuello y cadera<b>+20</b></li>
+            </ul>
+          </div>
+        </div>
+        <nav class="tabs" aria-label="Secciones">
+          <a class="tab"><svg class="ico"><use href="#i-home"/></svg>Inicio</a>
+          <a class="tab"><svg class="ico"><use href="#i-dumb"/></svg>Rutina</a>
+          <a class="tab on"><svg class="ico"><use href="#i-chart"/></svg>Progreso</a>
+          <a class="tab"><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a>
+          <a class="tab"><svg class="ico"><use href="#i-user"/></svg>Perfil</a>
+        </nav>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+document.documentElement.classList.add('js');
+// Contadores de peso y repeticiones
+const val={kg:16,rp:10};
+document.querySelectorAll('.stp button').forEach(b=>b.addEventListener('click',()=>{
+  const k=b.dataset.s, d=+b.dataset.d; val[k]=Math.max(0,val[k]+d);
+  document.getElementById(k).firstChild.nodeValue=val[k];
+}));
+// Descanso
+let rest=72; const tot=90;
+const pinta=()=>{ const m=Math.floor(rest/60), s=String(rest%60).padStart(2,'0');
+  document.getElementById('clock').textContent=m+':'+s;
+  document.getElementById('rbar').style.width=((tot-rest)/tot*100)+'%'; };
+setInterval(()=>{ if(rest>0){ rest--; pinta(); } },1000);
+document.getElementById('plus15').onclick=()=>{ rest+=15; pinta(); };
+document.getElementById('skip').onclick=()=>{ rest=0; pinta(); };
+document.getElementById('save').onclick=function(){ this.firstChild.nodeValue='Serie 3 guardada '; };
+// Video de técnica
+const v=document.getElementById('vid'), pl=document.getElementById('play');
+pl.onclick=()=>{ if(v.paused){ v.play(); pl.lastElementChild.textContent='Pausar'; } else { v.pause(); pl.lastElementChild.textContent='Ver movimiento'; } };
+// "Ver técnica" lleva a la pantalla de técnica
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>document.getElementById(b.dataset.go).scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})));
+</script>
+</body>
+</html>
