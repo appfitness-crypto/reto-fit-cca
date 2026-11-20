@@ -41,7 +41,7 @@ function idxDeSocio(s){
   if(m.vence||m.ancla||m.suspendido) o.m={v:m.vence||null, a:m.ancla||null, su:m.suspendido||null};
   // Reto Fit CCA: resumen de puntos para que el tablero no tenga que descargar el expediente completo (js/54)
   try{ if(typeof trResumenIndice==='function'){ const rt=trResumenIndice(s); if(rt) o.rt=rt; } }catch(e){}
-  if(s.mascota && s.mascota.id) o.mc={i:s.mascota.id, n:s.mascota.nombre||''};
+  if(s.mascota && s.mascota.id && !s.mascotaOculta) o.mc={i:s.mascota.id, n:s.mascota.nombre||''};
   return limpio(o);
 }
 /* ── Ficha ligera para la lista (misma forma que un socio, sin rutina ni historial pesado) ── */
