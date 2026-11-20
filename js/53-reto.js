@@ -49,7 +49,8 @@ function retoBannerHTML(){
     <div class="rb-bar"><i style="width:${e.pct}%"></i></div>
     <div class="rb-s">Día ${e.dia}/${e.totalDias}${e.fase?' · '+esc(e.fase.nombre):''}${e.evalSem?' · semana de evaluación':''}</div>`;
   }
-  return `<div class="reto-banner${pts?' con-pts':''}"><div class="rb-izq">${izq}</div>${pts}</div>`;
+  const masc=(typeof mascotaMiniHTML==='function' && typeof activeSocio!=='undefined' && activeSocio)?mascotaMiniHTML(activeSocio):'';
+  return `<div class="reto-banner${pts||masc?' con-pts':''}">${masc}<div class="rb-izq">${izq}</div>${pts}</div>`;
 }
 
 function retoPintar(){

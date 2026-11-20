@@ -260,7 +260,7 @@ function abrirTableroReto(obj){
         <tr><th>#</th><th>Socio</th><th>Sesiones</th><th>Cambio</th><th>Constancia</th><th>Progreso</th><th>Puntos</th></tr>
         ${rkVis.map((r,i)=>`<tr class="tr-click" onclick="staffOpenSocio('${esc(r.s.code)}')">
           <td><b class="tr-pos${i<3?' top':''}">${i+1}</b></td>
-          <td><div class="tr-who"><span class="tr-av">${esc(iniciales(r.s.nombre))}</span><span><b>${esc(tc(r.s.nombre))}</b><small>${esc(r.s.asignado||'—')}</small></span></div></td>
+          <td><div class="tr-who">${(()=>{ const st=typeof mascotaEstado==='function'?mascotaEstado(r.s):null; return st?`<span class="tr-av tr-masc" title="${esc(st.nombre)} · ${esc(st.etapa.nm)}">${mascotaImgHTML(st.m,st.etapa.n)}</span>`:`<span class="tr-av">${esc(iniciales(r.s.nombre))}</span>`; })()}<span><b>${esc(tc(r.s.nombre))}</b><small>${esc(r.s.asignado||'—')}</small></span></div></td>
           <td>${r.sesiones}<small class="tr-mu"> · ${r.semanasOk} sem</small></td>
           <td class="tr-cambio">${esc(trCambioTxt(r))}</td>
           <td>${r.ptsConst}</td><td>${r.ptsProg}</td><td><b>${r.puntos.toLocaleString('es-MX')}</b></td></tr>`).join('')}

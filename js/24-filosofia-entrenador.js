@@ -45,6 +45,7 @@ function actualizarBotonMiFilosofia(){
   const bC=document.getElementById('btn-mi-codigo'); if(bC) bC.style.display = (staffRol!=='coordinador' && miCodigoEntrenador()) ? 'inline-block' : 'none';
   const bV=document.getElementById('btn-ver-ent'); if(bV) bV.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bTr=document.getElementById('btn-tablero'); if(bTr) bTr.style.display = (staffRol==='coordinador' || staffActivoEntId) ? 'inline-block' : 'none';   // Reto Fit CCA (js/54-tablero-reto.js)
+  ['btn-avisos','btn-demo-cargar','btn-demo-borrar'].forEach(id=>{ const b=document.getElementById(id); if(b) b.style.display = staffRol==='coordinador' ? 'inline-block' : 'none'; });   // socios de prueba (js/56-demo-reto.js)
   const bRes=document.getElementById('btn-resumen'); if(bRes) bRes.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bAp=document.getElementById('btn-apariencia'); if(bAp) bAp.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bLu=document.getElementById('btn-lugares'); if(bLu) bLu.style.display = (staffRol==='coordinador' && GYM.geofence) ? 'inline-block' : 'none';
