@@ -2943,3 +2943,12 @@ html[data-theme="light"] .hero-card.estilo-poster+.today-c,html[data-theme="ligh
 .pr-pts-row span small{display:block;color:var(--mu);font-size:var(--fs-2xs)}
 .pr-pts-row b{font-variant-numeric:tabular-nums}
 .pr-pts-tip{font-size:var(--fs-xs);color:var(--mu);margin-top:8px;line-height:1.5}
+/* Puntos en la tarjeta del reto */
+.reto-banner.con-pts{display:flex;align-items:center;gap:14px}
+.reto-banner .rb-izq{flex:1;min-width:0}
+.rb-pts{flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:86px;padding:8px 12px;border-radius:16px;border:0;cursor:pointer;
+  background:var(--lime);color:var(--btn-tx);font:inherit;box-shadow:var(--glow);transition:transform .3s cubic-bezier(.23,1,.32,1)}
+.rb-pts b{font-family:var(--fd);font-weight:var(--fd-w);font-size:28px;line-height:1;font-variant-numeric:tabular-nums}
+.rb-pts small{font-size:11px;font-weight:600;opacity:.85;margin-top:2px;white-space:nowrap}
+.rb-pts.sube{transform:scale(1.08)}
+html[data-theme="dark"] .rb-pts{color:#0A0E13}

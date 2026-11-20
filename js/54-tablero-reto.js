@@ -67,8 +67,9 @@ function trCalcSocio(s, desde, P){
   const semanasOk = Object.values(porSem).filter(n=>n>=3).length;
   // Semanas con mediciones (peso o medidas)
   const semMed = new Set();
+  // El peso que se anota en la evaluación del registro es la línea base: no suma puntos de medición
   [...comoArray(s.logs?.pesoCorporal), ...comoArray(s.logs?.medidas)].forEach(m=>{
-    if(m && m.fecha && String(m.fecha)>=desde.iso) semMed.add(trSemanaIdx(trTsFecha(m.fecha), desde.ts));
+    if(m && m.fecha && String(m.fecha)>=desde.iso && m.fecha!==s.fechaRegistro) semMed.add(trSemanaIdx(trTsFecha(m.fecha), desde.ts));
   });
 
   // Peso corporal

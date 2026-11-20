@@ -1,45 +1,74 @@
-/* ═══ Reto Fit CCA · Tema "Claro" (colores del logo del CCA) ═══
-   Fondo blanco azulado, azul del club en los botones y lo activo, lima del logo para el progreso
-   y verde para lo cumplido. Solo cambia colores del tema claro ("light"); la estructura es la misma.
-   Se carga después de css/estilos.css. Para quitarlo, borra este archivo de index.html y sw.js. */
+/* ═══ Reto Fit CCA · Tema "Claro" ═══
+   Referencia elegida por el club (paleta Pale Mint / Midnight Navy / Coral aplicada como en su ejemplo):
+   · fondo azul cielo claro, con una gran curva navy y un trazo coral detrás del contenido;
+   · navy (#002941) en bloques grandes (tarjeta del reto, pestaña activa) y en títulos;
+   · coral (#FD6E6E) en el botón principal, el progreso y las líneas de acento.
+   Solo cambia colores del tema "light". Se carga después de css/estilos.css. */
 
 html[data-theme="light"]{
   color-scheme:light;
-  --lime:#0E4294;                 /* azul del club: pestaña activa, acentos */
-  --v:#0A3576;--v2:#1E7A3C;       /* azul profundo para textos de acento; verde para lo cumplido */
-  --n:#0E4294;--g:#9A5B00;--r:#C02A36;--p:#3D5BB8;
-  --heat:#7DBF2A;                 /* lima del logo (versión legible sobre blanco) */
-  --dk:#EEF3F8;--dk2:#FFFFFF;--dk3:#FFFFFF;
-  --tx:#0E1B2C;--mu:color-mix(in srgb,#0E1B2C 62%,transparent);
-  --gl:#FFFFFF;--gl2:color-mix(in srgb,#A6E241 32%,transparent);
-  --b:#DCE5EE;--b2:#C9D6E3;
-  --in-bg:#F3F7FB;--in-bg2:#EDF2F8;
-  --topbar:rgba(255,255,255,.92);
+  --sky:#B3DFF5;--sky2:#D9F0FB;--navy:#002941;--coral:#FD6E6E;--coral2:#F05A5A;
+  --lime:#002941;                 /* navy: pestaña activa */
+  --v:#0B4A6E;--v2:#1C7FA8;
+  --n:#0B4A6E;--g:#9A5B00;--r:#C9353E;--p:#3A5A86;
+  --heat:#FD6E6E;
+  --dk:#C7E8F8;--dk2:#FFFFFF;--dk3:#FFFFFF;
+  --tx:#002941;--mu:color-mix(in srgb,#002941 66%,transparent);
+  --gl:rgba(255,255,255,.86);--gl2:color-mix(in srgb,#FD6E6E 18%,transparent);
+  --b:rgba(255,255,255,.9);--b2:#A9D3E8;
+  --in-bg:#F1F9FD;--in-bg2:#E7F4FB;
+  --topbar:rgba(214,238,250,.9);
   --btn-tx:#FFFFFF;
-  --grad:linear-gradient(180deg,#1452B8 0%,#0A3576 100%);
-  --grad-txt:linear-gradient(135deg,#0E4294,#0A3576);
+  --grad:linear-gradient(180deg,#F86464 0%,#EA4F4F 100%);   /* botón principal coral (un poco más profundo para que el texto blanco se lea) */
+  --grad-txt:linear-gradient(135deg,#002941,#002941);
   --hi:rgba(255,255,255,.95);
-  --shadow:0 1px 2px rgba(10,40,90,.05),0 8px 20px -10px rgba(10,40,90,.18);
-  --glow:0 10px 22px -10px rgba(14,66,148,.55);
-  --scrim:rgba(8,20,40,.5);
-  --fill-track:#E1E9F2;
-  --ring1:#7DBF2A;--ring2:#A6E241;
-  --chart1:#0E4294;--chart2:#7DBF2A;
-  --acc:#0E4294;--acc-tx:#0A3576;--acc-ink:#FFFFFF;--acc-soft:rgba(14,66,148,.10);
+  --shadow:0 1px 2px rgba(0,41,65,.06),0 10px 24px -12px rgba(0,41,65,.25);
+  --glow:0 10px 22px -10px rgba(240,90,90,.6);
+  --scrim:rgba(0,20,32,.5);
+  --fill-track:rgba(0,41,65,.10);
+  --ring1:#FD6E6E;--ring2:#FF9B8F;
+  --chart1:#002941;--chart2:#FD6E6E;
+  --acc:#002941;--acc-tx:#002941;--acc-ink:#FFFFFF;--acc-soft:rgba(0,41,65,.08);
+  /* fondo: azul cielo + curva navy abajo a la derecha con su trazo coral */
   --mesh:
-    radial-gradient(70% 45% at 100% -5%, rgba(166,226,65,.22), transparent 60%),
-    radial-gradient(70% 50% at -10% 0%, rgba(14,66,148,.10), transparent 60%),
-    linear-gradient(180deg,#F5F8FC 0%,#ECF2F8 100%);
-  --gx-a:rgba(166,226,65,.24);--gx-b:rgba(14,66,148,.14);--gx-c:rgba(30,122,60,.12);
+    radial-gradient(circle at 118% 112%, #002941 0 38%, transparent 38.2%),
+    radial-gradient(circle at 118% 112%, transparent 0 40.5%, #FD6E6E 40.6% 41.4%, transparent 41.6%),
+    radial-gradient(circle at 118% 112%, transparent 0 44.5%, rgba(253,110,110,.55) 44.6% 45%, transparent 45.2%),
+    linear-gradient(180deg,#D9F0FB 0%,#B3DFF5 100%);
+  --gx-a:rgba(255,255,255,.5);--gx-b:rgba(253,110,110,.12);--gx-c:rgba(0,41,65,.08);
 }
-html[data-theme="light"] .it{background:color-mix(in srgb,#0E4294 10%,#fff);color:#0A3576;}
-html[data-theme="light"] .btn-go.soft{color:#0A3576;}
-html[data-theme="light"] .st-l,html[data-theme="light"] .memb-k{color:#4A5A6E;}
+
+/* Tarjetas: blanco casi opaco para que el texto se lea sobre la curva navy */
+html[data-theme="light"] .glass,html[data-theme="light"] .card,html[data-theme="light"] .kpi,html[data-theme="light"] .today,
+html[data-theme="light"] .ej-card,html[data-theme="light"] .day-row,html[data-theme="light"] .stat,html[data-theme="light"] .pr-pts{
+  background:rgba(255,255,255,.9);border-color:rgba(255,255,255,.95);
+}
+html[data-theme="light"] .it{background:#E3F2FA;color:#002941;}
+html[data-theme="light"] .btn-go.soft{color:#002941;}
+html[data-theme="light"] .st-l,html[data-theme="light"] .memb-k{color:#3E5A6B;}
 html[data-theme="light"] .bn-i.ac{color:#FFFFFF;}
-html[data-theme="light"] .bn-ind::after{background:#A6E241;}
+html[data-theme="light"] .bn-ind::after{background:#FD6E6E;}
 html[data-theme="light"] .ic-pri .ic-label,html[data-theme="light"] .ic-pri .ic-sub,html[data-theme="light"] .ic-pri .ic-arrow{color:#FFFFFF;}
-html[data-theme="light"] .reto-banner .rb-bar i{background:linear-gradient(90deg,#7DBF2A,#A6E241);}
-/* Portada: verde azulado del logo en lugar de negro */
+
+/* Tarjeta del reto (arriba): bloque navy con progreso coral, como el bloque navy de la referencia */
+html[data-theme="light"] .reto-banner{background:#002941;border-color:#002941;color:#FFFFFF;box-shadow:0 12px 26px -14px rgba(0,41,65,.65);}
+html[data-theme="light"] .reto-banner .rb-s,html[data-theme="light"] .reto-banner .rb-d{color:#A9CFE6;}
+html[data-theme="light"] .reto-banner .rb-bar{background:rgba(255,255,255,.16);}
+html[data-theme="light"] .reto-banner .rb-bar i{background:#FD6E6E;}
+html[data-theme="light"] .rb-pts{background:#FD6E6E;color:#002941;box-shadow:none;}
+/* Títulos en navy (la referencia usa navy pesado en cursiva) */
+html[data-theme="light"] .hero-card::after{background:linear-gradient(115deg,transparent 30%,rgba(253,110,110,.85) 30% 38%,transparent 38%);}
+
+/* Portada: azul cielo con títulos navy y botón coral */
 html[data-theme="light"] #s-inicio,
-html[data-theme="light"] #s-inicio .wc-hero{background:#0A2F5E;}
-html[data-theme="light"] #s-inicio .wc-ov{background:linear-gradient(0deg,#0A2F5E 0%,#0A2F5E 6%,rgba(10,47,94,.74) 26%,rgba(10,47,94,.12) 50%,rgba(10,47,94,0) 72%,rgba(10,47,94,.4) 100%);}
+html[data-theme="light"] #s-inicio .wc-hero{background:#B3DFF5;}
+html[data-theme="light"] #s-inicio .wc-ov{background:linear-gradient(0deg,#B3DFF5 0%,#B3DFF5 6%,rgba(179,223,245,.82) 24%,rgba(179,223,245,.15) 48%,rgba(179,223,245,0) 70%,rgba(0,41,65,.35) 100%);}
+html[data-theme="light"] #s-inicio .wc-tx h1{color:#002941;text-shadow:none;}
+html[data-theme="light"] #s-inicio .wc-tx p{color:#0B3A57;}
+html[data-theme="light"] #s-inicio .ic{background:#FFFFFF;border-color:#FFFFFF;color:#002941;}
+html[data-theme="light"] #s-inicio .ic .ic-label{color:#002941;}
+html[data-theme="light"] #s-inicio .ic .ic-sub{color:#3E5A6B;}
+html[data-theme="light"] #s-inicio .ic .ic-icon,html[data-theme="light"] #s-inicio .ic .ic-arrow{color:#002941;}
+html[data-theme="light"] #s-inicio .ic-pri{background:#FD6E6E;border-color:#FD6E6E;box-shadow:0 12px 24px -12px rgba(240,90,90,.7);}
+html[data-theme="light"] #s-inicio .ic-pri .ic-label,html[data-theme="light"] #s-inicio .ic-pri .ic-sub,html[data-theme="light"] #s-inicio .ic-pri .ic-arrow,html[data-theme="light"] #s-inicio .ic-pri .ic-icon{color:#002941;}
+html[data-theme="light"] #s-inicio .staff-link{color:#002941;}
