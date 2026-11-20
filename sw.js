@@ -8,7 +8,7 @@
    → Los datos de Firebase NUNCA pasan por aquí (van directo).
    → Al desplegar cambios, sube CACHE_VERSION.
    ════════════════════════════════════════════════════════ */
-const CACHE_VERSION = 'retofit-cca-v4';
+const CACHE_VERSION = 'retofit-cca-v5';
 const PRECACHE_LOCAL = [
   './',
   './index.html',
@@ -151,7 +151,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((k) => k !== CACHE_VERSION && k.indexOf('retofit-') === 0).map((k) => caches.delete(k)))   // solo cachés del reto: la app original comparte el dominio
     ).then(() => self.clients.claim())
   );
 });
