@@ -1,76 +1,101 @@
 # Plan: Reto Fit CCA (12 semanas, unas 300 personas)
 
-**Objetivo:** usar `app-fitness` como base para una app dedicada a un reto fitness de 3 meses, con gimnasio y clases. Cada socio tiene su entrenamiento, registra pesos y repeticiones como ya lo hace la app y ve la técnica de cada ejercicio. El director registra entrenadores que le ayudan con el seguimiento, y la recepción (front desk) inscribe, hace el check-in y agenda.
+**Objetivo:** controlar un reto fitness de 3 meses en gimnasio y clases. El socio tiene su rutina, registra sus pesos, repeticiones y series como en la app original y ve la técnica de sus ejercicios. El director da de alta a los entrenadores que le ayudan con el seguimiento de los socios.
 
-Maquetas de recepción: `docs/maquetas/frontdesk.html` (ábrelo en el navegador) y las capturas en `docs/maquetas/capturas/`.
+Maquetas del panel de control: `docs/maquetas/frontdesk.html` (ábrelo en el navegador) y las capturas en `docs/maquetas/capturas/`.
 
 ---
 
-## 1. Cómo se clona
+## 1. Cómo funciona la organización
 
-1. Copiar los archivos de `app-fitness` (sin su historial de git) a `reto-fit-cca`, como primer commit.
-2. Crear un **Firebase nuevo** (`reto-fit-cca`) para que los datos del reto no se mezclen con los de la app pública. Se sigue `docs/ALTA-GIMNASIO.md`.
-3. Cambiar la marca en `js/config.js`, `manifest.json`, `icons/` y `sw.js` (`CACHE_VERSION = reto-fit-cca-v1`).
-4. Publicar con GitHub Pages en su propio link.
-
-## 2. Qué se queda, qué se apaga y qué se agrega
-
-### Se queda (ya funciona en la app)
-| Módulo | Para qué sirve en el reto |
-|---|---|
-| Rutinas y motor de rutinas (`08`, `14`, `42`) | Rutina de cada socio |
-| Registro de sesión (`15`, `38`, `40`) | Pesos, repeticiones, series y sensación del esfuerzo |
-| Progresión por bloques (`21`) | Se ajusta a las 3 fases del reto |
-| Catálogo de ejercicios con fotos (`00`, `18`) | Base para la técnica |
-| Mi cuerpo, medidas y composición (`11`, `13`, `04`) | Evaluaciones de las semanas 0, 6 y 12 |
-| Panel del staff, ficha del socio, entrenadores (`17`, `19`, `25`) | Seguimiento por entrenador |
-| QR del entrenador (`47`) | Se reutiliza para el QR del socio |
-| Resumen y riesgo de abandono (`22`) | Tablero del director y de recepción |
-| Nutrición (`03`, `48`–`50`) | **Opcional**, depende de lo que decidas |
-
-### Se apaga o se simplifica
-- **Mensualidad** (`02`): se cambia por la *inscripción al reto* (pagado, parcial o pendiente).
-- **Cuentas públicas y código de entrenador** (`36`, `27`): en el reto la recepción da de alta al socio y le asigna entrenador. Ya no hay "Soy nuevo" abierto.
-- **Rutina en casa** (`30`, `31`) y **deportes** (`12`): se ocultan.
-- **Geocerca** (`06`): se cambia por el check-in con QR en recepción.
-- **Play Store y privacidad pública**: no hacen falta para el reto (se queda la app instalable).
-
-### Se agrega
-1. **El reto como entidad:** fecha de inicio, 12 semanas, fases (1–4 adaptación, 5–8 fuerza e hipertrofia, 9–12 definición), día y semana actuales visibles en toda la app.
-2. **Rol de recepción:** inscribe, hace el check-in, reserva clases y agenda evaluaciones. **No** edita rutinas. Requiere el rol `recepcion` en `firebase-rules.json` y probarlo con el emulador, como se probaron los 53 casos actuales.
-3. **Inscripción guiada (5 pasos):** datos, salud y objetivo (reusa el cuestionario `07`), entrenador y horario con sugerencia automática por carga, pago y cita de evaluación inicial. Al final se manda el acceso al socio por WhatsApp.
-4. **Asignación de entrenadores:** tope de socios por entrenador (por ejemplo, 300 socios entre 10 entrenadores son unos 30 cada uno), botón "Balancear" y reasignación en grupo.
-5. **Check-in con QR:** el socio muestra su QR en la app y la recepción lo escanea con la cámara de la tableta o la computadora. También se puede buscar por nombre o teléfono. Se ve qué le toca hoy, sus avisos y su estado de pago.
-6. **Clases:** horario semanal, cupo, reservación desde la app, lista de espera y pase de lista.
-7. **Técnica de ejercicios:** en cada ejercicio, un video corto, 3 puntos clave y los errores comunes. El campo `video` se agrega al catálogo `KB_*`. Recomiendo **YouTube no listado**: no gasta el ancho de banda de GitHub Pages y carga bien en el celular.
-8. **Evaluaciones de las semanas 0, 6 y 12:** agenda en bloques de 15 minutos con peso, % de grasa, masa muscular, medidas, pruebas físicas y 3 fotos privadas.
-9. **Ranking y puntos:** por asistencia, entrenos registrados, clases, rachas, evaluaciones y mejora final. El director configura cuántos puntos vale cada cosa.
-10. **Seguimiento del entrenador:** semáforo de sus socios (sin venir, sin registrar pesos, evaluación pendiente) y porcentaje de socios revisados por semana, que el director ve en la pantalla de Entrenadores.
-11. **Exportar a Excel** y **reporte final del reto** (antes y después de cada socio y ganadores).
-
-## 3. Escalar a 300 personas: decisiones técnicas
-- **Firebase plan Blaze (pago por uso):** el plan gratuito (Spark) solo permite **100 conexiones simultáneas**. En las horas pico de un reto de 300 personas eso se puede rebasar. Con Blaze, a este volumen, el costo esperado es de pocos dólares al mes; conviene poner una alerta de presupuesto.
-- **Fotos de progreso** en Firebase Storage, con reglas: solo el socio, su entrenador y el director.
-- **Índices:** la lista del panel ya usa `/indice` (es ligera). Se agregan índices por `entrenadorId`, `horario` y `estadoReto`.
-- **Sin conexión:** la bandeja de cambios pendientes que ya existe sigue sirviendo si falla el wifi del gimnasio.
-
-## 4. Fases de trabajo
-| Fase | Qué incluye | Resultado |
+| Quién | Qué hace | Dónde |
 |---|---|---|
-| 0 · Clonar y cambiar la marca | Copia, Firebase nuevo, config, íconos, quitar módulos que no se usan | App del reto funcionando con lo actual |
-| 1 · Roles e inscripción | Rol `recepcion`, reglas probadas, inscripción en 5 pasos, asignación y balanceo | La recepción puede dar de alta |
-| 2 · Check-in y clases | QR del socio, escáner, asistencia, horario, reservas, lista de espera | Día a día del gimnasio |
-| 3 · Técnica | Campo de video, puntos clave y errores en la ficha del ejercicio | El socio ve cómo se hace cada ejercicio |
-| 4 · Evaluaciones y ranking | Agenda, captura, fotos, puntos y tabla | Medición del reto |
-| 5 · Piloto | 15–20 socios y 2 entrenadores, 1 semana; corregir | Listo para 300 |
-| 6 · Lanzamiento | Inscripción masiva, capacitación de recepción y entrenadores | Arranca el reto |
+| **Caja** | Cobra la inscripción y le da al socio el **QR o el link** de la app | Fuera de la app |
+| **Socio** | Crea su cuenta con su correo, contesta la evaluación, elige su objetivo y escribe el código de su entrenador. Después entrena, registra sus pesos y ve la técnica | App (celular) |
+| **Entrenador** | Ve a sus socios, **modifica sus ejercicios**, revisa sus registros y les da seguimiento | Panel del staff |
+| **Director (tú)** | Da de alta a los entrenadores, define su filosofía de entrenamiento, ve a todos los socios y lleva el control del reto | Panel del staff + panel de control |
+| **Control / recepción** (opcional) | Check-in, clases, agenda de evaluaciones y socios que se atoran en el registro. **No inscribe ni cobra** | Panel de control |
 
-## 5. Lo que necesito que decidas
-1. **Fecha de inicio** del reto y si hay inscripción tardía.
-2. **Cuántos entrenadores** y el tope de socios para cada uno.
-3. **Pago:** ¿solo se registra en la app (pagado, parcial o pendiente) o se cobra en línea?
-4. **Nutrición:** ¿entra en el reto o se queda fuera?
-5. **Clases:** cuáles, con qué horarios y qué cupo.
-6. **Ranking:** ¿público para todos, o cada quien ve solo su lugar?
-7. **Videos de técnica:** ¿los grabas tú, o usamos videos de referencia mientras tanto?
-8. **Premios / criterio del ganador:** ¿por puntos, por % de cambio corporal o por los dos?
+### Registro del socio (igual que la app original)
+1. Paga en caja → recibe el QR (cartel o impreso) o el link por WhatsApp.
+2. Abre la app → **Soy nuevo** → correo y contraseña.
+3. Evaluación (11 pasos) para perfilar al socio. En el paso 2 elige **uno de los 3 objetivos**:
+   - **Incremento de masa muscular**
+   - **Bajar porcentaje de grasa**
+   - **Recomposición corporal**
+4. Último paso: el código de su entrenador. Si entró con el link del entrenador (`…/?ent=ENT-XXXX`), el código ya viene escrito y se valida solo.
+5. Acepta su plan → sale su rutina **con la filosofía de ese entrenador**.
+6. El entrenador lo ve en su panel y ajusta sus ejercicios cuando quiera.
+
+## 2. Hecho en esta etapa (sin base de datos)
+
+- [x] App copiada desde `app-fitness` (sin el historial de git).
+- [x] Marca: Reto Fit CCA en `js/config.js`, `manifest.json`, la barra del staff, la portada y el PDF (siglas RF / CCA, folios `#RF-…`).
+- [x] **Solo 3 objetivos** en el registro y en el panel del staff (`GYM.reto.objetivos`). Se quitaron "Rendimiento deportivo" y "Lesión o dolor".
+- [x] Si el socio marca una lesión, ya no se le ofrece un plan de rehabilitación: el plan de su objetivo cuida la zona lesionada.
+- [x] La filosofía del entrenador pide solo 2 rutinas modelo (fuerza/hipertrofia y pérdida de grasa). Se quitó la de rendimiento.
+- [x] **Fechas del reto** en `js/config.js` → `reto` (inicio, 12 semanas, 3 fases, evaluaciones en las semanas 0, 6 y 12). Nuevo módulo `js/53-reto.js`:
+  - Portada: "El reto arranca en N días" / "Día X de 84 · Semana N de 12".
+  - Inicio del socio: tarjeta con la semana, una barra de avance, la fase y el aviso de semana de evaluación.
+  - Panel del staff: el mismo texto junto al nombre.
+- [x] **Link con código del entrenador**: `?ent=ENT-XXXX` deja el código escrito en el último paso. El mensaje de "Mi código" del entrenador ya manda ese link.
+- [x] QR nuevo (`img/qr/app.png`) que apunta a `https://appfitness-crypto.github.io/reto-fit-cca/` (se cambia en `GYM.urlApp` y regenerando el QR si se publica en otro dominio).
+- [x] Los entrenadores ya no se registran solos desde la portada: el director los da de alta (Menú → Entrenadores → Nuevo). En la portada quedó "Soy entrenador del reto: entrar con mi cuenta".
+- [x] **Separado del Firebase de la app original**: usa su propio proyecto `reto-fit-cca` (`js/config.js`, `.firebaserc` y el flujo de publicación).
+- [x] La foto de la portada ya no dice "Fitness Pro" (provisional, hasta que subas fotos del CCA).
+
+**Para probarlo completo** faltan los pasos de la consola de la sección 3 (reglas, autenticación y tu cuenta de director).
+
+## 3. Base de datos: conectar el Firebase `reto-fit-cca`
+
+**Ya hecho en el código**
+- [x] `js/config.js` → `firebase` con la configuración del proyecto `reto-fit-cca`.
+- [x] `databaseURL` = `https://reto-fit-cca-default-rtdb.firebaseio.com` (confirmada).
+- [x] Reglas (`firebase-rules.json`): ya nadie puede darse el rol de entrenador solo; **solo el director** crea entrenadores. Se probaron con el emulador de Firebase (10 de 10 casos):
+  - un socio no puede ponerse rol de entrenador ni de director;
+  - un entrenador no puede volverse director;
+  - un socio no ve el expediente de otro;
+  - un entrenador no ve a socios que no son suyos;
+  - una sesión anónima no puede crear expedientes;
+  - el director sí puede crear entrenadores y reservar su código;
+  - el entrenador sí puede borrar su propia cuenta.
+- [x] Los usuarios del staff que crea el director entran solo con su usuario (internamente `usuario@staff.retofitcca.app`).
+
+**Pasos en la consola de Firebase (una sola vez)**
+1. **Realtime Database → Crear base de datos** (si no existe): ubicación Estados Unidos, modo bloqueado.
+2. **Realtime Database → Reglas**: pega todo `firebase-rules.json` → **Publicar**.
+3. **Authentication → Comenzar → Método de acceso**: habilita **Correo electrónico/contraseña** y **Anónimo** (la sesión anónima sirve para validar el código del entrenador antes de que el socio tenga cuenta).
+4. **Authentication → Configuración → Dominios autorizados**: agrega `appfitness-crypto.github.io` (o el dominio donde se publique la app).
+5. **Tu cuenta de director**: Authentication → Usuarios → **Agregar usuario** con tu correo y una contraseña. Copia el **UID**. En Realtime Database → Datos agrega `roles` → `<tu UID>` = `coordinador`.
+6. Entra a la app con **"Soy entrenador del reto: entrar con mi cuenta"** usando ese correo. Verás el panel del director.
+7. En el panel: **🧬 Mi filosofía** (es el plan para los socios que entren sin código) y **➕ Nuevo entrenador** para cada entrenador. Cada uno recibe su código `ENT-XXXX` y, desde "Mi código", el link con su código ya puesto.
+8. **Plan Blaze (pago por uso)**: el plan gratuito aguanta solo **100 conexiones simultáneas**; con 300 socios conviene cambiarlo antes del arranque y poner una alerta de presupuesto.
+
+**Publicar la app**: GitHub → Settings → Pages → rama `main`, carpeta raíz. Queda en `https://appfitness-crypto.github.io/reto-fit-cca/`, que es a donde apunta el QR. Opcional: el flujo `.github/workflows/firebase-hosting.yml` publica en `https://reto-fit-cca.web.app` y sube las reglas solo; necesita el secreto `FIREBASE_SERVICE_ACCOUNT` (ver `docs/PLAY-STORE.md`).
+
+**Datos nuevos para las siguientes etapas**
+- `/reto/config`: fechas, fases y puntos (para cambiarlos sin publicar código).
+- `/asistencia/<fecha>/<uid>`: check-in.
+- `/clases`, `/reservas`: horario, cupo y lista de espera.
+- `/evaluaciones/<uid>/<semana>`: peso, % de grasa, masa muscular, medidas, pruebas y fotos (en Storage, privadas).
+- `/caja/<recibo>` (opcional): lista de pagos de caja para saber quién pagó y no se ha registrado.
+
+## 4. Etapas después de la base de datos
+
+| Etapa | Qué incluye |
+|---|---|
+| Panel de control | Las pantallas de las maquetas: tablero, registro y QR, socios, carga por entrenador, entrenadores |
+| Check-in y clases | QR del socio en su app, escáner en la recepción, asistencia, reservas y pase de lista |
+| Técnica de ejercicios | Video corto por ejercicio (recomiendo YouTube no listado), 3 puntos clave y errores comunes en la ficha del ejercicio |
+| Evaluaciones y ranking | Agenda de las semanas 0, 6 y 12, captura, fotos y **un ranking por cada objetivo** (cada categoría tiene su ganador) |
+| Piloto | 15–20 socios y 2 entrenadores durante 1 semana |
+| Arranque | Carteles con el QR en caja, links de cada entrenador, capacitación |
+
+## 5. Pendiente de decidir
+1. **Fecha real de inicio** (hoy está puesta el lunes 11 de enero de 2027 en `js/config.js`).
+2. Cuántos entrenadores y el tope de socios para cada uno.
+3. ¿El socio que no tiene código de entrenador sigue tu filosofía (director), o se le asigna uno después?
+4. ¿La nutrición entra en el reto? Hoy la pestaña sigue activa.
+5. Clases: cuáles, con qué horarios y qué cupo.
+6. Cómo se mide al ganador de cada objetivo (propuesta: bajar grasa → % de grasa perdido; masa muscular → kg de músculo ganados; recomposición → las dos cosas).
+7. ¿Caja puede compartir su lista de pagos (Excel) para cruzarla con los registrados?

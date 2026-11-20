@@ -1,0 +1,633 @@
+# Cambios — Mi cuerpo: controles fuera de la imagen y mira en el punto elegido
+- **Antes:** los botones Frente / Espalda / Izq. / Der., Anatomía / Avance y el zoom flotaban encima del cuerpo y tapaban la cabeza y los pies.
+- **Ahora (js/13, css):** las vistas van en una barra arriba de la imagen, junto al botón de pantalla completa. Anatomía / Avance y el zoom (− + y cuerpo completo) van en una barra abajo, y la escala de Avance debajo de ellas. La imagen queda libre.
+- **Punto elegido:** en lugar del cuadro blanco que ponía el navegador al tocar un punto, ahora aparece una mira en lima: un aro y cuatro marcas que giran despacio. Con teclado se ve en cian. La etiqueta se separa del punto para no taparla.
+- Service worker: `fitnesspro-v144`.
+
+---
+
+# Cambios — La app ya no abre "en crudo" al actualizarse con señal lenta
+- **Problema:** al publicar una versión nueva, el service worker se activaba aunque no hubiera bajado todos sus archivos (`Promise.allSettled`) y borraba la copia anterior. Con la señal lenta o cortada en ese momento, la app abría sin estilos ni código: texto negro sobre blanco, todas las pantallas a la vez y la de "Configuración inicial" de Firebase.
+- **Ahora:**
+  - `sw.js`: el HTML, el css y todos los js tienen que bajar completos para instalar la versión nueva. Si falta uno, la anterior sigue funcionando y el navegador lo reintenta después. Fotos, íconos y librerías externas siguen siendo opcionales.
+  - `index.html`: red de seguridad. Si la página terminó de cargar sin estilos o sin código, se recarga una sola vez por sesión.
+- Service worker: `fitnesspro-v142`.
+
+---
+
+# Cambios — Progreso en tres pestañas
+- **Antes:** Progreso era una sola columna larga (meta, constancia, Mi cuerpo, mapas, peso, récords, sesiones y fuerza).
+- **Ahora (js/38, js/09, js/13):** pestañas **Semana · Cuerpo · Fuerza**, que se quedan arriba al bajar.
+  - **Semana:** meta de la semana, constancia y últimas sesiones.
+  - **Cuerpo:** Mi cuerpo, peso corporal (con "Peso de hoy", que antes estaba en la tarjeta de la meta) y equilibrio corporal.
+  - **Fuerza:** récords, ejercicios principales y rendimiento.
+  - Los dos mapas ("Tus mapas") se separan: `mapasHTML(s,'equilibrio')` y `mapasHTML(s,'rendimiento')`.
+  - **Mi cuerpo más compacto:** las vistas (Frente, Espalda, Izq., Der.) y el color (Anatomía / Avance) pasan dentro del cuerpo. Se quita el texto de ayuda de abajo. El resumen muestra los 3 grupos que van mejor y los 3 que necesitan atención; "Ver los 12 grupos" despliega la lista completa.
+- Service worker: `fitnesspro-v141`.
+
+---
+
+# Cambios — Mi cuerpo: mapa muscular en lugar del modelo 3D
+- **Antes:** Progreso → Mi cuerpo mostraba un maniquí 3D gris (Z-Anatomy, ≈ 2.7 MB con el motor 3D) que crecía con las medidas.
+- **Ahora (nuevo `js/13-mi-cuerpo.js`, reemplaza `js/13-avatar-3d.js`):**
+  - Ilustraciones anatómicas en `img/cuerpo/` (frente, espalda y lateral; ≈ 290 KB en total). La lateral izquierda es la derecha volteada.
+  - Cada músculo tiene una zona tocable. Al tocar un punto, un músculo o una medida, el resto del cuerpo se oscurece, el grupo se pinta de lima y la vista se acerca.
+  - Vistas Frente, Espalda, Lat. izq. y Lat. der. con botones o deslizando a los lados. Zoom con + y −, pellizco o Ctrl + rueda; pantalla completa con el botón de la esquina.
+  - Ficha del grupo con tres pestañas:
+    - **Progreso:** medida con cinta y su curva, fuerza del ejercicio clave (récord estimado a 1 repetición de la mejor serie de cada sesión), avance, series de la semana contra la meta, recuperación estimada y registro de la medida de hoy.
+    - **Músculos:** los que forman el grupo; al tocar uno se ilumina solo ese.
+    - **Tips:** tres consejos por grupo.
+  - Modo **Avance:** pinta cada músculo según su avance. 50 % es sin cambio; sube con las medidas, la fuerza y las series de la semana.
+  - Sin músculo elegido, el resumen muestra el equilibrio frente / espalda y el avance de cada grupo.
+  - Los ejercicios se asignan a cada grupo con `grupoVol` (motor de rutinas) y, si no lo reconoce, por nombre.
+- Se quitaron el modelo 3D (`modelos/`), su motor (`js/cuerpo3d/`), sus herramientas (`herramientas/cuerpo3d/`) y three.js de la caché sin conexión.
+- `av3dDestruir()` ahora es `miCuerpoDestruir()`.
+- **Figura por género:** quien contestó Femenino (o Mujer) en la entrevista ve las ilustraciones de mujer (`img/cuerpo/mujer-*.webp`). Sus zonas reusan las de hombre con ajustes en hombros, brazos y pecho (`mcAjustar`).
+- Service worker: `fitnesspro-v140`. Las ilustraciones de hombre y de mujer se guardan al instalar.
+
+---
+
+# Cambios — La lista de socios cuenta las sesiones de la semana sin abrir la ficha
+- **Problema:** la lista del panel decía "0 de 4 sesiones esta semana" aunque el socio ya había entrenado. Al abrir su ficha y regresar, se corregía. La lista usa el índice ligero (`/indice`), que solo guarda fecha y hora de las últimas sesiones; sin más datos, cada sesión contaba como incompleta y no sumaba.
+- **Ahora (js/35):**
+  - El índice guarda si cada sesión quedó incompleta (`c:0`). La ficha ligera marca las demás como completas, incluidas las de índices anteriores.
+  - Si falta la hora, se usa la fecha.
+  - El índice guarda las últimas 20 sesiones (antes 8), para que la asistencia de 4 semanas salga bien.
+  - La lista ya no usa el expediente completo guardado en el celular cuando no está al día. Solo lo usa si está escuchando sus cambios o tiene cambios por subir; si no, manda el índice, que se actualiza en cuanto el socio registra su sesión.
+- Service worker: `fitnesspro-v138`.
+
+---
+
+# Cambios — Botón Atrás del celular y sesión al recargar
+- **Botón Atrás (nuevo `js/52-navegacion.js`):** antes cerraba la app desde cualquier pantalla. Ahora retrocede un paso:
+  - Cierra la ventana abierta (registro de series, ficha del ejercicio, diálogos, editor del ejercicio, Mi cuerpo).
+  - Si no hay ventana abierta, vuelve a la pantalla anterior:
+    - sesión en curso → Mi plan, guardando lo que llevas;
+    - detalle del día → Mi plan;
+    - evaluación → pregunta anterior;
+    - ficha del socio → lista de socios;
+    - otra pestaña → Inicio.
+  - En la pantalla principal muestra "Presiona atrás otra vez para salir" y sale con el segundo Atrás.
+- **Al recargar:**
+  - El socio vuelve a la pestaña en la que estaba.
+  - El entrenador vuelve a la ficha y la pestaña que tenía abiertas. Esto dura solo mientras la app sigue abierta (sessionStorage).
+- **La sesión ya no se cierra por una red lenta:**
+  - Antes, si Firebase tardaba más de 6-8 s o no se podía leer el rol, se borraba la sesión y regresaba al inicio.
+  - Ahora la sesión del staff guarda su rol y entra de inmediato con los datos del celular.
+  - Solo se cierra la sesión cuando Firebase confirma que ya no hay usuario o que ya no tiene rol.
+  - Sin conexión, reintenta leer el rol cada 5 s.
+  - Las sesiones de staff iniciadas antes de este cambio no tienen el rol guardado. Esas esperan a Firebase la primera vez, sin límite de tiempo, y desde entonces ya lo guardan.
+- Service worker: `fitnesspro-v137`.
+
+---
+
+# Cambios — Botón "Regenerar con el sistema"
+- En la pestaña **Rutina** de la ficha del socio (panel del entrenador y dirección) hay un botón nuevo, **Regenerar con el sistema**. Arma de nuevo la semana con el generador de la app (temas, dosis y métodos), sin la filosofía de un entrenador.
+- Funciona igual que "Rehacer con mi método":
+  - pide confirmación;
+  - reemplaza la rutina en pantalla;
+  - se puede deshacer;
+  - no se guarda hasta **Guardar cambios**;
+  - el historial no cambia.
+- No aparece en rehabilitación, flexibilidad ni rutina en casa.
+- `rutinaDesdeSemana` ahora guarda el tema del día y las marcas de potencia y de calentamiento o cierre de cada ejercicio. Así la carga y los métodos se siguen calculando bien después de guardar.
+- `planConMetodo` usa la nueva `planNuevo(s, ent)`, que acepta `ent = null`. Service worker: `fitnesspro-v136`.
+
+---
+
+# Cambios — Semana de rendimiento deportivo por temas
+- **Plantilla de deporte (`buildFallbackDeporte`, js/08):** cada día tiene un tema con su propia selección y dosis:
+  - **Fuerza tren inferior / superior / total:** 2 principales a 4-6 reps (avanzado) o 6-8 (intermedio) con 2-3 min; accesorios en hipertrofia.
+  - **Potencia y agilidad:** saltos, swing, press landmine y leñador a 3-5 reps explosivas, 2 min de descanso.
+  - **Resistencia metabólica / circuito:** 12-15 reps con 45-60 s.
+  - **Core y movilidad:** movilidad, core por lado o isométrico, farmer walk de 30 m y prevención de hombro.
+
+  Antes los movimientos del deporte rotaban sin mirar el tema y todo llevaba "8 reps · potencia". Los movimientos del banco del deporte se usan una vez por semana, en el lugar de su grupo. Dos días que cargan pierna nunca quedan seguidos. Semanas: 5 días = inferior, superior, resistencia, potencia, core y movilidad.
+- **Métodos por tema (`enriquecerDia`, js/14):**
+  - En días de fuerza, un solo método en los principales (pirámide, clúster o pausa; sin tempo ni escalera), y los principales no van en superserie.
+  - Potencia y core sin métodos. EMOM solo en el día metabólico y al final.
+  - Los ejercicios en metros (farmer walk) no llevan método.
+  - La variedad del entrenador no cambia explosivos por ejercicios lentos ni mete swings o saltos como accesorio.
+- **Metodología del entrenador (js/39):**
+  - Con periodización ondulante, la fase sale del tema del día.
+  - El día de potencia conserva su dosis.
+  - Los patrones obligatorios van en un día de tema compatible.
+  - Los acarreos que ya trae la semana cuentan para la prioridad funcional.
+- **Carga del día (js/51):** una serie explosiva cuenta como carga moderada, no como serie pesada. Service worker: `fitnesspro-v135`.
+
+---
+
+# Cambios — Duración y carga del día según lo que contiene
+- **Duración del día (~min):** ahora suma lo que lleva cada ejercicio:
+  - **Fuerza:** series × (≈3 s por repetición, 4.5 s con tempo o pausa) + descanso entre series + 1 min de preparación.
+  - **Cardio:** sus minutos (25 min de elíptica = 25 min).
+  - **EMOM:** sus minutos.
+  - **Movilidad:** rondas × movimientos × ~40 s, o sus minutos si es por tiempo.
+  - **Circuitos e isométricos:** con su trabajo y su descanso.
+
+  Antes cada ejercicio contaba como series × (45 s + descanso) y se ignoraban los minutos de cardio y movilidad. Por ejemplo, el jueves "Core y prevención" (6 ejercicios con 25 min de elíptica) pasaba de ~35 a ~70 min. El editor del entrenador usa el mismo cálculo.
+- **"Día pesado / medio / ligero":** antes se ponía por la posición del día al generar la rutina. Ahora sale de la carga real de cada día comparada con el promedio de la semana:
+  - **Fuerza:** cada serie suma más con menos repeticiones (más % del 1RM) y un poco más en compuestos.
+  - **EMOM, circuitos y cardio:** suman por minuto o ronda.
+  - **Movilidad:** no cuenta.
+
+  Pesado = ≥12 % sobre el promedio y ligero = ≤15 % bajo el promedio. Se recalcula al generar la rutina, al guardar los cambios del entrenador y al mostrar la semana. Solo cambia la etiqueta de los días que ya la tenían; el nombre que puso el entrenador no se toca.
+- Nuevo módulo `js/51-carga-dia.js` (`minutosDia`, `minutosEjercicio`, `cargaDia`, `etiquetarCargaSemana`). Service worker: `fitnesspro-v134`.
+
+---
+
+# Cambios — Pesos de pirámide por serie y avanzar desde movilidad
+- **Pirámides y escaleras (ej. 4 × 12-10-8-6):** cada serie trae el peso que corresponde a SUS repeticiones, no el mismo peso en todas. Se estima el 1RM (Epley) con las series de la sesión anterior (o el 1RM guardado, o el peso del plan), se aplica la progresión de hoy y se calcula el % de cada serie con la misma fórmula del resto de la app (`cargaPorSerie` en js/38).
+  - Ejemplo: con 180 lb × 4 y 190 lb × 4 la vez anterior, hoy sugiere 150 × 12, 155 × 10, 165 × 8 y 175 × 6, en lugar de 193 lb en las cuatro.
+  - El redondeo es a 5 lb si el socio usa libras, o a discos de 2.5 kg si usa kilos.
+  - La etiqueta "Hoy" y las listas de la rutina muestran el rango (por ejemplo "150-175 lb"). Los ejercicios con las mismas repeticiones en todas las series no cambian.
+- **Movilidad, cardio y rondas:** el registro tiene un botón "Siguiente ejercicio" (o "Terminar sesión" en el último) para avanzar sin cerrar la pantalla.
+- Service worker: `fitnesspro-v133`.
+
+---
+
+# Cambios — Pestaña Nutrición del socio más clara
+- **Un solo resumen arriba:** calorías del día, una barra de proteína, carbohidratos y grasas con sus gramos, y el agua. Sustituye a las 4 tarjetas grandes de macros, la tarjeta "Distribución de macros" y la nota del objetivo (ahora es una etiqueta chica).
+- **El menú del día es una línea de tiempo:** cada comida es una fila con hora, foto chica, platillo, kcal y proteína. Al tocarla se abre con foto grande, ingredientes, preparación y "Otra opción". La próxima comida según la hora aparece abierta y resaltada.
+- **Los ajustes salen de la pantalla:** número de comidas, hora de entreno y filtros (vegetariano, sin lácteos, sin gluten) están en la hoja "Ajustar".
+- **Lo técnico va al final, cerrado:** "Cómo se calculó y aviso" junta el cálculo, la guía y el aviso legal.
+- Si el entrenador armó el menú, se ve con la misma línea de tiempo pero sin "Ajustar" ni "Otra opción", con su nota arriba. El menú escrito a mano (formato anterior) se sigue mostrando.
+- Menores de edad: sin calorías ni gramos. Menores de 12 años: sin menú.
+- Nuevo módulo `js/50-nutricion-socio.js`; `renderNutricionTab` (js/09) queda como envoltura. Service worker: `fitnesspro-v132`.
+
+---
+
+# Cambios — El entrenador arma el menú de su socio
+- **Armar menú (panel del entrenador → ficha → Nutrición):** el entrenador o nutriólogo arma el menú con los 31 platillos de la biblioteca, igual que elige los ejercicios de una rutina.
+  - Elige cuántas comidas (3 a 6), la hora y el nombre de cada una.
+  - Cada comida se llena desde un buscador con fotos, filtros por tiempo de comida (y vegetariano, sin lácteos, sin gluten) y la meta de kcal de esa comida. Al elegir, las porciones se ajustan solas a la meta.
+  - Puede cambiar cada ingrediente con − y +, "Ajustar a la meta" una comida o todas, y dejar una nota por comida.
+  - "Partir del menú sugerido" llena el día con el generador para que solo ajuste.
+  - Arriba se ve el total del día contra la meta de kcal y macros.
+- **Lo que guarda es definitivo para el socio:** en su pestaña Nutrición ve "Tu menú" con hora, foto, porciones, nota y total, sin "Otra opción". "Volver al automático" quita el menú asignado.
+- El menú se guarda en `s.nutricion.plan`. Ajustar o restablecer los requerimientos ya no borra el menú armado.
+- El menú escrito a mano (formato anterior) se sigue mostrando mientras no se arme uno nuevo.
+- Nuevo módulo `js/49-menu-staff.js`. Service worker: `fitnesspro-v131`.
+
+---
+
+# Cambios — Fotos de todos los platillos del menú del día
+- Los 31 platillos del menú del día ya tienen foto en `img/menu/` (WebP 800×500, 60–90 KB cada una).
+- `MENU_FOTO_IGUAL` queda vacío; sirve para que un platillo nuevo use la foto de otro parecido mientras se genera la suya.
+- Service worker: `fitnesspro-v130`.
+
+---
+
+# Cambios — Foto del pescado empapelado
+- Nueva foto en el menú del día: pescado empapelado con verduras y arroz (`img/menu/n-empapelado.webp`). Ya son 4 de 31.
+- "Otra opción" ahora recorre todos los platillos que cumplen la meta de esa comida, no solo los 5 más cercanos. Antes, platillos como el pescado empapelado casi nunca salían.
+- Si el total del día queda fuera de ±5 %, el ajuste final también prueba otros platillos de esa comida. En 600 perfiles al azar, 596 quedan dentro de ±5 %.
+- Service worker: `fitnesspro-v129`.
+
+---
+
+# Cambios — Menú del día en Nutrición
+- **Menú de hoy (socio):** en la pestaña Nutrición, cada comida del día ahora trae un platillo mexicano con sus porciones caseras (tortillas, tazas, gramos, cucharaditas). Las porciones se ajustan a las calorías y los macros de esa comida, que salen de los datos del socio, su objetivo y el número de comidas que elige (3 a 6).
+  - Cada comida muestra su % del día, las kcal, los equivalentes del SMAE y su aporte de proteína, carbohidratos y grasas. Abajo va el total del día, que queda dentro de ±5 % de la meta.
+  - "Otra opción" cambia el platillo de una comida. El menú también cambia solo cada día.
+  - Nuevas preguntas: "¿A qué hora entrenas?" (mañana, mediodía, tarde o noche, varía) y los filtros vegetariano, sin lácteos y sin gluten. Según la hora, una colación se marca como "Antes de entrenar" (sin leguminosas ni grasa) y la comida siguiente como "Después de entrenar", y hacia ellas se mueve ~10 % de las calorías y más carbohidrato.
+  - Biblioteca de 31 platillos sin cerdo (`js/48-menu-sugerido.js`). Ningún platillo se repite en el día y la misma proteína no sale más de 2 veces.
+  - Fotos de platillos en `img/menu/<código>.webp` (800×500). Por ahora hay 3: avena, huevos a la mexicana y chilaquiles. Los platillos sin foto se muestran como antes.
+  - Menores de 12 años: no se genera menú. De 12 a 17 años: el menú se muestra sin calorías ni macros.
+  - Se presenta como sugerencia educativa. Si el nutriólogo o el entrenador capturó un menú, se muestra el suyo en lugar del automático.
+- **Reparto por número de comidas:** 4 comidas pasa a 25/35/15/25 (desayuno, comida, colación PM, cena) y 6 comidas a 20/10/30/10/20/10, como en `docs/NUTRICION-DEPORTIVA.md`.
+- **Cálculo de calorías:** el déficit de "Perder peso" sigue siendo ~18 %, pero ya no pasa de 500 kcal al día. A los menores ya no se les sugiere creatina. La nota de "Perder peso" ya no dice que el déficit sale de la actividad.
+- Service worker: `fitnesspro-v128`.
+
+---
+
+# Cambios — Video de Inicio con más definición
+- El video de portada (cuerdas de batalla) se convirtió de nuevo a su resolución original (1280 px, antes 960 px), con menos compresión y un enfoque suave. Se ve más nítido en el tema oscuro, donde se muestra más grande. Pesa unos 2.2 MB (antes ~1 MB).
+- La imagen fija de respaldo también pasó a 1280 px.
+- Service worker: `fitnesspro-v127`.
+
+---
+
+# Cambios — Portada de Inicio del socio en video, estilo póster
+- La foto de Inicio se reemplaza por un video en bucle y sin sonido (cuerdas de batalla, `video/inicio-cuerdas.webm` y `.mp4`, ~1 MB) con imagen fija de respaldo (`img/hero/inicio-cuerdas-video.webp`).
+- Ya no va en un recuadro: es más grande, se funde con el fondo arriba y a los lados, y su parte baja queda detrás de la tarjeta de vidrio "Entrenamiento de hoy". El lema va arriba a la izquierda en dos tonos (blanco y lima) con un haz de luz lima detrás.
+- El video se pausa cuando sale de la pantalla. Con "reducir movimiento" o ahorro de datos activado se muestra la imagen fija.
+- En los temas claros el video va dentro de un recuadro redondeado (un video oscuro no se funde con el fondo blanco).
+- Service worker: `fitnesspro-v126`.
+
+---
+
+# Cambios — Pantallas que se adaptan a tablet
+- **Bienvenida:** en pantallas verticales (tablet y celulares altos) la foto crece hasta llenar la pantalla y los botones quedan abajo, sin el espacio vacío que quedaba debajo. En tablet vertical los textos y las tarjetas son más grandes.
+- **App del socio en tablet vertical:** la foto de Inicio, las tarjetas de números y los días de la semana son más grandes para aprovechar el alto.
+- **Panel del entrenador:** la lista y la ficha lado a lado aparecen desde 1024 px (tablet horizontal y computadora). En tablet vertical se ve una a la vez, como en celular, con la ficha a todo lo ancho: ya no se cortan los días de la rutina ni las pestañas.
+- Service worker: `fitnesspro-v125`.
+
+---
+
+# Cambios — Lista de socios retráctil en tablet y computadora
+- El botón junto a "Socios" oculta la lista para trabajar la ficha (sobre todo la rutina) a pantalla completa. Queda una franja con las iniciales y el punto de color de cada socio: tocar una inicial abre a ese socio.
+- También con gestos, con el dedo o el lápiz: deslizar hacia la izquierda sobre la lista la oculta; deslizar sobre la franja, o desde el borde izquierdo de la ficha hacia la derecha, la vuelve a mostrar.
+- La app recuerda en cada dispositivo si dejaste la lista oculta. En celular no cambia nada.
+- Service worker: `fitnesspro-v124`.
+
+---
+
+# Cambios — Panel del entrenador más claro (lista por prioridad, ficha en 4 pestañas y editor de rutina compacto)
+- **Lista de socios:** arriba hay tres contadores, Urgente, Atención y Al día, que también filtran. Cada socio dice en palabras por qué está en rojo o amarillo ("9 días sin entrenar", "Reportó dolor de rodilla", "2 de 4 sesiones esta semana") y cuándo fue su última sesión. Se ordena por prioridad. La mensualidad solo aparece si hay que actuar (pendiente, tolerancia o inactivo). Renglones más compactos y sin bordes de colores brillantes.
+- **Ficha del socio en 4 pestañas:** Resumen, Rutina, Nutrición y Progresión. Resumen junta los datos y la evolución: alertas primero (el aviso de dolor trae "Ajustar rutina"), la semana día por día, los datos, la gráfica de peso, qué cargas suben o se estancaron y las últimas sesiones. En celular el encabezado del panel se reduce dentro de la ficha.
+- **Rutina:** la semana completa arriba (nombre del día, ejercicios y minutos estimados), las series por grupo muscular de la semana y el día como lista de una línea por ejercicio (`4 × 10`, carga y descanso). Al tocar un ejercicio se abre su editor: hoja inferior en celular y columna fija en pantallas anchas, con anterior y siguiente para recorrer el día sin cerrarlo. Un solo campo por dato (botones con "Otro"; kilos con − / +), "Aplicar a todo el día" para el descanso, duplicar y quitar con "Deshacer". Se reordena arrastrando o con las flechas del teclado. El menú ⋯ del día intercambia, copia a otro día o lo convierte en descanso. La barra de guardar aparece solo cuando hay cambios.
+- **Nutrición:** calorías, reparto de macros y agua de un vistazo. Los requerimientos se ajustan en la misma ficha con − / + y la app revisa en vivo que los macros cuadren con las calorías (y sugiere los carbohidratos). El menú se sigue editando en su ventana.
+- **Progresión:** selector de bloque, semanas del bloque y el proceso completo en 4 pasos (evaluación, respuestas, propuesta, aprobación) con las acciones del paso actual. Los logros del bloque se ven por ejercicio: lo indicado y su mejor marca.
+- No cambia cómo se guardan los datos: rutina, nutrición, progresión y permisos son los mismos.
+- Service worker: `fitnesspro-v123`.
+
+---
+
+# Cambios — Auditoría de octubre 2026 (lotes 1 a 5)
+- **Salud:** mínimo de calorías (1200 mujer, 1500 hombre, 1350 sin dato; o el gasto total si es menor) y sin déficit en menores de 18. En rehabilitación, el hormigueo o el dolor de cabeza activan la rehabilitación total con aviso al socio y al entrenador; el plan cambia según la edad (menores de 15 y 60+). Bancos "seguros" de espalda y hombro corregidos. El filtro de lesiones ya no deja pasar ejercicios fuera del catálogo con nombre de riesgo.
+- **Reglas de Firebase** (`firebase-rules.json`): el rol de entrenador no permite cambiar el status ni la membresía del propio expediente; asignarse a un entrenador exige su código (`codigoEnt`); la sesión anónima ya no lee `/entrenadores`. Se eliminó `firebase-rules-ANTERIOR.json`. **Publicar las reglas junto con esta versión de la app** (la app guarda `codigoEnt`).
+- **Datos:** los macros que escribe el entrenador deben sumar sus calorías (±5 %); la cintura que no cuadra con estatura y peso no se usa; rangos del cuestionario ampliados (edad hasta 90, peso hasta 220 kg); sin edad o estatura el cálculo es aproximado y lo avisa.
+- **Cuestionario e interfaz:** el avance se guarda y se retoma; "Cancelar" pide confirmación; opción visible "Tengo una lesión o dolor"; ajustes visuales (enlace del entrenador en tema claro, anillo semanal, bloque 3D sin conexión, textos del plato).
+- **Infraestructura:** todos los módulos con `defer` y el arranque ya no espera a fotos y videos; el service worker sirve los js/css del mismo lado (red o copia) que el HTML de la pestaña; "Restaurar respaldo" para dirección (no recrea socios eliminados); fotos de grupo sin peticiones fallidas.
+- **Proxy de IA** (`servidor/worker-ia.js`): dominios correctos, exige el token de Firebase de una cuenta con correo y limita 6 rutinas por hora por usuario. La app manda el token y toma el endpoint de `js/config.js` (`aiEndpoint`).
+- Service worker: `fitnesspro-v118`.
+
+---
+
+# Cambios — v8.4 · Configuración por gimnasio (base del alta de clientes)
+- Nuevo `js/config.js`: nombre, nombre corto, título, siglas, prefijo de ID, texto del PDF, color principal, ubicación, Firebase y endpoint de IA de cada gimnasio. Es el único archivo de código que cambia entre clientes.
+- Se quitaron las referencias fijas al Club Campestre de `index.html`, PDF, resumen del director, prompt de IA, geocerca, IDs de socio y conexión a Firebase. Los valores actuales del Club quedaron como configuración por defecto: la app del Club se ve y funciona igual.
+- Color principal opcional (`colorPrincipal`): cambia acentos, botones y gráficas en los temas Día y Noche; el texto del botón se ajusta solo (oscuro o blanco).
+- `manifest.json`, `icons/`, `video/` e `img/hero/` siguen siendo por gimnasio (se reemplazan al dar de alta).
+- Guía: `docs/ALTA-GIMNASIO.md` y plantilla `docs/config-plantilla.js`.
+- Service worker: `fitnesspro-v32`.
+
+---
+
+# Cambios — v8.3 · Proyecto separado en módulos
+- `index.html` pasó de ~800 KB a ~70 KB: los estilos viven en `css/estilos.css` y el código en 30 archivos dentro de `js/` (ver `docs/ESTRUCTURA.md`).
+- **No cambia nada de lo que hace la app**: es el mismo código reorganizado. Se verificó contra la versión anterior: las 640 funciones y variables globales son idénticas (mismo código) y la página queda igual; el login de socio, director y coach se probó de nuevo.
+- Un bloque que ajusta funciones del panel (vista de detalle en celular) se movió a `js/99-arranque.js` porque depende de módulos posteriores.
+- `sw.js`: guarda `css/` y `js/` para el modo sin conexión; esos archivos van ahora "red primero" (siempre la misma versión que `index.html`). Service worker: `fitnesspro-v31`.
+- Se eliminó `conocimiento.js` de la raíz: estaba desactualizado (le faltaba la clase Fit Mom) y la app no lo usaba; el catálogo vigente es `js/00-conocimiento.js`.
+- Guías, reglas y bitácora quedaron en `docs/`; `worker-ia.js` en `servidor/`.
+
+---
+
+# Cambios — v8.2.1 · Panel limpio al cambiar de sesión
+- Al cerrar sesión o entrar al panel, se limpia la ficha/lista que había abierta: un entrenador ya no ve la pantalla de Entrenadores (Editar / Eliminar) que dejó abierta el director.
+- Editar, guardar y eliminar entrenadores ahora exigen ser director (antes solo estaba protegido el botón de abrir la sección).
+- Reglas: un entrenador solo puede modificar SU propio registro en `/entrenadores` (por ejemplo su filosofía) y no puede cambiar su `uid` ni su `rol`. Service worker: `fitnesspro-v30`.
+
+---
+
+# Cambios — v8.2 · Seguridad con Firebase Authentication
+
+## Qué cambia
+- **Staff (director y entrenadores):** entran con usuario y contraseña de Firebase Authentication (el usuario se convierte en `usuario@staff.fitnesspro.app`). Ya no hay contraseñas en el código ni guardadas en la base; las antiguas se borran al entrar el director.
+- **Roles:** viven en `/roles/<uid>` ("coordinador" o "entrenador"). Solo el director los crea.
+- **Socios:** su teléfono ya no descarga la lista completa; al poner su código se consulta solo `/socios/<código>`. Los teléfonos con datos viejos se depuran al abrir la app.
+- **Alta de entrenadores:** crea su cuenta en Firebase (contraseña mínimo 6). Los entrenadores existentes sin acceso seguro aparecen con un aviso: Entrenadores → Editar → escribir contraseña.
+- **Eliminar entrenador:** también le quita el rol (la cuenta queda en Authentication, sin permisos).
+- **Contador de socios** del inicio: lo publica el staff en `/config/totalSocios`.
+- **Código de socio nuevo:** se verifica en Firebase que no exista.
+- Reglas nuevas en `firebase-rules.json` (las anteriores quedaron en `firebase-rules-ANTERIOR.json`). Service worker: `fitnesspro-v29`.
+
+## Límites conocidos
+- Con códigos de 4 dígitos, alguien podría probar códigos uno por uno; no se puede limitar sin un servidor.
+- Un socio con el código de otro podría modificar su registro (incluidos estado y mensualidad). Pendiente: reglas por campo.
+- El director no puede cambiar la contraseña de un entrenador desde la app (Firebase → Authentication).
+- El panel del staff necesita internet para iniciar sesión.
+
+---
+
+# Cambios — v8.0 · Mensualidad, estado del socio y tolerancia
+
+## Botón de estado (solo director)
+- El "Activo" de la ficha ahora es un botón. Abre un submenú con: **Registrar pago**, **Fecha de renovación**, **Activo / Inactivo**, **Recordatorio por WhatsApp**, últimos pagos (con "Deshacer el último pago") y, hasta abajo, **Eliminar socio** (con la misma confirmación doble). Se quitó la "Zona de peligro" del final de la ficha.
+- Los entrenadores ven el estado pero no pueden cambiarlo.
+
+## Cómo funciona la mensualidad
+- Cada socio tiene una **fecha de renovación** (mismo día cada mes; si el mes no tiene ese día, se usa el último: 31 ene → 28 feb → 31 mar).
+- Mientras no llega esa fecha: **Activo**. Desde el día de renovación hay **3 días de tolerancia** (ej. renueva 1 nov: tolerancia 1, 2 y 3 nov). El socio puede seguir entrando y ve un aviso: "tienes N días para renovar y continuar con tu programa".
+- Pasada la tolerancia queda **Inactivo** solo: al poner su código ve "Usuario inactivo…" y no entra (tampoco con la sesión ya abierta). No se borra nada.
+- **Registrar pago:** si paga a tiempo o dentro de la tolerancia, sigue su ciclo (1 nov → 1 dic). Si ya estaba inactivo, el ciclo empieza el día del pago. Se guarda fecha, monto (opcional), forma de pago y nota.
+- **Inactivo a mano** nunca se reactiva solo; **Activar** a un socio vencido abre el registro de pago.
+- Los socios que ya existían **no tienen fecha de renovación y no se bloquean nunca** hasta que les pongas una en "Fecha de renovación". Al aprobar el plan de un socio nuevo se abre el registro de pago para empezar su mensualidad.
+
+## Avisos para el director
+- En la lista: filtros **⏳ Tolerancia** e **Inactivos**, insignias de color (Activo / Tolerancia · N d / Inactivo), los de tolerancia arriba y un resumen "🔔 Mensualidades" que además avisa a los que renuevan en 3 días o menos.
+- Aviso al abrir el panel cuando hay socios en tolerancia o que se inactivaron.
+- Botón de **WhatsApp** con el mensaje listo según el estado (guarda el número del socio).
+- Nota: no hay servidor, así que los avisos y la inactivación se calculan al abrir la app con la fecha del dispositivo; no se mandan mensajes solos.
+- "Editar datos" ahora también permite el estado Inactivo.
+- Service worker: `fitnesspro-v27`.
+
+---
+
+# Cambios — v7.9 · Panel del director / entrenador reorganizado
+
+## Ficha del socio en pestañas
+- Arriba queda el nombre, edad, peso, nivel, limitaciones y quién lo lleva; abajo cuatro botones: **Evolución · Nutrición · Rutina · Progresión**.
+- **Evolución:** sesiones, días a la semana, adherencia, cambio de peso corporal, días sin entrenar, volumen de la semana, ejercicios que suben carga o están estancados y las últimas sesiones (con tiempo isométrico y minutos de cardio).
+- **Nutrición:** quién lo lleva, calorías y macros, menú, personalizar o restablecer.
+- **Rutina:** los días de la semana (cada día se queda abierto aunque cambies de pestaña o edites).
+- **Progresión:** botones "Progresión 1, 2, 3…" (la última es la actual). Al elegir uno se ve la rutina de ese bloque, fechas, sesiones, adherencia, las respuestas del socio y lo que logró en cada ejercicio (kg, FC o segundos). "Usar esta rutina como base" la carga en el editor (no se guarda hasta Guardar cambios y se puede deshacer).
+- Un punto rojo en Progresión avisa cuando toca actuar. Si el plan está pendiente de aprobar, la ficha abre directo en Rutina.
+- La asignación de entrenador/nutriólogo (solo director) pasa a un desplegable en el encabezado ("Cambiar ›").
+
+## Editar la rutina más fácil
+- **Elegir el ejercicio del catálogo:** se toca el nombre y se abre un selector con buscador y filtros por grupo muscular (sugeridos según el tipo de día) y por equipo (máquinas, poleas, mancuernas, barra, peso corporal, ligas, TRX, discos). Avisa con ⚠ si el ejercicio se debe evitar por una limitación del socio.
+- **Se prellena solo** según el tipo de ejercicio, el nivel y el objetivo del socio: series, repeticiones, carga, descanso, nota propioceptiva y opciones por área ocupada. También cardio (minutos y FC), rondas, isométricos y movilidad.
+- **Se ajusta con un toque:** series, repeticiones o segundos o minutos, y descanso con botones; la carga con una lista; el método con un menú que además ajusta series y repeticiones al método y explica cómo se hace. Todo se puede seguir escribiendo a mano.
+- **Si no está en la lista:** "Crear ejercicio nuevo" (nombre, músculos, enfoque, equipo, tipo, si es isométrico, nota y lesiones a evitar). Se guarda en el catálogo para todos los entrenadores y se agrega al día con los datos prellenados.
+- También se puede **cambiar** un ejercicio por otro y **subir o bajar** el orden con ▲▼.
+- Service worker: `fitnesspro-v26`.
+
+---
+
+# Cambios — v7.8 · Movilidad explicada
+
+## Cada ejercicio de movilidad ahora le explica al socio:
+- **¿Qué es?** movilidad dinámica (se mueve) o estiramiento (postura sostenida).
+- **¿Por qué está en tu plan?** y **qué trabajas** (qué músculo o articulación se suelta).
+- **Cuándo** hacerla (antes de cargar o al final / día de descanso).
+- **Movimientos o posturas** con su dosis y cómo hacerlos (solo en las rutinas completas).
+- Se puede prescribir por **rondas** o por **tiempo**: "2 rondas · 6 movimientos" o "10 min · 7 movimientos". Las filas de registro dicen "Ronda completa" o "Secuencia completa · ~10 min".
+- Tres rutinas completas en el catálogo (`KB_MOVILIDAD` en conocimiento.js): Movilidad articular dinámica (2 rondas, 6 movimientos; el texto se ajusta si el día es de pierna o de tren superior), Movilidad de cadera y hombro (~8 min) y Movilidad y estiramiento (~10 min, 7 posturas de 30–45 s).
+- Los demás (estiramientos sueltos, protocolos de rehabilitación, plan de flexibilidad) se explican automáticamente según la zona: cuádriceps, femorales, flexores de cadera, aductores, pantorrilla/tobillo, hombro, cuello/trapecio, espalda alta, columna, cadera, muñeca.
+- El coordinador puede escribir su propia explicación en el campo **"Para qué es esta movilidad"** del editor (vacío = automática) y esa tiene prioridad.
+- Para agregar otra rutina de movilidad basta con sumar una entrada a `KB_MOVILIDAD`.
+- Service worker: `fitnesspro-v25`.
+
+---
+
+# Cambios — v7.7 · Cardio por minutos fijos, rondas con frecuencia cardíaca y movilidad sin peso
+
+## Cardio continuo (caminadora, bici, elíptica, remo ergómetro...)
+- El **tiempo ya viene en el plan** (ej. 12 min) y se quitó el campo "Tiempo" que llenaba el socio. Solo registra su frecuencia cardíaca promedio y marca completado.
+- La **FC objetivo** se calcula con la edad (FC máx = 208 − 0.7 × edad) y el objetivo del socio: perder peso 65–75%, resistencia/rendimiento 70–82%, ganar músculo/fuerza 60–70%. Si el coordinador escribe su propio rango (ej. "70–80% FCmáx") se respeta.
+- Si el plan no trae minutos, se asignan por objetivo y nivel (10–25 min). Se acabó el texto "8 reps — potencia · Moderado 55% 1RM" en el cardio.
+- Las alternativas por área ocupada (bici, elíptica...) siguen igual.
+
+## Cardio por rondas (burpees, jumping jacks, escaladores, cuerdas de batalla, trineo, cuerda de salto)
+- Se prescriben como **rondas × repeticiones** (o segundos / metros) y en lugar del peso se anota la **FC al terminar cada ronda**.
+- Zonas más altas que en cardio continuo (perder peso 75–88%, resistencia 78–90%, ganar músculo 70–85%).
+- **Progresión automática**: al guardar la sesión se compara el promedio de FC con la meta. La siguiente vez, si quedó abajo, la ficha propone subir repeticiones (+2, o +5 seg/m); si quedó arriba, bajar; si estuvo en zona, mantener. No modifica la rutina guardada, solo lo que se pide ese día.
+- La sesión guarda los minutos de cardio del día.
+
+## Movilidad / calentamiento
+- Ya no pide kg ni lleva método de intensidad: solo rondas con palomita.
+- Los métodos de intensidad (tempo, pirámide, etc.) ya no se asignan a cardio, rondas ni movilidad, y se ocultan en rutinas ya existentes.
+
+## Editor del coordinador
+- Cardio continuo y por rondas tienen su propia etiqueta; el campo de peso pasa a "FC objetivo" (vacío = automático).
+- Service worker: `fitnesspro-v24`.
+
+---
+
+# Cambios — v7.6 · Catálogo ampliado, isométricos por tiempo y carga del día
+
+## Catálogo de ejercicios: de 96 a 226
+- 130 ejercicios nuevos: máquinas, peso libre, mancuernas, poleas, **ligas**, **TRX** y **discos / landmine**. Cada uno trae su nota propioceptiva, lesiones donde evitarlo, nivel mínimo y alternativas por área ocupada (en otra zona del gimnasio).
+- Zonas nuevas en el catálogo: Ligas / bandas, TRX / suspensión, Discos / landmine.
+- La plantilla local ahora **reparte ejercicios de todo el catálogo** (antes rotaba solo 3 opciones fijas por hueco muscular). Respeta lesiones, nivel y evita repetir ejercicios en la misma semana.
+- Las fotos nuevas se nombran según `img/ejercicios/LEEME.md` (ya trae las filas de los 130 nuevos).
+
+## Filosofía del entrenador en la plantilla local
+- Con el catálogo ampliado, ahora el entrenador elegido sí cambia los ejercicios de la plantilla local: equipo preferido (libre vs máquina), trabajo unilateral, nivel de variedad, ejercicios firma y ejercicios que NUNCA programa.
+
+## Isométricos por tiempo
+- Plancha, sentadilla isométrica, aguantes, etc. se prescriben como **rondas × segundos**, nunca repeticiones. El tiempo sube con el nivel (ej. plancha: 20 → 30 → 45 s; 3 rondas, 4 en avanzado). Los unilaterales dicen "por lado".
+- En la ficha, cada ronda tiene campo de **segundos sostenidos** y de **carga extra opcional** (disco, mancuerna). Si solo marcas ✓, cuenta la meta.
+- El editor del coordinador muestra "Rondas / Tiempo por ronda" en los isométricos.
+
+## Carga total del día
+- Prescrita: la pantalla del día muestra los minutos isométricos programados junto a ejercicios y series.
+- Real: cada sesión guarda su **tiempo bajo tensión isométrico**. Con carga extra, 3 s de tensión ≈ 1 repetición (kg × segundos ÷ 3 entra al volumen). Sin carga solo cuenta tiempo. Se ve al guardar, en el historial de sesiones y en el resumen semanal.
+- Service worker: `fitnesspro-v23`.
+
+---
+
+# Cambios — v7.5 · Foto del ejercicio en vez del muñeco de silueta
+
+## Recuadro de foto en la ficha del ejercicio
+- En la ficha de cada ejercicio (donde antes salía el muñeco de silueta señalando el músculo), ahora hay un recuadro de imagen que le muestra al socio cómo se hace el movimiento.
+- Foto de ancho completo, sin marco ni fondo propio — se ve el fondo del modal detrás, en vez de una tarjeta sólida. El tip del entrenador (el del foquito 💡) va sobrepuesto como etiqueta discreta y translúcida en la parte de abajo de la foto, en vez de un bloque de color aparte arriba. Ya no repite el nombre del ejercicio junto a la foto (ese nombre ya está arriba, en el título de la ficha).
+- La foto ya no se recorta (antes se cortaban los lados para rellenar el recuadro y a veces se colaba algo de otra parte de la foto, como pasó con una de las fotos de prueba); ahora se ve completa, sin cortes, dentro de un recuadro más alto (cuadrado).
+- En tema claro, el recuadro de la foto ya tiene su propio fondo oscuro (igual que las fotos del inicio), para que no se vea "flotando" sobre el blanco — en tema oscuro no hizo falta, ahí ya se veía bien.
+- La miniatura del ejercicio en la lista del día (antes de entrar a la ficha) también se ve completa ahora, sin recortarse.
+- Foto distinta para la miniatura (opcional): si quieres que la miniatura de la lista se vea diferente a la foto grande de la ficha, sube `img/ejercicios/mini-<nombre>.webp` — si no la subes, la miniatura usa la misma foto grande. Ver `img/ejercicios/LEEME.md`.
+- El texto justo debajo del nombre del ejercicio ya no repite "X reps — potencia" (esa parte ya se ve en cada fila de abajo); ahora solo dice series, esfuerzo/peso objetivo y descanso, para ahorrar espacio arriba.
+- Funciona igual en cualquier pantalla donde se abra un ejercicio — es un solo componente reutilizado en toda la app.
+- Usa el mismo banco de imágenes que ya existe en `img/` (el que jala las fotos del repositorio de GitHub): si aún no hay una foto propia de ese ejercicio, muestra automáticamente la foto del grupo muscular (`img/grupos/...`), y si tampoco existe, un ícono neutro — nunca queda un espacio roto.
+- Para agregar la foto real de un ejercicio: sube el archivo a `img/ejercicios/` en el repo de GitHub, nombrado igual que el ejercicio (ver `img/ejercicios/LEEME.md` para el detalle de nombres). En cuanto subes el archivo con el nombre correcto, aparece solo — no hay que tocar código.
+
+---
+
+# Cambios — v7.4 · Cardio por tiempo/FC y peso calculado con tu RM
+
+## Ejercicios cardiovasculares (elíptica, remo, bici, caminadora...)
+- Ya no se registran como "series × repeticiones × peso". El editor del entrenador muestra "Bloques / Tiempo / Frecuencia cardíaca", y el socio, al entrenar, ve un campo de minutos y de frecuencia cardíaca (lpm) en vez del teclado de peso.
+
+## Peso calculado con tu RM (repetición máxima)
+- Los ejercicios de fuerza que antes mostraban un porcentaje fijo ("Moderado — 55-60% 1RM") ya no lo muestran — ahora dicen "Esfuerzo moderado — deja 2 reps en reserva" en las cuatro pantallas donde aparecía (lista del día, ficha del ejercicio, vista previa de la rutina y el PDF).
+- El peso real se calcula solo, con el progreso del socio: cada serie registrada estima su 1RM (fórmula de Epley) y, a partir de ahí, el sistema calcula el peso según las repeticiones que pida cada ejercicio, dejando 2 en reserva — ya no un porcentaje fijo desconectado de las repeticiones, que antes podía sugerir menos peso del que el socio ya había levantado.
+- Si el socio ya conoce su RM, puede anotarlo él mismo: en su Perfil hay un botón "Tus RM (opcional)" que abre una ventana flotante para capturarlo por ejercicio, sin tener que esperar a que el sistema lo calcule solo. A los socios nuevos les aparece un aviso en Inicio invitándolos a hacerlo, que desaparece en cuanto visitan su Perfil.
+- Corregido: si ya había una sesión guardada ese día, un segundo registro se descartaba en silencio (sin PR ni RM). Ahora se pregunta si se quiere reemplazar la sesión del día con los datos nuevos.
+- Campo de peso más ancho, para números de 3-4 dígitos (kg o lb).
+
+## Nutriólogos, progresión, lugares y ajustes de rutina (de una entrega anterior)
+- Alta de nutriólogos, asignación interna de entrenador/nutriólogo con balanceo de carga, personalización de macros y menú, reparto automático de comidas, progresión por bloques, reporte de lugares visitados, intercambio de días completos de rutina.
+
+---
+
+# Cambios — v7.1 · Nutriólogos, progresión, lugares y ajustes de rutina
+
+## Nutrición y equipo
+- **Nutriólogos**: se dan de alta igual que un entrenador, marcando si da entrenamiento, nutrición, o ambos. Un entrenador que ya sabe de nutrición puede tener las dos funciones.
+- **Asignación de staff** (solo coordinador, decisión interna — el socio nunca la ve ni la elige): en la ficha de cada socio, dos selectores rápidos para elegir quién lleva su entrenamiento y quién su nutrición. El de entrenador muestra cuántos socios activos tiene cada quien, para balancear carga de trabajo. Reasignar solo cambia quién ve y edita la ficha — la rutina, historial y datos del socio se quedan intactos.
+- **Personalizar nutrición**: quien tenga la función asignada puede ajustar manualmente calorías/macros/agua y armar un menú por comidas para un socio. El socio lo ve reflejado al instante, con el cálculo automático como referencia.
+- **Reparto de comidas** (automático, sin que nadie lo escriba): el socio elige en cuántas comidas divide su día (3 a 6) y el sistema arma, según sus propios requerimientos, cuánto pesa cada comida y una guía general de plato (verduras/proteína/carbohidratos/grasas) — no es un menú ni una receta, solo una proporción de referencia.
+- Filtro "📈 Progresión" y el resto del sistema de bloques de progresión (evaluación al socio, propuesta automática de siguiente bloque, aprobación e historial) de una entrega anterior.
+- Corregido: un nutriólogo sin función de entrenamiento ya no aparece como opción al elegir entrenador en el alta de un socio nuevo.
+- Corregido: cada entrenador y nutriólogo ve solo a los socios que tiene asignados — ya no ve a todos los que están sin asignar.
+
+## Ubicación
+- Se quitó el aviso de "dentro/fuera del gimnasio" que se mostraba al socio al entrar — la app ya no da esa impresión de estar limitada a un solo lugar.
+- Nueva sección **📍 Lugares** (menú del coordinador): agrupa los check-ins por zona (~55 m) y muestra cuántas veces y en cuántos días distintos se ha abierto la app desde cada lugar, separando "Club Campestre" de "otros lugares" — con un enlace directo a Google Maps para cada uno. Pensado para detectar otros gimnasios donde ya conocen la app.
+
+## Rutinas
+- **Intercambiar día completo**: al abrir cualquier día de la rutina de un socio, se puede intercambiar todo su contenido (tipo de sesión + todos los ejercicios) con el de otro día — útil cuando un socio cambia su disponibilidad y hay que reacomodar sin recapturar nada a mano.
+
+## Modo sin conexión (de una entrega anterior)
+- Bandeja de cambios pendientes, fusión segura al sincronizar, service worker con todo precargado (fotos, PDF, 3D, tipografías, Firebase SDK) e indicador de estado.
+
+---
+
+# Cambios — v6.7 · Progresión por bloques
+
+## Nuevo
+- **Evaluación de progresión**: al terminar un bloque (4-6 semanas), el coordinador o entrenador manda un botón "📋 Enviar evaluación" desde la ficha del socio. Le aparece al socio en su Inicio.
+- **Cuestionario del socio** (11 preguntas, ~2 min): intensidad, reps en reserva, asistencia, recuperación, molestias articulares, técnica, avance percibido, preferencia (más carga / variedad / sesiones cortas / enfocar una zona), disponibilidad, ejercicios que quiere cambiar y comentario libre.
+- **Propuesta automática**: el sistema cruza las respuestas con lo que el socio realmente registró (peso máximo y series completadas por ejercicio durante el bloque) y arma la siguiente rutina: sube cargas donde hay margen, cambia ejercicios con molestia o que no le gustaron, ajusta series por recuperación o enfoque de zona, sube reps/tiempo en flexibilidad y rehabilitación. Cada cambio muestra su motivo.
+- **Revisión del entrenador**: la propuesta se puede regenerar, descartar o aprobar (con duración del nuevo bloque, 4-6 semanas). Al aprobar, la rutina anterior se guarda en el historial del socio (hasta 12 bloques) y la nueva queda activa al instante.
+- **El socio ve su progresión**: tarjeta "Nuevo bloque" con lo que cambió (peso anterior vs nuevo, ejercicios nuevos), y un botón "Mi progresión" en Mi plan con la línea de tiempo de todos sus bloques.
+- Funciona sin conexión: se apoya en la misma bandeja de cambios pendientes de la v6.6.
+- Filtro "📈 Progresión" en la lista de socios del panel: quiénes tienen evaluación contestada, propuesta por aprobar, o ya les toca progresar.
+
+# Cambios — v6.6 · Modo sin conexión
+
+## Qué cambió
+- **Bandeja de cambios pendientes**: todo lo que se guarda (sesiones, pesos, medidas, ediciones del staff, conocimiento, entrenadores, bajas) queda en el dispositivo y en una bandeja que **sobrevive aunque se cierre la app**. Al volver internet se sube solo.
+- **Fusión segura al sincronizar**: las sesiones, pesos, medidas, asistencias y récords se **unen** con lo que ya hay en Firebase (transacción). Si el coordinador cambió la rutina mientras el socio estaba sin señal, se respeta el cambio del coordinador.
+- **Socios dados de baja** desde otro dispositivo no "reviven" al sincronizar.
+- **Indicador superior**: "Sin conexión · N cambios por subir", "Sincronizando…" y "✓ Todo sincronizado".
+- **Service worker `fitnesspro-v13`**: guarda desde la instalación las fotos, íconos, Firebase SDK, PDF (jsPDF), 3D (three.js) y tipografías. La app abre en máximo 4 s aunque la señal sea mala.
+- Si la app abrió sin internet, al volver la señal carga Firebase sola (sin recargar).
+
+## Límites
+- La primera vez en cada dispositivo se necesita internet (para descargar la app).
+- Sin internet no hay sincronización entre dispositivos ni rutinas con IA.
+
+---
+
+# Cambios — versión revisada
+
+## Correcciones
+- **Pérdida de datos al sincronizar**: tras cada actualización de Firebase, la app seguía usando la copia vieja del socio y el siguiente guardado borraba el cambio (peso, medidas, sesiones). Corregido (`aplicarSnapshotSocios`).
+- **Ediciones del entrenador**: ya no se pierden si otro dispositivo guarda mientras editas; al guardar solo se escriben rutina/estado/asignación, sin pisar lo que el socio registró.
+- **Fecha en UTC**: después de las 6 pm las sesiones y check-ins quedaban con la fecha del día siguiente. Ahora se usa la fecha local.
+- **RESET DATOS**: solo coordinador y solo en modo local. Con Firebase conectado está bloqueado.
+- **Siembra demo**: si la base queda vacía ya no se rellenan socios demo en producción.
+- **Entrenador**: ahora ve solo sus socios (y los sin asignar), como promete la pantalla de login.
+- **Login staff**: se quitaron las credenciales demo visibles y precargadas.
+- **Nombres**: se escapan/limpian para evitar inyección de código en el panel.
+- **Campos temporales** (`_asistHoy`) ya no se suben a Firebase.
+- Service worker: `fitnesspro-v2` para forzar actualización.
+
+## IA
+- La llamada directa a `api.anthropic.com` no funciona desde GitHub Pages (requiere API key secreta), así que todas las rutinas salían de la plantilla. Ahora usa `AI_ENDPOINT` + `worker-ia.js` (Cloudflare Worker gratuito).
+- Cada socio guarda `origenRutina` (`ia` / `plantilla`) y el panel avisa cuando fue plantilla.
+
+## Nuevo
+- **📊 RESUMEN**: KPIs de la semana, planes por aprobar con días de espera, socios en riesgo de abandono (14+ días sin actividad), carga y adherencia por entrenador.
+- **Exportar CSV** de socios (abre en Excel) y **💾 Respaldo JSON** completo (coordinador).
+
+## Reglas de Firebase (pegar `firebase-rules.json`)
+- Ya no se puede sobrescribir ni borrar toda la rama `/socios` o `/entrenadores` de un golpe, ni eliminar socios.
+- **Pendiente**: la base sigue siendo legible por cualquiera. Requiere Firebase Authentication (siguiente fase).
+
+## Configurar antes de usar
+- `GEO_CENTER` en index.html: coordenadas reales del gimnasio.
+- Contraseña del coordinador (`STAFF_USERS`) y de los entrenadores demo (1234).
+
+---
+
+# Versión 3 — Rutinas elaboradas
+
+## Base de conocimiento (`conocimiento.js`)
+- Principios del club, 21 métodos de intensidad con reglas (nivel mínimo, fatiga, dónde aplican) y 96 ejercicios organizados por zona del gimnasio, cada uno con opciones por enfoque muscular.
+- La IA la recibe filtrada para cada socio (sin ejercicios contraindicados por su lesión, solo métodos que su nivel tolera).
+- Botón **📚 CONOCIMIENTO** en el panel: todo el staff la consulta; el coordinador escribe **lineamientos del club** que se aplican a todas las rutinas (se guardan en `/config`; pega las reglas nuevas).
+
+## Métodos de intensidad automáticos
+- Pirámide ascendente/descendente, escalera ascendente-descendente, drop set, drop set mecánico, rest-pause, cluster, superseries, biseries, triseries, pre/post-agotamiento, tempo, pausas, 1½, método 21, EMOM, circuitos y contraste.
+- Cantidad según nivel (principiante 1, intermedio 2, avanzado 3 por sesión) y la filosofía del entrenador (favoritos, los que evita, qué tanto los usa).
+- Sobre una zona lesionada solo métodos de baja carga (tempo, pausa, superseries).
+- Aplica tanto a rutinas de IA como de plantilla. Para socios existentes: botón **✨ MÉTODOS Y OPCIONES** en su ficha (solo agrega lo que falta; revisas y guardas).
+
+## Opciones por área ocupada
+- Cada ejercicio trae 2-3 opciones del mismo enfoque en otra zona (desplante → extensión de cuádriceps / prensa pies bajos).
+- El socio la elige solo por ese día; la rutina original no cambia. El récord se guarda con el ejercicio que realmente hizo.
+- El **Resumen** muestra qué ejercicios se cambian más y a qué hora: te dice qué equipo se satura.
+
+## Filosofía del entrenador: de 4 a 9 pasos
+Periodización, rangos de reps por objetivo, métodos favoritos/evitados, peso libre vs máquinas, unilateral, ejercicios firma y prohibidos, calentamiento, orden, tempo, core, cardio, preferencia en hora pico y una sesión típica descrita por el propio entrenador. Todo entra al prompt de la IA. Las filosofías existentes se conservan.
+
+## Vista del socio y PDF
+Chip del método, grupo (A1/A2), descanso, explicación de cómo ejecutar el método, reps por serie en pirámides y escaleras. El PDF incluye método, descanso y opciones.
+
+---
+
+# Corrección — entrenador nuevo no aparecía
+
+- El archivo de conocimiento (`conocimiento.js`) estaba referenciado como script aparte; en la vista de prueba (un solo archivo publicado) no cargaba, y eso rompía tanto "📚 CONOCIMIENTO" como el paso 4 del cuestionario de filosofía. Ya va incrustado dentro de `index.html`.
+- El selector de entrenador (al registrar un socio) solo mostraba entrenadores que ya habían llenado su filosofía. Un entrenador recién creado se quedaba invisible hasta que iniciaba sesión y completaba el cuestionario de 9 pasos. Ahora aparece de inmediato, marcado como "Aún sin filosofía propia — seguirá el enfoque general del club", y sube a la lista en cuanto la define.
+
+---
+
+# Nuevo — sección Entrenadores
+
+Botón **👥 ENTRENADORES** (coordinador) para ver a todos: filosofía, especialidades y cuántos socios (activos/pendientes) tiene cada uno.
+- **✎ Editar**: nombre, contraseña y especialidades. El usuario (login) no se puede cambiar desde ahí. Las especialidades que no están en la lista fija (ej. "Rendimiento deportivo") se conservan en un campo de texto aparte — nada se pierde al guardar sin tocar nada.
+- **🗑 Eliminar**: pide doble confirmación. Si tiene socios asignados, quedan como "Sin asignar" (su rutina no se borra, solo pierden entrenador).
+- La filosofía sigue editándose únicamente desde la sesión del propio entrenador (🧬 MI FILOSOFÍA), no desde aquí.
+
+---
+
+# Corrección importante — control del coordinador y por qué no se guardaba
+
+## La causa real
+La "vista de prueba" (el link que publico aquí para que la revises) corre dentro de un entorno de Claude que **no puede cargar Firebase** — el navegador bloquea el script de Firebase por política de seguridad de ese entorno, sin importar qué tan bien esté configurado tu proyecto real. Mientras pruebas ahí, la app funciona 100% en modo local (📦 LOCAL, nunca 🔥 FIREBASE), y cada sesión/pestaña nueva puede partir de datos distintos. **Esto no pasará en tu sitio real** (GitHub Pages u otro hosting), donde Firebase si se conecta.
+Para confirmar esto mientras pruebas: fíjate en el badge junto al logo — si dice 📦 LOCAL, Firebase no está conectado en ese momento.
+
+## Cambios de fondo
+- **El coordinador ahora puede llenar o editar la filosofía de cualquier entrenador** directamente desde 👥 ENTRENADORES → 🧬 Llenar/Editar filosofía — ya no depende de que el entrenador inicie sesión y complete el cuestionario por su cuenta.
+- **El cuestionario de filosofía se autoguarda en cada paso** (no solo al final). Si se cierra a medias, lo que ya se llenó no se pierde.
+- **📊 RESUMEN y 🔥 FIREBASE ahora son solo para coordinación.** Un entrenador ya no ve datos agregados de otros entrenadores ni puede tocar la configuración de Firebase. Solo ve: sus propios socios, sus rutinas, 🧬 su filosofía y 📚 Conocimiento (en modo lectura).
+- Reglas de Firebase actualizadas para permitir borrar entrenadores individuales (antes lo bloqueaban sin avisar).
+
+---
+
+# Dos bugs reales encontrados y corregidos
+
+## 1. La lista de Entrenadores no se refrescaba al crear uno nuevo
+Al crear un entrenador, se guardaba correctamente, pero la tarjeta no aparecía hasta salir de la sección y volver a entrar. Eso probablemente causó los entrenadores duplicados que viste (varios "Luis Fernando Jaime" repetidos) — parecía que no se había creado, así que se volvía a intentar. Ya se refresca de inmediato. También ahora avisa si ya existe un entrenador con el mismo nombre, para evitar crear duplicados sin querer.
+
+## 2. Poca variedad en rutinas de disciplina deportiva (tenis, fútbol, pádel, etc.)
+Cada disciplina solo tenía 6-7 ejercicios en su banco propio, y el generador tomaba una ventana de 5 de esos 6-7 cada día — matemáticamente, cualquier par de días compartía mínimo 4 de 5 ejercicios. Por eso lunes y martes se veían casi idénticos, solo reordenados.
+Ahora cada día combina 2 movimientos firma de la disciplina (rotando cuáles, para usar los 6-7 a lo largo de la semana) con 3 ejercicios del catálogo general elegidos según el enfoque del día (fuerza, potencia, resistencia, core, movilidad), sin repetir ninguno ya usado esa semana. Probado con una rutina de tenis a 4 días: 0 ejercicios repetidos entre la mayoría de los días, máximo 2 compartidos entre dos de ellos.
+
+Esto aplica a las 11 disciplinas del catálogo (tenis, golf, natación, gimnasia, fútbol, pádel, frontenis, básquet, taekwondo, squash, fitness grupal).
+
+
+---
+
+# Versión 4 — Diseño nuevo, sesiones, socios y conocimiento
+
+## Diseño
+- Nuevo aspecto (vidrio, degradados, tipografía Bricolage + Figtree) con **solo dos temas: claro y oscuro** (selector sol/luna). Se quitó **Mi Espacio**.
+- Inicio con fondo de destellos y latido; panel del socio con anillo semanal, tira de la semana y barra de navegación flotante.
+
+## Corrección: las sesiones no se guardaban
+- **Causa**: Firebase no guarda listas ni objetos vacíos. Un socio nuevo se guardaba con `sesiones: []`, y al volver de Firebase ese campo ya no existía; al pulsar *Finalizar sesión* el código fallaba en silencio (`s.logs.sesiones.push` sobre `undefined`) y no se guardaba nada.
+- **Segunda causa**: los récords se guardaban con el nombre del ejercicio como llave. Si el nombre llevaba `/`, `.`, `#`, `$`, `[` o `]` (p. ej. "Caminata Inclinada / Elíptica") Firebase rechazaba TODO el guardado.
+- **Arreglo**: se restauran los campos faltantes al cargar y antes de guardar, las llaves de récords se limpian, y cualquier error ahora se muestra en pantalla en lugar de fallar en silencio. Al terminar aparece "Sesión guardada".
+- También: la configuración (lineamientos, conocimiento) ya no se pierde en modo local; y si la app queda abierta pasada la medianoche, el "hoy" se actualiza.
+
+## Coordinador: editar y eliminar socios
+- En la ficha del socio (solo coordinador): **Editar datos** (nombre, edad, estatura, peso, género, nivel, objetivo, frecuencia, estado, entrenador, limitaciones y código de acceso) y **Eliminar** (doble confirmación).
+- Si se elimina a un socio con la sesión abierta en su teléfono, la app lo saca automáticamente.
+- **Importante:** para poder eliminar hay que **pegar las reglas nuevas** de `firebase-rules.json` en Firebase Console → Realtime Database → Reglas → Publicar.
+
+## Conocimiento: agregar lo que falte (coordinador)
+- **Ejercicios** (con músculos, zona, enfoque, tipo, series/reps/carga sugeridas, descripción propioceptiva y lesiones a evitar), **métodos de intensidad**, **principios del club** y **notas y descripciones** libres. Se pueden editar y quitar.
+- Los ejercicios y métodos agregados los usa el sistema al crear rutinas nuevas, en las opciones "área ocupada" y en las indicaciones para la IA. Los principios y las notas van a la IA.
+
+## Panel del coordinador / entrenador: rediseño
+- **Barra superior limpia**: en celular las acciones (Entrenadores, Nuevo entrenador, Conocimiento, Resumen, Respaldo, Firebase, Cerrar sesión) están en un botón **Menú**, agrupadas. El rol, el estado de conexión y el nombre van en una línea aparte.
+- **Lista y ficha por separado** en celular: primero ves la lista de socios (con buscador, filtros con conteo y tarjetas grandes); al tocar uno se abre su ficha con el botón **Volver a socios**. En pantallas grandes siguen lado a lado.
+- **Ficha del socio ordenada**: datos clave en etiquetas, botones *Editar datos* y *Métodos y opciones*, resumen de números, y **Guardar cambios** (y **Aprobar plan** si está pendiente) fijos abajo, siempre a la mano.
+- **Editar la rutina**: cada día se abre al tocarlo; cada ejercicio tiene campos con nombre (Series, Repeticiones, Peso, Nota propioceptiva) y lo avanzado (método, grupo, descanso, opciones) queda dentro de un desplegable.
+- **Eliminar socio** quedó en una *Zona de peligro* al final de la ficha, para no tocarlo por accidente.
+
+## Diseño v5 — según los prototipos (claro y oscuro)
+- Nueva paleta: **lima + blanco** (claro) y **lima + negro azulado** (oscuro), tarjetas planas, íconos de línea en recuadros y tipografía deportiva (Kanit) en títulos.
+- **Barra inferior de 5 secciones**: Inicio · Rutina · Progreso · Nutrición · Perfil.
+- **Inicio**: saludo, foto principal con la frase del gimnasio, tarjeta *Entrenamiento de hoy* con anillo semanal y botón **Iniciar entrenamiento**, tres números clave y la semana.
+- **Rutina (Mi plan)**: objetivo, días/nivel/entrenador y la semana en tarjetas con foto.
+- **Detalle del día**: portada con foto, resumen (ejercicios, series, nivel), avance y cada ejercicio con su miniatura.
+- **Progreso** y **Nutrición** con tarjetas e íconos nuevos; **Perfil** nuevo (datos, logros, apariencia claro/oscuro, PDF y cerrar sesión).
+- **Banco de imágenes**: carpeta `img/` (lee `img/LEEME.md`). Donde falta una foto se ve un fondo con ícono; puedes ir agregándolas poco a poco. `img/LISTA-DE-IMAGENES.csv` trae los nombres exactos de archivo.

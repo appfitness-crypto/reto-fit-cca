@@ -1,0 +1,91 @@
+{
+  "rules": {
+    "roles": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador')",
+        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $uid && !newData.exists() && data.val() === 'entrenador'))",
+        ".validate": "newData.val() === 'coordinador' || newData.val() === 'entrenador'"
+      }
+    },
+    "socios": {
+      ".read": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && query.orderByChild === 'entrenadorId' && query.equalTo === auth.uid))",
+      ".indexOn": [
+        "entrenadorId"
+      ],
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && data.child('entrenadorId').val() === auth.uid))",
+        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $uid && auth.provider !== 'anonymous') || (root.child('roles').child(auth.uid).val() === 'entrenador' && data.child('entrenadorId').val() === auth.uid && newData.exists() && newData.child('entrenadorId').val() === auth.uid))",
+        ".validate": "newData.hasChildren(['nombre','objetivo']) && newData.child('code').val() === $uid && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && auth.uid !== $uid) || (data.exists() ? (newData.child('status').val() === data.child('status').val() && newData.child('membresia/vence').val() === data.child('membresia/vence').val() && newData.child('membresia/ancla').val() === data.child('membresia/ancla').val() && newData.child('membresia/suspendido').val() === data.child('membresia/suspendido').val()) : (newData.child('status').val() === 'activo' && !newData.child('membresia').exists())))",
+        "entrenadorId": {
+          ".validate": "newData.isString() && (newData.val() === '' || newData.val() === data.val() || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(newData.val()).val() === 'entrenador' && newData.parent().child('codigoEnt').isString() && root.child('codigos').child(newData.parent().child('codigoEnt').val()).val() === newData.val()))"
+        }
+      }
+    },
+    "indice": {
+      ".read": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && query.orderByChild === 'e' && query.equalTo === auth.uid))",
+      ".indexOn": [
+        "e"
+      ],
+      "$uid": {
+        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $uid && auth.provider !== 'anonymous') || (root.child('roles').child(auth.uid).val() === 'entrenador' && root.child('socios').child($uid).child('entrenadorId').val() === auth.uid))",
+        ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.child('e').val() === root.child('socios').child($uid).child('entrenadorId').val()"
+      }
+    },
+    "entrenadores": {
+      ".read": "auth != null && auth.provider !== 'anonymous'",
+      "$id": {
+        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $id && root.child('roles').child(auth.uid).val() === 'entrenador'))",
+        "rol": {
+          ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.val() === 'entrenador'"
+        },
+        "uid": {
+          ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.val() === auth.uid"
+        },
+        "codigo": {
+          ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || root.child('codigos').child(newData.val()).val() === auth.uid"
+        },
+        "pass": {
+          ".validate": false
+        }
+      }
+    },
+    "codigos": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && ((!data.exists() && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && newData.val() === auth.uid))) || (!newData.exists() && (data.val() === auth.uid || root.child('roles').child(auth.uid).val() === 'coordinador')))",
+        ".validate": "newData.isString() && $code.matches(/^ENT-[A-Z0-9]{4,8}$/)"
+      }
+    },
+    "config": {
+      ".read": "auth != null",
+      "$k": {
+        ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'"
+      }
+    },
+    "apariencia": {
+      ".read": true,
+      ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'"
+    },
+    "apariencia_img": {
+      ".read": true,
+      ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'",
+      "$k": {
+        ".validate": "newData.isString() && newData.val().length < 400000 && newData.val().beginsWith('data:image/')"
+      }
+    },
+    "apariencia_prev": {
+      ".read": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'",
+      ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'"
+    },
+    "huellas": {
+      ".read": "auth != null",
+      ".indexOn": [
+        "k"
+      ],
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && root.child('socios').child($uid).child('entrenadorId').val() === auth.uid))",
+        ".validate": "!newData.exists() || (newData.child('k').isString() && newData.child('h').isString() && newData.child('h').val().length <= 600)"
+      }
+    }
+  }
+}
