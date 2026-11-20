@@ -1,0 +1,574 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-20T15:29:09+00:00",
+  "title": "Design System: Reto Fit CCA",
+  "extensions": {
+    "colorMeta": {
+      "shell": {
+        "role": "primary",
+        "displayName": "Azul Club Profundo",
+        "canonical": "oklch(34.4% 0.121 259)",
+        "tonalRamp": [
+          "#00003C",
+          "#001F57",
+          "#123C7E",
+          "#315CA1",
+          "#507DC4",
+          "#709FE9",
+          "#A9C9FB",
+          "#E6EFFE"
+        ]
+      },
+      "shell-2": {
+        "role": "primary",
+        "displayName": "Azul Club Medio",
+        "canonical": "oklch(40.0% 0.145 260)",
+        "tonalRamp": [
+          "#00003B",
+          "#001F56",
+          "#03398A",
+          "#275AAE",
+          "#467BD2",
+          "#679EF8",
+          "#AAC9FA",
+          "#E6EFFE"
+        ]
+      },
+      "shell-tx": {
+        "role": "neutral",
+        "displayName": "Blanco sobre Banda",
+        "canonical": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#404040",
+          "#5D5D5D",
+          "#7D7D7D",
+          "#9E9E9E",
+          "#C7C7C7",
+          "#EEEEEE"
+        ]
+      },
+      "shell-mu": {
+        "role": "primary",
+        "displayName": "Azul Niebla",
+        "canonical": "oklch(84.4% 0.051 260)",
+        "tonalRamp": [
+          "#010A20",
+          "#15243D",
+          "#30405B",
+          "#4D5E7B",
+          "#6C7E9C",
+          "#8C9FBF",
+          "#B5C8E9",
+          "#E6EFFE"
+        ]
+      },
+      "fair": {
+        "role": "secondary",
+        "displayName": "Verde Fairway",
+        "canonical": "oklch(51.2% 0.127 150)",
+        "tonalRamp": [
+          "#001101",
+          "#002D0E",
+          "#004E1F",
+          "#0E7133",
+          "#3B9252",
+          "#5EB473",
+          "#88DF9A",
+          "#C7FFD1"
+        ]
+      },
+      "fair-deep": {
+        "role": "secondary",
+        "displayName": "Verde Fairway Profundo",
+        "canonical": "oklch(45.9% 0.118 148)",
+        "tonalRamp": [
+          "#001100",
+          "#002E0C",
+          "#004E1C",
+          "#206F35",
+          "#459054",
+          "#67B374",
+          "#90DD9C",
+          "#CCFED2"
+        ]
+      },
+      "lime": {
+        "role": "tertiary",
+        "displayName": "Lima del Logo",
+        "canonical": "oklch(84.3% 0.195 128)",
+        "tonalRamp": [
+          "#050F00",
+          "#1A2A00",
+          "#314805",
+          "#4A6914",
+          "#648C1D",
+          "#7EB21B",
+          "#A2DE3C",
+          "#D8FEAA"
+        ]
+      },
+      "lime-bg": {
+        "role": "tertiary",
+        "displayName": "Lima Pálida",
+        "canonical": "oklch(95.5% 0.046 123)",
+        "tonalRamp": [
+          "#080E00",
+          "#20280C",
+          "#3B4428",
+          "#586245",
+          "#788264",
+          "#99A484",
+          "#C1CDAC",
+          "#E8F4D2"
+        ]
+      },
+      "lime-ink": {
+        "role": "tertiary",
+        "displayName": "Tinta Lima",
+        "canonical": "oklch(41.9% 0.116 136)",
+        "tonalRamp": [
+          "#011000",
+          "#112C01",
+          "#244B06",
+          "#3E6C22",
+          "#5D8C43",
+          "#7DAF64",
+          "#A6D98C",
+          "#D0FFB9"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Pasto Frío",
+        "canonical": "oklch(94.9% 0.009 161)",
+        "tonalRamp": [
+          "#080C0A",
+          "#202523",
+          "#3C413E",
+          "#595F5C",
+          "#797F7B",
+          "#9AA09C",
+          "#C2C9C5",
+          "#E9F0EC"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Cartulina",
+        "canonical": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#404040",
+          "#5D5D5D",
+          "#7D7D7D",
+          "#9E9E9E",
+          "#C7C7C7",
+          "#EEEEEE"
+        ]
+      },
+      "set-active": {
+        "role": "neutral",
+        "displayName": "Celda Activa",
+        "canonical": "oklch(97.8% 0.008 254)",
+        "tonalRamp": [
+          "#090B0E",
+          "#212428",
+          "#3D4044",
+          "#5B5E62",
+          "#7A7E82",
+          "#9B9FA3",
+          "#C4C8CC",
+          "#EBEFF4"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Tinta Marina",
+        "canonical": "oklch(22.0% 0.038 256)",
+        "tonalRamp": [
+          "#020B1B",
+          "#172536",
+          "#324154",
+          "#4F5F73",
+          "#6E7F94",
+          "#8FA0B7",
+          "#B7C9E1",
+          "#E5F0FE"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Tinta Pizarra",
+        "canonical": "oklch(44.8% 0.040 255)",
+        "tonalRamp": [
+          "#020B1C",
+          "#172537",
+          "#324155",
+          "#4F5F74",
+          "#6E7F95",
+          "#8EA0B8",
+          "#B7C9E2",
+          "#E4F0FF"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Regla de Tarjeta",
+        "canonical": "oklch(89.0% 0.016 245)",
+        "tonalRamp": [
+          "#060C12",
+          "#1D252C",
+          "#394148",
+          "#565F66",
+          "#757F87",
+          "#96A0A8",
+          "#BFC9D2",
+          "#E6F0F9"
+        ]
+      },
+      "rule-2": {
+        "role": "neutral",
+        "displayName": "Regla Fina",
+        "canonical": "oklch(94.0% 0.009 243)",
+        "tonalRamp": [
+          "#080C0F",
+          "#202528",
+          "#3C4044",
+          "#595E63",
+          "#797E82",
+          "#9A9FA4",
+          "#C2C8CD",
+          "#E9EFF4"
+        ]
+      },
+      "amber": {
+        "role": "signal",
+        "displayName": "Ámbar Pendiente",
+        "canonical": "oklch(53.1% 0.119 65)",
+        "tonalRamp": [
+          "#190500",
+          "#361D01",
+          "#5B3607",
+          "#864F01",
+          "#AD6C20",
+          "#D18E47",
+          "#FDB771",
+          "#FFEAD8"
+        ]
+      },
+      "amber-bg": {
+        "role": "signal",
+        "displayName": "Ámbar Pálido",
+        "canonical": "oklch(96.0% 0.038 82)",
+        "tonalRamp": [
+          "#130900",
+          "#2D220D",
+          "#4A3E28",
+          "#695C45",
+          "#897B64",
+          "#AA9D84",
+          "#D4C5AC",
+          "#FCEDD3"
+        ]
+      },
+      "amber-ink": {
+        "role": "signal",
+        "displayName": "Tinta Ámbar",
+        "canonical": "oklch(37.3% 0.082 69)",
+        "tonalRamp": [
+          "#180600",
+          "#361E00",
+          "#5B3600",
+          "#7B5425",
+          "#9D7445",
+          "#C09566",
+          "#EBBE8E",
+          "#FFEBD6"
+        ]
+      },
+      "red": {
+        "role": "signal",
+        "displayName": "Rojo Riesgo",
+        "canonical": "oklch(53.1% 0.185 23)",
+        "tonalRamp": [
+          "#220001",
+          "#4C0008",
+          "#7C0016",
+          "#AE1127",
+          "#D54047",
+          "#FC6567",
+          "#FCB1AD",
+          "#FDE9E8"
+        ]
+      },
+      "stage": {
+        "role": "neutral",
+        "displayName": "Escenario",
+        "canonical": "oklch(15.9% 0.014 264)",
+        "tonalRamp": [
+          "#080B11",
+          "#21242B",
+          "#3C4047",
+          "#5A5E66",
+          "#797D86",
+          "#9A9EA7",
+          "#C3C7D1",
+          "#EAEFF8"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Semana actual en la banda; variante 56 px para el lugar en el reto."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Título de pantalla o de ejercicio (30–34 px)."
+      },
+      "numeral": {
+        "displayName": "Numeral",
+        "purpose": "Valores de stepper y reloj de descanso; 26 px para totales."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Títulos de tarjeta, subtítulos de técnica, números de serie y deltas (19–20 px)."
+      },
+      "score-cell": {
+        "displayName": "Score cell",
+        "purpose": "Cifras de la tarjeta de score."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texto corrido y filas."
+      },
+      "body-strong": {
+        "displayName": "Body strong",
+        "purpose": "Nombres de ejercicio y datos clave en frase."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Subtítulos, prescripción y notas en ink-2 (13–14 px)."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Encabezados de columna, rótulos de fila y unidades."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Botón principal."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 1px 2px rgba(14,27,44,.06), 0 8px 20px -12px rgba(14,27,44,.22)",
+        "purpose": "Toda tarjeta blanca sobre ground."
+      },
+      {
+        "name": "cta",
+        "value": "0 1px 1px rgba(14,27,44,.12), 0 10px 22px -10px rgba(30,122,60,.65)",
+        "purpose": "Resplandor verde bajo el botón principal."
+      },
+      {
+        "name": "cta-club",
+        "value": "0 10px 22px -10px rgba(10,53,118,.6)",
+        "purpose": "Resplandor azul bajo el botón del club."
+      },
+      {
+        "name": "control-ring",
+        "value": "inset 0 0 0 1.5px #D2DCE5",
+        "purpose": "Anillo de steppers (1 px en pills, 2 px en casilla pendiente)."
+      },
+      {
+        "name": "set-active-edge",
+        "value": "inset 0 2px 0 #0E4294",
+        "purpose": "Borde superior de la serie en edición."
+      },
+      {
+        "name": "avatar-ring",
+        "value": "inset 0 0 0 1.5px rgba(255,255,255,.25)",
+        "purpose": "Avatar del socio sobre la banda azul."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.23,1,.32,1)",
+        "purpose": "Curva única del sistema para estados y entradas."
+      },
+      {
+        "name": "press",
+        "value": "transform scale(.98) 160ms ease-out",
+        "purpose": "Respuesta al presionar el botón principal."
+      },
+      {
+        "name": "score-fill",
+        "value": "500ms ease-out, delay 150ms",
+        "purpose": "La columna de la semana actual se rellena al abrir."
+      },
+      {
+        "name": "score-draw",
+        "value": "700ms ease-out, delay i*70ms + 250ms",
+        "purpose": "Cada marca de golf se traza en secuencia (stroke-dashoffset). Solo con prefers-reduced-motion: no-preference."
+      },
+      {
+        "name": "state",
+        "value": "200ms ease-out",
+        "purpose": "Fondo y anillo de la casilla de serie, hover del botón."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "390px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Única acción principal de la pantalla, a ancho completo y a la altura del pulgar.",
+      "html": "<button class=\"ds-cta\">Empezar sesión <svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></button>",
+      "css": ".ds-cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:58px;border:0;border-radius:16px;background:var(--fair,#1E7A3C);color:#fff;font-family:var(--fb,'Barlow',system-ui,sans-serif);font-size:18px;font-weight:700;letter-spacing:.01em;cursor:pointer;box-shadow:0 1px 1px rgba(14,27,44,.12),0 10px 22px -10px rgba(30,122,60,.65);transition:transform .16s cubic-bezier(.23,1,.32,1),background .2s}.ds-cta:hover{background:#18692F}.ds-cta:active{transform:scale(.98)}.ds-cta:focus-visible{outline:3px solid #0E4294;outline-offset:2px}"
+    },
+    {
+      "name": "Botón del club",
+      "kind": "button",
+      "refersTo": "button-club",
+      "description": "Misma forma en azul del club, para regresar a un flujo.",
+      "html": "<button class=\"ds-cta-blue\">Volver a mi sesión</button>",
+      "css": ".ds-cta-blue{display:flex;align-items:center;justify-content:center;width:100%;height:58px;border:0;border-radius:16px;background:#0A3576;color:#fff;font-family:'Barlow',system-ui,sans-serif;font-size:18px;font-weight:700;letter-spacing:.01em;cursor:pointer;box-shadow:0 10px 22px -10px rgba(10,53,118,.6);transition:transform .16s cubic-bezier(.23,1,.32,1)}.ds-cta-blue:active{transform:scale(.98)}.ds-cta-blue:focus-visible{outline:3px solid #0E4294;outline-offset:2px}"
+    },
+    {
+      "name": "Tarjeta de score",
+      "kind": "custom",
+      "refersTo": "score-current",
+      "description": "Firma del sistema: semanas como hoyos, sesiones contra meta, marcas de golf y columna actual en azul.",
+      "html": "<div class=\"ds-score\"><div class=\"ds-score-t\"><b>Tu tarjeta</b><span>sesiones por semana</span></div><table class=\"ds-sc\"><tr><th class=\"ds-lab\"></th><th>1</th><th>2</th><th>3</th><th>4</th><th class=\"ds-now\">5</th><th class=\"ds-ev\">6</th><th>7</th></tr><tr class=\"ds-meta\"><td class=\"ds-lab\">Meta</td><td>4</td><td>4</td><td>4</td><td>4</td><td class=\"ds-now\">4</td><td>4</td><td>4</td></tr><tr><td class=\"ds-lab\">Tú</td><td><span class=\"ds-mk ds-ok\"><svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"10.5\"/></svg>4</span></td><td><span class=\"ds-mk ds-miss\"><svg viewBox=\"0 0 24 24\"><rect x=\"2\" y=\"2\" width=\"20\" height=\"20\" rx=\"2\"/></svg>3</span></td><td><span class=\"ds-mk ds-ok\"><svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"10.5\"/></svg>4</span></td><td><span class=\"ds-mk ds-ok\"><svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"10.5\"/></svg>5</span></td><td class=\"ds-now\">2</td><td class=\"ds-fut\">·</td><td class=\"ds-fut\">·</td></tr></table></div>",
+      "css": ".ds-score{background:#fff;border-radius:18px;padding:14px 12px 12px;max-width:362px;box-shadow:0 1px 2px rgba(14,27,44,.06),0 8px 20px -12px rgba(14,27,44,.22);color:#0E1B2C;font-family:'Barlow',system-ui,sans-serif;font-variant-numeric:tabular-nums;}.ds-score-t{display:flex;justify-content:space-between;align-items:baseline;padding:0 4px 10px}.ds-score-t b{font-family:'Barlow Condensed','Barlow',sans-serif;font-size:19px;font-weight:700}.ds-score-t span{font-size:13px;color:#46566B}.ds-sc{width:100%;border-collapse:collapse;table-layout:fixed;font-family:'Barlow Condensed','Barlow',sans-serif}.ds-sc th,.ds-sc td{text-align:center;height:30px;font-size:16px;font-weight:600;border-left:1px solid #E6ECF1}.ds-sc th{font-size:12px;color:#46566B;height:22px}.ds-sc tr+tr td{border-top:1px solid #E6ECF1}.ds-lab{width:38px;text-align:left!important;font-family:'Barlow',sans-serif;font-size:12px!important;color:#46566B;border-left:0!important;padding-left:4px}.ds-meta td:not(.ds-lab){color:#46566B}.ds-sc .ds-now{background:#0A3576;color:#fff;border-left-color:#0A3576}.ds-sc th.ds-now{border-radius:6px 6px 0 0}.ds-sc tr:last-child .ds-now{border-radius:0 0 6px 6px}.ds-ev{position:relative}.ds-ev::after{content:'';position:absolute;left:50%;top:-1px;transform:translateX(-50%);border:4px solid transparent;border-top:5px solid #9A5B00}.ds-fut{color:#B4C0CC}.ds-mk{position:relative;display:inline-grid;place-items:center;width:20px;height:20px}.ds-mk svg{position:absolute;inset:0;width:20px;height:20px;overflow:visible;fill:none;stroke-width:2}.ds-ok{color:#1E7A3C}.ds-ok svg{stroke:#1E7A3C}.ds-miss{color:#9A5B00}.ds-miss svg{stroke:#9A5B00}"
+    },
+    {
+      "name": "Tarjeta",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Cartulina blanca sobre ground con sombra ambiental marina y divisores finos.",
+      "html": "<div class=\"ds-card\"><b>Sentadilla goblet</b><small>4 × 10 · 16 kg</small><hr><b>Sentadilla búlgara</b><small>4 × 10–12 · 14 kg</small></div>",
+      "css": ".ds-card{background:#fff;border-radius:18px;padding:14px 16px;max-width:340px;color:#0E1B2C;font-family:'Barlow',system-ui,sans-serif;font-size:15px;line-height:1.4;font-variant-numeric:tabular-nums;box-shadow:0 1px 2px rgba(14,27,44,.06),0 8px 20px -12px rgba(14,27,44,.22)}.ds-card b{display:block;font-weight:600}.ds-card small{display:block;color:#46566B;font-size:13px}.ds-card hr{border:0;border-top:1px solid #E6ECF1;margin:10px 0}"
+    },
+    {
+      "name": "Stepper",
+      "kind": "input",
+      "refersTo": "stepper",
+      "description": "Control de captura de kg y reps con botones grandes de 48 px.",
+      "html": "<div class=\"ds-stp\"><button aria-label=\"Menos\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M5 12h14\"/></svg></button><output>16<small>kg</small></output><button aria-label=\"Más\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 5v14M5 12h14\"/></svg></button></div>",
+      "css": ".ds-stp{display:grid;grid-template-columns:48px 1fr 48px;align-items:center;height:64px;width:170px;background:#fff;border-radius:14px;box-shadow:inset 0 0 0 1.5px #D2DCE5;font-variant-numeric:tabular-nums;}.ds-stp button{height:64px;border:0;background:none;color:#0A3576;display:grid;place-items:center;cursor:pointer;border-radius:14px}.ds-stp button:active{background:#E6ECF1}.ds-stp button:focus-visible{outline:3px solid #0E4294;outline-offset:2px}.ds-stp output{text-align:center;font-family:'Barlow Condensed','Barlow',sans-serif;font-weight:700;font-size:30px;line-height:1;color:#0E1B2C}.ds-stp small{display:block;font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;color:#46566B;margin-top:2px}"
+    },
+    {
+      "name": "Pills y etiquetas",
+      "kind": "chip",
+      "refersTo": "pill",
+      "description": "Prescripción con anillo fino, enlace en azul medio, etiqueta de músculo en lima pálida, objetivo en lima sólida.",
+      "html": "<div class=\"ds-chips\"><span class=\"ds-pill\">4 series</span><button class=\"ds-pill ds-pill-link\">Ver técnica</button><span class=\"ds-tag\">Glúteo</span><span class=\"ds-goal\">Bajar porcentaje de grasa</span></div>",
+      "css": ".ds-chips{display:flex;gap:8px;flex-wrap:wrap;font-family:'Barlow',system-ui,sans-serif}.ds-pill{display:inline-flex;align-items:center;font-size:13px;font-weight:600;padding:5px 10px;border-radius:99px;border:0;background:#fff;color:#0E1B2C;box-shadow:inset 0 0 0 1px #D2DCE5}.ds-pill-link{color:#0E4294;box-shadow:inset 0 0 0 1.5px rgba(14,66,148,.4);cursor:pointer}.ds-pill-link:hover{background:#F4F8FD}.ds-pill-link:focus-visible{outline:3px solid #0E4294;outline-offset:2px}.ds-tag{font-size:13px;font-weight:600;padding:4px 10px;border-radius:99px;background:#EAF6D4;color:#2D5A0C}.ds-goal{font-size:14px;font-weight:600;padding:5px 12px;border-radius:99px;background:#A6E241;color:#0E1B2C}"
+    },
+    {
+      "name": "Barra de pestañas",
+      "kind": "nav",
+      "refersTo": "tab-bar",
+      "description": "Cinco pestañas fijas; la activa en azul del club con barra lima.",
+      "html": "<nav class=\"ds-tabs\"><a class=\"ds-tab ds-on\" href=\"#\"><svg viewBox=\"0 0 24 24\"><path d=\"M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/></svg>Inicio</a><a class=\"ds-tab\" href=\"#\"><svg viewBox=\"0 0 24 24\"><path d=\"M6 7v10M3 9.5v5M18 7v10M21 9.5v5M6 12h12\"/></svg>Rutina</a><a class=\"ds-tab\" href=\"#\"><svg viewBox=\"0 0 24 24\"><path d=\"M4 20V10M10 20V4M16 20v-7M22 20H2\"/></svg>Progreso</a><a class=\"ds-tab\" href=\"#\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 19c0-8 5-14 15-15-1 10-7 15-15 15zM5 19l7-7\"/></svg>Nutrición</a><a class=\"ds-tab\" href=\"#\"><svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21a8 8 0 0 1 16 0\"/></svg>Perfil</a></nav>",
+      "css": ".ds-tabs{display:grid;grid-template-columns:repeat(5,1fr);width:390px;background:#fff;border-top:1px solid #D2DCE5;padding:6px 6px 22px;font-family:'Barlow',system-ui,sans-serif}.ds-tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:#46566B;padding:6px 0;border-radius:10px;text-decoration:none}.ds-tab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ds-tab:hover{color:#0E1B2C}.ds-tab:focus-visible{outline:3px solid #0E4294;outline-offset:2px}.ds-on{color:#0A3576}.ds-on svg{stroke-width:2.4}.ds-on::after{content:'';width:18px;height:3px;border-radius:2px;background:#A6E241;margin-top:1px}"
+    },
+    {
+      "name": "Banda del club",
+      "kind": "custom",
+      "refersTo": "shell-band",
+      "description": "Encabezado de identidad con logo, semana actual y fase.",
+      "html": "<header class=\"ds-band\"><div class=\"ds-brand\"><span class=\"ds-logo\"></span><b>Reto Fit CCA</b><span class=\"ds-me\">LM</span></div><div class=\"ds-week\">Semana 5 <small>de 12</small></div><p class=\"ds-phase\"><b>Fuerza e hipertrofia</b> · día 33 de 84</p></header>",
+      "css": ".ds-band{background:#0A3576;color:#fff;padding:14px 20px 42px;width:390px;font-family:'Barlow',system-ui,sans-serif;font-variant-numeric:tabular-nums;}.ds-brand{display:flex;align-items:center;gap:10px;padding-bottom:14px}.ds-logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#A6E241,#0E4294)}.ds-brand b{font-family:'Barlow Condensed','Barlow',sans-serif;font-size:20px;font-weight:700;letter-spacing:.01em}.ds-me{margin-left:auto;width:36px;height:36px;border-radius:50%;background:#0E4294;display:grid;place-items:center;font-weight:600;font-size:13px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25)}.ds-week{font-family:'Barlow Condensed','Barlow',sans-serif;font-weight:700;font-size:44px;line-height:.95;letter-spacing:-.01em}.ds-week small{font-size:26px;font-weight:600;color:#B9CDEE}.ds-phase{color:#B9CDEE;font-size:15px;margin:6px 0 0}.ds-phase b{color:#A6E241;font-weight:600}"
+    },
+    {
+      "name": "Temporizador de descanso",
+      "kind": "custom",
+      "refersTo": "rest-timer",
+      "description": "Descanso entre series con reloj condensado y barra lima de avance.",
+      "html": "<div class=\"ds-rest\"><span class=\"ds-clock\">1:12</span><span class=\"ds-rl\"><b>Descanso</b>luego serie 3</span><button>+15 s</button><button>Saltar</button><span class=\"ds-bar\"></span></div>",
+      "css": ".ds-rest{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;width:362px;padding:12px 14px;border-radius:16px;background:#0A3576;color:#fff;font-family:'Barlow',system-ui,sans-serif;font-variant-numeric:tabular-nums;}.ds-clock{font-family:'Barlow Condensed','Barlow',sans-serif;font-weight:700;font-size:30px;line-height:1}.ds-rl{flex:1;font-size:13px;color:#B9CDEE;white-space:nowrap}.ds-rl b{display:block;color:#fff;font-size:14px}.ds-rest button{height:44px;padding:0 12px;border:0;border-radius:10px;font:600 14px 'Barlow',sans-serif;background:rgba(255,255,255,.12);color:#fff;cursor:pointer}.ds-rest button:hover{background:rgba(255,255,255,.2)}.ds-rest button:focus-visible{outline:3px solid #fff;outline-offset:2px}.ds-bar{position:absolute;left:0;bottom:0;height:3px;width:20%;background:#A6E241}"
+    },
+    {
+      "name": "Aviso pendiente",
+      "kind": "custom",
+      "refersTo": "notice",
+      "description": "Algo pendiente con fecha, típicamente una evaluación.",
+      "html": "<div class=\"ds-notice\"><svg viewBox=\"0 0 24 24\"><rect x=\"3\" y=\"4.5\" width=\"18\" height=\"17\" rx=\"2\"/><path d=\"M3 9.5h18M8 2.5v4M16 2.5v4\"/></svg><div><b>Evaluación de la semana 6</b>Lunes 15 de febrero. Pídele la hora a tu entrenador.</div></div>",
+      "css": ".ds-notice{display:flex;gap:12px;align-items:flex-start;max-width:350px;padding:12px 14px;border-radius:14px;background:#FFF0D6;color:#5C3700;font:400 14px/1.4 'Barlow',system-ui,sans-serif}.ds-notice b{display:block;color:#3F2600;font-weight:600}.ds-notice svg{width:22px;height:22px;flex-shrink:0;margin-top:1px;fill:none;stroke:#9A5B00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La tarjeta de score del club",
+    "overview": "El reto se lee como la tarjeta que se llena en el campo de golf del club: doce semanas son doce hoyos, y las sesiones de cada semana se anotan contra la meta igual que los golpes contra el par. Todo lo demás se ordena alrededor de esa tarjeta: una banda azul del club arriba con el logo y la semana actual, cartulina blanca sobre un fondo frío con tinte de pasto, reglas finas azul grisáceo como las de una tarjeta impresa, y números condensados que se leen a la distancia del brazo.\n\nEs un mundo claro, de luz de día y de club, pensado para usarse entre series con una mano y en un gimnasio iluminado. La densidad es media: tarjetas apiladas con 14 px de margen lateral, una sola acción principal grande a la altura del pulgar, y el estado del reto (semana, fase, día) siempre visible. El color de señal es escaso y con significado fijo: verde fairway para lo cumplido y para avanzar, ámbar para lo pendiente, rojo solo para dolor o riesgo.\n\nEste mundo reemplaza deliberadamente el aspecto anterior de la app (fondo casi negro con acento lima neón y anillos de progreso). La lima sobrevive, pero como el color del logo y como marca de subrayado, no como neón sobre negro.",
+    "keyCharacteristics": [
+      "Banda azul del club (`shell`) como encabezado de identidad, con la tarjeta de score montada encima (traslape de 30 px).",
+      "Marcas de score de golf: círculo verde = semana cumplida, cuadro ámbar = semana con faltas, columna azul rellena = semana actual, triángulo ámbar = evaluación.",
+      "Cartulina blanca sobre fondo `ground`, sombras ambientales suaves teñidas de azul marino.",
+      "Barlow Condensed 700 para todos los números y encabezados; Barlow para texto; cifras tabulares en todo el documento.",
+      "Iconos de trazo SVG de 22 px, trazo 2, extremos redondeados."
+    ],
+    "rules": [
+      {
+        "name": "The Signal Discipline Rule",
+        "body": "Verde = cumplido o avanzar. Ámbar = pendiente o falta. Rojo = dolor o riesgo. Ningún color de señal se usa como decoración ni cambia de significado entre pantallas.",
+        "section": "colors"
+      },
+      {
+        "name": "The Shell Band Rule",
+        "body": "El azul del club carga la identidad (banda, semana actual, temporizador, pasos, avatar). Nunca se usa como fondo de página; la página es `ground` o `card`.",
+        "section": "colors"
+      },
+      {
+        "name": "The Lime Highlight Rule",
+        "body": "La lima es resalte: va sobre azul, como relleno bajo tinta oscura, o como barra fina. Nunca como color de texto sobre blanco o `ground`.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "`font-variant-numeric: tabular-nums` está en el `body`; todo número se alinea en columna, sin excepción.",
+        "section": "typography"
+      },
+      {
+        "name": "The Condensed Numbers Rule",
+        "body": "Todo número que el socio lee de lejos (semana, kg, reps, reloj, lugar, puntos, deltas) va en Barlow Condensed 700. Barlow regular solo para números dentro de una frase.",
+        "section": "typography"
+      },
+      {
+        "name": "The Soft Lift Rule",
+        "body": "Las sombras son ambientales, difusas y teñidas de marino o del color del botón. Nunca sombras duras desplazadas ni bordes gruesos negros.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** anota el estado de cada semana o fase con las marcas de golf: círculo `fair` = cumplida, cuadro `amber` = faltó, columna `shell` rellena = actual, triángulo `amber` = evaluación.",
+      "**Do** mantén una sola acción principal por pantalla: botón verde de 58 px a ancho completo, a la altura del pulgar o en el pie fijo.",
+      "**Do** pon todo número legible de lejos en Barlow Condensed 700 con cifras tabulares.",
+      "**Do** monta las tarjetas blancas (radio 18) sobre `ground` con la sombra ambiental teñida de marino, a 14 px del borde.",
+      "**Do** usa la lima solo sobre azul, como relleno bajo tinta `ink` o como barra fina.",
+      "**Do** marca los datos estimados o de ejemplo con texto explícito (\"estimada\", \"Datos de ejemplo\").",
+      "**Do** usa iconos SVG de trazo (22 px, trazo 2, extremos redondeados) que heredan `currentColor`.",
+      "**Do** condiciona toda animación de entrada a `prefers-reduced-motion: no-preference`."
+    ],
+    "donts": [
+      "**Don't** uses un fondo de página oscuro ni acentos neón; la única superficie negra es el escenario de video/foto de técnica (`stage`).",
+      "**Don't** representes el avance con anillos o arcos de porcentaje; el avance se anota con marcas de golf, segmentos o barras rectas.",
+      "**Don't** uses ámbar o rojo como decoración; ámbar es pendiente o falta, rojo es dolor o riesgo.",
+      "**Don't** pongas texto lima sobre blanco o sobre `ground`.",
+      "**Don't** muestres nombres ni lugares de otros socios en ninguna pieza del sistema; la tarjeta y el lugar son solo del socio.",
+      "**Don't** uses sombras duras desplazadas ni bordes negros gruesos en tarjetas o botones."
+    ]
+  }
+}
