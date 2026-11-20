@@ -3033,3 +3033,5 @@ html[data-theme="dark"] .rb-pts{color:#0A0E13}
 .masc-luego{flex:0 0 auto;padding:0 18px;height:52px;border-radius:16px;border:1px solid var(--b2);background:none;color:var(--tx);font:inherit;font-weight:600;cursor:pointer}
 .masc-ok{flex:1;height:52px;border-radius:16px;border:0;background:var(--grad);color:var(--btn-tx);font:inherit;font-weight:700;font-size:var(--fs-lg);cursor:pointer;box-shadow:var(--glow)}
 .masc-ok:disabled{opacity:.45;cursor:default;box-shadow:none}
+.tr-aviso{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:var(--fs-sm);border-color:color-mix(in srgb,var(--g) 40%,transparent)}
+.tr-aviso b{color:var(--g)}

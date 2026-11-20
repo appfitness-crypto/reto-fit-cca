@@ -57,8 +57,29 @@ function trSerie(lista, campo, desdeIso){
   return xs;
 }
 
+// Resumen que se guarda en el índice del socio (/indice/<code>.rt): puntos y cambios ya calculados.
+// "d" es desde cuándo se contó; si el reto arranca después, el resumen queda viejo hasta que se recalcule.
+function trResumenIndice(s){
+  if(!GYM.reto || !s || s._lite) return null;
+  const r=trCalcSocio(s, trDesde(), trPuntos());
+  const n1=v=>v==null?null:Math.round(v*10)/10;
+  return {d:trDesde().iso, p:r.puntos, pc:r.ptsConst, pp:r.ptsProg, n:r.sesiones, so:r.semanasOk, me:r.mediciones,
+    dp:n1(r.dPeso), dq:n1(r.dPesoPct), dc:n1(r.dCint), db:n1(r.dBrazo), dg:n1(r.dGrasa), fz:n1(r.fuerzaPct)};
+}
+function trResumenVigente(s, desde){ return !!(s && s._lite && s._rt && s._rt.d===desde.iso); }
+
 // Calcula todo lo del socio para el tablero
 function trCalcSocio(s, desde, P){
+  // Ficha ligera del índice con resumen al día: no hace falta el expediente completo
+  if(trResumenVigente(s, desde)){
+    const x=s._rt, ses=sesValidas(s).filter(z=>(z.ts||0)>=desde.ts);
+    const ult=ses.length?ses[ses.length-1].ts:null;
+    const diasSin=ult!=null?Math.floor((Date.now()-ult)/86400000):(typeof diasDesde==='function'?diasDesde(s.fechaRegistro):null);
+    return {s, sesiones:x.n||0, completas:0, semanasOk:x.so||0, mediciones:x.me||0,
+      dPeso:x.dp??null, dPesoPct:x.dq??null, dCint:x.dc??null, dBrazo:x.db??null, dGrasa:x.dg??null, grasaAct:null, fuerzaPct:x.fz??null,
+      ptsConst:x.pc||0, ptsProg:x.pp||0, puntos:x.p||0,
+      entreno7:ses.some(z=>z.ts>=Date.now()-7*86400000), diasSin, resumen:true};
+  }
   const ses = sesValidas(s).filter(x=>(x.ts||0)>=desde.ts);
   const completas = ses.filter(x=>x.estado==='completa').length;
   // Semanas con 3+ sesiones
@@ -181,10 +202,7 @@ function trRanking(filas, obj){
 
 function abrirTableroReto(obj){
   if(staffRol!=='coordinador' && !staffActivoEntId){ showToast('Entra con tu cuenta de staff para ver el tablero'); return; }
-  // El director necesita los expedientes completos (sesiones y medidas) de todos los socios
-  if(staffRol==='coordinador' && typeof idxCargarTodos==='function' && fbListo && !idxTodosCargados){
-    idxCargarTodos().then(()=>{ if(idxTodosCargados) abrirTableroReto(obj); }); return;
-  }
+  // Usa el resumen guardado en el índice de cada socio (no descarga los expedientes completos).
   if(obj) { trObj=obj; trVerTodos=false; }
   const objs = trObjetivos();
   if(!objs.includes(trObj)) trObj = objs[0];
@@ -192,6 +210,7 @@ function abrirTableroReto(obj){
   if(typeof staffVista==='function') staffVista('detalle');
 
   const T = trCalcTablero(), P = trPuntos();
+  const viejos = T.filas.filter(r=>r.s._lite && !r.resumen).length;
   // Sin pestaña elegida a mano: abre en el primer objetivo que tenga socios
   if(!obj && !(T.porObj[trObj]>0)){ const o=objs.find(x=>T.porObj[x]>0); if(o) trObj=o; }
   const e = typeof retoEstado==='function' ? retoEstado() : null;
@@ -219,6 +238,7 @@ function abrirTableroReto(obj){
       ${e && e.estado==='en curso' ? `<div class="tr-ring" style="--p:${e.pct}"><b>${e.dia}</b><small>de ${e.totalDias}</small></div>`:''}
     </div>
 
+    ${viejos && dir ? `<div class="tr-card tr-aviso"><b>${viejos} socio${viejos>1?'s':''} sin resumen al día.</b> Sus puntos aparecen incompletos hasta recalcularlos (pasa al arrancar el reto o con socios registrados antes de esta versión). <button type="button" class="tb-btn" onclick="trActualizarResumenes()">Actualizar resúmenes</button></div>` : ''}
     <div class="tr-grid tr-g4">
       ${kpi('Socios en el reto', T.total, dir&&T.sinEnt?`${T.sinEnt} sin entrenador`:'con plan activo')}
       ${kpi('Entrenaron (7 días)', pct(T.activos7,T.total)+'<small>%</small>', `${T.activos7} de ${T.total} socios`)}
@@ -296,4 +316,21 @@ function trExportarCSV(){
   trObjetivos().forEach(o=>trRanking(T.filas,o).forEach((r,i)=>filas.push([objNombre(o), i+1, tc(r.s.nombre), r.s.id||'', r.s.asignado||'', r.sesiones, r.semanasOk, r.dPeso??'', r.dCint??'', r.dGrasa??'', r.fuerzaPct??'', r.ptsConst, r.ptsProg, r.puntos])));
   const csv = '﻿'+filas.map(f=>f.map(q).join(',')).join('\n');
   descargarArchivo('ranking-reto-'+fechaISO(new Date())+'.csv', csv, 'text/csv;charset=utf-8');
+}
+
+// Recalcula y guarda el resumen de los socios que lo tienen viejo o no lo tienen (una sola descarga de esos expedientes)
+function trActualizarResumenes(){
+  if(staffRol!=='coordinador'||!fbListo||!fbDB){ showToast('Necesitas conexión y cuenta de director'); return; }
+  const desde=trDesde();
+  const cods=staffGetSocios().filter(s=>s._lite && !trResumenVigente(s,desde)).map(s=>s.code);
+  if(!cods.length){ showToast('Todos los resúmenes están al día'); return; }
+  showToast('Actualizando '+cods.length+' resúmenes…');
+  let i=0;
+  const sig=()=>{
+    if(i>=cods.length){ showToast('✓ Resúmenes actualizados'); abrirTableroReto(); return; }
+    const c=cods[i++];
+    fbDB.ref('/socios/'+c).once('value').then(sn=>{ const v=sn.val(); return v?idxEscribir(c, asegurarLogs(v)):null; })
+      .catch(e=>console.warn('resumen',c,e)).then(()=>setTimeout(sig,40));
+  };
+  sig();
 }
