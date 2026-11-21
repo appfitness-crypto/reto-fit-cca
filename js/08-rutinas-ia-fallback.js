@@ -1553,7 +1553,8 @@ function refreshDash(){
     ${typeof mascotaInicioHTML==='function'?mascotaInicioHTML(s):''}
 
     <div class="sec-row"><div class="sec-t">Tu semana</div><button type="button" class="sec-link" onclick="dashTab('rutina')">Ver plan${ico('chev')}</button></div>
-    <div class="wk-strip">${semana}</div>`;
+    <div class="wk-strip">${semana}</div>
+    ${typeof patInicioHTML==='function'?patInicioHTML():''}`;
   if(typeof cineInicio==='function') cineInicio();
 }
 

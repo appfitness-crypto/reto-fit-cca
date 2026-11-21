@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1D2B27">
+<title>Reto Fit CCA · Patrocinadores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══ Patrocinadores del reto · maqueta ═══
+   Logos INVENTADOS de ejemplo (no son marcas reales). Cada logo vive en una tarjeta blanca redondeada
+   para verse bien en Salvia, Claro y Oscuro. Nunca aparecen mientras el socio registra una serie. */
+:root{--fd:'Kanit','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;--expo:cubic-bezier(.16,1,.3,1);--out:cubic-bezier(.23,1,.32,1)}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#CCDAD5;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--fb);font-size:15px;line-height:1.45;color:#17231F;background:linear-gradient(172deg,#E6EEEB 0%,#CCDAD5 46%,#A3B8B1 100%);min-height:100vh;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid #F07A2B;outline-offset:2px;border-radius:12px}
+img{display:block}
+.ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pg{max-width:1800px;margin:0 auto;padding:44px 36px 96px}
+.pg-h{max-width:1000px;margin:0 auto 40px}
+.pg-h h1{font:italic 800 clamp(34px,4.6vw,66px)/.92 var(--fd);text-transform:uppercase;margin:0 0 12px}
+.pg-h h1 b{color:#F07A2B}
+.pg-h p{margin:0;max-width:64ch;color:#46534E;font-size:16px}
+.pg-h p strong{color:#17231F}
+.rail{display:grid;grid-template-columns:repeat(2,minmax(410px,1fr));gap:72px 28px;justify-items:center;max-width:1000px;margin:0 auto}
+@media (min-width:1800px){.rail{grid-template-columns:repeat(4,minmax(410px,1fr));max-width:none}}
+@media (max-width:899px){.rail{grid-template-columns:1fr}}
+.shot{width:410px;display:flex;flex-direction:column;align-items:center}
+.shot-h{width:390px;margin-bottom:20px}
+.shot-h h2{font:italic 800 22px/1 var(--fd);text-transform:uppercase;margin:0}
+.shot-h small{display:block;font-size:12.5px;color:#46534E;margin-top:5px}
+.notes{width:390px;margin:24px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.notes li{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:14.5px;color:#46534E}
+.notes li .ico{width:18px;height:18px;color:#2C403A;margin-top:2px}
+.notes b{color:#17231F}
+.phone{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;isolation:isolate;box-shadow:0 0 0 10px #0E1513,0 0 0 11px #31423C,0 46px 80px -34px rgba(14,24,21,.65);transform:translateZ(0)}
+.scr{position:absolute;inset:0;overflow:hidden}
+.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:50px 16px 40px}
+.scroll::-webkit-scrollbar{display:none}
+.sb{position:absolute;top:0;left:0;right:0;height:46px;z-index:70;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 40px;font:600 16px/1 var(--fb);pointer-events:none}
+.sb svg{height:13px;width:auto}
+
+/* Logos de ejemplo: tarjeta blanca, igual en los tres temas */
+.lg{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;min-width:132px;padding:0 16px;border-radius:16px;background:#fff;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 8px 18px -12px rgba(0,0,0,.4);color:#17231F;white-space:nowrap;flex:none;text-decoration:none}
+.lg svg{width:26px;height:26px;flex:none}
+.lg b{font:800 15px/1 var(--fd);letter-spacing:-.01em}
+.lg i{font-style:normal;font:600 11px/1 var(--fb);color:#6B7570;display:block;margin-top:2px;letter-spacing:.02em}
+.ej{position:absolute;top:6px;right:8px;font:700 9px/1 var(--fb);letter-spacing:.06em;text-transform:uppercase;color:#9AA3A0}
+
+/* 1 · PORTADA (Salvia) */
+.pt{background:linear-gradient(180deg,#E2EAE7 0%,#DCE6E2 22%,#1D2B27 60%)}
+.pt-cam{position:absolute;inset:0}
+.pt-ph{position:absolute;left:0;top:70px;width:100%;height:calc(100% - 70px);object-fit:cover;object-position:46% 0}
+.pt-bg{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 84px);mask-image:linear-gradient(180deg,transparent 0,#000 84px)}
+.pt-num{position:absolute;left:0;right:0;top:54px;margin:0;text-align:center;color:#F07A2B;font:italic 800 330px/.74 var(--fd);letter-spacing:-.06em;padding-right:22px}
+.pt-ov{position:absolute;left:0;right:0;bottom:0;height:62%;background:linear-gradient(180deg,rgba(29,43,39,0) 0%,rgba(29,43,39,.75) 22%,#1D2B27 46%)}
+.pt-top{position:absolute;top:52px;left:18px;display:flex;align-items:center;gap:10px;z-index:5}
+.pt-top img{width:34px;height:34px;border-radius:10px}
+.pt-top span{font:italic 800 15px/1 var(--fd);text-transform:uppercase;color:#17231F}
+.pt-tx{position:absolute;left:0;right:0;bottom:14px;z-index:5;color:#EEF4F1}
+.pt-tx .in{padding:0 20px}
+.pt-tx h1{font:italic 800 30px/1 var(--fd);text-transform:uppercase;margin:0 0 14px}
+.b-pri{display:flex;align-items:center;gap:14px;width:100%;min-height:62px;padding:8px 8px 8px 20px;border-radius:22px;background:#fff;color:#17231F;text-align:left}
+.b-pri b{flex:1;font:700 19px/1.1 var(--fd)}
+.disc{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#1D2B27;color:#fff}
+.disc .ico{width:20px;height:20px}
+.b-sec{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;margin-top:8px;border-radius:22px;box-shadow:inset 0 0 0 1.5px rgba(238,244,241,.3);font:700 16px/1 var(--fd);color:#EEF4F1}
+.marq-h{display:flex;align-items:center;gap:10px;margin:18px 20px 8px;font:600 12.5px/1 var(--fb);color:rgba(226,236,232,.7)}
+.marq-h::after{content:"";flex:1;height:1px;background:rgba(238,244,241,.14)}
+.marq{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.marq .track{display:flex;gap:10px;width:max-content;padding:4px 0 6px;animation:marq 28s linear infinite}
+.marq:hover .track,.marq:active .track{animation-play-state:paused}
+.marq .lg{height:46px;min-width:118px;opacity:.94}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* 2 · INICIO (Claro) */
+.claro{background:linear-gradient(180deg,#D9F0FB 0%,#C7E8F8 40%,#B3DFF5 100%);color:#002941}
+.sec-r{display:flex;align-items:baseline;justify-content:space-between;margin:14px 2px 10px}
+.sec-r h2{margin:0;font:800 20px/1 var(--fd)}
+.sec-r a{font:700 13.5px/1 var(--fb);color:#0B4A6E;text-decoration:none}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.wk div{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0;border-radius:14px;background:rgba(255,255,255,.75)}
+.wk span{font:700 11px/1 var(--fb);color:rgba(0,41,65,.6)}
+.wk b{font:700 18px/1 var(--fd)}
+.wk .hoy{background:#002941;color:#fff}.wk .hoy span{color:rgba(225,238,247,.8)}
+.wk .des{background:transparent;box-shadow:inset 0 0 0 1px rgba(0,41,65,.14)}
+.car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:4px 16px 8px;scrollbar-width:none}
+.car::-webkit-scrollbar{display:none}
+.spc{position:relative;flex:0 0 86%;scroll-snap-align:center;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:24px;background:#fff;box-shadow:0 14px 26px -18px rgba(0,41,65,.45);color:#002941}
+.spc .lg{box-shadow:none;background:#F3F7F9;align-self:flex-start}
+.spc p{margin:0;font:700 17px/1.25 var(--fd)}
+.spc small{font-size:13px;color:#3E5A6B}
+.spc .cta{text-decoration:none;display:inline-flex;align-items:center;gap:6px;align-self:flex-start;min-height:40px;padding:0 14px;border-radius:99px;background:#002941;color:#fff;font:700 13.5px/1 var(--fb)}
+.spc .cta .ico{width:16px;height:16px}
+.pts{display:flex;justify-content:center;gap:6px;margin-top:6px}
+.pts i{width:6px;height:6px;border-radius:50%;background:rgba(0,41,65,.2)}
+.pts i.on{width:18px;border-radius:9px;background:#002941}
+.tbc{position:absolute;left:12px;right:12px;bottom:16px;z-index:40;display:flex;height:72px;padding:6px;border-radius:28px;background:rgba(240,249,253,.9);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 16px 30px -16px rgba(0,41,65,.45)}
+.tbc a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:22px;font:600 11.5px/1 var(--fb);color:rgba(0,41,65,.7);text-decoration:none}
+.tbc a.ac{background:#002941;color:#fff}.tbc .ico{width:22px;height:22px}
+.claro .scroll{padding-bottom:110px}
+.mascard{display:flex;align-items:center;gap:12px;margin:14px 0 0;padding:14px 16px 14px 110px;position:relative;min-height:92px;border-radius:24px;background:linear-gradient(160deg,#0B3A57,#002941);color:#fff}
+.mascard img{position:absolute;left:4px;bottom:4px;width:104px;height:104px;object-fit:contain}
+.mascard b{display:block;font:700 17px/1.1 var(--fd)}
+.mascard small{font-size:13px;color:rgba(225,238,247,.8)}
+
+/* 3 · FIN DE SESIÓN (Oscuro) */
+.osc{background:radial-gradient(120% 60% at 50% 16%,#18212B 0%,#0A0E13 46%,#05070A 100%);color:#EEF2F6}
+.st{position:relative;height:330px;margin:0 -16px}
+.st .num{position:absolute;left:0;right:0;top:20px;margin:0;display:flex;justify-content:center;align-items:flex-start;gap:6px}
+.st .num b{font:italic 800 170px/.74 var(--fd);letter-spacing:-.05em}
+.st .num b span{color:#C8F23A}
+.st .num small{font:italic 800 22px/1 var(--fd);color:#C8F23A;margin-top:4px}
+.st .light{position:absolute;left:50%;top:230px;width:460px;height:220px;margin-left:-230px;border-radius:50%;background:radial-gradient(closest-side,rgba(200,242,58,.32),rgba(200,242,58,.08) 55%,transparent)}
+.st .ring{position:absolute;left:50%;top:286px;width:210px;height:46px;margin-left:-105px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(200,242,58,.85)}
+.st img{position:absolute;left:50%;top:96px;width:210px;height:210px;margin-left:-105px;object-fit:contain;filter:drop-shadow(0 14px 12px rgba(0,0,0,.4))}
+.osc h1{margin:0;text-align:center;font:italic 800 34px/1 var(--fd);text-transform:uppercase}
+.osc .meta{margin:6px 0 0;text-align:center;font-size:14px;color:rgba(226,232,240,.7)}
+.prem{position:relative;margin:18px 0 0;padding:16px;border-radius:24px;background:#fff;color:#17231F;overflow:hidden}
+.prem::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:repeating-linear-gradient(180deg,#C8F23A 0 10px,transparent 10px 16px)}
+.prem-h{display:flex;align-items:center;gap:12px}
+.prem-h .lg{box-shadow:none;background:#F3F5F6;min-width:0;height:48px;padding:0 12px}
+.prem-h p{margin:0;font:700 18px/1.15 var(--fd)}
+.prem-h p small{display:block;font:500 12.5px/1.2 var(--fb);color:#59635F;margin-top:3px}
+.cod{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 0;padding:10px 12px;border-radius:14px;background:#F3F5F6;border:1.5px dashed #C9CFCC}
+.cod b{font:800 22px/1 var(--fd);letter-spacing:.06em}
+.cod span{font-size:12px;color:#59635F;text-align:right}
+.prem-a{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.prem-a button{min-height:44px;border-radius:99px;background:#17231F;color:#fff;font:700 13.5px/1 var(--fb);display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.prem-a button.l{background:#F3F5F6;color:#17231F}
+.prem-a .ico{width:16px;height:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);margin:16px 0 0;border-radius:18px;background:rgba(255,255,255,.06)}
+.stats div{padding:14px 4px;text-align:center}
+.stats div+div{box-shadow:inset 1px 0 0 rgba(255,255,255,.1)}
+.stats b{display:block;font:700 24px/1 var(--fd)}
+.stats span{font-size:12px;color:rgba(226,232,240,.66)}
+
+/* 4 · PANEL DEL DIRECTOR (Salvia) */
+.adm{background:#EEF3F1;color:#17231F}
+.adm .scroll{padding-top:56px}
+.adm-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.adm-h h1{margin:0;font:800 24px/1.05 var(--fd)}
+.adm-h h1 small{display:block;font:500 13px/1.2 var(--fb);color:#59635F;margin-top:3px}
+.add{display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:0 14px;border-radius:99px;background:#1D2B27;color:#fff;font:700 13.5px/1 var(--fb)}
+.add .ico{width:17px;height:17px}
+.tot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 0}
+.tot div{padding:12px;border-radius:16px;background:#fff}
+.tot b{display:block;font:800 24px/1 var(--fd)}
+.tot span{font-size:12px;color:#59635F}
+.sp{margin:10px 0 0;padding:14px;border-radius:20px;background:#fff}
+.sp-h{display:flex;align-items:center;gap:10px}
+.sp-h .lg{box-shadow:none;background:#F3F5F6;min-width:0;height:44px;padding:0 10px}
+.sp-h .t{flex:1;min-width:0}
+.sp-h .t b{display:block;font:700 15.5px/1.15 var(--fd)}
+.sp-h .t small{font-size:12.5px;color:#59635F}
+.sw{position:relative;width:46px;height:28px;border-radius:99px;background:#C9D3CF;flex:none}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:transform .2s var(--out)}
+.sw[aria-checked="true"]{background:#2C403A}
+.sw[aria-checked="true"]::after{transform:translateX(18px)}
+.ubic{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0}
+.ubic span{display:inline-flex;align-items:center;gap:5px;min-height:28px;padding:0 10px;border-radius:99px;background:#EEF3F1;font-size:12.5px;font-weight:600;color:#59635F}
+.ubic span.on{background:#1D2B27;color:#fff}
+.ubic .ico{width:13px;height:13px}
+.met{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0 0}
+.met div{padding:8px 10px;border-radius:12px;background:#F5F8F7}
+.met b{display:block;font:700 17px/1 var(--fd)}
+.met span{font-size:11.5px;color:#59635F}
+.bar{height:6px;border-radius:99px;background:#E3EAE7;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:inherit;background:#F07A2B}
+.priv{display:flex;gap:8px;align-items:flex-start;margin:14px 2px 0;font-size:12.5px;color:#59635F}
+.priv .ico{width:16px;height:16px;margin-top:1px}
+
+@media (prefers-reduced-motion:reduce){.marq .track{animation:none}}
+@media (max-width:520px){
+  .pg{padding:28px 0 64px}.pg-h{padding:0 20px}.rail{display:block}
+  .shot{width:100%;margin-bottom:56px}.shot-h,.notes{width:auto;align-self:stretch;margin-left:20px;margin-right:20px}
+  .phone{width:100%;border-radius:0;box-shadow:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5v-7a1.5 1.5 0 0 1 3 0v7M14 11.5V6a1.5 1.5 0 0 1 3 0v8c0 4-2.5 7-6.5 7-2.6 0-4.2-1.3-5.6-3.4L3.2 15a1.5 1.5 0 0 1 2.4-1.8L8 15.5"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8S10.5 3.5 8 4.5 9 8 12 8zM12 8s1.5-4.5 4-3.5S15 8 12 8z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5a1 1 0 0 0 1 1H10v-5.5h4v5.5h3.5a1 1 0 0 0 1-1V10"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1-4 4-6 7.5-6s6.5 2 7.5 6"/></symbol>
+  <!-- Logos inventados de ejemplo -->
+  <symbol id="l-cafe" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#6B3E26"/><path d="M9 13h12v5a6 6 0 0 1-12 0zM21 14h2a2.5 2.5 0 0 1 0 5h-2" fill="none" stroke="#fff" stroke-width="2"/><path d="M12 8c0 1.5 1.5 1.5 1.5 3M16 8c0 1.5 1.5 1.5 1.5 3" fill="none" stroke="#F1C79A" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="l-farma" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="9" fill="#1F9D6B"/><path d="M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z" fill="#fff"/></symbol>
+  <symbol id="l-nutri" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#F07A2B"/><path d="M11 22V10l10 12V10" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/></symbol>
+  <symbol id="l-fisio" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="15" fill="#2E5BBA"/><circle cx="16" cy="9" r="2.6" fill="#fff"/><path d="M10 14h12M16 14v6l-4 6M16 20l4 6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="l-agua" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#0EA5C6"/><path d="M16 7s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11z" fill="#fff"/></symbol>
+</svg>
+
+<div class="pg">
+  <header class="pg-h">
+    <h1>Patrocinadores <b>del reto</b></h1>
+    <p>Aparecen donde el socio está tranquilo o festejando, <strong>nunca mientras registra una serie</strong>. Cada logo va en una tarjeta blanca, así se ve bien en los tres temas. <strong>Los logos son inventados, de ejemplo</strong>: se cambian por los reales desde el panel del director.</p>
+  </header>
+  <main class="rail">
+
+    <!-- 1 · PORTADA -->
+    <section class="shot">
+      <div class="shot-h"><h2>Portada</h2><small>Tema Salvia · franja de logos que se mueve sola</small></div>
+      <div class="phone">
+        <div class="scr pt">
+          <div class="pt-cam">
+            <img class="pt-ph pt-bg" src="img/bienvenida.webp" alt="">
+            <p class="pt-num" aria-hidden="true">12</p>
+            <img class="pt-ph" src="img/bienvenida-recorte.webp" alt="">
+          </div>
+          <div class="pt-ov"></div>
+          <div class="pt-top"><img src="img/logo.png" alt=""><span>Reto Fit CCA</span></div>
+          <div class="pt-tx">
+            <div class="in">
+              <h1>Tu reto de 12 semanas empieza aquí.</h1>
+              <button type="button" class="b-pri"><b>Soy nuevo</b><span class="disc"><svg class="ico"><use href="#i-arrow"/></svg></span></button>
+              <button type="button" class="b-sec">Ya tengo cuenta</button>
+            </div>
+            <div class="marq-h">Patrocinan el reto</div>
+            <div class="marq" aria-label="Patrocinadores del reto (ejemplo)">
+              <div class="track">
+                <a class="lg" href="#"><svg><use href="#l-cafe"/></svg><span><b>Altura Café</b><i>EJEMPLO</i></span></a>
+                <a class="lg" href="#"><svg><use href="#l-farma"/></svg><span><b>Farmacia Vida</b><i>EJEMPLO</i></span></a>
+                <a class="lg" href="#"><svg><use href="#l-nutri"/></svg><span><b>NutriNorte</b><i>EJEMPLO</i></span></a>
+                <a class="lg" href="#"><svg><use href="#l-fisio"/></svg><span><b>Fisio Mueve</b><i>EJEMPLO</i></span></a>
+                <a class="lg" href="#"><svg><use href="#l-agua"/></svg><span><b>Agua Clara</b><i>EJEMPLO</i></span></a>
+                <a class="lg" href="#" aria-hidden="true" tabindex="-1"><svg><use href="#l-cafe"/></svg><span><b>Altura Café</b><i>EJEMPLO</i></span></a>
+                <a class="lg" href="#" aria-hidden="true" tabindex="-1"><svg><use href="#l-farma"/></svg><span><b>Farmacia Vida</b><i>EJEMPLO</i></span></a>
+                <a class="lg" href="#" aria-hidden="true" tabindex="-1"><svg><use href="#l-nutri"/></svg><span><b>NutriNorte</b><i>EJEMPLO</i></span></a>
+                <a class="lg" href="#" aria-hidden="true" tabindex="-1"><svg><use href="#l-fisio"/></svg><span><b>Fisio Mueve</b><i>EJEMPLO</i></span></a>
+                <a class="lg" href="#" aria-hidden="true" tabindex="-1"><svg><use href="#l-agua"/></svg><span><b>Agua Clara</b><i>EJEMPLO</i></span></a>
+              </div>
+            </div>
+          </div>
+          <div class="sb"><span>9:41</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>La ve <b>todo el que abre el link o el QR de caja</b>, también quien apenas se va a inscribir.</span></li>
+        <li><svg class="ico"><use href="#i-hand"/></svg><span>Se mueve despacio y <b>se detiene al tocarla</b>. Tocar un logo abre su página o su WhatsApp.</span></li>
+      </ul>
+    </section>
+
+    <!-- 2 · INICIO -->
+    <section class="shot">
+      <div class="shot-h"><h2>Inicio, abajo</h2><small>Tema Claro · tarjetas que se deslizan con el dedo</small></div>
+      <div class="phone">
+        <div class="scr claro">
+          <div class="scroll">
+            <div class="sec-r"><h2>Tu semana</h2><a href="#">Ver plan</a></div>
+            <div class="wk"><div><span>LUN</span><b>16</b></div><div><span>MAR</span><b>17</b></div><div><span>MIÉ</span><b>18</b></div><div><span>JUE</span><b>19</b></div><div class="hoy"><span>VIE</span><b>20</b></div><div class="des"><span>SÁB</span><b>21</b></div><div class="des"><span>DOM</span><b>22</b></div></div>
+            <div class="mascard"><img src="img/lobo-1.webp" alt=""><div><b>Fer va en Cría</b><small>Empieza a crecer cuando arranque el reto</small></div></div>
+            <div class="sec-r" style="margin-top:22px"><h2>Aliados del reto</h2><a href="#">Ver todos</a></div>
+            <div class="car" id="car">
+              <div class="spc"><span class="ej">Ejemplo</span><span class="lg"><svg><use href="#l-nutri"/></svg><b>NutriNorte</b></span><p>10 % en proteína y creatina para socios del reto</p><small>Muestra tu app en la tienda · hasta el 4 de abril</small><a class="cta" href="#"><svg class="ico"><use href="#i-pin"/></svg>Cómo llegar</a></div>
+              <div class="spc"><span class="ej">Ejemplo</span><span class="lg"><svg><use href="#l-fisio"/></svg><b>Fisio Mueve</b></span><p>Primera valoración de fisioterapia sin costo</p><small>Agenda por WhatsApp</small><a class="cta" href="#"><svg class="ico"><use href="#i-chat"/></svg>Escribir</a></div>
+              <div class="spc"><span class="ej">Ejemplo</span><span class="lg"><svg><use href="#l-agua"/></svg><b>Agua Clara</b></span><p>Garrafón gratis cada semana cumplida</p><small>Se canjea en la recepción del club</small><a class="cta" href="#"><svg class="ico"><use href="#i-gift"/></svg>Ver detalles</a></div>
+            </div>
+            <div class="pts" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+          </div>
+          <div class="sb" style="background:linear-gradient(180deg,#D9F0FB 40%,transparent)"><span>9:41</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+          <nav class="tbc"><a href="#" class="ac"><svg class="ico"><use href="#i-home"/></svg>Inicio</a><a href="#"><svg class="ico"><use href="#i-dumbbell"/></svg>Rutina</a><a href="#"><svg class="ico"><use href="#i-chart"/></svg>Progreso</a><a href="#"><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a><a href="#"><svg class="ico"><use href="#i-user"/></svg>Perfil</a></nav>
+        </div>
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>Va <b>al final de Inicio</b>, después de la semana y la mascota: no estorba el botón de empezar.</span></li>
+        <li><svg class="ico"><use href="#i-gift"/></svg><span>Cada tarjeta lleva <b>una promoción concreta</b> y un solo botón: cómo llegar, escribir o ver detalles.</span></li>
+      </ul>
+    </section>
+
+    <!-- 3 · FIN DE SESIÓN -->
+    <section class="shot">
+      <div class="shot-h"><h2>Fin de sesión</h2><small>Tema Oscuro · un patrocinador por sesión, rotando</small></div>
+      <div class="phone">
+        <div class="scr osc">
+          <div class="scroll">
+            <div class="st">
+              <div class="light"></div>
+              <p class="num" aria-label="Ganaste 40 puntos"><b><span>+</span>40</b><small>PTS</small></p>
+              <div class="ring"></div>
+              <img src="img/jaguar-3.webp" alt="">
+            </div>
+            <h1>Sesión completa</h1>
+            <p class="meta">Pierna B · viernes 20 de noviembre</p>
+            <div class="prem">
+              <span class="ej">Ejemplo</span>
+              <div class="prem-h"><span class="lg"><svg><use href="#l-cafe"/></svg></span><p>Tu café de recuperación va por nuestra cuenta<small>Altura Café · regalo por completar tu sesión</small></p></div>
+              <div class="cod"><b>RETO-4821</b><span>Muestra esta pantalla<br>Válido solo hoy</span></div>
+              <div class="prem-a"><button type="button"><svg class="ico"><use href="#i-pin"/></svg>Cómo llegar</button><button type="button" class="l">Ahora no</button></div>
+            </div>
+            <div class="stats"><div><b>32</b><span>minutos</span></div><div><b>4,280</b><span>kg de volumen</span></div><div><b>20/20</b><span>series</span></div></div>
+          </div>
+          <div class="sb" style="color:#fff"><span>9:41</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-gift"/></svg><span>No es un anuncio: es <b>un premio por haber entrenado</b>, con un código del día. Así el patrocinador llega cuando el socio está contento.</span></li>
+        <li><svg class="ico"><use href="#i-hand"/></svg><span>Solo sale <b>cuando la sesión cuenta</b>, un patrocinador a la vez, y se cierra con “Ahora no”.</span></li>
+      </ul>
+    </section>
+
+    <!-- 4 · PANEL DEL DIRECTOR -->
+    <section class="shot">
+      <div class="shot-h"><h2>Panel del director</h2><small>Alta de patrocinadores y cuántas veces los vieron</small></div>
+      <div class="phone">
+        <div class="scr adm">
+          <div class="scroll">
+            <div class="adm-h"><h1>Patrocinadores<small>Reto Fit CCA · 5 activos</small></h1><button type="button" class="add"><svg class="ico"><use href="#i-plus"/></svg>Agregar</button></div>
+            <div class="tot"><div><b>18,420</b><span>veces vistos</span></div><div><b>612</b><span>toques</span></div><div><b>143</b><span>premios canjeados</span></div></div>
+            <div class="sp">
+              <div class="sp-h"><span class="lg"><svg><use href="#l-nutri"/></svg></span><div class="t"><b>NutriNorte</b><small>10 % en proteína · hasta 4 abr</small></div><button type="button" class="sw" role="switch" aria-checked="true" aria-label="Activo"></button></div>
+              <div class="ubic"><span class="on"><svg class="ico"><use href="#i-check"/></svg>Portada</span><span class="on"><svg class="ico"><use href="#i-check"/></svg>Inicio</span><span>Fin de sesión</span></div>
+              <div class="met"><div><b>6,240</b><span>vistas</span><div class="bar"><i style="width:82%"></i></div></div><div><b>214</b><span>toques</span><div class="bar"><i style="width:60%"></i></div></div><div><b>—</b><span>canjes</span></div></div>
+            </div>
+            <div class="sp">
+              <div class="sp-h"><span class="lg"><svg><use href="#l-cafe"/></svg></span><div class="t"><b>Altura Café</b><small>Café de regalo al terminar · todo el reto</small></div><button type="button" class="sw" role="switch" aria-checked="true" aria-label="Activo"></button></div>
+              <div class="ubic"><span class="on"><svg class="ico"><use href="#i-check"/></svg>Portada</span><span>Inicio</span><span class="on"><svg class="ico"><use href="#i-check"/></svg>Fin de sesión</span></div>
+              <div class="met"><div><b>3,980</b><span>vistas</span><div class="bar"><i style="width:52%"></i></div></div><div><b>188</b><span>toques</span><div class="bar"><i style="width:53%"></i></div></div><div><b>143</b><span>canjes</span><div class="bar"><i style="width:100%"></i></div></div></div>
+            </div>
+            <div class="sp">
+              <div class="sp-h"><span class="lg"><svg><use href="#l-fisio"/></svg></span><div class="t"><b>Fisio Mueve</b><small>Valoración sin costo · hasta 31 ene</small></div><button type="button" class="sw" role="switch" aria-checked="false" aria-label="Pausado"></button></div>
+              <div class="ubic"><span>Portada</span><span class="on"><svg class="ico"><use href="#i-check"/></svg>Inicio</span><span>Fin de sesión</span></div>
+            </div>
+            <p class="priv"><svg class="ico"><use href="#i-lock"/></svg><span>Solo se cuentan vistas y toques. <b>Ningún dato de los socios</b> se comparte con los patrocinadores.</span></p>
+          </div>
+          <div class="sb"><span>9:41</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-check"/></svg><span>El director sube el logo, la promoción y las fechas, y <b>elige dónde sale cada uno</b>: portada, Inicio o fin de sesión.</span></li>
+        <li><svg class="ico"><use href="#i-chart"/></svg><span>Ve <b>vistas, toques y premios canjeados</b>: el reporte que ayuda a vender o renovar el patrocinio.</span></li>
+      </ul>
+    </section>
+  </main>
+</div>
+<script>
+(()=>{
+  // Puntos del carrusel de Inicio
+  const car=document.getElementById('car'), pts=car.parentNode.querySelectorAll('.pts i');
+  car.addEventListener('scroll',()=>{ const i=Math.round(car.scrollLeft/(car.firstElementChild.offsetWidth+10)); pts.forEach((p,k)=>p.classList.toggle('on',k===i)); },{passive:true});
+  document.querySelectorAll('.sw').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-checked',b.getAttribute('aria-checked')!=='true')));
+  document.querySelectorAll('a[href="#"]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+})();
+</script>
+</body>
+</html>

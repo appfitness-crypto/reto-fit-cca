@@ -579,3 +579,58 @@ body:has(#s-fin.on) .sync-pill.on{transform:translate(-50%,0);}
 .fn-nombre .fn-sh{top:376px;}
 .fn-nombre .fn-light{top:304px;}
 .fn-bubble{left:auto;right:6px;top:168px;max-width:150px;transform:none;}
+
+/* ═══ PATROCINADORES (js/60-patrocinadores.js) ═══
+   Cada logo en tarjeta blanca: se ve igual en los tres temas. Nunca durante el registro de series. */
+.pat-lg{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 14px;border-radius:15px;background:#fff;color:#17231F;white-space:nowrap;flex:none;box-shadow:0 8px 18px -12px rgba(0,0,0,.45);}
+.pat-lg img{max-height:30px;max-width:72px;object-fit:contain;}
+.pat-lg i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#17231F;color:#fff;font-style:normal;font-family:var(--fd);font-weight:700;font-size:14px;}
+.pat-lg b{font-family:var(--fd);font-weight:800;font-size:14.5px;letter-spacing:-.01em;}
+.pat-lg.solo{box-shadow:none;background:#F3F5F6;height:48px;padding:0 10px;}
+.pat-lg.solo:has(img) b{display:none;}
+.pat-lg.en-card{box-shadow:none;background:#F3F6F8;align-self:flex-start;}
+/* Portada: franja que se mueve sola y se detiene al tocarla */
+.pat-portada{margin:14px -20px 0;}
+.pat-h{display:flex;align-items:center;gap:10px;margin:0 20px 8px;font-size:12.5px;font-weight:600;color:var(--cine-on2);}
+.pat-h::after{content:"";flex:1;height:1px;background:var(--cine-line);}
+.pat-marq{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);}
+.pat-track{display:flex;gap:10px;width:max-content;padding:4px 20px 6px;animation:pat-marq calc(var(--n,4) * 6s) linear infinite;}
+.pat-marq.quieta .pat-track{animation:none;}
+.pat-marq:hover .pat-track,.pat-marq:active .pat-track,.pat-marq:focus-within .pat-track{animation-play-state:paused;}
+.pat-chip{padding:0;border:0;background:none;cursor:pointer;border-radius:15px;}
+@keyframes pat-marq{to{transform:translateX(-50%);}}
+/* Inicio: tarjetas que se deslizan con el dedo */
+.pat-ini{margin-top:6px;}
+.pat-car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:4px 16px 10px;scrollbar-width:none;}
+.pat-car::-webkit-scrollbar{display:none;}
+.pat-card{flex:0 0 86%;scroll-snap-align:center;display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:24px;background:#fff;color:#17231F;box-shadow:0 14px 26px -18px rgba(0,0,0,.45);}
+.pat-car .pat-card:only-child{flex-basis:100%;}
+.pat-card p{margin:0;font-family:var(--fd);font-weight:700;font-size:17px;line-height:1.25;}
+.pat-card small{font-size:13px;color:#56635E;}
+.pat-cta{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;min-height:42px;padding:0 15px;border:0;border-radius:99px;background:#17231F;color:#fff;font-family:var(--fb);font-weight:700;font-size:13.5px;cursor:pointer;}
+.pat-cta .ico{width:16px;height:16px;}
+/* Fin de sesión: premio con código del día */
+.pat-prem{position:relative;display:grid;gap:12px;padding:16px 16px 16px 20px;border-radius:24px;background:#fff;color:#17231F;overflow:hidden;text-align:left;}
+.pat-prem::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:repeating-linear-gradient(180deg,var(--cine-acc) 0 10px,transparent 10px 16px);}
+.pat-prem-h{display:flex;align-items:center;gap:12px;}
+.pat-prem-h p{flex:1;margin:0;font-family:var(--fd);font-weight:700;font-size:18px;line-height:1.15;}
+.pat-prem-h small{display:block;margin-top:3px;font-family:var(--fb);font-weight:500;font-size:12.5px;color:#59635F;}
+.pat-cod{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:14px;background:#F3F5F6;border:1.5px dashed #C9CFCC;}
+.pat-cod b{font-family:var(--fd);font-weight:800;font-size:22px;letter-spacing:.06em;}
+.pat-cod span{font-size:12px;color:#59635F;text-align:right;}
+/* Panel del director */
+.pat-up{display:flex;gap:12px;align-items:flex-end;}
+.pat-up-b{width:76px;height:76px;flex:none;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#fff;border:1.5px dashed var(--b2);color:var(--mu);font-size:11.5px;font-weight:700;cursor:pointer;overflow:hidden;}
+.pat-up-b img{width:100%;height:100%;object-fit:contain;padding:8px;}
+.pat-up-b .ico{width:20px;height:20px;}
+.pat-lug{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.pat-lug .tr-tab{min-height:34px;}
+.pat-row{align-items:flex-start;}
+.pat-acc{display:flex;flex-direction:column;gap:6px;}
+@media (prefers-reduced-motion:reduce){.pat-track{animation:none;}.pat-marq{overflow-x:auto;}}
+/* Con logo se muestra solo el logo (casi todos traen el nombre); sin logo, la inicial y el nombre */
+.pat-lg:has(img) b{display:none;}
+.pat-lg img{max-height:32px;max-width:120px;width:auto;height:auto;display:block;}
+.pat-lg.solo img{max-width:96px;}
+.pat-lg img{height:32px;width:auto;max-width:120px;object-fit:contain;flex:none;}
+.pat-lg.solo img{height:30px;max-width:96px;}
