@@ -72,7 +72,7 @@ if(typeof go==='function'){
 /* ── Letra gigante: cada línea con data-fit="0.74" se ajusta a esa fracción del ancho de su caja ── */
 function cineAjustar(raiz){
   (raiz||document).querySelectorAll('[data-fit]').forEach(el=>{
-    const caja=el.closest('.ci-title,.ms-name'); if(!caja || !caja.clientWidth) return;
+    const caja=el.closest('.ci-title,.ms-name,.rt-title'); if(!caja || !caja.clientWidth) return;
     el.style.fontSize='100px';
     const w=el.getBoundingClientRect().width; if(!w) return;
     el.style.fontSize=Math.min(220,100*caja.clientWidth*parseFloat(el.dataset.fit)/w).toFixed(1)+'px';
@@ -183,3 +183,28 @@ if(typeof mascotaGuardar==='function'){
   const _mg=mascotaGuardar;
   window.mascotaGuardar=mascotaGuardar=function(){ const r=_mg.apply(this,arguments); if(document.getElementById('s-mascota')?.classList.contains('on')) mascotaAbrir(); return r; };
 }
+
+
+/* ═══ SESIÓN, MI PLAN Y DETALLE DEL DÍA ═══
+   El título gigante se ajusta al ancho; la entrada animada corre al cambiar de ejercicio o de día,
+   no en cada toque de los controles − / +. */
+if(typeof renderSes==='function'){
+  const _rs=renderSes; let _ultEj=null;
+  window.renderSes=renderSes=function(){
+    const r=_rs.apply(this,arguments);
+    const c=document.getElementById('en-ses'), k=(sesUI&&sesUI.k)+':'+(sesUI&&sesUI.cur);
+    // misma pantalla (toques de − / + o serie marcada): sin repetir la entrada
+    if(c){ if(k!==_ultEj){ _ultEj=k; cineReproducir(c); } else c.classList.remove('cine-play'); }
+    return r;
+  };
+}
+function cineRutina(){ const c=document.getElementById('dsec-rutina'); if(!c) return; cineAjustar(c); cineTrasFuentes(()=>cineAjustar(c)); const st=c.querySelector('.en-card-cine'); if(st) cineReproducir(st); }
+['renderRutinaTab','rutElegir'].forEach(n=>{
+  const f=window[n]; if(typeof f!=='function') return;
+  window[n]=function(){ const r=f.apply(this,arguments); try{ cineRutina(); }catch(_){} return r; };
+});
+if(typeof openDay==='function'){
+  const _od=openDay;
+  window.openDay=openDay=function(){ const r=_od.apply(this,arguments); try{ const d=document.getElementById('dd'); cineAjustar(d); cineTrasFuentes(()=>cineAjustar(d)); cineReproducir(d); }catch(_){} return r; };
+}
+addEventListener('resize',()=>{ clearTimeout(cineRutina._t); cineRutina._t=setTimeout(()=>{ cineAjustar(document.getElementById('dsec-rutina')); cineAjustar(document.getElementById('dd')); },150); });

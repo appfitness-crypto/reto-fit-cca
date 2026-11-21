@@ -420,14 +420,15 @@ function rutCardHTML(s,rk,vk){
     : esHoy&&!fuera
     ? `<button type="button" class="en-btn en-btn-p" onclick="iniciarSesion('${k}')">${ico('play')}${enCurso?'Continuar sesión':hecho?'Registrar otra sesión':'Empezar sesión'}</button>${!hecho&&!movida&&!enCurso?`<button type="button" class="en-btn en-btn-g" onclick="moverSesion('${k}')">${ico('calendar')}Hoy no puedo, moverla</button>`:''}`
     : `${!hecho?`<button type="button" class="en-btn en-btn-p" onclick="moverSesion('${k}','${HOY_KEY}')">${ico('play')}Hacerla hoy</button>`:''}<div class="en-cta-2"><button type="button" class="en-btn en-btn-g" onclick="openDay('${k}')">${ico('info')}Ver detalle</button>${!hecho&&!movida?`<button type="button" class="en-btn en-btn-g" onclick="moverSesion('${k}')">${ico('calendar')}Mover a otro día</button>`:movida?`<button type="button" class="en-btn en-btn-g" onclick="movDeshacer('${k}')">${ico('arrow')}Regresarla al ${movTxtDia(k)}</button>`:''}</div>`;
-  return `<article class="en-card${movida?' en-card-mov':''}">
-    <div class="en-hero">
+  return `<article class="en-card en-card-cine${movida?' en-card-mov':''}">
+    <div class="en-hero en-stage">
+      <span class="en-fig" aria-hidden="true">${pic(basesEjercicio(ejs[0]),'dumbbell','thumb')}</span>
       <div class="en-k">${ico(hecho?'check':'calendar')}${estado} · ${EN_DIAS[vi]} ${fechas[vi]}</div>
-      <h3>${esc(sc(d.tipo))}</h3>
+      <h3 class="rt-title" aria-label="${esc(sc(d.tipo))}">${typeof cineLineas==='function'?cineLineas(esc(sc(d.tipo)),0.62):esc(sc(d.tipo))}</h3>
       <div class="en-meta"><span>${ico('dumbbell')}${ejs.length} ejercicios</span><span>${ico('clock')}~${minutosDia(d,s)} min</span>${grupos.length?`<span>${ico('target')}${esc(enListaY(grupos))}</span>`:''}</div>
     </div>
-    <div class="en-ejs">${filas}</div>
     <div class="en-cta">${cta}</div>
+    <div class="en-ejs">${filas}</div>
   </article>`;
 }
 // ═════════════ DETALLE DEL DÍA ═════════════
@@ -476,15 +477,15 @@ function ddHTML(s,k){
       <span class="en-carga">${der}</span></button></li>`;
   }).join('');
   const cta=esHoy&&!movidaDe(s,k)?`<div class="dd-cta"><button type="button" class="en-btn en-btn-p" onclick="iniciarSesion('${k}')">${ico('play')}${enCurso?'Continuar sesión':reg?'Registrar otra sesión':'Empezar sesión'}</button></div>`
-    : !reg?`<div class="dd-cta"><button type="button" class="en-btn en-btn-p" onclick="moverSesion('${k}','${HOY_KEY}')">${ico('play')}Hacerla hoy</button></div>`:'';
+    : !reg?`<div class="dd-cta"><button type="button" class="en-btn en-btn-p" onclick="moverSesion('${k}','${HOY_KEY}')">${ico('play')}Hacerla hoy</button><small>Es la del ${EN_DIAS[i]}: cuenta para esta semana</small></div>`:'';
   return `${top}
-  <section class="dd-hero">${pic(basesSesion(d.tipo),iconoTipo(d.tipo),'fill')}
-    <div class="dd-hero-tx"><p>${reg?ico('check')+'Hecho · ':''}${esc(cuando)}</p><h1>${esc(sc(d.tipo))}</h1></div></section>
+  <section class="dd-hero dd-hero-cine"><h1 class="rt-title dd-big" aria-label="${esc(sc(d.tipo))}">${typeof cineLineas==='function'?cineLineas(esc(sc(d.tipo)),0.86):esc(sc(d.tipo))}</h1>${pic(basesSesion(d.tipo),iconoTipo(d.tipo),'fill')}
+    <div class="dd-hero-tx"><p>${reg?ico('check')+'Hecho · ':''}${esc(cuando)}</p></div></section>
   <div class="dd-body">
     <p class="dd-facts num"><span><b>~${minutosDia(d,s)}</b> min</span><span><b>${ejs.length}</b> ejercicios</span><span><b>${series}</b> series</span>${reg&&reg.volumen?`<span><b>${Math.round(reg.volumen).toLocaleString('es-MX')}</b> kg movidos</span>`:''}</p>
     ${musc.length||zonas.length?`<section class="dd-resumen">
-      ${musc.length?`<div class="dd-res-f">${it('target','sm')}<div><small>Trabajas</small><b>${esc(ddFrase(musc.slice(0,3).map(x=>x[0])))}${musc.length>3?`<i> +${musc.length-3}</i>`:''}</b></div></div>`:''}
-      ${zonas.length?`<div class="dd-res-f">${it('dumbbell','sm')}<div><small>Necesitas</small><b>${esc(ddFrase(zonas))}</b></div></div>`:''}
+      ${musc.length?`<div class="dd-mus" aria-label="Trabajas">${musc.slice(0,3).map(x=>`<span class="p">${esc(x[0])}</span>`).join('')}${musc.length>3?`<span>+${musc.length-3} más</span>`:''}</div>`:''}
+      ${zonas.length?`<p class="dd-need">${ico('dumbbell')}<span>Necesitas <b>${esc(ddFrase(zonas).toLowerCase())}</b></span></p>`:''}
     </section>`:''}
     <section class="dd-sec"><div class="dd-h"><h2>${reg&&ejs.some(e=>hechoDe(e.nm))?'Lo que hiciste':'Ejercicios'}</h2><span>Toca uno para ver cómo se hace</span></div><ol class="dd-ejs">${filas}</ol></section>
     ${mets.length?`<section class="dd-sec"><div class="dd-h"><h2>${mets.length===1?'Método de hoy':'Métodos de hoy'}</h2></div>${mets.map(M=>`<details class="dd-met"><summary><b>${esc(ddMetCorto(M.nm))}</b><span>Cómo se hace</span>${ico('chev')}</summary><p>${esc(sinEmoji(M.como))}</p></details>`).join('')}</section>`:''}
@@ -570,27 +571,40 @@ function renderSes(){
   const des=segundosDescanso(e0.descanso), dPlan=descansoPlan(e0.descanso);
   const btnTiempo=esEmom?`<button type="button" class="en-btn en-btn-l" onclick="sesEmom(${i})">${ico('timer')}Iniciar EMOM ${esc(e0.series)} min</button>`
     : w?`<button type="button" class="en-btn en-btn-l" onclick="sesTrabajo(${i})">${ico('timer')}Temporizador ${w<120?w+' s':Math.round(w/6)/10+' min'}</button>`:'';
+  const nSer=seriesHoy(e0,aj)||parseInt(e0.series)||1, big=sesBigTxt(e0,i,especial,w,nSer), dist=sesEsDist(e0);
   const prog=ejs.map((x,j)=>{ const p=sesAvance(j,x); return `<i class="${p>=1?'done':''}${j===i?' cur':''}"><b style="transform:scaleX(${p})"></b></i>`; }).join('');
   let series='';
   if(especial){
     const r=rxTexto(e0,s), n=sesHechas(i);
-    series=`<div class="en-esp"><p>${esc(r.sr)}${r.carga?' · '+esc(r.carga):''}</p>
-      ${btnTiempo}
-      <button type="button" class="en-btn en-btn-p" onclick="sesRegistrar(${i})">${ico('check')}${n?'Ver o cambiar registro':'Registrar'}</button></div>`;
+    // Con tiempo (cardio, plancha, EMOM): un solo botón principal para empezar; registrar queda como opción
+    const conTm=!!btnTiempo && !n;
+    const goTm=conTm?btnTiempo.replace('en-btn en-btn-l','en-btn en-btn-p en-tm-go').replace(/Temporizador /,'Empezar '):btnTiempo;
+    series=`<div class="en-esp${conTm?' con-tm':''}"><p>${esc(r.sr)}${r.carga?' · '+esc(r.carga):''}</p>
+      ${goTm}
+      <button type="button" class="en-btn ${conTm?'en-btn-txt':'en-btn-p'}" onclick="sesRegistrar(${i})">${ico('check')}${n?'Ver o cambiar registro':conTm?'Ya lo hice: registrarlo':'Registrar'}</button></div>`;
   } else {
-    const B=sesBorrador(i,e0,c), prev=c&&c.sr;
-    series=`${btnTiempo?`<div class="en-tm-row">${btnTiempo}</div>`:''}<div class="en-sets" role="table" aria-label="Series de ${esc(e.nm)}">
-      <div class="en-set-h" role="row"><span role="columnheader">#</span><span role="columnheader">Anterior</span>
-        <span role="columnheader"><button type="button" class="en-unit" onclick="sesUnidad()" aria-label="Cambiar a ${unidadPeso==='kg'?'libras':'kilos'}">${unidadPeso.toUpperCase()}</button></span>
-        <span role="columnheader">REPS</span><span role="columnheader"><span class="sr-only">Hecha</span></span></div>
+    const B=sesBorrador(i,e0,c), prev=c&&c.sr, jc=sesSerieActual(i,B.length);
+    const nomS=dist?'Vuelta':'Serie', pasoKg=unidadPeso==='kg'?2.5:5, pasoR=dist?5:1;
+    // La serie que toca va grande (controles − / + para no abrir el teclado); las hechas se encogen y las demás quedan tenues
+    series=`${btnTiempo?`<div class="en-tm-row">${btnTiempo}</div>`:''}<div class="en-sets en-sets-cine" role="list" aria-label="Series de ${esc(e.nm)}">
       ${B.map((b,j)=>{ const st=reg.sets[j], ok=!!(st&&st.ok), kg=ok?st.kg:b.kg, rr=ok?(st.r||b.r):b.r;
-        const ant=prev&&prev[j]?`${kgToDisplay(prev[j][0])} × ${prev[j][1]||'—'}`:(c&&c.ult!=null?`${kgToDisplay(c.ult)}`:'—');
-        return `<div class="en-set${ok?' hecha':''}" role="row" data-j="${j}">
-        <span class="en-n num" role="cell">${j+1}</span>
-        <span class="en-prev num" role="cell">${ant}</span>
-        <span role="cell"><input type="number" inputmode="decimal" step="0.5" min="0" value="${kg?kgToDisplay(kg):''}" placeholder="0" aria-label="${unidadPeso==='kg'?'Kilos':'Libras'} serie ${j+1}" oninput="sesValor(${i},${j},'kg',this.value)"></span>
-        <span role="cell"><input type="number" inputmode="numeric" min="0" value="${rr||''}" placeholder="0" aria-label="Repeticiones serie ${j+1}" oninput="sesValor(${i},${j},'r',this.value)"></span>
-        <span role="cell"><button type="button" class="en-ok" aria-pressed="${ok}" aria-label="Serie ${j+1} hecha" onclick="sesMarcar(${i},${j})">${ico('check')}</button></span></div>`; }).join('')}
+        const ant=prev&&prev[j]?`${kgToDisplay(prev[j][0])} × ${prev[j][1]||'—'}`:(c&&c.ult!=null?`${kgToDisplay(c.ult)}`:'');
+        if(j===jc) return `<div class="en-set cur" role="listitem" data-j="${j}">
+          <div class="en-cur-h"><b>${nomS} ${j+1} <small>de ${B.length}</small></b><span>${ant?'Anterior: '+esc(ant):c?'Sugerido hoy: '+enKgCarga(c):''}</span></div>
+          <div class="en-steps">
+            <div class="en-step"><button type="button" aria-label="Menos peso" onclick="sesPaso(${i},${j},'kg',-${pasoKg})">${ico('minus')}</button>
+              <label><input type="number" inputmode="decimal" step="0.5" min="0" data-k="kg" value="${kg?kgToDisplay(kg):''}" placeholder="0" aria-label="${unidadPeso==='kg'?'Kilos':'Libras'} ${nomS.toLowerCase()} ${j+1}" oninput="sesValor(${i},${j},'kg',this.value)"><button type="button" class="en-unit" onclick="sesUnidad()" aria-label="Cambiar a ${unidadPeso==='kg'?'libras':'kilos'}">${unidadPeso}</button></label>
+              <button type="button" aria-label="Más peso" onclick="sesPaso(${i},${j},'kg',${pasoKg})">${ico('mas')}</button></div>
+            <div class="en-step"><button type="button" aria-label="Menos ${dist?'metros':'repeticiones'}" onclick="sesPaso(${i},${j},'r',-${pasoR})">${ico('minus')}</button>
+              <label><input type="number" inputmode="numeric" min="0" data-k="r" value="${rr||''}" placeholder="0" aria-label="${dist?'Metros':'Repeticiones'} ${nomS.toLowerCase()} ${j+1}" oninput="sesValor(${i},${j},'r',this.value)"><small>${dist?'metros':'reps'}</small></label>
+              <button type="button" aria-label="Más ${dist?'metros':'repeticiones'}" onclick="sesPaso(${i},${j},'r',${pasoR})">${ico('mas')}</button></div>
+          </div>
+          <button type="button" class="en-btn en-btn-p en-lista" onclick="sesMarcar(${i},${j})">${ico('check')}${nomS} ${j+1} lista</button>
+        </div>`;
+        const val=(kg?enKg(kg):'')+(kg&&rr?' × ':'')+(rr?rr+(dist?' m':''):'');
+        return `<div class="en-set${ok?' hecha':' pend'}" role="listitem" data-j="${j}">
+          <span class="en-n num">${j+1}</span><span class="en-sv num">${val||'—'}${ok?'':' <small>· pendiente</small>'}</span>
+          <button type="button" class="en-ok" aria-pressed="${ok}" aria-label="${ok?'Desmarcar':'Marcar'} ${nomS.toLowerCase()} ${j+1}" onclick="sesMarcar(${i},${j})">${ico('check')}</button></div>`; }).join('')}
     </div>`;
   }
   const alts=e0.alternativas||[], altSel=reg.alt;
@@ -605,7 +619,7 @@ function renderSes(){
     <div class="en-prog" aria-hidden="true">${prog}</div>
     <div class="en-ex">
       <button type="button" class="en-media" onclick="abrirFicha(sesEjActual())" aria-label="Ver cómo se hace ${esc(e.nm)}">
-        ${pic(basesEjercicio(e),'dumbbell','thumb')}${videoEjHTML(e)}
+        ${big?`<span class="en-big${/:/.test(big)?' largo':''}" aria-hidden="true">${big}</span>`:''}${pic(basesEjercicio(e),'dumbbell','thumb')}${videoEjHTML(e)}
         ${!especial&&!histEj(s,e0.nm).length?'<span class="en-new">Primera vez</span>':''}
         <span class="en-media-cta">${ico('play')}Cómo se hace</span>
       </button>
@@ -633,6 +647,27 @@ function renderSes(){
       <button type="button" class="en-btn en-btn-p" id="en-sig" data-pend="${sesAvance(i,e0)<1?1:0}" onclick="${sig?'sesIr(1)':'sesTerminar()'}">${sig?'Siguiente ejercicio':'Terminar sesión'}</button>
     </div>`;
 }
+// Cargas y caminatas por distancia ("30 m", "20 metros"): se registran en metros, no en repeticiones
+function sesEsDist(e){ const r=String(e&&e.reps||'').toLowerCase(); return /\d\s*(m|mts?|metros?)\b/.test(r) && !/min|seg|\brep/.test(r); }
+function sesSerieActual(i,n){ const reg=sesReg(i); for(let k=0;k<n;k++){ if(!(reg.sets[k]&&reg.sets[k].ok)) return k; } return -1; }
+// Número gigante detrás de la figura: serie que toca (2/3), metros (30 m) o minutos (20:00)
+function sesBigTxt(e,i,especial,w,n){
+  if(especial){ const m=String((e.reps||'')+' '+(e.series||'')).match(/(\d+)\s*min/); if(m) return m[1]+':00'; return w?(w<120?w+'<small>s</small>':enMMSS(w)):''; }
+  if(sesEsDist(e)){ const m=String(e.reps).match(/(\d+)/); return m?m[1]+'<small>m</small>':''; }
+  if(w) return (w<120?w+'<small>s</small>':enMMSS(w));
+  const j=sesSerieActual(i,n); return `${j<0?n:j+1}<small>/${n}</small>`;
+}
+// Controles − / + de la serie actual; si cambia el peso, las series pendientes con el mismo peso lo siguen
+function sesPaso(i,j,campo,d){
+  const B=sesUI.borr[i]; if(!B||!B[j]) return;
+  if(campo==='kg'){
+    const viejo=B[j].kg, disp=Math.max(0,Math.round(((B[j].kg?+kgToDisplay(B[j].kg):0)+d)*10)/10);
+    B[j].kg=displayToKg(disp);
+    const reg=sesReg(i); for(let k=j+1;k<B.length;k++){ if(!(reg.sets[k]&&reg.sets[k].ok) && B[k].kg===viejo) B[k].kg=B[j].kg; }
+  } else B[j].r=Math.max(0,(B[j].r||0)+d);
+  renderSes();
+  const el=document.querySelector(`#en-ses .en-set.cur input[data-k="${campo}"]`); if(el){ el.classList.remove('en-pulse'); void el.offsetWidth; el.classList.add('en-pulse'); }
+}
 function sesEjActual(){ const ejs=sesEjs(), i=sesUI.cur, e0=ejs[i]; const a=e0&&ejEjecutado(e0,i); return a?Object.assign({},e0,{nm:a.nm,ms:a.ms||e0.ms,tip:a.nota||e0.tip}):e0; }
 function limpiarRepsTxt(r){ return String(r||'').replace(/\s*reps?\b/i,'').trim(); }
 function sesValor(i,j,campo,v){
@@ -646,8 +681,7 @@ function sesMarcar(i,j,sinDescanso){
   const on=!(reg.sets[j]&&reg.sets[j].ok);
   // Solo las series marcadas se guardan: así el peso sugerido nunca cuenta como hecho
   reg.sets[j]=on?{kg:B[j].kg||0, r:B[j].r||0, ok:true}:undefined;
-  const row=document.querySelector(`#en-ses .en-set[data-j="${j}"]`);
-  if(row){ row.classList.toggle('hecha',on); row.querySelector('.en-ok').setAttribute('aria-pressed',on); }
+  renderSes();   // la serie siguiente pasa al frente
   const bar=document.querySelectorAll('#en-ses .en-prog i')[i];
   if(bar){ const p=sesAvance(i,e); bar.querySelector('b').style.transform=`scaleX(${p})`; bar.classList.toggle('done',p>=1); }
   const sg=document.getElementById('en-sig'); if(sg) sg.dataset.pend=sesAvance(i,e)<1?1:0;
@@ -656,7 +690,8 @@ function sesMarcar(i,j,sinDescanso){
   const n=parseInt(e.series)||B.length, sigSerie=B.findIndex((x,k)=>k>j&&!(reg.sets[k]&&reg.sets[k].ok));
   if(sesHechas(i)>=n) reg.done=true;
   if(sinDescanso) return;
-  if(sigSerie>=0) tmDescanso(e,`Serie ${sigSerie+1} · ${B[sigSerie].kg?enKg(B[sigSerie].kg)+' × ':''}${B[sigSerie].r||''}`);
+  const dist=sesEsDist(e);
+  if(sigSerie>=0) tmDescanso(e,`${dist?'Vuelta':'Serie'} ${sigSerie+1} · ${B[sigSerie].kg?enKg(B[sigSerie].kg)+(B[sigSerie].r?' × ':''):''}${B[sigSerie].r?B[sigSerie].r+(dist?' m':''):''}`);
   else if(ejs[i+1]) tmDescanso(e,ejs[i+1].nm);
   else descansoOcultar();
 }
@@ -715,7 +750,9 @@ function tmPanel(o){
   clearInterval(enD.iv); clearTimeout(enD.to);
   const el=document.getElementById('en-desc'); if(!el) return null;
   el.classList.remove('fin');
+  let fig=''; try{ if(document.getElementById('s-ses')?.classList.contains('on') && sesionTemp){ const ej=sesEjActual(); if(ej) fig=`<div class="en-desc-fig" aria-hidden="true">${pic(basesEjercicio(ej),'dumbbell','thumb')}</div>`; } }catch(_){}
   el.innerHTML=`<div class="en-desc-in">
+    ${fig}<div class="en-drain" aria-hidden="true"><i id="en-drain" style="transform:scaleX(${o.lleno?1:0})"></i></div>
     <div class="en-ring"><svg viewBox="0 0 72 72" aria-hidden="true"><circle class="bgc" cx="36" cy="36" r="30"/><circle class="fg" cx="36" cy="36" r="30" stroke-dasharray="${EN_C}" stroke-dashoffset="${o.lleno?0:EN_C}"/></svg><b class="num" id="en-d-t">${o.t}</b></div>
     <div class="en-desc-t"><b id="en-d-h">${esc(o.h)}</b><span id="en-d-s">${esc(o.s||'')}</span></div>
     <div class="en-desc-a${o.ops?' ops':''}">${o.botones}</div></div>`;
@@ -723,12 +760,12 @@ function tmPanel(o){
   requestAnimationFrame(()=>{ if(el.getAttribute('aria-hidden')==='false') el.classList.add('on'); });
   return el;
 }
-function tmAnillo(frac){ const fg=document.querySelector('#en-desc .fg'); if(fg) fg.setAttribute('stroke-dashoffset',EN_C*(1-Math.max(0,Math.min(1,frac)))); }
+function tmAnillo(frac){ const f=Math.max(0,Math.min(1,frac)); const fg=document.querySelector('#en-desc .fg'); if(fg) fg.setAttribute('stroke-dashoffset',EN_C*(1-f)); const dr=document.getElementById('en-drain'); if(dr) dr.style.transform=`scaleX(${f})`; }
 function tmTexto(id,v){ const t=document.getElementById(id); if(t) t.textContent=v; }
 // Cuenta atrás (descanso fijo o trabajo)
 function tmCuenta(seg,h,sub,alFin,trabajo){
   enD=Object.assign(enD,{modo:trabajo?'trabajo':'cuenta',left:seg,total:seg,alFin:alFin||null});
-  tmPanel({t:enMMSS(seg), h, s:sub, lleno:true, botones:`<button type="button" onclick="descansoAjustar(-15)" aria-label="Quitar 15 segundos">−15</button><button type="button" onclick="descansoAjustar(15)" aria-label="Agregar 15 segundos">+15</button><button type="button" class="skip" onclick="${trabajo?'tmTerminar()':'descansoOcultar()'}">${trabajo?'Listo':'Saltar'}</button>`});
+  tmPanel({t:enMMSS(seg), h, s:sub, lleno:true, botones:`<button type="button" onclick="descansoAjustar(-15)" aria-label="Quitar 15 segundos">−15 s</button><button type="button" onclick="descansoAjustar(15)" aria-label="Agregar 15 segundos">+15 s</button><button type="button" class="skip" onclick="${trabajo?'tmTerminar()':'descansoOcultar()'}">${trabajo?'Listo':'Saltar'}</button>`});
   enD.iv=setInterval(()=>{ enD.left=Math.max(0,enD.left-1); descansoPintar(); if(enD.left<=3&&enD.left>0) tmBip(660,90); if(enD.left===0) descansoListo(); },1000);
 }
 // Cronómetro libre (cuenta hacia arriba); con meta, el anillo se llena hacia ella y avisa al llegar
@@ -805,7 +842,9 @@ function sesTrabajo(i){
   else { sesUI.tmSerie=sesUI.tmSerie||{}; j=Math.min(n-1,sesUI.tmSerie[i]||0); }
   tmCuenta(w,'Serie '+(j+1)+' de '+n+' · ¡aguanta!',e.nm,()=>{
     if(!especial){ if(!(reg.sets[j]&&reg.sets[j].ok)) sesMarcar(i,j); }
-    else { sesUI.tmSerie[i]=j+1; const sig=j+1<n?'Serie '+(j+2):(ejs[i+1]?ejs[i+1].nm:''); if(sig) tmDescanso(e,sig); showToast('Serie '+(j+1)+' lista. Regístrala al terminar el ejercicio'); }
+    else { sesUI.tmSerie[i]=j+1;
+      if(j+1>=n){ sesRegistrar(i); return; }   // terminó el tiempo: se abre el registro
+      tmDescanso(e,'Serie '+(j+2)); showToast('Serie '+(j+1)+' lista. Regístrala al terminar el ejercicio'); }
   },true);
 }
 // EMOM: cada minuto que termina cuenta como una ronda hecha

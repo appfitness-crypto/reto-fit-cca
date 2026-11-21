@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0A0E13">
+<title>Reto Fit CCA · Propuesta para la sesión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══ Propuesta para la sesión en curso (tema Oscuro de la app) ═══
+   Entre series, con una mano: lo que toca hacer ahora es lo más grande de la pantalla.
+   La foto del ejercicio pasa a ser escenario y el número que importa (serie, metros, minutos)
+   queda gigante DETRÁS de la figura: las fotos tienen fondo negro y se funden con mix-blend-mode:lighten,
+   sin recortar nada. */
+:root{
+  --bg:#0A0E13;--sf:#121821;--sf2:#18202B;--line:rgba(238,242,246,.09);
+  --tx:#EEF2F6;--mu:rgba(226,232,240,.66);--lime:#C8F23A;--lime-ink:#0A0E13;--lime-soft:rgba(200,242,58,.12);
+  --fd:'Kanit','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --expo:cubic-bezier(.16,1,.3,1);--out:cubic-bezier(.23,1,.32,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#05070A;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--fb);font-size:15px;line-height:1.45;color:var(--tx);background:radial-gradient(90% 60% at 20% 0%,#16202B,#05070A 70%);min-height:100vh;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+::selection{background:var(--lime);color:var(--lime-ink)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--lime);outline-offset:2px;border-radius:12px}
+img{display:block}
+.ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* Presentación */
+.pg{max-width:1800px;margin:0 auto;padding:44px 36px 96px}
+.pg-h{display:flex;flex-wrap:wrap;gap:20px 40px;align-items:flex-end;justify-content:space-between;margin-bottom:44px}
+.pg-h h1{font:italic 800 clamp(36px,5vw,72px)/.92 var(--fd);text-transform:uppercase;margin:0 0 14px}
+.pg-h h1 b{color:var(--lime)}
+.pg-h p{margin:0;max-width:62ch;color:var(--mu);font-size:16px;text-wrap:pretty}
+.pg-h p strong{color:var(--tx)}
+.rail{display:grid;grid-template-columns:repeat(2,minmax(410px,1fr));gap:72px 28px;justify-items:center;max-width:1000px;margin:0 auto}
+@media (min-width:1800px){.rail{grid-template-columns:repeat(4,minmax(410px,1fr));max-width:none}}
+@media (max-width:899px){.rail{grid-template-columns:1fr}}
+.shot{width:410px;display:flex;flex-direction:column;align-items:center}
+.shot-h{width:390px;display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.shot-h h2{font:italic 800 22px/1 var(--fd);text-transform:uppercase;margin:0 auto 0 0;white-space:nowrap}
+.seg{display:inline-flex;padding:4px;border-radius:99px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px var(--line)}
+.seg button{min-height:36px;padding:0 14px;border-radius:99px;font:700 13px/1 var(--fb);color:var(--mu)}
+.seg button[aria-pressed="true"]{background:var(--lime);color:var(--lime-ink)}
+.seg button:disabled{opacity:.35;cursor:default}
+.notes{width:390px;margin:26px 0 0;padding:0;list-style:none;display:grid;gap:9px}
+.notes li{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:14.5px;color:var(--mu);text-wrap:pretty}
+.notes li .ico{width:18px;height:18px;color:var(--lime);margin-top:2px}
+.notes b{color:var(--tx)}
+.phone{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;isolation:isolate;background:var(--bg);
+  box-shadow:0 0 0 10px #000,0 0 0 11px #26303B,0 46px 80px -34px rgba(0,0,0,.8);transform:translateZ(0)}
+.antes{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;z-index:90;opacity:0;pointer-events:none;transition:opacity .4s var(--out)}
+.phone.ver-antes .antes{opacity:1}
+.sb{position:absolute;top:0;left:0;right:0;height:46px;z-index:70;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 40px;font:600 16px/1 var(--fb);pointer-events:none;background:linear-gradient(180deg,var(--bg) 40%,transparent)}
+.sb svg{height:13px;width:auto}
+.scr{position:absolute;inset:0;overflow:hidden}
+.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:46px 16px 120px}
+.scroll::-webkit-scrollbar{display:none}
+
+/* Barra de la sesión */
+.top{display:flex;align-items:center;gap:8px}
+.ib{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--sf);box-shadow:inset 0 0 0 1px var(--line)}
+.ib .ico{width:20px;height:20px}
+.top .t{flex:1;min-width:0}
+.top .t b{display:block;font:700 16px/1.1 var(--fd)}
+.top .t span{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--mu)}
+.top .t span .ico{width:14px;height:14px}
+.fin-b{min-height:40px;padding:0 14px;border-radius:99px;background:var(--sf);box-shadow:inset 0 0 0 1px var(--line);font:700 13px/1 var(--fb)}
+.prog{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 0 0}
+.prog i{height:6px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;position:relative}
+.prog i b{position:absolute;inset:0;background:var(--lime);transform-origin:left}
+.prog i.done b{background:rgba(200,242,58,.55)}
+.prog-l{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--mu)}
+.prog-l b{color:var(--tx);font-weight:700}
+
+/* Escenario: número gigante detrás de la figura */
+.stage{position:relative;height:var(--stage-h,300px);margin:12px -16px 0;overflow:hidden;background:radial-gradient(70% 70% at 50% 60%,#121A22 0%,#06080B 70%)}
+.big{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;margin:0;color:rgba(200,242,58,.34);font:italic 800 210px/.8 var(--fd);letter-spacing:-.05em;white-space:nowrap;pointer-events:none;user-select:none;-webkit-user-select:none}
+.big small{font-size:.42em;letter-spacing:-.02em;margin-left:.04em;align-self:flex-end;margin-bottom:.32em}
+.fig{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 70%;mix-blend-mode:lighten}
+.stage .chip{position:absolute;top:12px;right:16px;z-index:2;min-height:30px;padding:0 12px;border-radius:99px;display:inline-flex;align-items:center;background:var(--lime);color:var(--lime-ink);font:700 13px/1 var(--fb)}
+.stage .how{position:absolute;left:16px;bottom:14px;z-index:2;display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 14px;border-radius:99px;background:rgba(10,14,19,.8);box-shadow:inset 0 0 0 1px var(--line);font:700 13.5px/1 var(--fb)}
+.stage .how .ico{width:15px;height:15px;color:var(--lime)}
+.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(180deg,transparent,var(--bg));pointer-events:none}
+
+.name{margin:2px 0 0;font:italic 800 32px/.95 var(--fd);text-transform:uppercase;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:4px 12px;margin:8px 0 0;font-size:14px;color:var(--mu)}
+.meta b{color:var(--tx);font-weight:700}
+.musc{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.musc span{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 10px;border-radius:99px;background:rgba(255,255,255,.05);font-size:13px;color:var(--mu)}
+.musc span.p{background:var(--lime-soft);color:var(--tx)}
+.musc i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.musc span.p i{background:var(--lime)}
+.tip{display:flex;gap:10px;align-items:flex-start;margin:12px 0 0;font-size:14px;color:var(--mu)}
+.tip .ico{width:18px;height:18px;color:var(--lime);margin-top:1px}
+
+/* Series: hechas compactas, la actual grande, las demás tenues */
+.sets{margin:18px 0 0;display:grid;gap:6px}
+.row{display:flex;align-items:center;gap:12px;min-height:52px;padding:0 14px;border-radius:16px;background:var(--sf);font-size:15px}
+.row .n{width:22px;font:700 17px/1 var(--fd);color:var(--mu)}
+.row .v{flex:1;font:700 17px/1 var(--fd)}
+.row .v small{font:500 13px/1 var(--fb);color:var(--mu)}
+.row.ok{background:var(--lime-soft)}
+.row.ok .n{color:var(--lime)}
+.row.ok .ck{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--lime);color:var(--lime-ink)}
+.row.ok .ck .ico{width:17px;height:17px;stroke-width:3}
+.row.pend{opacity:.55}
+.cur{padding:16px 14px 14px;border-radius:22px;background:var(--sf2);box-shadow:inset 0 2px 0 var(--lime)}
+.cur-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cur-h b{font:700 18px/1 var(--fd)}
+.cur-h span{font-size:13px;color:var(--mu)}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 0}
+.step{display:grid;grid-template-columns:48px 1fr 48px;align-items:center;height:72px;border-radius:18px;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line)}
+.step button{height:100%;display:grid;place-items:center;color:var(--lime);border-radius:18px}
+.step button:active{background:rgba(255,255,255,.06)}
+.step .val{text-align:center}
+.step .val b{display:block;font:700 30px/1 var(--fd)}
+.step .val small{display:block;font-size:11.5px;color:var(--mu);margin-top:2px}
+.go{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:64px;margin:12px 0 0;border-radius:99px;background:var(--lime);color:var(--lime-ink);font:800 20px/1 var(--fd);box-shadow:0 14px 28px -14px rgba(200,242,58,.55);transition:transform .16s var(--out)}
+.go:active{transform:scale(.98)}
+.go .ico{width:20px;height:20px;stroke-width:2.6}
+.ghost{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:46px;margin-top:4px;font:600 14px/1 var(--fb);color:var(--mu)}
+.ghost .ico{width:17px;height:17px}
+.next{display:flex;align-items:center;gap:12px;margin:18px 0 0;padding:12px 14px;border-radius:18px;background:var(--sf);box-shadow:inset 0 0 0 1px var(--line)}
+.next img{width:52px;height:52px;object-fit:cover;object-position:50% 30%;border-radius:12px;background:#000}
+.next .t{flex:1;min-width:0}
+.next b{display:block;font:700 15px/1.2 var(--fd)}
+.next small{font-size:13px;color:var(--mu)}
+.next .ico{color:var(--mu)}
+
+/* Descanso: toma la pantalla */
+.rest{position:absolute;inset:0;display:flex;flex-direction:column;padding:62px 20px 28px;background:radial-gradient(90% 60% at 50% 38%,#16202A 0%,#0A0E13 55%,#05070A 100%)}
+.rest .lb{display:flex;align-items:center;justify-content:space-between;font-size:14px;color:var(--mu)}
+.rest .lb b{color:var(--tx);font:700 16px/1 var(--fd)}
+.rest .clock{position:relative;flex:1;display:flex;align-items:center;justify-content:center}
+.rest .clock .fig{opacity:.55}
+.rest .num{position:relative;z-index:2;margin:0;font:italic 800 132px/.8 var(--fd);letter-spacing:-.04em;color:var(--tx)}
+.rest .drain{height:8px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+.rest .drain i{display:block;height:100%;background:var(--lime);transform-origin:left;transition:transform 1s linear}
+.rest .sig{margin:18px 0 0;padding:14px 16px;border-radius:18px;background:var(--sf);box-shadow:inset 0 0 0 1px var(--line)}
+.rest .sig small{display:block;font-size:12.5px;color:var(--mu)}
+.rest .sig b{display:block;font:700 22px/1.15 var(--fd);margin-top:2px}
+.rest .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.rest .acts button{min-height:60px;border-radius:99px;background:var(--sf2);box-shadow:inset 0 0 0 1px var(--line);font:800 18px/1 var(--fd)}
+.rest .acts button.l{background:var(--lime);color:var(--lime-ink);box-shadow:none}
+.rest.listo .num{color:var(--lime)}
+
+/* Fuerza: escenario más bajo para que el botón de la serie se vea sin deslizar */
+#fz{--stage-h:236px}
+#fz .big{font-size:178px}
+#fz .sets{margin-top:14px}
+#fz .tip{margin-top:8px}
+#fz .musc{display:none}
+/* Cardio */
+.cardio .big{font-size:140px;color:rgba(200,242,58,.34)}
+.cardio.corre .big{color:rgba(200,242,58,.5)}
+.zona{display:flex;align-items:center;gap:10px;margin:14px 0 0;padding:12px 14px;border-radius:16px;background:var(--sf)}
+.zona .ico{color:#FF6B6B;width:20px;height:20px}
+.zona b{font:700 18px/1 var(--fd)}
+.zona span{font-size:13px;color:var(--mu)}
+
+
+/* ═══ Tema Claro: Mi plan y detalle del día ═══ */
+.claro{--tx:#002941;--mu:rgba(0,41,65,.66);--line:rgba(0,41,65,.1);--coral:#FD6E6E;--navy:#002941;color:#002941;background:linear-gradient(180deg,#D9F0FB 0%,#C7E8F8 40%,#B3DFF5 100%)}
+.claro .sb{color:#002941;background:linear-gradient(180deg,#D9F0FB 40%,transparent)}
+.claro .scroll{padding-bottom:130px}
+.rb{display:flex;align-items:center;gap:10px;min-height:58px;padding:6px 6px 6px 8px;border-radius:20px;background:var(--navy);color:#fff}
+.rb img{width:44px;height:44px;object-fit:contain}
+.rb .t{flex:1;min-width:0;font-size:13px;color:rgba(225,238,247,.8)}
+.rb .t b{display:block;font:700 15px/1.1 var(--fd);color:#fff}
+.rb .p{display:grid;place-items:center;min-width:76px;min-height:46px;padding:0 10px;border-radius:14px;background:var(--coral);color:#002941;line-height:1}
+.rb .p b{font:800 20px/1 var(--fd)}
+.rb .p small{font-size:10.5px;font-weight:600}
+.ph{display:flex;align-items:center;gap:12px;margin:18px 0 0}
+.ph img{width:42px;height:42px;border-radius:12px}
+.ph h1{margin:0;font:800 26px/1 var(--fd)}
+.ph p{margin:2px 0 0;font-size:13.5px;color:var(--mu)}
+.wkd{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:16px 0 0}
+.wkd button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;border-radius:14px;background:rgba(255,255,255,.7);color:#002941}
+.wkd span{font-size:11px;font-weight:700;color:var(--mu)}
+.wkd b{font:700 18px/1 var(--fd)}
+.wkd i{width:6px;height:6px;border-radius:50%;background:rgba(0,41,65,.25)}
+.wkd .hoy{background:#002941;color:#fff}.wkd .hoy span{color:rgba(225,238,247,.8)}.wkd .hoy i{background:var(--coral)}
+.wkd .des{background:transparent;box-shadow:inset 0 0 0 1px rgba(0,41,65,.14)}.wkd .des i{background:transparent}
+.blq{display:flex;align-items:center;gap:10px;margin:12px 2px 0;font-size:13px;color:var(--mu)}
+.blq b{color:#002941}
+.blq .segs{display:flex;gap:3px;flex:1;max-width:90px}.blq .segs i{flex:1;height:5px;border-radius:9px;background:rgba(0,41,65,.14)}.blq .segs i.on{background:#002941}
+.blq a{margin-left:auto;color:#0B4A6E;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:2px}.blq a .ico{width:16px;height:16px}
+.today{position:relative;height:270px;margin:14px 0 0;border-radius:28px;overflow:hidden;background:radial-gradient(80% 80% at 70% 60%,#0B3A57 0%,#002941 60%,#001A2B 100%)}
+.today .big{justify-content:flex-start;align-items:flex-end;flex-direction:column;padding:0 0 48px 18px;color:rgba(253,110,110,.42);font-size:52px;line-height:.82;letter-spacing:-.02em;text-transform:uppercase;align-items:flex-start;justify-content:flex-end}
+.today .big span{display:block}
+.today .fig{object-position:85% 60%;width:72%;left:auto;right:-6%}
+.today .lb{position:absolute;top:16px;left:18px;z-index:2;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#fff}
+.today .lb .ico{width:15px;height:15px}
+.today .chips{position:absolute;left:18px;bottom:14px;z-index:2;display:flex;gap:6px;flex-wrap:wrap}
+.today .chips span{display:inline-flex;align-items:center;gap:5px;min-height:28px;padding:0 10px;border-radius:99px;background:rgba(255,255,255,.12);font-size:12.5px;font-weight:600;color:#fff}
+.today .chips .ico{width:14px;height:14px}
+.claro .go{background:linear-gradient(180deg,#F86464,#EA4F4F);color:#fff;box-shadow:0 14px 28px -14px rgba(240,90,90,.7)}
+.claro .ghost{color:var(--mu)}
+.lst{margin:14px 0 0;border-radius:22px;background:rgba(255,255,255,.88);overflow:hidden}
+.lst .it{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line)}
+.lst .it:first-child{border-top:0}
+.lst .k{width:16px;font:700 14px/1 var(--fd);color:var(--mu)}
+.lst img{width:52px;height:52px;border-radius:12px;object-fit:cover;background:#000;flex:none}
+.lst .t{flex:1;min-width:0}
+.lst b{display:block;font:700 15.5px/1.2 var(--fd)}
+.lst small{font-size:13px;color:var(--mu)}
+.lst .m{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:99px;background:rgba(0,41,65,.07);font-size:12px;font-weight:600;color:#002941}
+.tbc{position:absolute;left:12px;right:12px;bottom:16px;z-index:40;display:flex;height:72px;padding:6px;border-radius:28px;background:rgba(240,249,253,.86);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 16px 30px -16px rgba(0,41,65,.45)}
+.tbc a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:22px;font:600 11.5px/1 var(--fb);color:rgba(0,41,65,.7);text-decoration:none}
+.tbc a.ac{background:#002941;color:#fff}.tbc .ico{width:22px;height:22px}
+/* Detalle del día */
+.dia .scroll{padding-top:0}
+.dstage{position:relative;height:350px;margin:0 -16px;overflow:hidden;background:#000}
+.dstage .big{align-items:flex-end;justify-content:flex-start;padding:0 0 70px 14px;color:rgba(253,110,110,.5);font-size:100px;text-transform:uppercase;line-height:.8}
+.dstage .fig{object-fit:cover;object-position:60% 20%}
+.dstage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(180deg,transparent,#D9F0FB);pointer-events:none}
+.dstage .back{position:absolute;top:52px;left:16px;z-index:3;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff}
+.dstage .back .ico{width:20px;height:20px}
+.dstage .lb{position:absolute;top:62px;right:18px;z-index:3;font-size:13.5px;font-weight:700;color:#fff}
+.dnums{display:flex;gap:22px;margin:0 2px}
+.dnums div b{display:block;font:800 34px/1 var(--fd)}
+.dnums div span{font-size:13px;color:var(--mu)}
+.dmus{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 0}
+.dmus span{display:inline-flex;align-items:center;min-height:30px;padding:0 11px;border-radius:99px;background:rgba(255,255,255,.8);font-size:13px;font-weight:600}
+.dmus span.p{background:#002941;color:#fff}
+.dneed{display:flex;align-items:center;gap:8px;margin:10px 2px 0;font-size:13.5px;color:var(--mu)}
+.dneed .ico{width:17px;height:17px}
+.dneed b{color:#002941;font-weight:600}
+.dsec{display:flex;align-items:baseline;justify-content:space-between;margin:22px 2px 0}
+.dsec h2{margin:0;font:800 20px/1 var(--fd)}
+.dsec span{font-size:12.5px;color:var(--mu)}
+.dcta{position:absolute;left:16px;right:16px;bottom:18px;z-index:40}
+.dcta .go{margin:0}
+.dcta small{display:block;text-align:center;margin-top:6px;font-size:12.5px;color:var(--mu)}
+.dia .dcta::before{content:"";position:absolute;left:-16px;right:-16px;bottom:-18px;height:130px;background:linear-gradient(180deg,transparent,#B3DFF5 45%);z-index:-1}
+
+/* Entradas: una por pantalla */
+.play .big{animation:bigIn 1100ms var(--expo) both}
+.play .fig{animation:figIn 1200ms var(--out) 120ms both}
+.play .cur{animation:up 700ms var(--expo) 350ms both}
+@keyframes bigIn{from{opacity:0;transform:translateY(40px) scale(.94);filter:blur(12px)}}
+@keyframes figIn{from{opacity:0;transform:scale(1.06)}}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+.rest.play .num{animation:bigIn 900ms var(--expo) both}
+.pulse{animation:pulse 300ms var(--out)}
+@keyframes pulse{50%{transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.play *,.play,.pulse{animation:none!important}.rest .drain i{transition:none}}
+@media (max-width:520px){
+  .pg{padding:28px 0 64px}.pg-h{padding:0 20px}.rail{display:block}
+  .shot{width:100%;margin-bottom:56px}.shot-h,.notes{width:auto;align-self:stretch;margin-left:20px;margin-right:20px}
+  .phone{width:100%;border-radius:0;box-shadow:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-chevl" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2 1.5M9.5 2.5h5M12 2.5V6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5v-7a1.5 1.5 0 0 1 3 0v7M14 11.5V6a1.5 1.5 0 0 1 3 0v8c0 4-2.5 7-6.5 7-2.6 0-4.2-1.3-5.6-3.4L3.2 15a1.5 1.5 0 0 1 2.4-1.8L8 15.5"/></symbol>
+  <symbol id="i-bug" viewBox="0 0 24 24"><path d="M12 20a6 6 0 0 0 6-6v-3a6 6 0 0 0-12 0v3a6 6 0 0 0 6 6zM12 20v-9M6 13H2M22 13h-4M6 9 3 6M18 9l3-3M6 17l-3 3M18 17l3 3"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5a1 1 0 0 0 1 1H10v-5.5h4v5.5h3.5a1 1 0 0 0 1-1V10"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1-4 4-6 7.5-6s6.5 2 7.5 6"/></symbol>
+</svg>
+
+<div class="pg">
+  <header class="pg-h">
+    <div>
+      <h1>La sesión, <b>entre series</b></h1>
+      <p>Hoy la foto ocupa media pantalla y las series, los chips y los consejos se apilan con el mismo peso. En la propuesta, <strong>lo que toca hacer ahora es lo más grande</strong>: la serie actual con controles gigantes, el número que importa detrás de la figura y el descanso a pantalla completa. Las cuatro primeras van en tema Oscuro y Mi plan y el día en tema Claro, como en tus capturas; las fotos son las mismas, sin recortes. <strong>Datos de ejemplo.</strong> Los botones funcionan.</p>
+    </div>
+  </header>
+  <main class="rail">
+
+    <!-- 1 · FUERZA -->
+    <section class="shot">
+      <div class="shot-h"><h2>Serie de fuerza</h2><div class="seg" role="group" aria-label="Ver"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr" id="fz">
+          <div class="scroll">
+            <div class="top"><button type="button" class="ib" aria-label="Salir"><svg class="ico"><use href="#i-chevl"/></svg></button><div class="t"><b>Abdomen y core</b><span><svg class="ico"><use href="#i-clock"/></svg>18:42</span></div><button type="button" class="ib" aria-label="Cronómetro"><svg class="ico"><use href="#i-timer"/></svg></button><button type="button" class="fin-b">Terminar</button></div>
+            <div class="prog" aria-hidden="true"><i class="done"><b></b></i><i class="done"><b></b></i><i><b style="transform:scaleX(.33)" id="fz-bar"></b></i><i><b style="transform:scaleX(0)"></b></i></div>
+            <div class="prog-l"><span>Ejercicio <b>3 de 4</b></span><span>~6 min para terminar</span></div>
+            <div class="stage">
+              <p class="big" aria-hidden="true" id="fz-big">2<small>/3</small></p>
+              <img class="fig" src="img/crunch-en-maquina.webp" alt="">
+              <span class="chip">Primera vez</span>
+              <button type="button" class="how"><svg class="ico"><use href="#i-play"/></svg>Cómo se hace</button>
+            </div>
+            <h1 class="name">Crunch en máquina</h1>
+            <p class="meta"><span><b>3 × 10</b></span><span>tempo 3-1-1</span><span>descanso 60 s</span><span>Recto abdominal</span></p>
+            <div class="musc"><span class="p"><i></i>Recto abdominal</span></div>
+            <p class="tip"><svg class="ico"><use href="#i-spark"/></svg><span>Baja en 3 s, pausa 1 s abajo, sube en 1 s.</span></p>
+            <div class="sets" id="fz-sets">
+              <div class="row ok"><span class="n">1</span><span class="v">25 kg × 10</span><span class="ck"><svg class="ico"><use href="#i-check"/></svg></span></div>
+              <div class="cur" id="fz-cur">
+                <div class="cur-h"><b>Serie 2</b><span>Sugerido hoy: 25 kg</span></div>
+                <div class="steps">
+                  <div class="step"><button type="button" aria-label="Menos peso" data-d="-2.5" data-k="kg"><svg class="ico"><use href="#i-minus"/></svg></button><div class="val"><b id="fz-kg">25</b><small>kg</small></div><button type="button" aria-label="Más peso" data-d="2.5" data-k="kg"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+                  <div class="step"><button type="button" aria-label="Menos repeticiones" data-d="-1" data-k="r"><svg class="ico"><use href="#i-minus"/></svg></button><div class="val"><b id="fz-r">10</b><small>reps</small></div><button type="button" aria-label="Más repeticiones" data-d="1" data-k="r"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+                </div>
+                <button type="button" class="go" id="fz-go"><svg class="ico"><use href="#i-check"/></svg>Serie 2 lista</button>
+              </div>
+              <div class="row pend" id="fz-p3"><span class="n">3</span><span class="v">25 kg × 10 <small>· pendiente</small></span></div>
+            </div>
+            <button type="button" class="ghost"><svg class="ico"><use href="#i-shuffle"/></svg>¿Máquina ocupada? Cámbialo solo por hoy</button>
+            <div class="next"><img src="img/caminata-con-peso-unilateral.webp" alt=""><div class="t"><small>Después</small><b>Caminata con peso unilateral</b></div><svg class="ico"><use href="#i-chev"/></svg></div>
+          </div>
+          <div class="sb"><span>5:50</span><svg viewBox="0 0 66 13" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+        <img class="antes" src="antes/fuerza.webp" alt="Pantalla actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-hand"/></svg><span><b>La serie actual es lo más grande</b>: dos controles de 72 px con − y + (no hay que abrir el teclado con las manos sudadas) y un solo botón “Serie 2 lista”.</span></li>
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>Las series hechas se encogen a una línea verde y las que faltan quedan tenues. El <b>“2/3” gigante detrás de la figura</b> se lee a la distancia del brazo.</span></li>
+        <li><svg class="ico"><use href="#i-spark"/></svg><span>Chips, descanso y consejo pasan a <b>una línea cada uno</b>. La foto baja de media pantalla a un escenario más bajo y el botón queda a la altura del pulgar sin deslizar.</span></li>
+      </ul>
+    </section>
+
+    <!-- 2 · DESCANSO -->
+    <section class="shot">
+      <div class="shot-h"><h2>Descanso</h2><div class="seg"><button type="button" aria-pressed="true">Después</button><button type="button" disabled title="Hoy es un panel chico abajo">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr rest" id="ds">
+          <div class="lb"><span>Descansa · después de la serie 2</span><b>Crunch en máquina</b></div>
+          <div class="clock">
+            <img class="fig" src="img/crunch-en-maquina.webp" alt="">
+            <p class="num" id="ds-num" aria-live="polite">1:00</p>
+          </div>
+          <div class="drain" aria-hidden="true"><i id="ds-bar"></i></div>
+          <div class="sig"><small>Sigue</small><b>Serie 3 · 25 kg × 10</b></div>
+          <div class="acts"><button type="button" id="ds-mas">+15 s</button><button type="button" class="l" id="ds-salta">Saltar</button></div>
+          <div class="sb"><span>5:51</span><svg viewBox="0 0 66 13" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>Al marcar la serie, <b>el descanso toma toda la pantalla</b>: el reloj gigante se ve desde la banca sin acercarse al teléfono.</span></li>
+        <li><svg class="ico"><use href="#i-hand"/></svg><span>Dice <b>qué sigue con su peso</b> y trae dos botones grandes: +15 s y Saltar.</span></li>
+        <li><svg class="ico"><use href="#i-spark"/></svg><span>Al terminar se pinta de verde y vibra, igual que hoy.</span></li>
+      </ul>
+    </section>
+
+    <!-- 3 · DISTANCIA -->
+    <section class="shot">
+      <div class="shot-h"><h2>Por distancia</h2><div class="seg" role="group"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr" id="dt">
+          <div class="scroll">
+            <div class="top"><button type="button" class="ib" aria-label="Salir"><svg class="ico"><use href="#i-chevl"/></svg></button><div class="t"><b>Abdomen y core</b><span><svg class="ico"><use href="#i-clock"/></svg>24:10</span></div><button type="button" class="ib" aria-label="Cronómetro"><svg class="ico"><use href="#i-timer"/></svg></button><button type="button" class="fin-b">Terminar</button></div>
+            <div class="prog" aria-hidden="true"><i class="done"><b></b></i><i class="done"><b></b></i><i class="done"><b></b></i><i><b style="transform:scaleX(0)"></b></i></div>
+            <div class="prog-l"><span>Ejercicio <b>4 de 4</b> · el último</span><span>~4 min para terminar</span></div>
+            <div class="stage">
+              <p class="big" aria-hidden="true">30<small>m</small></p>
+              <img class="fig" src="img/caminata-con-peso-unilateral.webp" alt="">
+              <button type="button" class="how"><svg class="ico"><use href="#i-play"/></svg>Cómo se hace</button>
+            </div>
+            <h1 class="name">Caminata con peso unilateral</h1>
+            <p class="meta"><span><b>3 × 30 m</b></span><span>descanso 90 s</span><span>Una mancuerna pesada</span></p>
+            <div class="musc"><span class="p"><i></i>Oblicuos</span><span><i></i>Core</span></div>
+            <p class="tip"><svg class="ico"><use href="#i-spark"/></svg><span>Hombros parejos: que la mancuerna no te incline.</span></p>
+            <div class="sets">
+              <div class="cur">
+                <div class="cur-h"><b>Vuelta 1</b><span>Cambia de mano en cada vuelta</span></div>
+                <div class="steps">
+                  <div class="step"><button type="button" aria-label="Menos peso"><svg class="ico"><use href="#i-minus"/></svg></button><div class="val"><b>16</b><small>kg</small></div><button type="button" aria-label="Más peso"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+                  <div class="step"><button type="button" aria-label="Menos metros"><svg class="ico"><use href="#i-minus"/></svg></button><div class="val"><b>30</b><small>metros</small></div><button type="button" aria-label="Más metros"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+                </div>
+                <button type="button" class="go"><svg class="ico"><use href="#i-check"/></svg>Vuelta 1 lista</button>
+              </div>
+              <div class="row pend"><span class="n">2</span><span class="v">16 kg · 30 m <small>· pendiente</small></span></div>
+              <div class="row pend"><span class="n">3</span><span class="v">16 kg · 30 m <small>· pendiente</small></span></div>
+            </div>
+          </div>
+          <div class="sb"><span>5:50</span><svg viewBox="0 0 66 13" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+        <img class="antes" src="antes/carga.webp" alt="Pantalla actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-bug"/></svg><span><b>Error de hoy:</b> la caminata de 3 × 30 m pide “REPS 30” y el peso sale en 0. Debe decir <b>metros</b> y sugerir un peso.</span></li>
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>El <b>“30 m” gigante</b> detrás de la figura dice de un vistazo cuánto caminar.</span></li>
+        <li><svg class="ico"><use href="#i-spark"/></svg><span>Para cargas y caminatas se habla de <b>vueltas</b>, no de series, y se avisa cambiar de mano.</span></li>
+      </ul>
+    </section>
+
+    <!-- 4 · CARDIO -->
+    <section class="shot">
+      <div class="shot-h"><h2>Cardio</h2><div class="seg" role="group"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr cardio" id="cd">
+          <div class="scroll">
+            <div class="top"><button type="button" class="ib" aria-label="Salir"><svg class="ico"><use href="#i-chevl"/></svg></button><div class="t"><b>Abdomen y core</b><span><svg class="ico"><use href="#i-clock"/></svg>0:12</span></div><button type="button" class="ib" aria-label="Cronómetro"><svg class="ico"><use href="#i-timer"/></svg></button><button type="button" class="fin-b">Terminar</button></div>
+            <div class="prog" aria-hidden="true"><i><b style="transform:scaleX(0)" id="cd-bar"></b></i><i><b style="transform:scaleX(0)"></b></i><i><b style="transform:scaleX(0)"></b></i><i><b style="transform:scaleX(0)"></b></i></div>
+            <div class="prog-l"><span>Ejercicio <b>1 de 4</b></span><span>~34 min en total</span></div>
+            <div class="stage">
+              <p class="big" aria-hidden="true" id="cd-big">20:00</p>
+              <img class="fig" src="img/caminata-inclinada.webp" alt="">
+              <button type="button" class="how"><svg class="ico"><use href="#i-play"/></svg>Cómo se hace</button>
+            </div>
+            <h1 class="name">Caminata inclinada / elíptica</h1>
+            <p class="meta"><span><b>20 min</b></span><span>Caminadora con inclinación</span></p>
+            <div class="zona"><svg class="ico"><use href="#i-heart"/></svg><div><b>120–138 lpm</b><br><span>Ritmo en el que puedes hablar con frases cortas</span></div></div>
+            <button type="button" class="go" id="cd-go" style="margin-top:16px"><svg class="ico"><use href="#i-play"/></svg>Empezar 20 min</button>
+            <button type="button" class="ghost" id="cd-ya"><svg class="ico"><use href="#i-check"/></svg>Ya lo hice: registrarlo</button>
+            <div class="next"><img src="img/mini-plancha-en-trx.webp" alt=""><div class="t"><small>Después</small><b>Plancha en TRX</b></div><svg class="ico"><use href="#i-chev"/></svg></div>
+          </div>
+          <div class="sb"><span>5:50</span><svg viewBox="0 0 66 13" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+        <img class="antes" src="antes/cardio.webp" alt="Pantalla actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-hand"/></svg><span>Hoy hay dos botones que compiten (Temporizador y Registrar). Ahora hay <b>uno solo: Empezar 20 min</b>. Al terminar el tiempo, se registra solo.</span></li>
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>El reloj corre <b>gigante detrás de la figura</b> y la frecuencia objetivo queda a la vista. Toca “Empezar” para verlo.</span></li>
+        <li><svg class="ico"><use href="#i-spark"/></svg><span>“Ya lo hice: registrarlo” queda como opción secundaria.</span></li>
+      </ul>
+    </section>
+    <!-- 5 · MI PLAN (tema Claro) -->
+    <section class="shot">
+      <div class="shot-h"><h2>Mi plan</h2><div class="seg" role="group"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr claro" id="pl">
+          <div class="scroll">
+            <div class="rb"><div class="t"><b>Reto Fit CCA</b>Arranca el 11 de enero · faltan 52 días</div><span class="p"><b>0</b><small>pts</small></span></div>
+            <div class="ph"><img src="img/logo.png" alt=""><div><h1>Mi plan</h1><p>Recomposición corporal · 5 días por semana</p></div></div>
+            <div class="wkd">
+              <button type="button"><span>LUN</span><b>16</b><i></i></button><button type="button"><span>MAR</span><b>17</b><i></i></button><button type="button"><span>MIÉ</span><b>18</b><i></i></button><button type="button"><span>JUE</span><b>19</b><i></i></button><button type="button" class="hoy"><span>VIE</span><b>20</b><i></i></button><button type="button" class="des"><span>SÁB</span><b>21</b><i></i></button><button type="button" class="des"><span>DOM</span><b>22</b><i></i></button>
+            </div>
+            <div class="blq"><span>Bloque <b>1</b> · semana <b>1 de 4</b></span><span class="segs"><i class="on"></i><i></i><i></i><i></i></span><a href="#">Mi progresión<svg class="ico"><use href="#i-chev"/></svg></a></div>
+            <div class="today">
+              <h2 class="big" aria-label="Hoy: Accesorios y core"><span>Accesorios</span><span>+ Core</span></h2>
+              <img class="fig" src="img/caminata-inclinada.webp" alt="">
+              <span class="lb"><svg class="ico"><use href="#i-calendar"/></svg>Hoy · viernes 20</span>
+              <div class="chips"><span><svg class="ico"><use href="#i-dumbbell"/></svg>4 ejercicios</span><span><svg class="ico"><use href="#i-clock"/></svg>~40 min</span><span>Core y abdomen</span></div>
+            </div>
+            <button type="button" class="go"><svg class="ico"><use href="#i-play"/></svg>Empezar entrenamiento</button>
+            <button type="button" class="ghost"><svg class="ico"><use href="#i-calendar"/></svg>Hoy no puedo, moverla</button>
+            <div class="lst">
+              <div class="it"><span class="k">1</span><img src="img/mini-caminata-inclinada.webp" alt=""><div class="t"><b>Caminata inclinada / elíptica</b><small>20 min</small></div></div>
+              <div class="it"><span class="k">2</span><img src="img/mini-plancha-en-trx.webp" alt=""><div class="t"><b>Plancha en TRX</b><small>3 × 25 s · isométrico</small></div></div>
+              <div class="it"><span class="k">3</span><img src="img/mini-crunch-en-maquina.webp" alt=""><div class="t"><b>Crunch en máquina</b><small>3 × 10 · tempo 3-1-1</small><br><span class="m">Nuevo para ti</span></div></div>
+              <div class="it"><span class="k">4</span><img src="img/mini-caminata-con-peso-unilateral.webp" alt=""><div class="t"><b>Caminata con peso unilateral</b><small>3 × 30 m</small></div></div>
+            </div>
+          </div>
+          <div class="sb"><span>8:59</span><svg viewBox="0 0 66 13" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+          <nav class="tbc" aria-label="Secciones"><a href="#"><svg class="ico"><use href="#i-home"/></svg>Inicio</a><a href="#" class="ac"><svg class="ico"><use href="#i-dumbbell"/></svg>Rutina</a><a href="#"><svg class="ico"><use href="#i-chart"/></svg>Progreso</a><a href="#"><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a><a href="#"><svg class="ico"><use href="#i-user"/></svg>Perfil</a></nav>
+        </div>
+        <img class="antes" src="antes/plan.webp" alt="Pantalla actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-hand"/></svg><span>Hoy el botón de empezar no aparece sin deslizar. Ahora <b>“Empezar entrenamiento” queda en la primera vista</b>, debajo de la sesión del día.</span></li>
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>La sesión de hoy es un escenario azul con <b>su nombre gigante detrás de la figura</b> del primer ejercicio.</span></li>
+        <li><svg class="ico"><use href="#i-spark"/></svg><span>El bloque pasa de tarjeta a una línea y la semana marca hoy y los días de descanso.</span></li>
+      </ul>
+    </section>
+
+    <!-- 6 · DETALLE DEL DÍA (tema Claro) -->
+    <section class="shot">
+      <div class="shot-h"><h2>Detalle del día</h2><div class="seg" role="group"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr claro dia" id="dd">
+          <div class="scroll">
+            <div class="dstage">
+              <h1 class="big" aria-label="Torso A, lunes 16">Torso A</h1>
+              <img class="fig" src="img/sesion-torso.webp" alt="">
+              <button type="button" class="back" aria-label="Volver"><svg class="ico"><use href="#i-chevl"/></svg></button>
+              <span class="lb">Lunes 16</span>
+            </div>
+            <div class="dnums"><div><b>~35</b><span>minutos</span></div><div><b>6</b><span>ejercicios</span></div><div><b>20</b><span>series</span></div></div>
+            <div class="dmus"><span class="p">Pecho mayor</span><span class="p">Deltoides</span><span class="p">Dorsal ancho</span><span>+3 más</span></div>
+            <p class="dneed"><svg class="ico"><use href="#i-dumbbell"/></svg><span>Necesitas <b>máquinas, rack, mancuernas y banco</b></span></p>
+            <div class="dsec"><h2>Ejercicios</h2><span>Toca uno para ver cómo se hace</span></div>
+            <div class="lst">
+              <div class="it"><span class="k">1</span><img src="img/grupo-pecho.webp" alt=""><div class="t"><b>Press con máquina convergente</b><small>3 × 10 · descanso 90 s</small><br><span class="m">Tempo excéntrico</span></div></div>
+              <div class="it"><span class="k">2</span><img src="img/mini-press-de-hombro-en-maquina.webp" alt=""><div class="t"><b>Press de hombro en máquina</b><small>4 × 12-10-8-6 · descanso 90 s</small><br><span class="m">Pirámide ascendente</span></div></div>
+              <div class="it"><span class="k">3</span><img src="img/mini-remo-con-barra.webp" alt=""><div class="t"><b>Remo con barra</b><small>4 × 10 · descanso 90 s</small></div></div>
+              <div class="it"><span class="k">4</span><img src="img/mini-remo-en-maquina-con-pecho-apoyado.webp" alt=""><div class="t"><b>Remo en máquina con pecho apoyado</b><small>3 × 10 · descanso 90 s</small></div></div>
+            </div>
+          </div>
+          <div class="sb"><span>8:59</span><svg viewBox="0 0 66 13" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+          <div class="dcta"><button type="button" class="go"><svg class="ico"><use href="#i-play"/></svg>Hacerla hoy</button><small>Es la del lunes: cuenta para esta semana</small></div>
+        </div>
+        <img class="antes" src="antes/dia.webp" alt="Pantalla actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>El nombre de la sesión, chico hoy, pasa a <b>“TORSO A” gigante detrás de la foto</b>.</span></li>
+        <li><svg class="ico"><use href="#i-spark"/></svg><span>Los números van grandes y sin recuadro. Los músculos se ven como etiquetas y lo que necesitas cabe en una línea.</span></li>
+        <li><svg class="ico"><use href="#i-hand"/></svg><span>El botón dice <b>por qué “hoy”</b>: es la sesión del lunes y cuenta para esta semana.</span></li>
+      </ul>
+    </section>
+  </main>
+</div>
+
+<script>
+(()=>{
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const play=el=>{ el.classList.remove('play'); void el.offsetWidth; el.classList.add('play'); };
+  document.querySelectorAll('.shot').forEach(sh=>{
+    const ph=sh.querySelector('.phone'), scr=sh.querySelector('.scr');
+    sh.querySelectorAll('.seg button[data-v]').forEach(b=>b.addEventListener('click',()=>{
+      sh.querySelectorAll('.seg button[data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+      ph.classList.toggle('ver-antes',b.dataset.v==='a'); if(b.dataset.v==='d') play(scr);
+    }));
+  });
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ play(e.target); io.unobserve(e.target); if(e.target.id==='ds') descanso(60); } }),{threshold:.35});
+  document.querySelectorAll('.scr').forEach(s=>io.observe(s));
+
+  // Fuerza: controles y "Serie lista"
+  const v={kg:25,r:10};
+  document.querySelectorAll('#fz .step button').forEach(b=>b.addEventListener('click',()=>{
+    const k=b.dataset.k; v[k]=Math.max(0,Math.round((v[k]+parseFloat(b.dataset.d))*10)/10);
+    const el=document.getElementById('fz-'+k); el.textContent=String(v[k]).replace('.',','); el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse');
+  }));
+  let serie=2;
+  document.getElementById('fz-go').addEventListener('click',()=>{
+    if(serie>3) return;
+    const cur=document.getElementById('fz-cur');
+    cur.insertAdjacentHTML('beforebegin',`<div class="row ok"><span class="n">${serie}</span><span class="v">${String(v.kg).replace('.',',')} kg × ${v.r}</span><span class="ck"><svg class="ico"><use href="#i-check"/></svg></span></div>`);
+    serie++;
+    document.getElementById('fz-bar').style.transform=`scaleX(${Math.min(1,(serie-1)/3)})`;
+    if(serie>3){ cur.outerHTML=`<button type="button" class="go" onclick="this.textContent='Siguiente ejercicio →'">Siguiente: Caminata con peso</button>`; document.getElementById('fz-p3').remove(); document.getElementById('fz-big').innerHTML='3<small>/3</small>'; return; }
+    document.getElementById('fz-p3').remove();
+    cur.querySelector('.cur-h b').textContent='Serie '+serie;
+    document.getElementById('fz-go').innerHTML=`<svg class="ico"><use href="#i-check"/></svg>Serie ${serie} lista`;
+    document.getElementById('fz-big').innerHTML=`${serie}<small>/3</small>`; play(document.getElementById('fz'));
+  });
+
+  // Descanso a pantalla completa
+  const fmt=s=>Math.floor(s/60)+':'+String(Math.max(0,s)%60).padStart(2,'0');
+  let left=60,total=60,iv=0;
+  function pinta(){ document.getElementById('ds-num').textContent=fmt(left); document.getElementById('ds-bar').style.transform=`scaleX(${left/total})`; }
+  function descanso(s){ clearInterval(iv); left=total=s; const r=document.getElementById('ds'); r.classList.remove('listo'); pinta(); iv=setInterval(()=>{ left--; pinta(); if(left<=0){ clearInterval(iv); r.classList.add('listo'); document.getElementById('ds-num').textContent='¡Va!'; setTimeout(()=>descanso(60),2600); } },1000); }
+  document.getElementById('ds-mas').addEventListener('click',()=>{ left+=15; total=Math.max(total,left); pinta(); });
+  document.getElementById('ds-salta').addEventListener('click',()=>{ left=1; });
+
+  // Cardio: el reloj corre detrás de la figura
+  let civ=0;
+  document.getElementById('cd-go').addEventListener('click',function(){
+    const big=document.getElementById('cd-big'), scr=document.getElementById('cd');
+    if(civ){ clearInterval(civ); civ=0; scr.classList.remove('corre'); this.innerHTML='<svg class="ico"><use href="#i-play"/></svg>Seguir'; return; }
+    let s=+(big.dataset.s||1200); scr.classList.add('corre');
+    this.innerHTML='<svg class="ico"><use href="#i-timer"/></svg>Pausar';
+    civ=setInterval(()=>{ s-=reduce?1:6; if(s<=0){ s=0; clearInterval(civ); civ=0; } big.dataset.s=s; big.textContent=fmt(s); document.getElementById('cd-bar').style.transform=`scaleX(${1-s/1200})`; },reduce?1000:100);
+  });
+})();
+</script>
+</body>
+</html>
