@@ -95,6 +95,24 @@
           ".validate": "newData.isString() && newData.val().length < 120000"
         }
       }
+    },
+    "reparto": {
+      ".read": "auth != null",
+      "turno": {
+        ".write": "auth != null && auth.provider !== 'anonymous'",
+        ".validate": "newData.isNumber() && (root.child('roles').child(auth.uid).val() === 'coordinador' || newData.val() === (data.exists() ? data.val() : 0) + 1)"
+      }
+    },
+    "avisosGrupo": {
+      "$ent": {
+        ".read": "auth != null",
+        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $ent && root.child('roles').child(auth.uid).val() === 'entrenador'))",
+        "$id": {
+          "img": {
+            ".validate": "newData.isString() && newData.val().length < 400000"
+          }
+        }
+      }
     }
   }
 }

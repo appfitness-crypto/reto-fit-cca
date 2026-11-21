@@ -390,93 +390,69 @@ function mostrarPreview(data){
   }).finally(()=>{ if(window._rutinaTemp!==data) return; renderPreview(data); go('s-preview'); });
 }
 
+// Tu plan generado: portada con tu nombre sobre la foto de tu objetivo, tu entrenador, lo que comes y tu semana con fotos
+const PV_FOTO_OBJ={'GANAR MÚSCULO':'torso','PERDER PESO':'cardio','RECOMPOSICIÓN CORPORAL':'full','FUERZA PURA':'pecho','RESISTENCIA':'cardiovascular','FLEXIBILIDAD':'movilidad','RENDIMIENTO DEPORTIVO':'general','REHABILITACIÓN':'movilidad'};
+function pvMusculos(dia){
+  const vistos=[];
+  (dia.ejercicios||[]).forEach(e=>{ const m=String(e.ms||e.musculo||'').split(/[,·/+]| y /)[0].trim(); if(m && !vistos.some(v=>v.toLowerCase()===m.toLowerCase())) vistos.push(m); });
+  return vistos.slice(0,2);
+}
+function pvMinutos(dia){ const n=(dia.ejercicios||[]).length; return n?Math.max(30,Math.round((n*9+8)/5)*5):0; }
+function pvDiaAbrir(btn){ const card=btn.closest('.pv-day'), ab=!card.classList.contains('open'); card.classList.toggle('open',ab); btn.setAttribute('aria-expanded',ab); }
 function renderPreview(rutina){
-  const iconMap={'GANAR MÚSCULO':'💪','PERDER PESO':'🔥','RECOMPOSICIÓN CORPORAL':'🔄','FUERZA PURA':'⚡','RESISTENCIA':'🏃','FLEXIBILIDAD':'🧘','RENDIMIENTO DEPORTIVO':'🏅','REHABILITACIÓN':'🏥'};
-  document.getElementById('pv-icon').textContent=iconMap[qAnswers.objetivo]||'🏋️';
-  document.getElementById('pv-nombre').textContent=qAnswers.nombre.toUpperCase();
-  document.getElementById('pv-meta').textContent=`${rutina.perfil.nivel} · ${qAnswers.edad} años · ${qAnswers.peso} kg · ${qAnswers.dias} días/sem · ${rutina.perfil.split}`;
-
-  const badgeColors={
-    'GANAR MÚSCULO':'color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent);background:color-mix(in srgb, var(--v) 7%, transparent)',
-    'PERDER PESO':'color:var(--r);border-color:color-mix(in srgb,var(--r) 30%,transparent);background:color-mix(in srgb,var(--r) 7%,transparent)',
-    'FUERZA PURA':'color:var(--g);border-color:color-mix(in srgb,var(--g) 30%,transparent);background:color-mix(in srgb,var(--g) 7%,transparent)',
-    'RESISTENCIA':'color:var(--n);border-color:color-mix(in srgb,var(--n) 30%,transparent);background:color-mix(in srgb,var(--n) 7%,transparent)',
-  };
-  const bc=badgeColors[qAnswers.objetivo]||badgeColors['GANAR MÚSCULO'];
-  document.getElementById('pv-badges').innerHTML=`
-    <div class="badge" style="${bc}">${esc(objNombre(qAnswers.objetivo))}</div>${qAnswers.objetivoMeta?`<div class="badge bn">Después: ${esc(objNombre(qAnswers.objetivoMeta))}</div>`:''}
-    <div class="badge bn">${rutina.perfil.nivel}</div>
-    <div class="badge" style="color:var(--mu);border-color:color-mix(in srgb,var(--tx) 10%,transparent)">${rutina.perfil.fase||rutina.perfil.split}</div>
-  `;
-  document.getElementById('pv-nota').textContent='💡 '+(rutina.perfil.nota||'Plan generado según tu perfil.');
+  const nombre=limpiarTexto(qAnswers.nombre||'')||'Tu plan';
+  const primero=nombre.split(/\s+/)[0];
+  const foto=PV_FOTO_OBJ[qAnswers.objetivo]||'general';
+  const ent=qAnswers.entrenadorId && DB.entrenadores && DB.entrenadores[qAnswers.entrenadorId];
+  document.getElementById('pv-hero').innerHTML=`
+    ${pic(['sesiones/'+foto,'sesiones/general'],'dumbbell','fill pv-ph')}
+    <div class="pv-top"><img src="icons/icon-192.png" alt="" width="40" height="40"><span class="pv-k"><i></i>Plan listo</span></div>
+    <div class="pv-tx"><small>Tu plan de 12 semanas</small>
+      <h1 class="rt-title" aria-label="${esc(primero)}">${typeof cineLineas==='function'?cineLineas(esc(primero.toUpperCase()),0.9):esc(primero.toUpperCase())}</h1>
+      <p>${qAnswers.edad} años · ${qAnswers.peso} kg · ${qAnswers.dias} días por semana</p>
+      <div class="pv-tags"><span class="o">${esc(objNombre(qAnswers.objetivo))}</span>${qAnswers.objetivoMeta?`<span>Después: ${esc(objNombre(qAnswers.objetivoMeta))}</span>`:''}<span>${esc(rutina.perfil.nivel||qAnswers.nivel||'')}</span><span>${esc(rutina.perfil.split||'')}</span></div>
+    </div>`;
+  if(typeof cineAjustar==='function') setTimeout(cineAjustar,30);
+  document.getElementById('pv-coach').innerHTML = ent
+    ? `<div class="pv-coach">${typeof entAvatarHTML==='function'?entAvatarHTML(ent,'ent-av'):''}<div><b>${esc(ent.nombre)}</b><small>Revisa tu plan y lo ajusta contigo</small></div><span class="pv-st">Por revisar</span></div>`
+    : `<div class="pv-coach">${ico('user')}<div><b>Plan del club</b><small>Un entrenador del gym lo revisa y lo ajusta contigo</small></div><span class="pv-st">Por revisar</span></div>`;
+  const nota=rutina.perfil.nota||'';
+  const pvN=document.getElementById('pv-nota'); pvN.textContent=nota; pvN.hidden=!nota;
   const pvMet=document.getElementById('pv-metodo');
   if(pvMet){ const h=metodoHTML(rutina.metodo); pvMet.innerHTML=h; pvMet.style.display=h?'block':'none'; }
-
   const pvCons=document.getElementById('pv-consejos');
   const consejos=Array.isArray(rutina.perfil.consejos)?rutina.perfil.consejos.filter(Boolean):[];
-  if(consejos.length){
-    pvCons.style.display='block';
-    pvCons.innerHTML='<b>🧘 Consejos para combinar tus clases con el gym</b><br>'+consejos.map(c=>'• '+esc(c)).join('<br>');
-  } else { pvCons.style.display='none'; pvCons.innerHTML=''; }
+  if(consejos.length){ pvCons.style.display='block'; pvCons.innerHTML='<b>Para combinar tus clases con el gym</b><ul>'+consejos.map(c=>'<li>'+esc(c)+'</li>').join('')+'</ul>'; }
+  else { pvCons.style.display='none'; pvCons.innerHTML=''; }
 
-  // ── Preview de nutrición calculada ──
+  // ── Lo que comes ──
   const tmpSocio={peso:qAnswers.peso,estatura:qAnswers.estatura,edad:qAnswers.edad,genero:qAnswers.genero,dias:qAnswers.dias,objetivo:qAnswers.objetivo,nivel:qAnswers.nivel,cintura:qAnswers.cintura||0,actividad:qAnswers.actividad||'',logs:{pesoCorporal:[]}};
   const nut=calcNutricion(tmpSocio);
+  const kP=nut.prot*4, kC=nut.carbs*4, kG=nut.grasas*9, kT=Math.max(1,kP+kC+kG);
+  const barra=(nm,g,k,c)=>`<div><span>${nm}</span><i style="--w:${Math.round(k/kT*100*1.6)}%;--c:${c}"></i><b>${g} g</b></div>`;
   document.getElementById('pv-nutri').innerHTML=`
-    <div style="font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:0;color:var(--mu);margin-bottom:10px;display:flex;align-items:center;gap:10px;">
-      TU PLAN DE NUTRICIÓN
-      <div style="flex:1;height:1px;background:var(--b)"></div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
-      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:var(--fs-2xl);color:var(--v)">${nut.kcal}</div><div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">KCAL/DÍA</div></div>
-      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:var(--fs-2xl);color:var(--n)">${nut.prot}g</div><div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">PROTEÍNA</div></div>
-      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:var(--fs-2xl);color:var(--g)">${nut.carbs}g</div><div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">CARBS</div></div>
-      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:var(--fs-2xl);color:var(--p)">${nut.grasas}g</div><div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">GRASAS</div></div>
-    </div>
-    <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);margin-top:7px;">Mifflin-St Jeor · BMR ${nut.bmr} kcal × ${nut.factor} actividad = ${nut.tdee} kcal · ${nut.ajusteTxt}</div>
-  `;
+    <div class="pv-sec"><h3>Lo que comes</h3><small>al día</small></div>
+    <div class="pv-nut">
+      <div class="pv-kcal"><b>${Number(nut.kcal).toLocaleString('es-MX')}</b><span>kcal</span></div>
+      <div class="pv-mac">${barra('Proteína',nut.prot,kP,'var(--q-ink)')}${barra('Carbos',nut.carbs,kC,'var(--cine-acc)')}${barra('Grasas',nut.grasas,kG,'color-mix(in srgb,var(--q-ink) 45%,transparent)')}</div>
+      <details class="pv-como"><summary>¿Cómo se calcula?</summary><p>Mifflin-St Jeor: metabolismo basal ${nut.bmr} kcal × ${nut.factor} de actividad = ${nut.tdee} kcal. ${esc(nut.ajusteTxt||'')}.</p></details>
+    </div>`;
 
-  const chipColors={
-    verde:'background:color-mix(in srgb, var(--v) 10%, transparent);color:var(--v);border:1px solid color-mix(in srgb, var(--v) 20%, transparent)',
-    neon:'background:color-mix(in srgb,var(--n) 10%,transparent);color:var(--n);border:1px solid color-mix(in srgb,var(--n) 20%,transparent)',
-    gold:'background:color-mix(in srgb,var(--g) 10%,transparent);color:var(--g);border:1px solid color-mix(in srgb,var(--g) 20%,transparent)',
-    red:'background:color-mix(in srgb,var(--r) 10%,transparent);color:var(--r);border:1px solid color-mix(in srgb,var(--r) 20%,transparent)',
-    hombro:'background:color-mix(in srgb,var(--p) 10%,transparent);color:#b464ff;border:1px solid color-mix(in srgb,var(--p) 20%,transparent)',
-    descanso:'background:color-mix(in srgb,var(--tx) 4%,transparent);color:var(--mu);border:1px solid color-mix(in srgb,var(--tx) 7%,transparent)',
-  };
+  // ── Tu semana ──
   const cont=document.getElementById('pv-semana');
-  cont.innerHTML='';
-  rutina.semana.forEach(dia=>{
-    const cc=chipColors[dia.color]||chipColors.verde;
+  cont.innerHTML=rutina.semana.map((dia,di)=>{
     const isRest=!dia.ejercicios||dia.ejercicios.length===0;
-    const ejHTML=isRest
-      ? `<div style="padding:8px 14px 10px;font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">Recuperación activa · descanso</div>`
-      : dia.ejercicios.map((e,ei)=>`
-          <div style="display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start;padding:8px 10px;background:var(--in-bg2);border-radius:7px;margin-bottom:5px;">
-            <div style="font-family:var(--fd);font-size:var(--fs-base);color:var(--v)">${String(ei+1).padStart(2,'0')}</div>
-            <div>
-              <div style="font-size:var(--fs-xs);font-weight:600">${esc(e.nm||e.nombre)}</div>
-              <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">${esc(rxTexto(e,qAnswers).sr)} · ${esc(rxTexto(e,qAnswers).carga)}</div>
-              <div style="font-size:var(--fs-xs);color:var(--v);margin-top:2px">${e.ms||e.musculo||''}${e.descanso?' · descanso '+esc(e.descanso):''}</div>
-              ${e.metodo?`<div style="font-size:var(--fs-xs);margin-top:3px;color:var(--p)">${e.grupo?'<b>'+esc(e.grupo)+'</b> · ':''}⚡ ${esc(e.metodo.nm)}${e.metodo.detalle?' — '+esc(e.metodo.detalle):''}</div>`:''}
-              ${(e.alternativas||[]).length?`<div style="font-size:var(--fs-xs);margin-top:3px;color:var(--mu)">⇄ Si está ocupado: ${e.alternativas.map(a=>esc(a.nm)).join(' · ')}</div>`:''}
-              ${e.tip?`<div style="font-size:var(--fs-xs);color:var(--n);margin-top:4px;font-family:var(--fb);line-height:1.5;padding:6px 8px;background:color-mix(in srgb,var(--n) 4%,transparent);border-radius:5px;border:1px solid color-mix(in srgb,var(--n) 18%,transparent)">💡 ${e.tip}</div>`:''}
-            </div>
-          </div>`).join('');
-    cont.innerHTML+=`
-      <div style="background:var(--gl);border:1px solid var(--b);border-radius:11px;overflow:hidden;">
-        <div style="display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:9px;padding:11px 14px;min-height:48px;cursor:pointer;"
-             onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
-          <div style="font-family:var(--fd);font-size:var(--fs-xl);color:var(--mu)">${dia.dia.substring(0,3)}</div>
-          <div>
-            <div style="font-size:var(--fs-xs);font-weight:600">${dia.tipo}</div>
-            <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">${isRest?'Descanso':dia.ejercicios.length+' ejercicios'}</div>
-          </div>
-          ${isRest?'':`<div class="chip" style="${cc}">Ver</div>`}
-        </div>
-        <div style="display:none;padding:0 10px 8px;">${ejHTML}</div>
-      </div>`;
-  });
+    const mus=isRest?[]:pvMusculos(dia), n=isRest?0:dia.ejercicios.length;
+    const ejHTML=isRest?'':dia.ejercicios.map((e,ei)=>{ const rx=rxTexto(e,qAnswers); return `<li><span class="pv-en">${String(ei+1).padStart(2,'0')}</span><div><b>${esc(e.nm||e.nombre)}</b><small>${esc(rx.sr)} · ${esc(rx.carga)}${e.descanso?' · descanso '+esc(e.descanso):''}</small>${e.metodo?`<small class="pv-met">${e.grupo?esc(e.grupo)+' · ':''}${esc(e.metodo.nm)}${e.metodo.detalle?' — '+esc(e.metodo.detalle):''}</small>`:''}${(e.alternativas||[]).length?`<small>Si está ocupado: ${e.alternativas.map(a=>esc(a.nm)).join(' · ')}</small>`:''}${e.tip?`<small class="pv-tip">${esc(String(e.tip).replace(/<[^>]*>/g,''))}</small>`:''}</div></li>`; }).join('');
+    return `<div class="pv-day${isRest?' rest':''}">
+      <button type="button" class="pv-day-h" ${isRest?'disabled':`aria-expanded="false" aria-controls="pv-d${di}" onclick="pvDiaAbrir(this)"`}>
+        <span class="pv-dph">${pic(basesSesion(isRest?'descanso':dia.tipo),iconoTipo(isRest?'descanso':dia.tipo),'fill')}<span>${esc(String(dia.dia||'').substring(0,3).toUpperCase())}</span></span>
+        <span class="pv-dt"><b>${esc(isRest?'Descanso':dia.tipo)}</b><small>${isRest?'Recuperar también es entrenar':n+' ejercicio'+(n===1?'':'s')+' · '+pvMinutos(dia)+' min'}</small>${mus.length?`<span class="pv-mus">${mus.map(m=>`<em>${esc(m)}</em>`).join('')}</span>`:''}</span>
+        ${isRest?'':ico('chev')}
+      </button>
+      ${isRest?'':`<ol class="pv-ej" id="pv-d${di}">${ejHTML}</ol>`}
+    </div>`;
+  }).join('');
 }
 
 // ── Confirmar: el plan se guarda en la cuenta del cliente (/socios/<uid>) ──

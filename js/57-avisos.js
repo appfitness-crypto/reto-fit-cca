@@ -14,7 +14,14 @@ const AVISO_TIPOS={
 };
 const AVISOS_VISTOS_LS='avisos_cerrados_v1';
 
-function avisosTodos(){ const a=(DB.config&&DB.config.avisos)||{}; return Object.keys(a).map(id=>Object.assign({id},a[id])).filter(x=>x&&x.titulo); }
+function avisosClub(){ const a=(DB.config&&DB.config.avisos)||{}; return Object.keys(a).map(id=>Object.assign({id},a[id])).filter(x=>x&&x.titulo); }
+// Los del director (todos) + los del entrenador del socio (solo su grupo: js/61-reparto.js)
+function avisosTodos(){
+  const s=typeof activeSocio!=='undefined'?activeSocio:null;
+  const g=(s && s.entrenadorId && typeof avisosDeGrupo==='function') ? avisosDeGrupo(s.entrenadorId) : [];
+  return avisosClub().concat(g);
+}
+function avisoGrupoMio(){ return (typeof staffRol!=='undefined' && staffRol!=='coordinador' && staffActivoEntId) ? staffActivoEntId : ''; }
 function avisoVigente(a,hoy){ hoy=hoy||fechaISO(new Date()); return (!a.desde||a.desde<=hoy) && (!a.hasta||a.hasta>=hoy); }
 function avisosActivos(){
   const hoy=fechaISO(new Date()), orden={importante:0,clase:1,aviso:2};
@@ -45,7 +52,7 @@ function avisosPintar(){
   const a=lista[0], t=AVISO_TIPOS[a.tipo]||AVISO_TIPOS.aviso, m=avisoMascota(), linea=avisoCuandoTxt(a)||a.texto||'';
   box.innerHTML=`<button type="button" class="av-m av-m-${esc(a.tipo||'aviso')}" onclick="avisoAbrir('${esc(a.id)}')" aria-label="${esc(t.nm)}: ${esc(a.titulo)}. Toca para ver el aviso.">
     <span class="av-m-pet${m?'':' sin'}" aria-hidden="true">${m?m.img:ico(t.ic)}</span>
-    <span class="av-m-b"><span class="av-m-k"><i></i>${m?esc(m.nombre)+' te avisa · ':''}${esc(t.nm.toLowerCase())}</span><b>${esc(a.titulo)}</b>${linea?`<small>${esc(linea)}</small>`:''}</span>
+    <span class="av-m-b"><span class="av-m-k"><i></i>${a.grupo?esc(a.autor||'Tu entrenador')+' · tu grupo':(m?esc(m.nombre)+' te avisa · ':'')+esc(t.nm.toLowerCase())}</span><b>${esc(a.titulo)}</b>${linea?`<small>${esc(linea)}</small>`:''}</span>
     ${a.img?`<span class="av-m-th" aria-hidden="true"><img src="${esc(a.img)}" alt="" decoding="async"></span>`:''}
     ${lista.length>1?`<span class="av-m-n">+${lista.length-1} ${lista.length===2?'aviso':'avisos'}</span>`:''}
   </button>`;
@@ -62,7 +69,7 @@ function avisoAbrir(id){
     <div class="av-ban av-m-${esc(a.tipo||'aviso')}${a.img?'':' sin-img'}">
       ${a.img?`<img class="av-ban-img" src="${esc(a.img)}" alt="">`:`<span class="av-ban-ic" aria-hidden="true">${ico(t.ic)}</span>`}
       ${m?`<span class="av-ban-pet" aria-hidden="true">${m.img}</span>`:''}
-      <div class="av-ban-t"><span>${ico(t.ic)}${esc(t.nm)}</span><h2 id="av-ov-t">${esc(a.titulo)}</h2></div>
+      <div class="av-ban-t"><span>${ico(t.ic)}${esc(t.nm)}${a.grupo?' · de '+esc(a.autor||'tu entrenador'):''}</span><h2 id="av-ov-t">${esc(a.titulo)}</h2></div>
     </div>
     ${dat.length?`<div class="av-dat">${dat.map(d=>`<div>${ico(d[0])}<b>${esc(d[1])}</b></div>`).join('')}</div>`:''}
     ${a.texto?`<p class="av-msg">${esc(a.texto)}</p>`:''}
@@ -99,17 +106,19 @@ async function avisoImg(inp){
   catch(e){ showToast('No se pudo usar esa imagen: '+(e&&e.message||'')); }
 }
 function abrirAvisos(){
-  if(staffRol!=='coordinador'){ showToast('Los avisos los publica el director'); return; }
+  const grupo=avisoGrupoMio();
+  if(staffRol!=='coordinador' && !grupo){ showToast('Los avisos los publica el director'); return; }
+  if(grupo && typeof avisosGrupoMios==='function') avisosGrupoMios();
   staffActivoId=null; if(typeof staffRenderList==='function') staffRenderList();
   if(typeof staffVista==='function') staffVista('detalle');
   const hoy=fechaISO(new Date()), en7=fechaISO(new Date(Date.now()+7*86400000));
-  const todos=avisosTodos().sort((x,y)=>String(y.creado||'').localeCompare(String(x.creado||'')));
+  const todos=(grupo?avisosDeGrupo(grupo):avisosClub()).sort((x,y)=>String(y.creado||'').localeCompare(String(x.creado||'')));
   const estado=a=>{ if(a.desde&&a.desde>hoy) return ['Programado','tr-t-ok']; if(a.hasta&&a.hasta<hoy) return ['Vencido','']; return ['Visible ahora','tr-t-ok']; };
   document.getElementById('staff-content').innerHTML=`
-  <div class="tr-wrap">
-    <div><h2 class="tr-h">Avisos</h2><p class="tr-p">Lo que publiques aquí sale hasta arriba en la app de todos los socios, en todas sus pestañas.</p></div>
+  <div class="tr-wrap${grupo?' av-grupo':''}">
+    ${grupo?avisoGrupoCabeza(grupo):`<div><h2 class="tr-h">Avisos</h2><p class="tr-p">Lo que publiques aquí sale hasta arriba en la app de todos los socios, en todas sus pestañas.</p></div>`}
     <div class="tr-card av-form">
-      <h3 class="tr-h3">Nuevo aviso</h3>
+      <h3 class="tr-h3">${grupo?'Aviso a mi grupo':'Nuevo aviso'}</h3>
       <div class="av-tipos" role="radiogroup" aria-label="Tipo de aviso">
         ${Object.entries(AVISO_TIPOS).map(([k,t])=>`<button type="button" role="radio" aria-checked="${k===avisoTipoSel}" class="tr-tab${k===avisoTipoSel?' on':''}" onclick="avisoTipoSel='${k}';document.querySelectorAll('.av-tipos .tr-tab').forEach(b=>{const on=b.dataset.k===avisoTipoSel;b.classList.toggle('on',on);b.setAttribute('aria-checked',on)})" data-k="${k}">${ico(t.ic)} ${esc(t.nm)}</button>`).join('')}
       </div>
@@ -129,7 +138,8 @@ function abrirAvisos(){
       </div>
       <p class="tr-mu">"Importante" no se puede cerrar: se queda visible hasta la fecha final. Los demás el socio los puede cerrar.</p>
       <div class="av-err" id="av-err" role="alert"></div>
-      <button type="button" class="tb-btn av-pub" onclick="avisoPublicar()">📣 Publicar aviso</button>
+      ${grupo?`<div class="av-to">${ico('user')}<span>Le llega a <b>tus ${avisoGrupoN()} atleta${avisoGrupoN()===1?'':'s'}</b>, no a todo el gym.</span></div>`:''}
+      <button type="button" class="tb-btn av-pub" onclick="avisoPublicar()">📣 ${grupo?'Publicar a mi grupo':'Publicar aviso'}</button>
     </div>
     <div class="tr-card">
       <h3 class="tr-h3">Avisos publicados</h3>
@@ -153,22 +163,46 @@ function avisoPublicar(){
   const aviso={titulo, texto, tipo:avisoTipoSel, desde:desde||fechaISO(new Date()), hasta:hasta||'', creado:new Date().toISOString()};
   if(cuando) aviso.cuando=cuando; if(hora) aviso.hora=hora; if(lugar) aviso.lugar=lugar; if(avisoImgDraft) aviso.img=avisoImgDraft;
   avisoImgDraft='';
-  if(!DB.config) DB.config={};
-  if(!DB.config.avisos) DB.config.avisos={};
-  DB.config.avisos[id]=aviso; guardarLocal();
-  fbEncolar('/config/avisos/'+id,'set',aviso);
+  const grupo=avisoGrupoMio();
+  if(grupo){
+    const e=DB.entrenadores&&DB.entrenadores[grupo]; aviso.autor=(e&&e.nombre)||'';
+    if(!DB.avisosGrupo) DB.avisosGrupo={};
+    if(!DB.avisosGrupo[grupo]) DB.avisosGrupo[grupo]={};
+    DB.avisosGrupo[grupo][id]=aviso; guardarLocal();
+    fbEncolar('/avisosGrupo/'+grupo+'/'+id,'set',aviso);
+  } else {
+    if(!DB.config) DB.config={};
+    if(!DB.config.avisos) DB.config.avisos={};
+    DB.config.avisos[id]=aviso; guardarLocal();
+    fbEncolar('/config/avisos/'+id,'set',aviso);
+  }
   showToast('✓ Aviso publicado');
   avisoTipoSel='clase';
   abrirAvisos();
 }
 function avisoBorrar(id){
-  uiConfirm('¿Borrar este aviso? Deja de verse en la app de todos los socios.', ()=>{
-    if(DB.config&&DB.config.avisos) delete DB.config.avisos[id];
+  const grupo=avisoGrupoMio();
+  uiConfirm(grupo?'¿Borrar este aviso? Deja de verse en la app de tu grupo.':'¿Borrar este aviso? Deja de verse en la app de todos los socios.', ()=>{
+    if(grupo){ if(DB.avisosGrupo&&DB.avisosGrupo[grupo]) delete DB.avisosGrupo[grupo][id]; }
+    else if(DB.config&&DB.config.avisos) delete DB.config.avisos[id];
     guardarLocal();
-    if(fbListo) fbEncolar('/config/avisos/'+id,'remove');
+    if(fbListo) fbEncolar(grupo?'/avisosGrupo/'+grupo+'/'+id:'/config/avisos/'+id,'remove');
     showToast('Aviso borrado');
     abrirAvisos();
   });
+}
+
+// Cabeza del panel del entrenador: su grupo, cuántos son y su foto
+function avisoGrupoN(){ return (typeof sociosParaStaff==='function'?sociosParaStaff():[]).filter(x=>x && x.entrenadorId===staffActivoEntId).length; }
+function avisoGrupoCabeza(id){
+  const e=(DB.entrenadores&&DB.entrenadores[id])||{}, socios=(typeof sociosParaStaff==='function'?sociosParaStaff():[]).filter(x=>x && x.entrenadorId===id);
+  const n=socios.length, muestra=socios.slice(0,5);
+  return `<div class="rep-hero av-g-hero">
+    <label class="av-g-foto" title="Cambiar mi foto">${typeof entAvatarHTML==='function'?entAvatarHTML(Object.assign({id},e),'ent-av'):''}<input type="file" accept="image/*" hidden onchange="entFotoSubir('${esc(id)}',this)"><span>Mi foto</span></label>
+    <small>${esc(e.nombre||'')} · entrenador del reto</small><h2>${n} atleta${n===1?'':'s'}</h2>
+    <p>Solo ves y editas a tu grupo. Lo que publiques aquí solo les llega a ellos. Los avisos del director siguen llegando a todos.</p>
+    ${n?`<div class="av-g-stack" aria-hidden="true">${muestra.map(x=>`<span>${esc(entIniciales(x.nombre))}</span>`).join('')}${n>5?`<span class="mas">+${n-5}</span>`:''}</div>`:''}
+  </div>`;
 }
 
 // Se vuelven a pintar cuando llegan cambios de /config y cuando cambia el tablero del socio

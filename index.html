@@ -38,6 +38,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <link rel="stylesheet" href="css/tema-salvia.css">
 <link rel="stylesheet" href="css/tema-claro.css">
 <link rel="stylesheet" href="css/cine.css">
+<link rel="stylesheet" href="css/cuestionario.css">
 <!-- Red de seguridad: si la página abrió sin estilos o sin código (señal que se cortó a media actualización), se recarga una vez -->
 <script>window.addEventListener("load",function(){var ok=!!getComputedStyle(document.documentElement).getPropertyValue("--lime").trim()&&typeof showToast==="function";try{if(ok){sessionStorage.removeItem("recargaApp");}else if(!sessionStorage.getItem("recargaApp")){sessionStorage.setItem("recargaApp","1");location.reload();}}catch(e){}});</script>
 </head>
@@ -273,9 +274,9 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="q-title">¿Cuál es<br>tu objetivo?</div>
       <div class="q-sub">El reto evalúa 3 objetivos. Elige el tuyo; al tocarlo te explicamos de qué se trata.</div>
       <div class="opts s1 obj-opts">
-        <div class="opt" onclick="qSelObjetivo(this,'GANAR MÚSCULO')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-dumbbell"/></svg></div><div class="ol">Incremento de masa muscular</div><div class="os">Ganar músculo y fuerza</div></div>
-        <div class="opt" onclick="qSelObjetivo(this,'PERDER PESO')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-flame"/></svg></div><div class="ol">Bajar porcentaje de grasa</div><div class="os">Perder grasa sin perder músculo</div></div>
-        <div class="opt" onclick="qSelObjetivo(this,'RECOMPOSICIÓN CORPORAL')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg></div><div class="ol">Recomposición corporal</div><div class="os">Bajar grasa y ganar músculo a la vez</div></div>
+        <div class="opt opt-foto" onclick="qSelObjetivo(this,'GANAR MÚSCULO')"><img class="opt-ph" src="img/sesiones/torso.webp" alt="" style="object-position:50% 30%" decoding="async"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-dumbbell"/></svg></div><div class="ol">Incremento de masa muscular</div><div class="os">Ganar músculo y fuerza</div></div>
+        <div class="opt opt-foto" onclick="qSelObjetivo(this,'PERDER PESO')"><img class="opt-ph" src="img/sesiones/cardio.webp" alt="" style="object-position:60% 20%" decoding="async"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-flame"/></svg></div><div class="ol">Bajar porcentaje de grasa</div><div class="os">Perder grasa sin perder músculo</div></div>
+        <div class="opt opt-foto" onclick="qSelObjetivo(this,'RECOMPOSICIÓN CORPORAL')"><img class="opt-ph" src="img/sesiones/full.webp" alt="" style="object-position:70% 40%" decoding="async"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg></div><div class="ol">Recomposición corporal</div><div class="os">Bajar grasa y ganar músculo a la vez</div></div>
       </div>
       <div class="obj-desc" id="obj-desc" aria-live="polite"></div>
       <div class="nav-row"><div class="btn-prev" onclick="qPrev(2)">←</div><button class="btn-next" disabled id="qb2" onclick="qNext(2)">Continuar</button></div>
@@ -625,24 +626,9 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
     <!-- QT: elegir entrenador -->
     <div class="q-sc" id="qqT">
       <div class="q-tag">Último paso</div>
-      <div class="q-title">¿Tienes<br>entrenador?</div>
-      <div class="q-sub">Si un entrenador te dio su código, escríbelo: tu plan saldrá con su método y él lo podrá ajustar. Si no, la app arma y lleva tu plan.</div>
-      <div id="trainer-picker-list" style="margin-top:6px">
-        <div class="opt" id="qt-sin" onclick="qtElegir('sin')" style="padding:14px;border-radius:12px;margin-bottom:10px">
-          <div class="ol">No, que la app arme mi plan</div>
-          <div class="os">El sistema planifica y da seguimiento a tu entrenamiento.</div>
-        </div>
-        <div class="opt" id="qt-con" onclick="qtElegir('con')" style="padding:14px;border-radius:12px;margin-bottom:10px">
-          <div class="ol">Sí, tengo código de entrenador</div>
-          <div class="os">Ejemplo: ENT-4K7Q</div>
-        </div>
-        <div id="qt-codigo-wrap" style="display:none;margin-bottom:10px">
-          <input type="text" class="ti" id="qt-codigo" aria-label="Código de entrenador" placeholder="ENT-XXXX" maxlength="12" autocapitalize="characters" autocomplete="off" oninput="qtCodigoCambio()">
-          <button type="button" class="tb-btn" style="margin-top:8px" onclick="qtValidarCodigo()">Validar código</button>
-          <div id="qt-codigo-res" style="margin-top:8px;font-size:var(--fs-xs)"></div>
-        </div>
-      </div>
-      <div class="nav-row"><div class="btn-prev" onclick="qTrainerBack()">←</div><button class="btn-next" disabled id="qbT" onclick="qConfirmTrainerAndGenerate()">Generar mi plan ⚡</button></div>
+      <div class="q-title">Tu entrenador<br>del reto</div>
+      <div id="qt-carrusel" class="qt-car" aria-live="polite"></div>
+      <div class="nav-row"><div class="btn-prev" onclick="qTrainerBack()">←</div><button class="btn-next" disabled id="qbT" onclick="qConfirmTrainerAndGenerate()">Generar mi plan</button></div>
     </div>
 
   </div>
@@ -659,38 +645,16 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 
 <!-- ═══ S4: PREVIEW RUTINA ═══ -->
 <div class="sc" id="s-preview">
-  <div class="tb" style="position:sticky;top:0;z-index:100;">
-    <div class="tb-logo"><div class="lm"><video autoplay muted loop playsinline disablepictureinpicture poster="icons/icon-192.png" data-gym-label aria-label="Gimnasio"><source src="video/logo-animado.mp4" type="video/mp4"><source src="video/logo-animado.webm" type="video/webm"></video></div><div class="ln">Tu plan</div></div>
-    <div class="tb-r">
-      <div class="tb-btn" style="color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent);background:var(--gl2)" onclick="pvConfirmar()" class="tb-btn priv-btn">Confirmar y guardar ✓</div>
-    </div>
-  </div>
-  <div style="max-width:680px;margin:0 auto;padding:24px 20px 80px;width:100%;">
-    <div style="background:var(--gl2);border:1px solid var(--b);border-radius:14px;padding:20px;margin-bottom:14px;display:flex;gap:16px;align-items:flex-start;">
-      <div style="font-size:var(--fs-6xl)" id="pv-icon">💪</div>
-      <div>
-        <div style="font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--v);margin-bottom:3px">PLAN GENERADO</div>
-        <div style="font-family:var(--fd);font-size:var(--fs-5xl);line-height:1" id="pv-nombre">—</div>
-        <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);margin-top:3px" id="pv-meta">—</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px" id="pv-badges"></div>
-      </div>
-    </div>
-    <div style="padding:12px 16px;background:color-mix(in srgb,var(--n) 4%,transparent);border:1px solid color-mix(in srgb,var(--n) 15%,transparent);border-radius:10px;margin-bottom:14px;font-size:var(--fs-2xs);color:var(--n);font-family:var(--fb);line-height:1.6" id="pv-nota"></div>
+  <div class="pv-c">
+    <div class="pv-hero" id="pv-hero"></div>
+    <div class="pv-body">
+    <div id="pv-coach"></div>
+    <p class="pv-nota" id="pv-nota"></p>
     <div id="pv-metodo" style="display:none;margin-bottom:14px"></div>
-    <div style="padding:12px 16px;background:color-mix(in srgb,var(--g) 6%,transparent);border:1px solid color-mix(in srgb,var(--g) 20%,transparent);border-radius:10px;margin-bottom:14px;font-size:var(--fs-xs);color:var(--tx);font-family:var(--fb);line-height:1.7;display:none" id="pv-consejos"></div>
-    <div id="pv-nutri" style="margin-bottom:20px;"></div>
-    <div style="font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:0;color:var(--mu);margin-bottom:10px;display:flex;align-items:center;gap:10px;">
-      PLAN SEMANAL
-      <div style="flex:1;height:1px;background:var(--b)"></div>
-    </div>
-    <div id="pv-semana" style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;"></div>
-    <div style="padding:14px 16px;background:color-mix(in srgb,var(--g) 5%,transparent);border:1px solid color-mix(in srgb,var(--g) 20%,transparent);border-radius:10px;display:flex;gap:12px;margin-bottom:20px;">
-      <div style="font-size:var(--fs-2xl)">👨‍💼</div>
-      <div style="font-size:var(--fs-2xs);color:var(--mu);font-family:var(--fb);line-height:1.6">
-        <span style="color:var(--g)">PENDIENTE DE REVISIÓN</span><br>
-        Tu entrenador revisará este plan y hará ajustes personalizados antes de activarlo.
-      </div>
-    </div>
+    <div class="pv-cons" id="pv-consejos" style="display:none"></div>
+    <div id="pv-nutri"></div>
+    <div class="pv-sec"><h3>Tu semana</h3><small>Toca un día para ver sus ejercicios</small></div>
+    <div id="pv-semana" class="pv-days"></div>
     <div class="pv-ajuste" id="pv-ajuste">
       <div class="pv-aj-t">¿Este plan va con lo que tenías en mente?</div>
       <div class="pv-aj-s">Revisa tu semana. Si no es lo que buscabas, regresamos a tu objetivo y lo armamos de nuevo con tus mismas respuestas.</div>
@@ -707,6 +671,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       </label>
     </div>
     <button class="priv-btn" onclick="pvConfirmar()" style="width:100%;height:50px;background:var(--grad);border:none;border-radius:11px;font-family:var(--fd);font-size:var(--fs-2xl);letter-spacing:.02em;color:var(--btn-tx);cursor:pointer;">CONFIRMAR MI PLAN →</button>
+    </div>
     </div>
   </div>
 </div>
@@ -836,6 +801,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="tb-btn" id="btn-conocimiento" onclick="abrirConocimiento()" style="color:var(--p);border-color:color-mix(in srgb,var(--p) 25%,transparent)">📚 Conocimiento</div>
       <div class="tb-btn" id="btn-tablero" onclick="abrirTableroReto()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🏆 Tablero del reto</div>
       <div class="tb-btn" id="btn-avisos" onclick="abrirAvisos()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">📣 Avisos</div>
+      <div class="tb-btn" id="btn-reparto" onclick="abrirReparto()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🔁 Reparto de entrenadores</div>
       <div class="tb-btn" id="btn-patro" onclick="abrirPatrocinadores()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🤝 Patrocinadores</div>
       <div class="tb-btn" id="btn-demo-cargar" onclick="demoRetoCargar()" style="display:none">🧪 Cargar 15 socios de prueba</div>
       <div class="tb-btn" id="btn-demo-borrar" onclick="demoRetoBorrar()" style="display:none;color:var(--r)">🗑 Borrar socios de prueba</div>
@@ -953,6 +919,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <script defer src="js/58-mascotas.js"></script>
 <script defer src="js/59-cine.js"></script>
 <script defer src="js/60-patrocinadores.js"></script>
+<script defer src="js/61-reparto.js"></script>
 <script defer src="js/99-arranque.js"></script>
 
 <!-- ═══ MODAL AVISO DE PRIVACIDAD ═══ -->
