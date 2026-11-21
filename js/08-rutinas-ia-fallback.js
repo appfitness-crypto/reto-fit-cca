@@ -1558,12 +1558,12 @@ function refreshDash(){
 }
 
 // Título gigante de Inicio en dos líneas: "Hombro + Trapecio" → "Hombro" / "+Trapecio"; si no, parte las palabras a la mitad
-function cineLineas(t){
+function cineLineas(t,fr){
   let ls;
   const m=String(t).split(/\s*\+\s*/);
   if(m.length>1) ls=[m[0], '<span class="ci-plus">+</span>'+m.slice(1).join(' + ')];
   else { const w=String(t).split(/\s+/); if(w.length<2) ls=[t]; else { let best=1,dif=1e9; for(let i=1;i<w.length;i++){ const d=Math.abs(w.slice(0,i).join(' ').length-w.slice(i).join(' ').length); if(d<dif){dif=d;best=i;} } ls=[w.slice(0,best).join(' '), w.slice(best).join(' ')]; } }
-  return ls.map((l,i)=>`<span class="ci-ln"><span data-fit="0.70" style="--i:${i}">${l}</span></span>`).join('');
+  return ls.map((l,i)=>`<span class="ci-ln"><span data-fit="${fr||0.70}" style="--i:${i}">${l}</span></span>`).join('');
 }
 
 // ── RUTINA (Mi plan) ──
