@@ -734,3 +734,8 @@ html[data-theme="light"] .en-strip{padding:8px;border-radius:22px;}
 html[data-theme="light"] .en-dia.rest,html[data-theme="light"] .wk.rest{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 1.5px rgba(0,41,65,.18);}
 html[data-theme="light"] .ci-semana{background:var(--cl-glass);box-shadow:var(--cl-glass-sh);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);}
 html[data-theme="light"] .bnav{background:linear-gradient(160deg,rgba(255,255,255,.86),rgba(255,255,255,.66));}
+/* Insignias del club (img/medallas): más grandes en la tarjeta del reto, con su sombra */
+html[data-theme] .reto-banner .rb-medalla{display:grid;place-items:center;}
+html[data-theme] .reto-banner .rb-medalla .medalla{width:86px;height:86px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.4));}
+.medalla-img{object-fit:contain;}
+html[data-theme="light"] .btn-go.soft{background:var(--cl-glass);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);box-shadow:var(--cl-glass-sh);border-color:transparent;color:#002941;}
