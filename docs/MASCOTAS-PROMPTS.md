@@ -67,3 +67,18 @@ Idea del club: un gorila **forjado en hierro**, más imponente que tierno. Para 
 Si sale demasiado tierno, pídele: "más imponente: hombros más anchos, mirada más seria, menos cabeza grande de bebé desde la etapa 2". Si sale como robot: "es hierro forjado, no robot: sin remaches, sin placas, sin casco".
 
 En la app quedaría en el estilo **Enérgicos**, con la frase "Fuerza pesada: nada lo detiene" y color grafito.
+
+## Grupo "Fuertes" (estilo del Gorila): León y Rinoceronte
+
+El Gorila salió con un estilo propio: tipo película animada 3D, musculoso, playera sin mangas azul petróleo con verde lima y la "C" del club, tenis y vendas verdes. La idea es formar un grupo nuevo, **Fuertes**, con 3 mascotas de ese estilo: Gorila, León y Rinoceronte.
+
+Pega en un chat nuevo de ChatGPT **el Estilo Fuertes** y debajo **la línea del animal**. Si puedes, adjunta la imagen del gorila y escribe "mismo estilo que esta imagen".
+
+### Estilo Fuertes (igual para los dos)
+> Ilustración 3D estilo película animada de alta calidad, personaje original musculoso y carismático, fuerte e imponente pero amigable, ojos ámbar expresivos. Ropa deportiva del club: playera sin mangas azul petróleo (#145678) con paneles verde lima, una "C" redondeada verde lima en el pecho, shorts azul petróleo con ribete verde lima, tenis azul petróleo con agujetas verde lima y vendas verde lima en las muñecas. Iluminación de estudio cálida con contraluz suave. Imagen horizontal muy ancha (proporción 5:1) con **5 figuras del mismo personaje en una sola fila**, de izquierda a derecha, mostrando su evolución: 1) Cría, 2) Joven, 3) Entrenado, 4) Atleta, 5) Leyenda (la más grande e imponente, con ribetes dorados en la ropa, un pequeño escudo verde en el pecho sin letras y una medalla dorada). Cada figura ocupa un cuadro del mismo tamaño, de cuerpo completo, sin tocarse con las demás. Fondo liso oscuro casi negro, sin escenario. **Sin texto, sin letras (salvo la C del pecho), sin números y sin marcas de agua.** Diseño original que no se parezca a personajes de marcas, películas o videojuegos.
+
+### León (`leon`) · Box fitness
+> León con melena café dorado que crece en cada etapa. 1) Cachorro sentado, sin melena, con guantes de box pequeños; 2) joven con melena corta, golpeando unas manoplas que sostiene en el aire; 3) en guardia de box con guantes verde lima, saltando la cuerda; 4) atleta enorme lanzando un golpe potente a un costal de box colgante; 5) Leyenda con melena grande e imponente, de pie con los guantes colgados al hombro, mirada serena de campeón.
+
+### Rinoceronte (`rinoceronte`) · Pierna y potencia
+> Rinoceronte gris pizarra con piel gruesa y un cuerno redondeado y amigable. 1) Cría sentada abrazando un balón medicinal pequeño; 2) joven haciendo sentadilla con una mancuerna al pecho; 3) entrenado azotando un balón medicinal contra el piso; 4) atleta enorme haciendo sentadilla con barra olímpica cargada con discos; 5) Leyenda erguido y macizo, con las manos en la cintura, pose firme e imponente.
