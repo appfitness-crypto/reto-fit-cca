@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1D2B27">
+<title>Reto Fit CCA · Portada con patrocinadores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,700;0,800;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Tres formas de que los patrocinadores vivan en la portada sin quitarle la pantalla a la foto del "12".
+   Tema Salvia (el de la app). Cada teléfono es interactivo: toca, desliza y abre la promoción. */
+:root{--fd:'Kanit','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --top:#DCE6E2;--deep:#1D2B27;--deep2:#2C403A;--acc:#F07A2B;--acc2:#FFB07A;--on:#EEF4F1;--on2:rgba(226,236,232,.78);--line:rgba(238,244,241,.16);
+  --expo:cubic-bezier(.16,1,.3,1);--out:cubic-bezier(.23,1,.32,1)}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#C9D7D2}
+body{margin:0;font-family:var(--fb);font-size:15px;line-height:1.45;color:#17231F;background:linear-gradient(172deg,#E6EEEB,#B9CBC4);min-height:100vh;-webkit-font-smoothing:antialiased}
+::selection{background:var(--acc);color:#fff}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px;border-radius:12px}
+img{display:block}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pg{max-width:1360px;margin:0 auto;padding:44px 32px 96px}
+.pg-h{max-width:880px;margin:0 auto 40px}
+.pg-h h1{font:italic 800 clamp(34px,4.6vw,60px)/.92 var(--fd);text-transform:uppercase;margin:0 0 14px;color:var(--deep);text-wrap:balance}
+.pg-h p{margin:0;max-width:64ch;color:#4A5954;font-size:16.5px}
+.pg-h p b{color:#17231F}
+.rail{display:grid;grid-template-columns:repeat(3,410px);gap:56px 28px;justify-content:center}
+@media (max-width:1320px){.rail{grid-template-columns:repeat(2,410px)}}
+@media (max-width:899px){.rail{grid-template-columns:410px}}
+.shot{display:flex;flex-direction:column;align-items:center}
+.shot h2{width:390px;margin:0 0 6px;font:italic 800 24px/1 var(--fd);text-transform:uppercase;color:var(--deep)}
+.shot .lead{width:390px;margin:0 0 18px;color:#4A5954;font-size:14.5px}
+.notes{width:390px;margin:22px 0 0;padding:0;list-style:none;display:grid;gap:9px}
+.notes li{display:grid;grid-template-columns:20px 1fr;gap:10px;font-size:14.5px;color:#4A5954}
+.notes li .ico{width:18px;height:18px;margin-top:2px}
+.notes .si{color:#2F7A4A}.notes .no{color:#B4543A}
+.notes b{color:#17231F}
+.rec{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;padding:6px 12px;border-radius:99px;background:var(--deep);color:#fff;font:700 12.5px/1 var(--fb)}
+.rec i{width:7px;height:7px;border-radius:50%;background:var(--acc)}
+
+/* ── Teléfono ── */
+.phone{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;isolation:isolate;box-shadow:0 0 0 10px #0E1714,0 0 0 11px #3A4A45,0 46px 80px -34px rgba(17,26,23,.55);transform:translateZ(0);background:var(--deep)}
+.scr{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;color:var(--on)}
+.scr::-webkit-scrollbar{display:none}
+.sb{position:absolute;top:0;left:0;right:0;height:46px;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 40px;font:600 16px/1 var(--fb);color:#17231F;pointer-events:none}
+.sb svg{height:13px;width:auto}
+.hero{position:relative;height:844px;flex:none;background:linear-gradient(180deg,var(--top) 0%,var(--top) 16%,var(--deep) 64%)}
+.hero .ph{position:absolute;left:0;top:70px;width:100%;height:calc(100% - 70px);object-fit:cover;object-position:46% 0}
+.hero .bg{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 84px);mask-image:linear-gradient(180deg,transparent 0,#000 84px)}
+.hero .num{position:absolute;left:0;right:0;top:54px;margin:0;text-align:center;color:var(--acc);font:italic 800 330px/.74 var(--fd);letter-spacing:-.06em;padding-right:22px}
+.hero .ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(29,43,39,.82) 47%,var(--deep) 57%)}
+.top{position:absolute;top:48px;left:16px;right:16px;z-index:5;display:flex;align-items:center;gap:10px}
+.top img{width:44px;height:44px;border-radius:13px}
+.top b{font:italic 800 17px/1 var(--fd);text-transform:uppercase;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.25)}
+.tx{position:absolute;left:20px;right:20px;bottom:24px;z-index:5}
+.tx h3{margin:0 0 10px;font:italic 800 34px/.98 var(--fd);text-transform:uppercase;color:#fff}
+.tx p{margin:0 0 18px;color:var(--on2)}
+.pri{display:flex;align-items:center;gap:14px;width:100%;min-height:66px;padding:8px 8px 8px 20px;border-radius:22px;background:#fff;color:#17231F;text-align:left;box-shadow:0 14px 30px -14px rgba(0,0,0,.6)}
+.pri>span:first-child{flex:1}.pri b{display:block;font:700 20px/1.1 var(--fd)}.pri small{display:block;font-size:13px;color:#4A5954;margin-top:2px}
+.disc{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--deep);color:#fff;flex:none}
+.sec{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:54px;margin-top:10px;border-radius:22px;box-shadow:inset 0 0 0 1.5px rgba(238,244,241,.3);font:700 17px/1 var(--fd);color:#fff}
+.stf{display:block;width:100%;min-height:42px;margin-top:4px;color:var(--on2);font-size:13.5px}
+
+/* ── A · Presentado por: el patrocinador firma la portada, arriba a la derecha ── */
+.firma{position:absolute;top:46px;right:14px;z-index:6;display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:16px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 8px 20px -10px rgba(0,0,0,.4);color:#17231F;text-align:left}
+.firma img{width:40px;height:40px;border-radius:11px;object-fit:cover}
+.firma small{display:block;font:600 10.5px/1.1 var(--fb);color:#56635E}
+.firma b{display:block;font:700 13.5px/1.15 var(--fd);max-width:118px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.firma .fx{display:grid;transition:opacity .35s,transform .45s var(--expo)}
+.firma.cambia .fx{opacity:0;transform:translateY(6px)}
+
+/* ── B · Cinta: una línea entre los botones y el borde, dentro de la misma pantalla ── */
+.tx.b{bottom:18px}
+.cinta{display:flex;align-items:center;gap:10px;width:100%;margin-top:12px;padding:6px 6px 6px 6px;border-radius:18px;background:rgba(238,244,241,.08);box-shadow:inset 0 0 0 1px var(--line);text-align:left;color:var(--on)}
+.cinta .th{position:relative;width:46px;height:46px;border-radius:12px;overflow:hidden;flex:none}
+.cinta .th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .5s}
+.cinta .t{flex:1;min-width:0;display:grid}
+.cinta small{font:600 11.5px/1.2 var(--fb);color:var(--acc2)}
+.cinta b{font:700 14px/1.2 var(--fd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .35s}
+.cinta .dots{display:flex;gap:4px;padding-right:6px}
+.cinta .dots i{width:5px;height:5px;border-radius:50%;background:rgba(238,244,241,.3);transition:width .3s,background .3s}
+.cinta .dots i.on{width:14px;border-radius:9px;background:var(--acc)}
+.cinta.cambia b{opacity:0}
+
+/* ── C · Asoma abajo y se desliza (ya está en la app, con la cinta que asoma) ── */
+.peek{position:absolute;left:0;right:0;bottom:0;z-index:20;padding:10px 16px 18px;background:linear-gradient(180deg,rgba(29,43,39,0),var(--deep) 30%)}
+.peek-b{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:40px;color:var(--on2);font-size:13px;font-weight:600}
+.peek-b .row{display:flex}
+.peek-b .row img{width:28px;height:28px;border-radius:8px;object-fit:cover;margin-left:-6px;box-shadow:0 0 0 2px var(--deep)}
+.peek-b .row img:first-child{margin-left:0}
+.peek-b .ico{width:16px;height:16px;animation:baja 1.8s ease-in-out infinite}
+@keyframes baja{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+.tx.c{bottom:76px}
+.abajo{padding:18px 0 40px}
+.abajo h4{display:flex;align-items:center;gap:10px;margin:0 20px 10px;font:600 13px/1 var(--fb);color:var(--on2)}
+.abajo h4::after{content:"";flex:1;height:1px;background:var(--line)}
+.car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 20px 8px;scrollbar-width:none}
+.car::-webkit-scrollbar{display:none}
+.card{flex:0 0 calc(50% - 5px);scroll-snap-align:start;border-radius:22px;overflow:hidden;background:#fff;color:#17231F;text-align:left;box-shadow:0 14px 26px -16px rgba(0,0,0,.55)}
+.card .m{aspect-ratio:1/1;overflow:hidden;background:#11161C}
+.card .m img{width:100%;height:100%;object-fit:cover}
+.card .t{padding:10px 12px 12px}
+.card b{display:block;font:700 15px/1.2 var(--fd)}
+.card small{font-size:12.5px;color:#56635E}
+
+/* ── Hoja de promoción (común a las 3) ── */
+.hoja{position:absolute;inset:0;z-index:50;display:flex;align-items:flex-end;background:rgba(10,18,15,.55);opacity:0;pointer-events:none;transition:opacity .25s var(--out)}
+.hoja.on{opacity:1;pointer-events:auto}
+.hoja-in{width:100%;padding:10px 16px 26px;border-radius:30px 30px 0 0;background:#F4F7F5;color:#17231F;transform:translateY(40px);transition:transform .4s var(--expo)}
+.hoja.on .hoja-in{transform:none}
+.grab{display:block;width:44px;height:5px;border-radius:9px;background:rgba(23,35,31,.15);margin:0 auto 10px}
+.hoja .vis{position:relative;display:grid;place-items:center;border-radius:22px;overflow:hidden;background:#11161C;height:300px}
+.hoja .vis .blur{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(20px) brightness(.55);transform:scale(1.2)}
+.hoja .vis .img{position:relative;max-width:100%;max-height:100%;object-fit:contain}
+.hoja small{display:block;margin-top:14px;font:700 13px/1 var(--fb);color:#56635E}
+.hoja h5{margin:6px 0 0;font:800 24px/1.1 var(--fd)}
+.hoja p{margin:6px 0 0;color:#4A5954}
+.go{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:58px;margin-top:14px;border-radius:99px;background:var(--deep);color:#fff;font:800 18px/1 var(--fd)}
+.cerrar{display:block;width:100%;min-height:46px;margin-top:4px;font-weight:700}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:520px){.pg{padding:28px 0 64px}.pg-h{padding:0 20px}.rail{grid-template-columns:1fr}.shot h2,.shot .lead,.notes{width:auto;align-self:stretch;margin-left:20px;margin-right:20px}.phone{width:100%;border-radius:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-login" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></symbol>
+  <symbol id="i-yes" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-no" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="sbar" viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></symbol>
+</svg>
+<div class="pg">
+  <header class="pg-h">
+    <h1>Patrocinadores sin tapar la portada</h1>
+    <p>La primera pantalla es de la foto del <b>12</b> y de los dos botones. Aquí hay tres formas de que los patrocinadores se vean desde el primer segundo <b>sin empujar la foto hacia arriba</b>. En las tres, al tocar se abre la promoción completa con la imagen entera. Los teléfonos funcionan: tócalos.</p>
+  </header>
+  <main class="rail">
+
+    <section class="shot">
+      <span class="rec"><i></i>Mi recomendación</span>
+      <h2>A · Presentado por</h2>
+      <p class="lead">El patrocinador firma la portada, arriba a la derecha, como en un torneo del club. Cambia solo cada 4 segundos.</p>
+      <div class="phone"><div class="scr">
+        <div class="hero"><img class="ph bg" src="img/bienvenida.webp" alt=""><p class="num" aria-hidden="true">12</p><img class="ph" src="img/bienvenida-recorte.webp" alt=""><div class="ov"></div>
+          <div class="top"><img src="img/logo.png" alt="Reto Fit CCA"></div>
+          <button type="button" class="firma" data-rota="a" onclick="abrir(this)"><img src="img/barre.webp" alt=""><span class="fx"><small>Presentado por</small><b>Barré studio</b></span></button>
+          <div class="tx"><h3>Tu reto de<br>12 semanas<br>empieza aquí.</h3><p>Tu rutina, tus pesos y la técnica de cada ejercicio, con tu entrenador.</p>
+            <button type="button" class="pri"><span><b>Soy nuevo</b><small>Crea tu cuenta y recibe la rutina de tu entrenador.</small></span><span class="disc"><svg class="ico"><use href="#i-arrow"/></svg></span></button>
+            <button type="button" class="sec"><svg class="ico"><use href="#i-login"/></svg>Ya tengo cuenta</button>
+            <button type="button" class="stf">Soy entrenador del reto: entrar con mi cuenta</button></div>
+        </div>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div><div class="hoja" onclick="if(event.target===this)cerrar(this)"></div></div>
+      <ul class="notes">
+        <li><svg class="ico si"><use href="#i-yes"/></svg><span><b>Cero espacio perdido:</b> va en el hueco junto al logo que hoy está vacío.</span></li>
+        <li><svg class="ico si"><use href="#i-yes"/></svg><span>Se ve de inmediato y se siente <b>de club</b>, no de anuncio.</span></li>
+        <li><svg class="ico no"><use href="#i-no"/></svg><span>La imagen es chica: se luce hasta que tocan y se abre la promoción.</span></li>
+      </ul>
+    </section>
+
+    <section class="shot">
+      <span class="rec" style="visibility:hidden"><i></i>.</span>
+      <h2>B · Cinta bajo los botones</h2>
+      <p class="lead">Una sola línea con la imagen y la promoción, dentro de la misma pantalla. Pasa de un patrocinador a otro sola.</p>
+      <div class="phone"><div class="scr">
+        <div class="hero"><img class="ph bg" src="img/bienvenida.webp" alt=""><p class="num" aria-hidden="true">12</p><img class="ph" src="img/bienvenida-recorte.webp" alt=""><div class="ov" style="background:linear-gradient(180deg,transparent 26%,rgba(29,43,39,.82) 42%,var(--deep) 52%)"></div>
+          <div class="top"><img src="img/logo.png" alt="Reto Fit CCA"><b>Reto Fit</b></div>
+          <div class="tx b"><h3>Tu reto de<br>12 semanas<br>empieza aquí.</h3><p>Tu rutina, tus pesos y la técnica de cada ejercicio, con tu entrenador.</p>
+            <button type="button" class="pri"><span><b>Soy nuevo</b><small>Crea tu cuenta y recibe la rutina de tu entrenador.</small></span><span class="disc"><svg class="ico"><use href="#i-arrow"/></svg></span></button>
+            <button type="button" class="sec"><svg class="ico"><use href="#i-login"/></svg>Ya tengo cuenta</button>
+            <button type="button" class="cinta" data-rota="b" onclick="abrir(this)"><span class="th"><img src="img/barre.webp" alt=""></span><span class="t"><small>Patrocina el reto · Barré studio</small><b>10 % en tu primera mensualidad</b></span><span class="dots"><i class="on"></i><i></i><i></i></span></button></div>
+        </div>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div><div class="hoja" onclick="if(event.target===this)cerrar(this)"></div></div>
+      <ul class="notes">
+        <li><svg class="ico si"><use href="#i-yes"/></svg><span>Se lee la <b>promoción</b> sin tocar nada.</span></li>
+        <li><svg class="ico si"><use href="#i-yes"/></svg><span>La foto baja apenas lo de una línea (el texto del entrenador se mueve al menú).</span></li>
+        <li><svg class="ico no"><use href="#i-no"/></svg><span>Compite un poco con los botones de entrar.</span></li>
+      </ul>
+    </section>
+
+    <section class="shot">
+      <span class="rec" style="visibility:hidden"><i></i>.</span>
+      <h2>C · Asoma y se desliza</h2>
+      <p class="lead">Abajo asoman las miniaturas con "Patrocinan el reto"; al deslizar aparecen las imágenes grandes. Es lo que tienes hoy, con las miniaturas.</p>
+      <div class="phone"><div class="scr" id="scr-c">
+        <div class="hero"><img class="ph bg" src="img/bienvenida.webp" alt=""><p class="num" aria-hidden="true">12</p><img class="ph" src="img/bienvenida-recorte.webp" alt=""><div class="ov"></div>
+          <div class="top"><img src="img/logo.png" alt="Reto Fit CCA"><b>Reto Fit</b></div>
+          <div class="tx c"><h3>Tu reto de<br>12 semanas<br>empieza aquí.</h3><p>Tu rutina, tus pesos y la técnica de cada ejercicio, con tu entrenador.</p>
+            <button type="button" class="pri"><span><b>Soy nuevo</b><small>Crea tu cuenta y recibe la rutina de tu entrenador.</small></span><span class="disc"><svg class="ico"><use href="#i-arrow"/></svg></span></button>
+            <button type="button" class="sec"><svg class="ico"><use href="#i-login"/></svg>Ya tengo cuenta</button></div>
+          <div class="peek"><button type="button" class="peek-b" onclick="document.getElementById('abajo-c').scrollIntoView({behavior:'smooth'})"><span class="row"><img src="img/barre.webp" alt=""><img src="img/cafe.webp" alt=""><img src="img/tienda.webp" alt=""></span>Patrocinan el reto<svg class="ico"><use href="#i-down"/></svg></button></div>
+        </div>
+        <div class="abajo" id="abajo-c"><h4>Patrocinan el reto</h4><div class="car">
+          <button type="button" class="card" onclick="abrir(this,0)"><span class="m" style="display:block"><img src="img/barre.webp" alt=""></span><span class="t" style="display:block"><b>10 % en tu primera mensualidad</b><small>Barré studio</small></span></button>
+          <button type="button" class="card" onclick="abrir(this,1)"><span class="m" style="display:block"><img src="img/cafe.webp" alt=""></span><span class="t" style="display:block"><b>Avena con fruta 2x1</b><small>Café del club</small></span></button>
+          <button type="button" class="card" onclick="abrir(this,2)"><span class="m" style="display:block"><img src="img/tienda.webp" alt=""></span><span class="t" style="display:block"><b>15 % en tenis</b><small>Tienda deportiva</small></span></button>
+        </div><button type="button" class="stf">Soy entrenador del reto: entrar con mi cuenta</button></div>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div><div class="hoja" onclick="if(event.target===this)cerrar(this)"></div></div>
+      <ul class="notes">
+        <li><svg class="ico si"><use href="#i-yes"/></svg><span>Las imágenes se ven <b>en grande</b>, varias a la vez.</span></li>
+        <li><svg class="ico si"><use href="#i-yes"/></svg><span>Las miniaturas que asoman invitan a bajar mejor que solo texto.</span></li>
+        <li><svg class="ico no"><use href="#i-no"/></svg><span>Quien no desliza solo ve las miniaturas.</span></li>
+      </ul>
+    </section>
+  </main>
+</div>
+<script>
+const P=[
+  {img:'img/barre.webp',nm:'Barré studio',promo:'10 % en tu primera mensualidad',det:'Muestra tu app en el estudio.',btn:'Escribir por WhatsApp'},
+  {img:'img/cafe.webp',nm:'Café del club',promo:'Avena con fruta 2x1 después de entrenar',det:'Lunes a viernes.',btn:'Ver más'},
+  {img:'img/tienda.webp',nm:'Tienda deportiva',promo:'15 % en tenis de entrenamiento',det:'Presenta tu app en caja.',btn:'Ver más'}];
+const pos={a:0,b:0};
+function pinta(el,k){
+  const p=P[k];
+  if(el.dataset.rota==='a'){ el.classList.add('cambia'); setTimeout(()=>{ el.querySelector('img').src=p.img; el.querySelector('b').textContent=p.nm; el.classList.remove('cambia'); },350); }
+  else { el.classList.add('cambia'); setTimeout(()=>{ el.querySelector('.th img').src=p.img; el.querySelector('small').textContent='Patrocina el reto · '+p.nm; el.querySelector('b').textContent=p.promo; el.querySelectorAll('.dots i').forEach((d,n)=>d.classList.toggle('on',n===k)); el.classList.remove('cambia'); },350); }
+}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  setInterval(()=>document.querySelectorAll('[data-rota]').forEach(el=>{ const r=el.dataset.rota; pos[r]=(pos[r]+1)%P.length; pinta(el,pos[r]); }),4000);
+}
+function abrir(btn,k){
+  if(k==null){ k=pos[btn.dataset.rota]||0; }
+  const p=P[k], h=btn.closest('.phone').querySelector('.hoja');
+  h.innerHTML=`<div class="hoja-in"><span class="grab"></span><div class="vis"><img class="blur" src="${p.img}" alt=""><img class="img" src="${p.img}" alt="${p.nm}"></div><small>${p.nm}</small><h5>${p.promo}</h5><p>${p.det}</p><button type="button" class="go"><svg class="ico"><use href="#i-chat"/></svg>${p.btn}</button><button type="button" class="cerrar" onclick="cerrar(this.closest('.hoja'))">Cerrar</button></div>`;
+  requestAnimationFrame(()=>h.classList.add('on'));
+}
+function cerrar(h){ h.classList.remove('on'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.hoja.on').forEach(cerrar); });
+</script>
+</body>
+</html>
