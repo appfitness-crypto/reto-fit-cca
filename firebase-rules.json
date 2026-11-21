@@ -86,6 +86,15 @@
         ".write": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && root.child('socios').child($uid).child('entrenadorId').val() === auth.uid))",
         ".validate": "!newData.exists() || (newData.child('k').isString() && newData.child('h').isString() && newData.child('h').val().length <= 600)"
       }
+    },
+    "patrocinadores": {
+      ".read": true,
+      ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'",
+      "$id": {
+        "logo": {
+          ".validate": "newData.isString() && newData.val().length < 120000"
+        }
+      }
     }
   }
 }

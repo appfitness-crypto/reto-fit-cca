@@ -886,6 +886,7 @@ function mostrarResumenSesion(info){
       <p>${fechaTxt}</p>
       ${cine?cine.chips:''}
     </div>
+    ${typeof patFinHTML==='function'?patFinHTML(s,est):''}
     ${estNota?`<p class="en-fin-nota">${estNota}</p>`:''}
     <div class="en-fin-stats"><div><b class="num">${min!=null?min:'—'}</b><span>minutos</span></div><div><b class="num">${x.volumen>0?fmt(x.volumen):'—'}</b><span>kg de volumen</span></div><div><b class="num">${tot?ok+'/'+tot:x.ejercicios}</b><span>${tot?'series':'ejercicios'}</span></div></div>
     ${info.prs.length?`<section class="en-sec"><div class="en-sec-h"><h3>${info.prs.length===1?'Récord nuevo':info.prs.length+' récords nuevos'}</h3></div>
