@@ -67,7 +67,13 @@ function mascotaEstado(s){
   return Object.assign(n,{m, nombre:s.mascota.nombre||m.nm});
 }
 // Insignia del modo discreto (dibujada: medalla con listón, color por nivel)
+// Insignia del nivel: imagen del club (img/medallas/nivel-N.webp); si no carga, la medalla dibujada de antes
 function medallaSVG(n, size){
+  const sz=size||64, nm=NIVEL_NOMBRES[n-1]||'';
+  return `<img class="medalla medalla-img" src="${imgSrc('medallas/nivel-'+n+'.webp')}" width="${sz}" height="${sz}" alt="Insignia ${esc(nm)}" decoding="async" onerror="medallaRespaldo(this,${n},${sz})">`;
+}
+function medallaRespaldo(el,n,sz){ try{ el.outerHTML=medallaDibujo(n,sz); }catch(_){} }
+function medallaDibujo(n, size){
   const [c1,c2]=NIVEL_COLORES[n-1]||NIVEL_COLORES[0], sz=size||64, ley=n===5;
   return `<svg class="medalla" width="${sz}" height="${sz}" viewBox="0 0 64 64" role="img" aria-label="Nivel ${NIVEL_NOMBRES[n-1]}">
     <path d="M22 4h8l4 18h-8z" fill="${ley?'#0A3576':'#1F3B57'}"/><path d="M34 4h8l-4 18h-8z" fill="${ley?'#E3B54A':'#2E5878'}"/>
