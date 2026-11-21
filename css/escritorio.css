@@ -1,0 +1,57 @@
+/* ═══ Reto Fit CCA · vista de computadora ═══
+   En pantallas anchas la app del socio se ordena en UNA columna centrada del mismo ancho para todo:
+   aviso, tarjeta del reto, encabezado, contenido y barra de pestañas quedan alineados.
+   La portada se parte en dos: texto y botones a la izquierda, la foto con el "12" a la derecha.
+   Se carga al final para mandar sobre las reglas de escritorio anteriores. El panel del staff no cambia. */
+
+@media (min-width:900px){
+  :root{--col:760px;}
+
+  /* ── Tablero del socio: todo en la misma columna ── */
+  #s-dash #memb-aviso-socio,
+  #s-dash #avisos-socio,
+  #s-dash #reto-banner-socio{max-width:var(--col);margin-left:auto;margin-right:auto;box-sizing:content-box;padding-left:32px;padding-right:32px;}
+  #s-dash #memb-aviso-socio,#s-dash #avisos-socio,#s-dash #reto-banner-socio,#s-dash .hero,#s-dash .dash-section{width:min(var(--col),calc(100vw - 128px));align-self:center;}
+  #s-dash #avisos-socio{margin-top:16px;}
+  #s-dash #reto-banner-socio .reto-banner{margin:16px 0 0;}
+  #s-dash .hero{max-width:var(--col);margin-left:auto;margin-right:auto;padding-left:32px;padding-right:32px;box-sizing:content-box;
+    grid-template-columns:minmax(0,1fr);grid-template-areas:none;}
+  #s-dash .hero>*{grid-area:auto;grid-column:1;grid-row:auto;}
+  #s-dash .dash-section{max-width:var(--col);margin-left:auto;margin-right:auto;padding:20px 32px calc(140px + var(--safe-b,0px));box-sizing:content-box;}
+  #s-dash #dsec-progreso.on,
+  #s-dash #dsec-nutricion.on{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;}
+  #s-dash #dsec-progreso>*,#s-dash #dsec-nutricion>*{grid-column:1;}
+  #s-dash .pf-cols{grid-template-columns:minmax(0,1fr);gap:0;}
+  #s-dash .rt-main{grid-template-columns:minmax(0,1fr);}
+  #s-dash .fx-grid{grid-template-columns:minmax(0,1fr);}
+  /* Inicio: la escena del día con altura de pantalla de computadora y el título sin pasarse */
+  #s-dash .ci-scene{max-height:440px;}
+  /* Constancia: los cuadritos no crecen de más */
+  #s-dash .en-heat-w{max-width:480px;margin-left:auto;margin-right:auto;}
+  /* La barra de pestañas, del ancho de la columna */
+  .bnav{width:min(var(--col),calc(100vw - 64px))!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;}
+  .dash-tabs{width:min(var(--col),calc(100vw - 64px));}
+
+  /* ── Cuestionario y plan generado: misma columna, barra de arriba alineada ── */
+  #s-quiz .quiz-top{max-width:680px;margin:0 auto;width:100%;box-sizing:border-box;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;}
+  #s-quiz .prog-track{max-width:648px;margin-left:auto!important;margin-right:auto!important;width:calc(100% - 32px);}
+  #s-quiz .quiz-body{max-width:648px;}
+  #s-preview .pv-c{max-width:var(--col);}
+  #s-preview .pv-hero{border-radius:0 0 32px 32px;}
+}
+
+/* ── Portada en computadora: dos mitades ── */
+@media (min-width:1025px){
+  html[data-theme] #s-inicio{justify-content:center;background:linear-gradient(180deg,var(--cine-top) 0%,var(--cine-deep) 46%);}
+  html[data-theme] #s-inicio .wc-hero{position:absolute;top:0;bottom:0;left:auto;right:0;width:54vw;height:auto;margin:0;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 24%);mask-image:linear-gradient(90deg,transparent 0,#000 24%);}
+  html[data-theme] #s-inicio .wc-num{font-size:min(44vw,calc((100svh - 64px)*.62),620px);}
+  html[data-theme] #s-inicio .wc-ov{background:linear-gradient(180deg,transparent 55%,color-mix(in srgb,var(--cine-deep) 75%,transparent) 100%);}
+  html[data-theme] #s-inicio .inicio-wrap{position:relative;margin:0 0 0 max(6vw,48px);max-width:480px;width:40vw;padding:120px 0 48px;background:none;}
+  html[data-theme] #s-inicio .wc-tx h1{font-size:clamp(40px,3.8vw,60px);line-height:.95;}
+  html[data-theme] #s-inicio .wc-tx p{font-size:17px;max-width:38ch;margin-top:6px;}
+  html[data-theme] #s-inicio .inicio-cards{grid-template-columns:1fr;margin-top:10px;}
+  html[data-theme] #s-inicio .ic{flex-direction:row;align-items:center;}
+  html[data-theme] #s-inicio .ic-pri .ic-arrow{display:grid;}
+  html[data-theme] #s-inicio #pat-portada{max-width:480px;}
+}
