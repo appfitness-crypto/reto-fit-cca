@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#002941">
+<title>Reto Fit CCA · Tema Claro con vidrio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══ Tema Claro con vidrio · maqueta ═══
+   · Todo texto va sobre vidrio esmerilado (blanco translúcido + desenfoque): la curva navy del fondo se ve
+     detrás, pero nunca debajo de una letra.
+   · Acento intercambiable: coral (el de hoy) o verde lima (como el tema Oscuro). La lima se usa de relleno
+     con letra navy encima, nunca como color de letra sobre blanco.
+   · Avisos: la mascota los "dice" en un globo; al tocarlo se abre como banner con imagen. */
+:root{--fd:'Kanit','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;--expo:cubic-bezier(.16,1,.3,1);--out:cubic-bezier(.23,1,.32,1);
+  --navy:#002941;--navy2:#0B3A57;--tx:#002941;--mu:#36546A;
+  --acc:#FD6E6E;--acc2:#EA4F4F;--acc-ink:#FFFFFF;--acc-soft:rgba(253,110,110,.16)}
+body.lima{--acc:#C8F23A;--acc2:#B4E01F;--acc-ink:#002941;--acc-soft:rgba(200,242,58,.28)}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#C7E8F8;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--fb);font-size:15px;line-height:1.45;color:var(--tx);background:linear-gradient(180deg,#D9F0FB,#B3DFF5);min-height:100vh;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px;border-radius:12px}
+img{display:block}
+.ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pg{max-width:1800px;margin:0 auto;padding:44px 36px 96px}
+.pg-h{max-width:1000px;margin:0 auto 34px;display:flex;flex-wrap:wrap;gap:18px 30px;align-items:flex-end;justify-content:space-between}
+.pg-h h1{font:italic 800 clamp(32px,4.4vw,62px)/.92 var(--fd);text-transform:uppercase;margin:0 0 12px}
+.pg-h p{margin:0;max-width:60ch;color:var(--mu);font-size:16px}
+.pg-h p strong{color:var(--tx)}
+.acc-sw{display:inline-flex;padding:4px;border-radius:99px;background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1px #fff}
+.acc-sw button{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:99px;font:700 14px/1 var(--fb);color:var(--mu)}
+.acc-sw button i{width:14px;height:14px;border-radius:50%}
+.acc-sw button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.rail{display:grid;grid-template-columns:repeat(2,minmax(410px,1fr));gap:72px 28px;justify-items:center;max-width:1000px;margin:0 auto}
+@media (min-width:1800px){.rail{grid-template-columns:repeat(4,minmax(410px,1fr));max-width:none}}
+@media (max-width:899px){.rail{grid-template-columns:1fr}}
+.shot{width:410px;display:flex;flex-direction:column;align-items:center}
+.shot-h{width:390px;display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.shot-h h2{font:italic 800 21px/1 var(--fd);text-transform:uppercase;margin:0 auto 0 0}
+.seg{display:inline-flex;padding:4px;border-radius:99px;background:rgba(255,255,255,.6)}
+.seg button{min-height:34px;padding:0 13px;border-radius:99px;font:700 13px/1 var(--fb);color:var(--mu)}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.seg button:disabled{opacity:.35;cursor:default}
+.notes{width:390px;margin:22px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.notes li{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:14.5px;color:var(--mu)}
+.notes li .ico{width:18px;height:18px;color:var(--navy);margin-top:2px}
+.notes b{color:var(--tx)}
+.phone{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;isolation:isolate;box-shadow:0 0 0 10px #071A27,0 0 0 11px #2A4B62,0 46px 80px -34px rgba(0,41,65,.55);transform:translateZ(0)}
+.antes{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;z-index:90;opacity:0;pointer-events:none;transition:opacity .4s var(--out)}
+.phone.ver-antes .antes{opacity:1}
+/* Fondo del tema Claro (la curva navy y su trazo de acento) */
+.scr{position:absolute;inset:0;overflow:hidden;color:var(--tx);
+  background:
+    radial-gradient(circle at 118% 112%, #002941 0 38%, transparent 38.2%),
+    radial-gradient(circle at 118% 112%, transparent 0 40.5%, var(--acc) 40.6% 41.4%, transparent 41.6%),
+    radial-gradient(circle at 118% 112%, transparent 0 44.5%, color-mix(in srgb,var(--acc) 55%,transparent) 44.6% 45%, transparent 45.2%),
+    radial-gradient(40% 30% at 12% 14%, rgba(255,255,255,.7), transparent 70%),
+    linear-gradient(180deg,#D9F0FB 0%,#B3DFF5 100%)}
+.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:50px 16px 120px}
+.scroll::-webkit-scrollbar{display:none}
+.sb{position:absolute;top:0;left:0;right:0;height:46px;z-index:70;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 40px;font:600 16px/1 var(--fb);pointer-events:none}
+.sb svg{height:13px;width:auto}
+/* Vidrio */
+.gl{background:linear-gradient(160deg,rgba(255,255,255,.78),rgba(255,255,255,.55));-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.65),0 14px 30px -18px rgba(0,41,65,.45)}
+
+/* Aviso: la mascota lo dice */
+.av{position:relative;display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px 8px 8px;border-radius:24px;text-align:left}
+.av-pet{position:relative;width:58px;height:58px;flex:none;border-radius:50%;background:radial-gradient(circle at 50% 65%,var(--acc-soft),rgba(255,255,255,.6));overflow:visible}
+.av-pet img{position:absolute;left:50%;bottom:-2px;width:66px;height:66px;margin-left:-33px;object-fit:contain;transform-origin:50% 90%;animation:saluda 2.6s var(--out) .6s 2}
+@keyframes saluda{0%,100%{transform:none}20%{transform:rotate(-8deg)}40%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}}
+.av-b{position:relative;flex:1;min-width:0;padding:10px 12px;border-radius:4px 16px 16px 16px;background:#fff;box-shadow:0 6px 14px -10px rgba(0,41,65,.5)}
+.av-b::before{content:"";position:absolute;left:-7px;top:12px;width:10px;height:10px;background:#fff;clip-path:polygon(100% 0,0 0,100% 100%)}
+.av-k{display:inline-flex;align-items:center;gap:5px;font:700 11.5px/1 var(--fb);color:var(--mu)}
+.av-k i{width:7px;height:7px;border-radius:50%;background:var(--acc2)}
+.av-b b{display:block;margin-top:4px;font:700 15.5px/1.15 var(--fd)}
+.av-b small{display:block;margin-top:2px;font-size:12.5px;color:var(--mu)}
+.av-th{width:52px;height:52px;flex:none;border-radius:14px;overflow:hidden;box-shadow:0 0 0 2px #fff}
+.av-th img{width:100%;height:100%;object-fit:cover}
+.av-n{position:absolute;right:12px;bottom:-9px;padding:3px 9px;border-radius:99px;background:var(--navy);color:#fff;font:700 11px/1 var(--fb)}
+
+/* Tarjeta del reto: la cuenta regresiva es la protagonista y la mascota sale de la tarjeta */
+.rt{position:relative;display:flex;align-items:flex-end;gap:12px;margin-top:20px;min-height:118px;padding:16px 16px 16px 112px;border-radius:26px;background:linear-gradient(150deg,#0B3A57 0%,#002941 60%,#001A2B 100%);color:#fff;box-shadow:0 18px 30px -16px rgba(0,41,65,.7);overflow:visible}
+.rt::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(60% 90% at 12% 100%,color-mix(in srgb,var(--acc) 35%,transparent),transparent 70%);pointer-events:none}
+.rt-pet{position:absolute;left:2px;bottom:6px;width:112px;height:112px;object-fit:contain;z-index:2;filter:drop-shadow(0 10px 10px rgba(0,0,0,.35))}
+.rt-t{position:relative;z-index:2;flex:1;min-width:0}
+.rt-t small{display:block;font:600 12.5px/1.2 var(--fb);color:#A9CFE6}
+.rt-t b{display:block;font:italic 800 46px/.9 var(--fd);letter-spacing:-.02em}
+.rt-t b span{font:700 17px/1 var(--fd);font-style:normal;letter-spacing:0;margin-left:4px}
+.rt-t em{display:block;font-style:normal;font-size:12.5px;color:#A9CFE6;margin-top:4px}
+.rt-p{position:relative;z-index:2;display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:var(--acc);color:var(--acc-ink);line-height:1;flex:none;align-self:center}
+.rt-p b{font:800 24px/1 var(--fd)}
+.rt-p small{font:700 10px/1 var(--fb)}
+
+.hola{display:flex;align-items:center;gap:10px;margin:18px 2px 0}
+.hola img{width:38px;height:38px;border-radius:11px}
+.hola b{display:block;font:800 24px/1 var(--fd)}
+.hola small{font-size:13px;color:var(--mu)}
+.hola .av-i{margin-left:auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font:800 16px/1 var(--fd);background:var(--navy);color:#fff}
+.scene{position:relative;height:280px;margin:6px -16px 0;overflow:hidden}
+.scene img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:56% 0}
+.scene .bg{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 60px);mask-image:linear-gradient(180deg,transparent 0,#000 60px)}
+.scene h3{position:absolute;left:16px;top:120px;margin:0;font:italic 800 58px/.84 var(--fd);text-transform:uppercase;color:var(--navy);letter-spacing:-.02em}
+.scene h3 span{color:var(--acc2)}
+body.lima .scene h3 span{color:#7FA514}
+
+/* Banner del aviso abierto */
+.dim{position:absolute;inset:0;background:rgba(0,26,43,.5)}
+.sheet{position:absolute;left:0;right:0;bottom:0;top:70px;border-radius:30px 30px 0 0;background:#fff;overflow-y:auto;scrollbar-width:none;padding:10px 16px 24px}
+.grab{width:44px;height:5px;border-radius:9px;background:#D3E2EA;margin:0 auto 10px}
+.ban{position:relative;height:250px;border-radius:24px;overflow:hidden}
+.ban>img.ban-bg{width:100%;height:100%;object-fit:cover}
+.ban::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,26,43,.85) 0%,rgba(0,26,43,.2) 55%,transparent 75%)}
+.ban-t{position:absolute;left:16px;right:16px;bottom:14px;z-index:2;color:#fff}
+.ban-t span{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 11px;border-radius:99px;background:var(--acc);color:var(--acc-ink);font:700 12.5px/1 var(--fb)}
+.ban-t h2{margin:8px 0 0;font:italic 800 32px/.98 var(--fd);text-transform:uppercase}
+.ban-pet{position:absolute;right:6px;top:8px;z-index:2;width:96px;height:96px;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(0,0,0,.4))}
+.dat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 0}
+.dat div{padding:12px 10px;border-radius:16px;background:#EEF6FB}
+.dat .ico{width:18px;height:18px;color:var(--navy)}
+.dat b{display:block;margin-top:6px;font:700 15px/1.1 var(--fd)}
+.dat small{font-size:12px;color:var(--mu)}
+.msg{margin:14px 2px 0;font-size:15px;color:var(--mu)}
+.go{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:60px;margin-top:16px;border-radius:99px;background:var(--acc);color:var(--acc-ink);font:800 18px/1 var(--fd);box-shadow:0 14px 26px -14px color-mix(in srgb,var(--acc) 80%,transparent)}
+.go .ico{width:20px;height:20px}
+.link{display:block;width:100%;min-height:46px;font:600 14px/1 var(--fb);color:var(--mu)}
+
+/* Mi plan e Inicio abajo: todo sobre vidrio */
+.ph{display:flex;align-items:center;gap:12px;margin:4px 2px 0}
+.ph img{width:40px;height:40px;border-radius:12px}
+.ph b{display:block;font:800 26px/1 var(--fd)}
+.ph small{font-size:13.5px;color:var(--mu)}
+.wkp{margin:14px 0 0;padding:12px;border-radius:24px}
+.wkp-h{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 10px}
+.wkp-h b{font:800 19px/1 var(--fd)}
+.wkp-h a{display:inline-flex;align-items:center;gap:2px;font:700 13.5px/1 var(--fb);color:var(--navy);text-decoration:none}
+.wkp-h a .ico{width:16px;height:16px}
+.wkd{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.wkd div{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;border-radius:14px;background:rgba(255,255,255,.85)}
+.wkd span{font:700 11px/1 var(--fb);color:var(--mu)}
+.wkd b{font:700 18px/1 var(--fd)}
+.wkd i{width:6px;height:6px;border-radius:50%;background:rgba(0,41,65,.25)}
+.wkd .hoy{background:var(--navy);color:#fff}.wkd .hoy span{color:#A9CFE6}.wkd .hoy i{background:var(--acc)}
+.wkd .des{background:rgba(255,255,255,.4);box-shadow:inset 0 0 0 1.5px rgba(0,41,65,.18)}.wkd .des i{background:transparent}
+.blq{display:flex;align-items:center;gap:8px;margin:12px 4px 0;font-size:12.5px;white-space:nowrap;color:var(--mu)}
+.blq b{color:var(--tx)}
+.blq .segs{display:flex;gap:3px;width:80px}.blq .segs i{flex:1;height:5px;border-radius:9px;background:rgba(0,41,65,.14)}.blq .segs i.on{background:var(--acc2)}
+body.lima .blq .segs i.on{background:#7FA514}
+.blq a{margin-left:auto;color:var(--navy);font-weight:700;text-decoration:none}
+.des-c{margin:12px 0 0;padding:18px;border-radius:24px}
+.des-c h3{margin:0;font:italic 800 32px/1 var(--fd);text-transform:uppercase}
+.des-c p{margin:8px 0 0;color:var(--mu)}
+.tip{display:flex;gap:10px;margin:10px 0 0;padding:14px 16px;border-radius:20px;font-size:14.5px;color:var(--tx)}
+.tip .ico{width:18px;height:18px;color:var(--navy);margin-top:2px}
+.vas{margin:14px 0 0;padding:16px;border-radius:24px}
+.vas .top{display:flex;align-items:flex-end;justify-content:space-between}
+.vas h3{margin:0;font:700 19px/1.1 var(--fd)}
+.vas h3 span{font-size:26px}
+.vas p{margin:2px 0 0;font-size:13.5px;color:var(--mu)}
+.vas .racha{display:flex;align-items:center;gap:6px;font:700 15px/1 var(--fd)}
+.vas .racha .ico{width:20px;height:20px;color:var(--acc2)}
+body.lima .vas .racha .ico{color:#7FA514}
+.slots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}
+.slots i{height:8px;border-radius:99px;background:rgba(0,41,65,.12)}
+.slots i.ok{background:var(--navy)}
+.slots i.hoy{background:transparent;box-shadow:inset 0 0 0 2px var(--acc2)}
+body.lima .slots i.hoy{box-shadow:inset 0 0 0 2px #7FA514}
+.cta{display:flex;align-items:center;gap:14px;width:100%;min-height:62px;margin-top:14px;padding:8px 22px 8px 8px;border-radius:99px;background:var(--acc);color:var(--acc-ink);font:800 19px/1 var(--fd);box-shadow:0 14px 26px -14px color-mix(in srgb,var(--acc) 80%,transparent)}
+.cta .disc{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--acc2)}
+body.lima .cta .disc{background:var(--navy);color:var(--acc)}
+.cta .disc .ico{width:20px;height:20px;margin-left:2px}
+.tbc{position:absolute;left:12px;right:12px;bottom:16px;z-index:40;display:flex;height:72px;padding:6px;border-radius:28px}
+.tbc a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:22px;font:600 11.5px/1 var(--fb);color:var(--mu);text-decoration:none}
+.tbc a.ac{background:var(--navy);color:#fff}
+body.lima .tbc a.ac{background:var(--acc);color:var(--navy)}
+.tbc .ico{width:22px;height:22px}
+@media (prefers-reduced-motion:reduce){.av-pet img{animation:none}}
+@media (max-width:520px){
+  .pg{padding:28px 0 64px}.pg-h{padding:0 20px}.rail{display:block}
+  .shot{width:100%;margin-bottom:56px}.shot-h,.notes{width:auto;align-self:stretch;margin-left:20px;margin-right:20px}
+  .phone{width:100%;border-radius:0;box-shadow:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5v-7a1.5 1.5 0 0 1 3 0v7M14 11.5V6a1.5 1.5 0 0 1 3 0v8c0 4-2.5 7-6.5 7-2.6 0-4.2-1.3-5.6-3.4L3.2 15a1.5 1.5 0 0 1 2.4-1.8L8 15.5"/></symbol>
+  <symbol id="i-img" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m4 18 5-5 4 4 3-3 4 4"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5a1 1 0 0 0 1 1H10v-5.5h4v5.5h3.5a1 1 0 0 0 1-1V10"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1-4 4-6 7.5-6s6.5 2 7.5 6"/></symbol>
+</svg>
+<div class="pg">
+  <header class="pg-h">
+    <div>
+      <h1>Tema Claro, con vidrio</h1>
+      <p><strong>Ninguna letra queda sobre la curva azul</strong>: todo va sobre vidrio esmerilado. Los avisos los dice tu mascota y, al tocarlos, se abren como banner con imagen. Cambia el acento para comparar <strong>coral</strong> contra <strong>verde lima</strong>.</p>
+    </div>
+    <div class="acc-sw" role="group" aria-label="Acento"><button type="button" aria-pressed="true" data-a="coral"><i style="background:#FD6E6E"></i>Coral</button><button type="button" aria-pressed="false" data-a="lima"><i style="background:#C8F23A"></i>Verde lima</button></div>
+  </header>
+  <main class="rail">
+
+    <section class="shot">
+      <div class="shot-h"><h2>Inicio, arriba</h2><div class="seg"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr">
+          <div class="scroll">
+            <button type="button" class="av gl" onclick="abrirAviso()">
+              <span class="av-pet"><img src="img/lobo-1.webp" alt=""></span>
+              <span class="av-b"><span class="av-k"><i></i>Fer te avisa · clase especial</span><b>Conferencia de nutrición</b><small>Sáb 28 · 10:00 am · salón 4</small></span>
+              <span class="av-th"><img src="img/aviso.webp" alt=""></span>
+              <span class="av-n">+1 aviso</span>
+            </button>
+            <div class="rt">
+              <img class="rt-pet" src="img/lobo-1.webp" alt="">
+              <div class="rt-t"><small>Reto Fit CCA arranca en</small><b>51<span>días</span></b><em>Lunes 11 de enero · 12 semanas</em></div>
+              <div class="rt-p" aria-label="0 puntos, aún no cuentan"><b>0</b><small>pts</small></div>
+            </div>
+            <div class="hola"><img src="img/logo.png" alt=""><div><b>Hola, Fer</b><small>Tu mejor versión, cada día.</small></div><span class="av-i">F</span></div>
+            <div class="scene"><img class="bg" src="img/inicio.webp" alt=""><h3>Accesorios<br><span>+</span>Core</h3><img src="img/inicio-recorte.webp" alt=""></div>
+          </div>
+          <div class="sb"><span>8:07</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+          <nav class="tbc gl"><a href="#" class="ac"><svg class="ico"><use href="#i-home"/></svg>Inicio</a><a href="#"><svg class="ico"><use href="#i-dumbbell"/></svg>Rutina</a><a href="#"><svg class="ico"><use href="#i-chart"/></svg>Progreso</a><a href="#"><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a><a href="#"><svg class="ico"><use href="#i-user"/></svg>Perfil</a></nav>
+        </div>
+        <img class="antes" src="antes/a8961944.webp" alt="Pantalla actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-hand"/></svg><span>El aviso ya no es una caja: <b>Fer lo dice en un globo</b> (y saluda al abrir), con la foto del evento a un lado. Si hay más, “+1 aviso”.</span></li>
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>En la tarjeta del reto, <b>la cuenta regresiva es lo grande</b>: “51 días”. La mascota sale de la tarjeta en lugar de ir pegada encima.</span></li>
+      </ul>
+    </section>
+
+    <section class="shot">
+      <div class="shot-h"><h2>Aviso abierto</h2><div class="seg"><button type="button" aria-pressed="true">Después</button><button type="button" disabled>Antes</button></div></div>
+      <div class="phone">
+        <div class="scr">
+          <div class="dim"></div>
+          <div class="sheet" id="sheet">
+            <div class="grab"></div>
+            <div class="ban"><img class="ban-bg" src="img/aviso.webp" alt="Conferencia de nutrición"><img class="ban-pet" src="img/lobo-1.webp" alt=""><div class="ban-t"><span><svg class="ico" style="width:14px;height:14px"><use href="#i-cal"/></svg>Clase especial</span><h2>Conferencia de nutrición</h2></div></div>
+            <div class="dat"><div><svg class="ico"><use href="#i-cal"/></svg><b>Sáb 28</b><small>noviembre</small></div><div><svg class="ico"><use href="#i-clock"/></svg><b>10:00 am</b><small>1 hora</small></div><div><svg class="ico"><use href="#i-pin"/></svg><b>Salón 4</b><small>planta alta</small></div></div>
+            <p class="msg">Aprende a armar tu plato para el reto con la nutrióloga del club. Trae tus dudas; habrá muestras de colaciones.</p>
+            <button type="button" class="go"><svg class="ico"><use href="#i-bell"/></svg>Recordármelo</button>
+            <button type="button" class="link">Cerrar</button>
+          </div>
+          <div class="sb" style="color:#fff"><span>8:07</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-img"/></svg><span>El director podrá <b>subir una imagen</b> al aviso (el cartel del evento), y llenar fecha, hora y lugar.</span></li>
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>Abierto se ve <b>como un banner</b>: imagen grande, la mascota encima y un botón para que la app te lo recuerde.</span></li>
+      </ul>
+    </section>
+
+    <section class="shot">
+      <div class="shot-h"><h2>Mi plan, abajo</h2><div class="seg"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr">
+          <div class="scroll" style="padding-top:60px">
+            <div class="ph"><img src="img/logo.png" alt=""><div><b>Mi plan</b><small>Recomposición corporal · 5 días por semana</small></div></div>
+            <div class="wkp gl">
+              <div class="wkd"><div><span>LUN</span><b>16</b><i></i></div><div><span>MAR</span><b>17</b><i></i></div><div><span>MIÉ</span><b>18</b><i></i></div><div><span>JUE</span><b>19</b><i></i></div><div><span>VIE</span><b>20</b><i></i></div><div class="hoy"><span>SÁB</span><b>21</b><i></i></div><div class="des"><span>DOM</span><b>22</b><i></i></div></div>
+              <div class="blq"><span>Bloque <b>1</b> · semana <b>1 de 4</b></span><span class="segs"><i class="on"></i><i></i><i></i><i></i></span><a href="#">Mi progresión ›</a></div>
+            </div>
+            <div class="des-c gl"><h3>Descanso</h3><p>El músculo crece hoy. Camina 20 a 30 minutos, estira y duerme 7 u 8 horas.</p></div>
+            <div class="tip gl"><svg class="ico"><use href="#i-spark"/></svg><span>Toca un ejercicio para ver cómo se hace. El peso sugerido sale de tu última sesión: si completaste todas las series, subes un poco; si no, repites el peso.</span></div>
+          </div>
+          <div class="sb"><span>8:06</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+          <nav class="tbc gl"><a href="#"><svg class="ico"><use href="#i-home"/></svg>Inicio</a><a href="#" class="ac"><svg class="ico"><use href="#i-dumbbell"/></svg>Rutina</a><a href="#"><svg class="ico"><use href="#i-chart"/></svg>Progreso</a><a href="#"><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a><a href="#"><svg class="ico"><use href="#i-user"/></svg>Perfil</a></nav>
+        </div>
+        <img class="antes" src="antes/a4cd1d68.webp" alt="Pantalla actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>Hoy el consejo de abajo se pierde sobre la curva azul. Ahora <b>va sobre vidrio</b>: la curva se ve detrás, borrosa, y la letra siempre se lee.</span></li>
+      </ul>
+    </section>
+
+    <section class="shot">
+      <div class="shot-h"><h2>Inicio, abajo</h2><div class="seg"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr">
+          <div class="scroll" style="padding-top:60px">
+            <button type="button" class="cta"><span class="disc"><svg class="ico"><use href="#i-play"/></svg></span>Hacer la del viernes hoy</button>
+            <div class="vas gl"><div class="top"><div><h3>Vas <span>0</span> de 5</h3><p>esta semana</p></div><div class="racha"><svg class="ico"><use href="#i-flame"/></svg>0 <small style="font:500 12.5px var(--fb);color:var(--mu)">semanas</small></div></div><div class="slots"><i></i><i></i><i></i><i></i><i class="hoy"></i></div></div>
+            <div class="rt" style="margin-top:34px;min-height:96px;align-items:center"><img class="rt-pet" src="img/lobo-1.webp" alt="" style="width:104px;height:104px"><div class="rt-t"><b style="font:700 18px/1.1 var(--fd)">Fer va en Cría</b><em>Empieza a crecer cuando arranque el reto</em></div></div>
+            <div class="wkp gl">
+              <div class="wkp-h"><b>Tu semana</b><a href="#">Ver plan<svg class="ico"><use href="#i-chev"/></svg></a></div>
+              <div class="wkd"><div><span>LUN</span><b>16</b><i></i></div><div><span>MAR</span><b>17</b><i></i></div><div><span>MIÉ</span><b>18</b><i></i></div><div><span>JUE</span><b>19</b><i></i></div><div><span>VIE</span><b>20</b><i></i></div><div class="hoy"><span>SÁB</span><b>21</b><i></i></div><div class="des"><span>DOM</span><b>22</b><i></i></div></div>
+            </div>
+          </div>
+          <div class="sb"><span>8:06</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+          <nav class="tbc gl"><a href="#" class="ac"><svg class="ico"><use href="#i-home"/></svg>Inicio</a><a href="#"><svg class="ico"><use href="#i-dumbbell"/></svg>Rutina</a><a href="#"><svg class="ico"><use href="#i-chart"/></svg>Progreso</a><a href="#"><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a><a href="#"><svg class="ico"><use href="#i-user"/></svg>Perfil</a></nav>
+        </div>
+        <img class="antes" src="antes/f65034e5.webp" alt="Pantalla actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>“Ver plan”, “Sáb 21” y “Dom 22” se perdían sobre la curva. Ahora <b>la semana va en su panel de vidrio</b> y los días de descanso se marcan con línea.</span></li>
+      </ul>
+    </section>
+  </main>
+</div>
+<script>
+(()=>{
+  document.querySelectorAll('.acc-sw button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.acc-sw button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    document.body.classList.toggle('lima',b.dataset.a==='lima');
+  }));
+  document.querySelectorAll('.shot').forEach(sh=>{
+    const ph=sh.querySelector('.phone');
+    sh.querySelectorAll('.seg button[data-v]').forEach(b=>b.addEventListener('click',()=>{
+      sh.querySelectorAll('.seg button[data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+      ph.classList.toggle('ver-antes',b.dataset.v==='a');
+    }));
+  });
+  document.querySelectorAll('a[href="#"]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+  window.abrirAviso=()=>document.getElementById('sheet').scrollIntoView({behavior:'smooth',block:'center'});
+})();
+</script>
+</body>
+</html>
