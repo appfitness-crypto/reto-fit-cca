@@ -500,17 +500,18 @@ function verComoDia(k,j){ const s=activeSocio; const e=s&&s.rutina[k]&&s.rutina[
 function abrirFicha(ej){
   const dlg=document.getElementById('en-ficha'); if(!dlg||!ej) return;
   const f=fichaEj(ej), tec=tecnicaDe(ej);
-  dlg.innerHTML=`<div class="en-f-in">
+  const s=activeSocio, ent=s&&s.entrenadorId&&typeof getEntrenador==='function'?getEntrenador(s.entrenadorId):null;
+  const entNm=ent&&ent.nombre?tc(ent.nombre).split(' ')[0]:'';
+  const mus=f.ms.length?`<div class="en-f-mus">${f.ms.slice(0,3).map((m,i)=>`<span class="${i?'':'p'}"><i></i>${esc(m)}</span>`).join('')}</div>`:'';
+  dlg.innerHTML=`<div class="en-f-in en-f-cine">
     <div class="en-f-top"><span class="en-grab" aria-hidden="true"></span><button type="button" class="en-btn-sm" onclick="cerrarFicha()">Cerrar</button></div>
-    ${tec?'':`<div class="en-f-fig">${pic(basesEjercicio(ej),'dumbbell','thumb')}${videoEjHTML(ej)}</div>`}
+    ${tec?`<div class="en-f-tec">${tecnicaHTML(tec)}${mus}</div>`:`<div class="en-f-fig">${pic(basesEjercicio(ej),'dumbbell','thumb')}${videoEjHTML(ej)}${mus}</div>`}
     <h3 id="en-f-t">${esc(ej.nm)}</h3>
     ${f.eq?`<div class="en-f-eq">${ico('dumbbell')}<span>${esc(f.eq)}</span></div>`:''}
-    ${tec?tecnicaHTML(tec):''}
-    ${f.ms.length?`<div class="en-f-sec"><b>Músculos que trabaja</b><div class="en-musc">${f.ms.map((m,i)=>`<span class="${i?'':'p'}"><i></i>${esc(m)}${i?'':' · principal'}</span>`).join('')}</div></div>`:''}
-    ${f.pasos&&!tec?`<div class="en-f-sec"><b>Cómo se hace</b><ol class="en-pasos">${f.pasos.map(p=>`<li>${esc(p)}</li>`).join('')}</ol></div>`:''}
-    ${ej.tip?`<div class="en-f-sec"><b>Nota de tu entrenador</b><p>${esc(sinEmoji(ej.tip))}</p></div>`:''}
-    ${f.evita&&!tec?`<div class="en-evita">${ico('info')}<span><b>Evita:</b> ${esc(f.evita)}</span></div>`:''}
-    <button type="button" class="en-btn en-btn-p" onclick="cerrarFicha()">Entendido</button></div>`;
+    ${f.pasos&&!tec?`<ol class="en-pasos">${f.pasos.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>`:''}
+    ${f.evita&&!tec?`<p class="en-evita"><span class="x">${ico('x')}</span><span>${esc(f.evita)}</span></p>`:''}
+    ${ej.tip?`<div class="en-f-coach"><span class="av" aria-hidden="true">${esc(entNm?entNm.charAt(0):'')||ico('user')}</span><p><small>${entNm?esc(entNm)+', tu entrenador':'Tu entrenador'}</small>${esc(sinEmoji(ej.tip))}</p></div>`:''}
+    <div class="en-f-b"><button type="button" class="en-btn en-btn-p" onclick="cerrarFicha()">Entendido</button></div></div>`;
   dlg.setAttribute('aria-labelledby','en-f-t');
   dlg.classList.remove('cerrando');
   if(!dlg.open) dlg.showModal();
@@ -572,7 +573,8 @@ function renderSes(){
   const btnTiempo=esEmom?`<button type="button" class="en-btn en-btn-l" onclick="sesEmom(${i})">${ico('timer')}Iniciar EMOM ${esc(e0.series)} min</button>`
     : w?`<button type="button" class="en-btn en-btn-l" onclick="sesTrabajo(${i})">${ico('timer')}Temporizador ${w<120?w+' s':Math.round(w/6)/10+' min'}</button>`:'';
   const nSer=seriesHoy(e0,aj)||parseInt(e0.series)||1, big=sesBigTxt(e0,i,especial,w,nSer), dist=sesEsDist(e0);
-  const prog=ejs.map((x,j)=>{ const p=sesAvance(j,x); return `<i class="${p>=1?'done':''}${j===i?' cur':''}"><b style="transform:scaleX(${p})"></b></i>`; }).join('');
+  const alts=e0.alternativas||[], altSel=reg.alt;
+  const prog=ejs.map((x,j)=>{ const p=sesAvance(j,x); return `<button type="button" class="en-rail-i${p>=1?' ok':''}${j===i?' now':''}" onclick="sesIrA(${j})" aria-label="Ejercicio ${j+1}: ${esc(x.nm)}${p>=1?', hecho':''}"${j===i?' aria-current="step"':''}>${pic(basesEjercicioMini(x),'dumbbell','thumb')}</button>`; }).join('');
   let series='';
   if(especial){
     const r=rxTexto(e0,s), n=sesHechas(i);
@@ -586,28 +588,33 @@ function renderSes(){
     const B=sesBorrador(i,e0,c), prev=c&&c.sr, jc=sesSerieActual(i,B.length);
     const nomS=dist?'Vuelta':'Serie', pasoKg=unidadPeso==='kg'?2.5:5, pasoR=dist?5:1;
     // La serie que toca va grande (controles − / + para no abrir el teclado); las hechas se encogen y las demás quedan tenues
-    series=`${btnTiempo?`<div class="en-tm-row">${btnTiempo}</div>`:''}<div class="en-sets en-sets-cine" role="list" aria-label="Series de ${esc(e.nm)}">
-      ${B.map((b,j)=>{ const st=reg.sets[j], ok=!!(st&&st.ok), kg=ok?st.kg:b.kg, rr=ok?(st.r||b.r):b.r;
-        const ant=prev&&prev[j]?`${kgToDisplay(prev[j][0])} × ${prev[j][1]||'—'}`:(c&&c.ult!=null?`${kgToDisplay(c.ult)}`:'');
-        if(j===jc) return `<div class="en-set cur" role="listitem" data-j="${j}">
-          <div class="en-cur-h"><b>${nomS} ${j+1} <small>de ${B.length}</small></b><span>${ant?'Anterior: '+esc(ant):c?'Sugerido hoy: '+enKgCarga(c):''}</span></div>
-          <div class="en-steps">
-            <div class="en-step"><button type="button" aria-label="Menos peso" onclick="sesPaso(${i},${j},'kg',-${pasoKg})">${ico('minus')}</button>
-              <label><input type="number" inputmode="decimal" step="0.5" min="0" data-k="kg" value="${kg?kgToDisplay(kg):''}" placeholder="0" aria-label="${unidadPeso==='kg'?'Kilos':'Libras'} ${nomS.toLowerCase()} ${j+1}" oninput="sesValor(${i},${j},'kg',this.value)"><button type="button" class="en-unit" onclick="sesUnidad()" aria-label="Cambiar a ${unidadPeso==='kg'?'libras':'kilos'}">${unidadPeso}</button></label>
-              <button type="button" aria-label="Más peso" onclick="sesPaso(${i},${j},'kg',${pasoKg})">${ico('mas')}</button></div>
-            <div class="en-step"><button type="button" aria-label="Menos ${dist?'metros':'repeticiones'}" onclick="sesPaso(${i},${j},'r',-${pasoR})">${ico('minus')}</button>
-              <label><input type="number" inputmode="numeric" min="0" data-k="r" value="${rr||''}" placeholder="0" aria-label="${dist?'Metros':'Repeticiones'} ${nomS.toLowerCase()} ${j+1}" oninput="sesValor(${i},${j},'r',this.value)"><small>${dist?'metros':'reps'}</small></label>
-              <button type="button" aria-label="Más ${dist?'metros':'repeticiones'}" onclick="sesPaso(${i},${j},'r',${pasoR})">${ico('mas')}</button></div>
-          </div>
-          <button type="button" class="en-btn en-btn-p en-lista" onclick="sesMarcar(${i},${j})">${ico('check')}${nomS} ${j+1} lista</button>
-        </div>`;
-        const val=(kg?enKg(kg):'')+(kg&&rr?' × ':'')+(rr?rr+(dist?' m':''):'');
-        return `<div class="en-set${ok?' hecha':' pend'}" role="listitem" data-j="${j}">
-          <span class="en-n num">${j+1}</span><span class="en-sv num">${val||'—'}${ok?'':' <small>· pendiente</small>'}</span>
-          <button type="button" class="en-ok" aria-pressed="${ok}" aria-label="${ok?'Desmarcar':'Marcar'} ${nomS.toLowerCase()} ${j+1}" onclick="sesMarcar(${i},${j})">${ico('check')}</button></div>`; }).join('')}
-    </div>`;
+    // Una tarjeta: la serie que toca con controles − / +; las demás son puntos (los verdes se tocan para desmarcar)
+    const dots=`<span class="en-dots" role="group" aria-label="${B.length} ${dist?'vueltas':'series'}">${B.map((b,j)=>{ const ok=!!(reg.sets[j]&&reg.sets[j].ok);
+      return ok?`<button type="button" class="ok" onclick="sesMarcar(${i},${j})" aria-label="${nomS} ${j+1} hecha: toca para desmarcar"></button>`:`<i class="${j===jc?'now':''}" aria-hidden="true"></i>`; }).join('')}</span>`;
+    let card;
+    if(jc<0){
+      const ult=reg.sets[B.length-1]||{};
+      card=`<div class="en-set cur listo" role="group" aria-label="Series terminadas"><div class="en-cur-h"><b>${ico('check')}${B.length} de ${B.length} ${dist?'vueltas':'series'} listas</b>${dots}</div>
+        <p class="en-cur-nota">${ult.kg?'Última: '+enKg(ult.kg)+(ult.r?' × '+ult.r+(dist?' m':''):''):'Toca un punto verde si quieres corregir una.'}</p></div>`;
+    } else {
+      const j=jc, b=B[j], kg=b.kg, rr=b.r;
+      const ant=prev&&prev[j]?`${kgToDisplay(prev[j][0])} × ${prev[j][1]||'—'}`:(c&&c.ult!=null?`${kgToDisplay(c.ult)}`:'');
+      card=`<div class="en-set cur" role="group" aria-label="${nomS} ${j+1} de ${B.length}" data-j="${j}">
+        <div class="en-cur-h"><b>${nomS} ${j+1} <small>de ${B.length}</small></b>${dots}</div>
+        ${ant||c?`<p class="en-cur-nota">${ant?'Anterior: '+esc(ant):'Sugerido hoy: '+enKgCarga(c)}</p>`:''}
+        <div class="en-steps">
+          <div class="en-step${kg?'':' vacio'}"><button type="button" aria-label="Menos peso" onclick="sesPaso(${i},${j},'kg',-${pasoKg})">${ico('minus')}</button>
+            <label><input type="number" inputmode="decimal" step="0.5" min="0" data-k="kg" value="${kg?kgToDisplay(kg):''}" placeholder="—" aria-label="${unidadPeso==='kg'?'Kilos':'Libras'} ${nomS.toLowerCase()} ${j+1}" oninput="sesValor(${i},${j},'kg',this.value)"><button type="button" class="en-unit" onclick="sesUnidad()" aria-label="Cambiar a ${unidadPeso==='kg'?'libras':'kilos'}">${kg?unidadPeso:'anota tus '+unidadPeso}</button></label>
+            <button type="button" aria-label="Más peso" onclick="sesPaso(${i},${j},'kg',${pasoKg})">${ico('mas')}</button></div>
+          <div class="en-step"><button type="button" aria-label="Menos ${dist?'metros':'repeticiones'}" onclick="sesPaso(${i},${j},'r',-${pasoR})">${ico('minus')}</button>
+            <label><input type="number" inputmode="numeric" min="0" data-k="r" value="${rr||''}" placeholder="—" aria-label="${dist?'Metros':'Repeticiones'} ${nomS.toLowerCase()} ${j+1}" oninput="sesValor(${i},${j},'r',this.value)"><small>${dist?'metros':'reps'}</small></label>
+            <button type="button" aria-label="Más ${dist?'metros':'repeticiones'}" onclick="sesPaso(${i},${j},'r',${pasoR})">${ico('mas')}</button></div>
+        </div>
+        <button type="button" class="en-btn en-btn-p en-lista" onclick="sesMarcar(${i},${j})">${ico('check')}${nomS} ${j+1} lista</button>
+      </div>`;
+    }
+    series=`${btnTiempo?`<div class="en-tm-row">${btnTiempo}</div>`:''}<div class="en-sets en-sets-cine">${card}</div>`;
   }
-  const alts=e0.alternativas||[], altSel=reg.alt;
   const sig=ejs[i+1];
   cont.innerHTML=`
     <div class="en-s-top">
@@ -616,32 +623,26 @@ function renderSes(){
       <button type="button" class="en-icon-btn" aria-label="Cronómetro y temporizador" onclick="tmMenu()">${ico('timer')}</button>
       <button type="button" class="en-btn-sm" onclick="sesTerminar()">Terminar</button>
     </div>
-    <div class="en-prog" aria-hidden="true">${prog}</div>
+    <div class="en-rail" role="group" aria-label="Ejercicio ${i+1} de ${ejs.length}">${prog}</div>
     <div class="en-ex">
-      <button type="button" class="en-media" onclick="abrirFicha(sesEjActual())" aria-label="Ver cómo se hace ${esc(e.nm)}">
-        ${big?`<span class="en-big${/:/.test(big)?' largo':''}" aria-hidden="true">${big}</span>`:''}${pic(basesEjercicio(e),'dumbbell','thumb')}${videoEjHTML(e)}
-        ${!especial&&!histEj(s,e0.nm).length?'<span class="en-new">Primera vez</span>':''}
-        <span class="en-media-cta">${ico('play')}Cómo se hace</span>
-      </button>
+      <div class="en-stage-w">
+        <button type="button" class="en-media" onclick="abrirFicha(sesEjActual())" aria-label="Ver la técnica de ${esc(e.nm)}">
+          ${big?`<span class="en-big${/:/.test(big)?' largo':''}" aria-hidden="true">${big}</span>`:''}${pic(basesEjercicio(e),'dumbbell','thumb')}${videoEjHTML(e)}
+          ${!especial&&!histEj(s,e0.nm).length?'<span class="en-new">Primera vez</span>':''}
+          <span class="en-media-cta">${ico('play')}Técnica</span>
+        </button>
+        ${alts.length?`<button type="button" class="en-cambia" aria-expanded="${sesUI.alts}" aria-label="¿Área ocupada? Cámbialo solo por hoy" onclick="sesUI.alts=!sesUI.alts;renderSes()">${ico('shuffle')}</button>`:''}
+      </div>
       <h3>${esc(e.nm)}</h3>
-      <div class="en-meta"><span>Ejercicio ${i+1} de ${ejs.length}</span>${esEmom?`<span>EMOM ${esc(e0.series)} min · ${esc(e0.reps)}</span>`:!especial?`<span>${esc(seriesHoy(e0,aj)||e0.series)} × ${esc(limpiarRepsTxt(e0.reps))}</span>`:''}${f.eq?`<span>${ico('dumbbell')}${esc(f.eq)}</span>`:''}${e0.grupo?`<span>Grupo ${esc(e0.grupo)}</span>`:''}</div>
+      <p class="en-data">${esEmom?`<b>EMOM ${esc(e0.series)} min</b> · ${esc(e0.reps)}`:!especial?`<b>${esc(seriesHoy(e0,aj)||e0.series)} × ${esc(limpiarRepsTxt(e0.reps))}</b>`:`<b>${esc(rxTexto(e0,s).sr)}</b>`}${dPlan.nada?'':dPlan.libre?(dPlan.meta?' · descanso ~'+(dPlan.meta<120?dPlan.meta+' s':Math.round(dPlan.meta/6)/10+' min'):''):des?' · descanso '+(des<120?des+' s':Math.round(des/60*10)/10+' min'):''}${M&&!esEmom?' · '+esc(ddMetCorto(M.nm)):''}${f.eq?' · '+esc(f.eq):''}</p>
       ${alt?`<div class="en-swap">Solo hoy, en lugar de ${esc(e0.nm)}</div>`:''}
-      ${f.ms.length?`<div class="en-musc">${f.ms.map((m,j)=>`<span class="${j?'':'p'}"><i></i>${esc(m)}</span>`).join('')}</div>`:''}
-      ${!especial?`<div class="en-pills">
-        ${c?`<span class="en-pill l">${ico('bolt')}Hoy <b>${enKgCarga(c)}</b>${c.sube>0&&!c.series?' · +'+kgToDisplay(c.sube):''}</span>`:''}
-        ${(()=>{ const pr=s.logs&&s.logs.prs&&s.logs.prs[prKey(e.nm)]; return pr?`<span class="en-pill">${ico('trophy')}Récord <b>${enKg(pr.kg)}</b></span>`:''; })()}
-        ${dPlan.nada?'':dPlan.libre?`<span class="en-pill">${ico('timer')}Descanso <b>libre${dPlan.meta?' · ~'+(dPlan.meta<120?dPlan.meta+' s':Math.round(dPlan.meta/6)/10+' min'):''}</b></span>`
-          :des?`<span class="en-pill">${ico('timer')}Descanso <b>${des<120?des+' s':Math.round(des/60*10)/10+' min'}</b></span>`:''}
-        ${M?`<span class="en-pill">${ico('bolt')}<b>${esc(M.nm)}</b></span>`:''}
-      </div>`:''}
+      ${alts.length&&sesUI.alts?`<div class="en-alts">${alts.map((a,ai)=>`<button type="button" class="en-alt" aria-pressed="${altSel===ai}" onclick="sesAlternativa(${i},${ai})"><span><b>${esc(a.nm)}</b><span>${esc(a.nota||a.ms||'')}</span></span><em>${altSel===ai?'Hoy':'Usar'}</em></button>`).join('')}</div>`:''}
+      ${(M&&M.como)||e.tip?`<button type="button" class="en-cue" onclick="abrirFicha(sesEjActual())"><span>${esc(sinEmoji(M&&M.como?M.como:e.tip))}</span>${ico('chev')}</button>`:''}
     </div>
     ${aj&&aj.notas.length?`<div class="en-aj" role="status">${ico('spark')}<span>${aj.notas.map(esc).join(' ')}</span></div>`:''}
     ${c&&c.nota&&!especial?`<div class="en-aj soft">${esc(c.nota)}</div>`:''}
-    ${(M&&M.como)||e.tip?`<div class="en-tip">${ico('spark')}<span>${esc(sinEmoji(M&&M.como?M.como:e.tip))}</span></div>`:''}
     ${series}
-    ${alts.length?`<button type="button" class="en-alt-tg" aria-expanded="${sesUI.alts}" onclick="sesUI.alts=!sesUI.alts;renderSes()"><span>¿Área ocupada? Cámbialo solo por hoy</span>${ico('chev')}</button>
-      ${sesUI.alts?`<div class="en-alts">${alts.map((a,ai)=>`<button type="button" class="en-alt" aria-pressed="${altSel===ai}" onclick="sesAlternativa(${i},${ai})"><span><b>${esc(a.nm)}</b><span>${esc(a.nota||a.ms||'')}</span></span><em>${altSel===ai?'Hoy':'Usar'}</em></button>`).join('')}</div>`:''}`:''}
-    ${sig?`<div class="en-next">${ico('arrow')}<div><b>Después: ${esc(sig.nm)}</b><span>${esc(rxTexto(sig,s).sr)}</span></div></div>`:''}
+    ${sig?`<button type="button" class="en-next" onclick="sesIr(1)"><span class="en-next-th">${pic(basesEjercicioMini(sig),'dumbbell','thumb')}</span><span class="en-next-t"><small>Después</small><b>${esc(sig.nm)}</b></span>${ico('chev')}</button>`:''}
     <div class="en-nav">
       ${i>0?`<button type="button" class="en-btn en-btn-g en-btn-ic" aria-label="Ejercicio anterior" onclick="sesIr(-1)">${ico('chevl')}</button>`:''}
       <button type="button" class="en-btn en-btn-p" id="en-sig" data-pend="${sesAvance(i,e0)<1?1:0}" onclick="${sig?'sesIr(1)':'sesTerminar()'}">${sig?'Siguiente ejercicio':'Terminar sesión'}</button>
@@ -668,6 +669,7 @@ function sesPaso(i,j,campo,d){
   renderSes();
   const el=document.querySelector(`#en-ses .en-set.cur input[data-k="${campo}"]`); if(el){ el.classList.remove('en-pulse'); void el.offsetWidth; el.classList.add('en-pulse'); }
 }
+function sesIrA(j){ descansoOcultar(); sesUI.alts=false; sesUI.cur=Math.max(0,Math.min(sesEjs().length-1,j)); renderSes(); window.scrollTo(0,0); }
 function sesEjActual(){ const ejs=sesEjs(), i=sesUI.cur, e0=ejs[i]; const a=e0&&ejEjecutado(e0,i); return a?Object.assign({},e0,{nm:a.nm,ms:a.ms||e0.ms,tip:a.nota||e0.tip}):e0; }
 function limpiarRepsTxt(r){ return String(r||'').replace(/\s*reps?\b/i,'').trim(); }
 function sesValor(i,j,campo,v){

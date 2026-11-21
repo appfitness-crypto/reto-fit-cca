@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1D2B27">
+<title>Reto Fit CCA · Sesión, segunda propuesta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══ Sesión · segunda propuesta ═══
+   1. La foto del ejercicio vive siempre en la misma "pantalla del gimnasio": una tarjeta oscura del mismo
+      negro que el fondo de las fotos, igual en Salvia, Claro y Oscuro. Sin neblina ni cortes.
+   2. El número va "fantasma": tono sobre tono, abajo a la izquierda y cortado por el borde. Con
+      mix-blend-mode:lighten nunca pisa la figura (la figura siempre es más clara que el número).
+   3. El verde de los músculos de las fotos es el único verde: el acento del tema queda para los botones.
+   4. Menos palabras: una línea de datos, la técnica en su ficha y las series pendientes en una sola línea. */
+:root{--fd:'Kanit','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;--expo:cubic-bezier(.16,1,.3,1);--out:cubic-bezier(.23,1,.32,1);
+  --screen:#0B0F14;--ghost:#252D36;--musc:#C8F23A}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#CCDAD5;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--fb);font-size:15px;line-height:1.45;color:#17231F;background:linear-gradient(172deg,#E6EEEB 0%,#CCDAD5 46%,#A3B8B1 100%);min-height:100vh;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid #F07A2B;outline-offset:2px;border-radius:12px}
+img{display:block}
+.ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* Presentación */
+.pg{max-width:1800px;margin:0 auto;padding:44px 36px 96px}
+.pg-h{margin-bottom:40px;max-width:1000px;margin-left:auto;margin-right:auto}
+.pg-h h1{font:italic 800 clamp(34px,4.6vw,66px)/.92 var(--fd);text-transform:uppercase;margin:0 0 14px}
+.pg-h h1 b{color:#F07A2B}
+.pg-h ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.pg-h li{padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.55);font-size:14.5px;color:#46534E}
+.pg-h li b{display:block;font:700 16px/1.2 var(--fd);color:#17231F;margin-bottom:4px}
+.rail{display:grid;grid-template-columns:repeat(2,minmax(410px,1fr));gap:72px 28px;justify-items:center;max-width:1000px;margin:0 auto}
+@media (min-width:1800px){.rail{grid-template-columns:repeat(4,minmax(410px,1fr));max-width:none}}
+@media (max-width:899px){.rail{grid-template-columns:1fr}}
+.shot{width:410px;display:flex;flex-direction:column;align-items:center}
+.shot-h{width:390px;display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.shot-h h2{font:italic 800 22px/1 var(--fd);text-transform:uppercase;margin:0 auto 0 0;white-space:nowrap}
+.shot-h small{display:block;font:600 12px/1 var(--fb);text-transform:none;color:#46534E;margin-top:4px;font-style:normal}
+.seg{display:inline-flex;padding:4px;border-radius:99px;background:rgba(255,255,255,.55)}
+.seg button{min-height:36px;padding:0 14px;border-radius:99px;font:700 13px/1 var(--fb);color:#46534E}
+.seg button[aria-pressed="true"]{background:#22332F;color:#fff}
+.notes{width:390px;margin:24px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.notes li{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:14.5px;color:#46534E}
+.notes li .ico{width:18px;height:18px;color:#2C403A;margin-top:2px}
+.notes b{color:#17231F}
+.phone{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;isolation:isolate;box-shadow:0 0 0 10px #0E1513,0 0 0 11px #31423C,0 46px 80px -34px rgba(14,24,21,.65);transform:translateZ(0)}
+.antes{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;z-index:90;opacity:0;pointer-events:none;transition:opacity .4s var(--out)}
+.phone.ver-antes .antes{opacity:1}
+.scr{position:absolute;inset:0;overflow:hidden}
+.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:50px 16px 40px}
+.scroll::-webkit-scrollbar{display:none}
+.sb{position:absolute;top:0;left:0;right:0;height:46px;z-index:70;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 40px;font:600 16px/1 var(--fb);pointer-events:none}
+.sb svg{height:13px;width:auto}
+
+/* Temas */
+.salvia{--bg:linear-gradient(172deg,#E6EEEB 0%,#CCDAD5 46%,#A3B8B1 100%);--tx:#17231F;--mu:#56635E;--card:rgba(255,255,255,.72);--card2:rgba(255,255,255,.9);--line:rgba(23,35,31,.1);--btn:linear-gradient(180deg,#2C403A,#1D2B27);--btn-tx:#fff;--acc:#F07A2B;--trk:rgba(23,35,31,.08);background:var(--bg);color:var(--tx)}
+.claro{--bg:linear-gradient(180deg,#D9F0FB 0%,#C7E8F8 40%,#B3DFF5 100%);--tx:#002941;--mu:#3E5A6B;--card:rgba(255,255,255,.8);--card2:#fff;--line:rgba(0,41,65,.1);--btn:linear-gradient(180deg,#F86464,#EA4F4F);--btn-tx:#fff;--acc:#FD6E6E;--trk:rgba(0,41,65,.07);background:var(--bg);color:var(--tx)}
+
+/* Barra de la sesión: el avance son las miniaturas de los ejercicios */
+.top{display:flex;align-items:center;gap:8px}
+.ib{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--card)}
+.ib .ico{width:20px;height:20px}
+.top .t{flex:1;min-width:0;font:700 15px/1.15 var(--fd)}
+.top .t span{display:block;font:500 12.5px/1.2 var(--fb);color:var(--mu)}
+.fin-b{min-height:40px;padding:0 14px;border-radius:99px;background:var(--card);font:700 13px/1 var(--fb)}
+.rail-ej{display:flex;gap:6px;margin:12px 0 0}
+.rail-ej span{position:relative;flex:1;height:40px;border-radius:12px;overflow:hidden;background:var(--screen)}
+.rail-ej img{width:100%;height:100%;object-fit:cover;object-position:50% 35%;opacity:.45}
+.rail-ej .ok img{opacity:.8}
+.rail-ej .ok::after{content:"";position:absolute;inset:auto 6px 5px auto;width:14px;height:14px;border-radius:50%;background:var(--musc) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230B0F14' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/10px no-repeat}
+.rail-ej .now{flex:1.8;box-shadow:inset 0 0 0 2px var(--acc)}
+.rail-ej .now img{opacity:1}
+
+/* La pantalla del gimnasio: igual en los tres temas */
+.stage{position:relative;height:250px;margin:10px 0 0;border-radius:28px;overflow:hidden;background:var(--screen);isolation:isolate}
+.ghost{position:absolute;left:10px;bottom:-34px;margin:0;color:var(--ghost);font:italic 800 200px/.8 var(--fd);letter-spacing:-.05em;white-space:nowrap;pointer-events:none;user-select:none}
+.ghost small{font-size:.4em;letter-spacing:-.02em;margin-left:.04em}
+.fig{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:62% 60%;mix-blend-mode:lighten}
+.st-b{position:absolute;z-index:2;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 13px;border-radius:99px;background:rgba(255,255,255,.1);color:#EEF2F6;font:700 13px/1 var(--fb);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.st-b .ico{width:15px;height:15px}
+.st-b.tec{right:12px;bottom:12px;background:#EEF2F6;color:#0B0F14}
+.st-b.cam{left:12px;top:12px;width:36px;padding:0;justify-content:center}
+.st-b.new{right:12px;top:12px;background:var(--musc);color:#0B0F14}
+.stage .num-l{position:absolute;left:16px;bottom:14px;z-index:2;font:600 12.5px/1 var(--fb);color:rgba(238,242,246,.6)}
+
+.name{margin:14px 0 0;font:italic 800 28px/.98 var(--fd);text-transform:uppercase;text-wrap:balance}
+.data{margin:6px 0 0;font-size:14px;color:var(--mu)}
+.data b{color:var(--tx);font-weight:700}
+.cue{display:flex;align-items:center;gap:8px;width:100%;margin:10px 0 0;padding:10px 12px;border-radius:14px;background:var(--trk);text-align:left;font-size:14px;color:var(--tx)}
+.cue span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cue .ico{width:16px;height:16px;color:var(--mu)}
+
+/* Serie actual */
+.cur{margin:14px 0 0;padding:14px 14px 12px;border-radius:24px;background:var(--card2);box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 18px 34px -20px rgba(0,0,0,.3)}
+.cur-h{display:flex;align-items:baseline;justify-content:space-between}
+.cur-h b{font:700 18px/1 var(--fd)}
+.cur-h b small{font-weight:600;font-size:14px;color:var(--mu)}
+.cur-h span{font-size:12.5px;color:var(--mu)}
+.dots{display:flex;gap:5px;align-items:center}
+.dots i{width:22px;height:6px;border-radius:9px;background:var(--trk)}
+.dots i.on{background:var(--acc)}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.step{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;height:72px;border-radius:18px;background:var(--trk)}
+.step button{height:100%;display:grid;place-items:center;border-radius:18px}
+.step button:active{background:rgba(0,0,0,.05)}
+.step .v{text-align:center}
+.step .v b{display:block;font:700 30px/1 var(--fd)}
+.step .v b.vac{color:var(--mu);font-size:22px}
+.step .v small{display:block;font-size:11.5px;color:var(--mu);margin-top:3px}
+.go{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:62px;margin-top:10px;border-radius:99px;background:var(--btn);color:var(--btn-tx);font:800 19px/1 var(--fd);box-shadow:0 14px 26px -14px rgba(0,0,0,.5);transition:transform .16s var(--out)}
+.go:active{transform:scale(.98)}
+.go .ico{width:20px;height:20px}
+.link{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:46px;font:600 14px/1 var(--fb);color:var(--mu)}
+.link .ico{width:16px;height:16px}
+.next{display:flex;align-items:center;gap:12px;margin:14px 0 0;padding:8px 12px 8px 8px;border-radius:18px;background:var(--card)}
+.next img{width:44px;height:44px;border-radius:12px;object-fit:cover;object-position:50% 30%;background:var(--screen)}
+.next span{flex:1;font-size:13px;color:var(--mu)}
+.next b{color:var(--tx);font:700 15px/1.2 var(--fd)}
+.next .ico{width:18px;height:18px;color:var(--mu)}
+
+/* Ficha: técnica en hoja que sube */
+.dim{position:absolute;inset:0;background:rgba(0,20,33,.45)}
+.sheet{position:absolute;left:0;right:0;bottom:0;top:54px;border-radius:30px 30px 0 0;background:var(--card2);overflow-y:auto;scrollbar-width:none;padding:10px 16px 110px}
+.sheet::-webkit-scrollbar{display:none}
+.grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 10px}
+.sheet .stage{height:300px;margin:0}
+.vs{position:absolute;left:12px;top:12px;z-index:2;display:inline-flex;padding:3px;border-radius:99px;background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.vs button{min-height:32px;padding:0 12px;border-radius:99px;font:700 12.5px/1 var(--fb);color:rgba(238,242,246,.75)}
+.vs button[aria-pressed="true"]{background:#EEF2F6;color:#0B0F14}
+.mus{position:absolute;left:12px;bottom:12px;z-index:2;display:flex;gap:6px}
+.mus span{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 11px;border-radius:99px;background:rgba(255,255,255,.1);font:600 12.5px/1 var(--fb);color:#EEF2F6;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.mus i{width:8px;height:8px;border-radius:50%;background:rgba(238,242,246,.5)}
+.mus .p i{background:var(--musc);box-shadow:0 0 8px var(--musc)}
+.sheet .name{margin-top:14px}
+.eq{display:flex;align-items:center;gap:6px;margin:6px 0 0;font-size:14px;color:var(--mu)}
+.eq .ico{width:16px;height:16px}
+.pasos{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:0;counter-reset:p}
+.pasos li{position:relative;display:grid;grid-template-columns:34px 1fr;gap:12px;padding:0 0 16px;font-size:16px;line-height:1.35}
+.pasos li::before{counter-increment:p;content:counter(p);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--tx);color:var(--card2);font:700 15px/1 var(--fd)}
+.pasos li:not(:last-child)::after{content:"";position:absolute;left:16px;top:38px;bottom:2px;width:2px;background:var(--line)}
+.evita{display:flex;gap:10px;align-items:flex-start;margin:4px 0 0;padding:12px 14px;border-radius:16px;background:rgba(201,53,62,.08);font-size:14.5px}
+.evita .x{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#C9353E;color:#fff;flex:none}
+.evita .x .ico{width:14px;height:14px;stroke-width:3}
+.coach{display:flex;gap:12px;margin:14px 0 0;align-items:flex-start}
+.coach .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--tx);color:var(--card2);font:700 16px/1 var(--fd);flex:none}
+.coach .q{position:relative;flex:1;padding:12px 14px;border-radius:4px 18px 18px 18px;background:var(--trk);font-size:14.5px}
+.coach .q small{display:block;font-size:12px;font-weight:700;color:var(--mu);margin-bottom:3px}
+.sheet-b{position:sticky;bottom:-110px;z-index:5;margin:16px -16px -110px;padding:22px 16px 18px;background:linear-gradient(180deg,transparent,var(--card2) 34%)}
+
+/* Registro de cardio */
+.done-t{position:absolute;left:0;right:0;top:50%;transform:translateY(-58%);text-align:center;z-index:2;color:#EEF2F6}
+.done-t b{display:block;font:italic 800 76px/.9 var(--fd);letter-spacing:-.03em}
+.done-t span{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font:700 14px/1 var(--fb);color:var(--musc)}
+.done-t span .ico{width:16px;height:16px;stroke-width:3}
+.fc{margin:16px 0 0}
+.fc-h{display:flex;align-items:baseline;justify-content:space-between}
+.fc-h b{font:700 17px/1 var(--fd)}
+.fc-h span{font-size:12.5px;color:var(--mu)}
+.zona{position:relative;height:14px;margin:30px 0 6px;border-radius:99px;background:var(--trk)}
+.zona .ok{position:absolute;top:0;bottom:0;left:38%;width:30%;border-radius:99px;background:color-mix(in srgb,var(--acc) 35%,transparent)}
+.zona .me{position:absolute;top:-26px;left:52%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font:700 13px/1 var(--fd)}
+.zona .me::after{content:"";width:3px;height:30px;border-radius:9px;background:var(--tx);margin-top:4px}
+.zona-l{display:flex;justify-content:space-between;font-size:12px;color:var(--mu)}
+
+.play .fig{animation:figIn 1100ms var(--out) both}
+.play .ghost{animation:ghostIn 1300ms var(--expo) both}
+.play .cur{animation:up 700ms var(--expo) 300ms both}
+.play .sheet{animation:sheetIn 600ms var(--expo) both}
+#s4 .sheet-b{position:absolute;left:16px;right:16px;bottom:18px;margin:0;padding:0;background:none}
+@keyframes figIn{from{opacity:0;transform:scale(1.05)}}
+@keyframes ghostIn{from{opacity:0;transform:translateX(-30px)}}
+@keyframes up{from{opacity:0;transform:translateY(12px)}}
+@keyframes sheetIn{from{transform:translateY(40%);opacity:.4}}
+@media (prefers-reduced-motion:reduce){.play *{animation:none!important}}
+@media (max-width:520px){
+  .pg{padding:28px 0 64px}.pg-h{padding:0 20px}.rail{display:block}
+  .shot{width:100%;margin-bottom:56px}.shot-h,.notes{width:auto;align-self:stretch;margin-left:20px;margin-right:20px}
+  .phone{width:100%;border-radius:0;box-shadow:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-chevl" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2 1.5M9.5 2.5h5M12 2.5V6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1.3" fill="currentColor"/><circle cx="12" cy="7.5" r="1.3" fill="currentColor"/><circle cx="16" cy="10" r="1.3" fill="currentColor"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1-4 4-6 7.5-6s6.5 2 7.5 6"/></symbol>
+</svg>
+<div class="pg">
+  <header class="pg-h">
+    <h1>La sesión, <b>segunda vuelta</b></h1>
+    <ol>
+      <li><b>Una sola pantalla de gimnasio</b>La foto vive en la misma tarjeta negra en Salvia, Claro y Oscuro. Sin neblina ni cortes: se ve igual de nítida en los tres.</li>
+      <li><b>El número ya no tapa</b>Va tono sobre tono, abajo y cortado por el borde. Nunca pisa la figura, en ningún tema.</li>
+      <li><b>Un solo verde</b>El verde de los músculos de las fotos no compite con el acento del tema: el naranja o el coral solo marca botones y avance.</li>
+      <li><b>La mitad de palabras</b>Una línea de datos, la técnica en su ficha, las series que faltan como puntos y el avance con miniaturas de los ejercicios.</li>
+    </ol>
+  </header>
+  <main class="rail">
+
+    <section class="shot">
+      <div class="shot-h"><h2>Serie de fuerza<small>Tema Salvia</small></h2><div class="seg"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr salvia" id="s1">
+          <div class="scroll">
+            <div class="top"><button type="button" class="ib" aria-label="Salir"><svg class="ico"><use href="#i-chevl"/></svg></button><div class="t">Pierna y glúteo<span>12:40</span></div><button type="button" class="ib" aria-label="Cronómetro"><svg class="ico"><use href="#i-timer"/></svg></button><button type="button" class="fin-b">Terminar</button></div>
+            <div class="rail-ej" aria-label="Ejercicio 3 de 5"><span class="ok"><img src="img/mini-caminata-inclinada.webp" alt=""></span><span class="ok"><img src="img/mini-plancha-en-trx.webp" alt=""></span><span class="now"><img src="img/mini-crunch-en-maquina.webp" alt=""></span><span><img src="img/mini-peso-muerto-sumo.webp" alt=""></span><span><img src="img/mini-caminata-con-peso-unilateral.webp" alt=""></span></div>
+            <div class="stage">
+              <p class="ghost" aria-hidden="true">1<small>/4</small></p>
+              <img class="fig" src="img/crunch-en-maquina.webp" alt="">
+              <button type="button" class="st-b cam" aria-label="¿Máquina ocupada? Cámbialo por hoy"><svg class="ico"><use href="#i-shuffle"/></svg></button>
+              <span class="st-b new">Primera vez</span>
+              <button type="button" class="st-b tec"><svg class="ico"><use href="#i-play"/></svg>Técnica</button>
+            </div>
+            <h1 class="name">Crunch en máquina</h1>
+            <p class="data"><b>4 × 10</b> · descanso 60 s · tempo 3-1-1</p>
+            <button type="button" class="cue"><span>Baja en 3 s, pausa 1 s, sube en 1 s.</span><svg class="ico"><use href="#i-chev"/></svg></button>
+            <div class="cur">
+              <div class="cur-h"><b>Serie 1 <small>de 4</small></b><span class="dots" aria-label="Faltan 3 series"><i class="on"></i><i></i><i></i><i></i></span></div>
+              <div class="steps">
+                <div class="step"><button type="button" aria-label="Menos peso"><svg class="ico"><use href="#i-minus"/></svg></button><div class="v"><b class="vac">—</b><small>anota tus kg</small></div><button type="button" aria-label="Más peso"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+                <div class="step"><button type="button" aria-label="Menos repeticiones"><svg class="ico"><use href="#i-minus"/></svg></button><div class="v"><b>10</b><small>reps</small></div><button type="button" aria-label="Más repeticiones"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+              </div>
+              <button type="button" class="go"><svg class="ico"><use href="#i-check"/></svg>Serie 1 lista</button>
+            </div>
+            <div class="next"><img src="img/mini-peso-muerto-sumo.webp" alt=""><span>Después<br><b>Peso muerto sumo</b></span><svg class="ico"><use href="#i-chev"/></svg></div>
+          </div>
+          <div class="sb"><span>9:33</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+        <img class="antes" src="antes/99e0f340.webp" alt="Pantalla actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-text"/></svg><span>Las tres filas “10 · pendiente” se vuelven <b>cuatro puntos</b>. “¿Área ocupada?” es un ícono en la foto.</span></li>
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>El peso en 0 ahora dice <b>“anota tus kg”</b>: un 0 gris parecía un dato.</span></li>
+        <li><svg class="ico"><use href="#i-palette"/></svg><span>El avance son <b>miniaturas de los ejercicios</b>, no barras genéricas.</span></li>
+      </ul>
+    </section>
+
+    <section class="shot">
+      <div class="shot-h"><h2>Plancha con tiempo<small>Tema Claro</small></h2><div class="seg"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr claro" id="s2">
+          <div class="scroll">
+            <div class="top"><button type="button" class="ib" aria-label="Salir"><svg class="ico"><use href="#i-chevl"/></svg></button><div class="t">Accesorios + core<span>04:12</span></div><button type="button" class="ib" aria-label="Cronómetro"><svg class="ico"><use href="#i-timer"/></svg></button><button type="button" class="fin-b">Terminar</button></div>
+            <div class="rail-ej"><span class="ok"><img src="img/mini-caminata-inclinada.webp" alt=""></span><span class="now"><img src="img/mini-plancha-en-trx.webp" alt=""></span><span><img src="img/mini-crunch-en-maquina.webp" alt=""></span><span><img src="img/mini-caminata-con-peso-unilateral.webp" alt=""></span></div>
+            <div class="stage">
+              <p class="ghost" aria-hidden="true">25<small>s</small></p>
+              <img class="fig" src="img/plancha-en-trx.webp" alt="">
+              <button type="button" class="st-b tec"><svg class="ico"><use href="#i-play"/></svg>Técnica</button>
+            </div>
+            <h1 class="name">Plancha en TRX</h1>
+            <p class="data"><b>3 × 25 s</b> · descanso 45 s · TRX</p>
+            <button type="button" class="cue"><span>Pies en las asas y cuerpo en línea.</span><svg class="ico"><use href="#i-chev"/></svg></button>
+            <div class="cur">
+              <div class="cur-h"><b>Serie 1 <small>de 3</small></b><span class="dots"><i class="on"></i><i></i><i></i></span></div>
+              <button type="button" class="go"><svg class="ico"><use href="#i-timer"/></svg>Empezar 25 s</button>
+              <button type="button" class="link"><svg class="ico"><use href="#i-check"/></svg>Ya lo hice: registrarlo</button>
+            </div>
+            <div class="next"><img src="img/mini-crunch-en-maquina.webp" alt=""><span>Después<br><b>Crunch en máquina</b></span><svg class="ico"><use href="#i-chev"/></svg></div>
+          </div>
+          <div class="sb"><span>9:32</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+        <img class="antes" src="antes/2f07a498.webp" alt="Pantalla actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>Hoy el “25 s” rojo se pinta encima de la figura. Ahora el <b>“25 s” fantasma queda abajo</b> y la plancha se ve completa.</span></li>
+        <li><svg class="ico"><use href="#i-palette"/></svg><span>Hoy la foto se funde con el azul claro y se ve neblinosa. Ahora <b>se queda en su tarjeta negra</b>, igual que en el tema oscuro.</span></li>
+      </ul>
+    </section>
+
+    <section class="shot">
+      <div class="shot-h"><h2>Ficha de técnica<small>Tema Claro · al tocar “Técnica”</small></h2><div class="seg"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr claro" id="s3">
+          <div class="dim"></div>
+          <div class="sheet">
+            <div class="grab"></div>
+            <div class="stage">
+              <img class="fig" src="img/sentadilla-bulgara.webp" alt="Sentadilla búlgara" style="object-position:55% 60%">
+              <div class="vs" role="group" aria-label="Ver"><button type="button" aria-pressed="true">Así sí</button><button type="button" aria-pressed="false">Así no</button></div>
+              <div class="mus"><span class="p"><i></i>Cuádriceps</span><span><i></i>Glúteo</span></div>
+            </div>
+            <h1 class="name">Sentadilla búlgara</h1>
+            <p class="eq"><svg class="ico"><use href="#i-dumbbell"/></svg>Banca y mancuernas</p>
+            <ol class="pasos">
+              <li>Apoya el empeine del pie de atrás en la banca.</li>
+              <li>Baja recto hasta que la rodilla de atrás casi toque el piso.</li>
+              <li>Sube empujando con el pie de adelante.</li>
+            </ol>
+            <p class="evita"><span class="x"><svg class="ico"><use href="#i-x"/></svg></span><span>Que la rodilla de adelante se vaya hacia adentro.</span></p>
+            <div class="coach"><span class="av">L</span><p class="q"><small>Luis, tu entrenador</small>Peso en el talón de la pierna de adelante; siente el glúteo.</p></div>
+            <div class="sheet-b"><button type="button" class="go">Entendido</button></div>
+          </div>
+          <div class="sb" style="color:#fff"><span>9:31</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+        <img class="antes" src="antes/7061d750.webp" alt="Ficha actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-text"/></svg><span>Sin los títulos “Músculos que trabaja”, “Cómo se hace” y “Nota de tu entrenador”: <b>los músculos van sobre la foto</b>, con el verde de la imagen.</span></li>
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>Los pasos se leen <b>como una secuencia</b> y el error común se marca con una X roja.</span></li>
+        <li><svg class="ico"><use href="#i-user"/></svg><span>La nota es un <b>mensaje de tu entrenador</b>, con su inicial y su nombre.</span></li>
+      </ul>
+    </section>
+
+    <section class="shot">
+      <div class="shot-h"><h2>Registro de cardio<small>Tema Salvia · al terminar el tiempo</small></h2><div class="seg"><button type="button" aria-pressed="true" data-v="d">Después</button><button type="button" aria-pressed="false" data-v="a">Antes</button></div></div>
+      <div class="phone">
+        <div class="scr salvia" id="s4">
+          <div class="dim" style="background:rgba(14,24,21,.45)"></div>
+          <div class="sheet">
+            <div class="grab"></div>
+            <div class="stage" style="height:230px">
+                            <img class="fig" src="img/caminata-inclinada.webp" alt="" style="opacity:.55">
+              <div class="done-t"><b>20:00</b><span><svg class="ico"><use href="#i-check"/></svg>Caminata inclinada lista</span></div>
+            </div>
+            <div class="fc">
+              <div class="fc-h"><b>¿A qué ritmo fuiste?</b><span>opcional</span></div>
+              <div class="steps" style="grid-template-columns:1fr">
+                <div class="step"><button type="button" aria-label="Menos"><svg class="ico"><use href="#i-minus"/></svg></button><div class="v"><b>128</b><small>latidos por minuto</small></div><button type="button" aria-label="Más"><svg class="ico"><use href="#i-plus"/></svg></button></div>
+              </div>
+              <div class="zona" aria-label="Tu meta es 120 a 138; vas en 128"><span class="ok"></span><span class="me">128</span></div>
+              <div class="zona-l"><span>Suave</span><span>Tu meta: 120–138</span><span>Fuerte</span></div>
+            </div>
+            <div class="sheet-b"><button type="button" class="go"><svg class="ico"><use href="#i-check"/></svg>Guardar y seguir</button><button type="button" class="link">Siguiente: Plancha en TRX</button></div>
+          </div>
+          <div class="sb" style="color:#fff"><span>9:31</span><svg viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></svg></div>
+        </div>
+        <img class="antes" src="antes/1fd5e96e.webp" alt="Registro actual" loading="lazy">
+      </div>
+      <ul class="notes">
+        <li><svg class="ico"><use href="#i-text"/></svg><span>Hoy son tres párrafos, un campo “Opcional” y dos botones. Ahora: <b>“20:00 · lista”</b>, un control de latidos y un botón.</span></li>
+        <li><svg class="ico"><use href="#i-eye"/></svg><span>Una barra muestra <b>si quedaste en tu zona</b> (120–138), en lugar de explicarlo con texto.</span></li>
+      </ul>
+    </section>
+  </main>
+</div>
+<script>
+(()=>{
+  const play=el=>{ el.classList.remove('play'); void el.offsetWidth; el.classList.add('play'); };
+  document.querySelectorAll('.shot').forEach(sh=>{
+    const ph=sh.querySelector('.phone'), scr=sh.querySelector('.scr');
+    sh.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{
+      sh.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+      ph.classList.toggle('ver-antes',b.dataset.v==='a'); if(b.dataset.v==='d') play(scr);
+    }));
+  });
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ play(e.target); io.unobserve(e.target); } }),{threshold:.35});
+  document.querySelectorAll('.scr').forEach(s=>io.observe(s));
+  document.querySelectorAll('.vs').forEach(g=>g.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b)))));
+})();
+</script>
+</body>
+</html>
