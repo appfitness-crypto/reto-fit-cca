@@ -66,11 +66,15 @@ function avisoAbrir(id){
   const otros=lista.filter(x=>x.id!==a.id);
   ov.innerHTML=`<div class="av-sheet">
     <span class="av-grab" aria-hidden="true"></span>
-    <div class="av-ban av-m-${esc(a.tipo||'aviso')}${a.img?'':' sin-img'}">
-      ${a.img?`<img class="av-ban-img" src="${esc(a.img)}" alt="">`:`<span class="av-ban-ic" aria-hidden="true">${ico(t.ic)}</span>`}
+    ${a.img?`<div class="av-ban av-m-${esc(a.tipo||'aviso')} con-img">
+      <div class="av-ban-media"><img class="av-ban-blur" src="${esc(a.img)}" alt="" aria-hidden="true"><img class="av-ban-img" src="${esc(a.img)}" alt="Imagen del aviso: ${esc(a.titulo)}"></div>
+    </div>
+    <div class="av-ban-t2 av-m-${esc(a.tipo||'aviso')}">${m?`<span class="av-ban-pet2" aria-hidden="true">${m.img}</span>`:''}<div><span class="av-chip">${ico(t.ic)}${esc(t.nm)}${a.grupo?' · de '+esc(a.autor||'tu entrenador'):''}</span><h2 id="av-ov-t">${esc(a.titulo)}</h2></div></div>`
+    :`<div class="av-ban av-m-${esc(a.tipo||'aviso')} sin-img">
+      <span class="av-ban-ic" aria-hidden="true">${ico(t.ic)}</span>
       ${m?`<span class="av-ban-pet" aria-hidden="true">${m.img}</span>`:''}
       <div class="av-ban-t"><span>${ico(t.ic)}${esc(t.nm)}${a.grupo?' · de '+esc(a.autor||'tu entrenador'):''}</span><h2 id="av-ov-t">${esc(a.titulo)}</h2></div>
-    </div>
+    </div>`}
     ${dat.length?`<div class="av-dat">${dat.map(d=>`<div>${ico(d[0])}<b>${esc(d[1])}</b></div>`).join('')}</div>`:''}
     ${a.texto?`<p class="av-msg">${esc(a.texto)}</p>`:''}
     ${a.cuando?`<button type="button" class="av-go" onclick="avisoCalendario('${esc(a.id)}')">${ico('calendar')}Agregarlo a mi calendario</button>`:''}
@@ -82,13 +86,26 @@ function avisoAbrir(id){
   document.addEventListener('keydown',avisoEsc);
   document.body.appendChild(ov);
   requestAnimationFrame(()=>ov.classList.add('on'));
-  ov.querySelector('.av-link')?.focus({preventScroll:true});
+  const sh=ov.querySelector('.av-sheet'); sh.tabIndex=-1; sh.focus({preventScroll:true});
 }
 function avisoEsc(e){ if(e.key==='Escape') avisoCerrarHoja(); }
 function avisoCerrarHoja(){ document.removeEventListener('keydown',avisoEsc); const ov=document.getElementById('av-ov'); if(ov) ov.remove(); }
-// Archivo de calendario (.ics) con la fecha, hora y lugar del aviso
+// Agregar al calendario: en iPhone el archivo .ics abre el Calendario directo; en Android y computadora
+// se abre Google Calendar con el evento ya lleno (el .ics solo se descargaba y no pasaba nada)
+function avisoEsIOS(){ return /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); }
 function avisoCalendario(id){
   const a=avisosTodos().find(x=>x.id===id); if(!a||!a.cuando) return;
+  if(!avisoEsIOS()){
+    const d=String(a.cuando).replace(/-/g,''), h=String(a.hora||'').replace(':','');
+    let fechas;
+    if(h){ const H=+h.slice(0,2), fin=String((H+1)%24).padStart(2,'0')+h.slice(2); fechas=`${d}T${h}00/${d}T${fin}00`; }
+    else { const m=new Date(retoFechaLocal(a.cuando).getTime()+864e5); fechas=`${d}/${fechaISO(m).replace(/-/g,'')}`; }
+    let tz=''; try{ tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''; }catch(e){}
+    const q=new URLSearchParams({action:'TEMPLATE', text:a.titulo||'Aviso del reto', dates:fechas, details:a.texto||'', location:a.lugar||''});
+    if(tz) q.set('ctz',tz);
+    window.open('https://calendar.google.com/calendar/render?'+q.toString(),'_blank','noopener');
+    return;
+  }
   const d=String(a.cuando).replace(/-/g,''), h=String(a.hora||'').replace(':','');
   const ini=h?`DTSTART:${d}T${h}00`:`DTSTART;VALUE=DATE:${d}`;
   const fin=h?`DTEND:${d}T${String((+h.slice(0,2)+1)%24).padStart(2,'0')}${h.slice(2)}00`:'';

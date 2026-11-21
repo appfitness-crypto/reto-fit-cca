@@ -93,6 +93,9 @@
       "$id": {
         "logo": {
           ".validate": "newData.isString() && newData.val().length < 120000"
+        },
+        "img": {
+          ".validate": "newData.isString() && newData.val().length < 400000"
         }
       }
     },
