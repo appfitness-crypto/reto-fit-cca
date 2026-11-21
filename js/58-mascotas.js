@@ -19,6 +19,7 @@ const MASCOTAS=[
   {id:'jaguar',  nm:'Jaguar',  estilo:'energicos',  color:'#E0A020', frase:'HIIT: potencia y velocidad.'},
   {id:'lobo',    nm:'Lobo',    estilo:'energicos',  color:'#7C8CA3', frase:'Funcional: entrena en manada.'},
   {id:'colibri', nm:'Colibrí', estilo:'energicos',  color:'#1FA38A', frase:'Spinning: rápido e incansable.'},
+  {id:'gorila',  nm:'Gorila',  estilo:'energicos',  color:'#4A4F57', frase:'Fuerza pesada: nada lo detiene.'},
   {id:'buho',    nm:'Búho',    estilo:'serenos',    color:'#8A6A4F', frase:'Yoga y movilidad: entrena con cabeza.'},
   {id:'aguila',  nm:'Águila real', estilo:'serenos', color:'#6E4B2A', frase:'Pesas: visión clara, metas altas.'},
   {id:'venado',  nm:'Venado',  estilo:'serenos',    color:'#B07A4A', frase:'Pilates: elegante y constante.'}
