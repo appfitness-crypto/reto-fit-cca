@@ -33,7 +33,7 @@ The routine comes from the socio's own club trainer (the trainer's philosophy sh
 
 ## Brand Commitments
 - Name shown as **Reto Fit CCA** (just "CCA", no long club name).
-- Club logo: a rounded "C" mark, lime-green upper stroke flowing into a deep blue lower stroke, on a green-to-blue gradient tile. Source file supplied by the user (uploads/logo.png). The club's colors are green and blue from this logo.
+- Club logo: a rounded "C" mark, lime-green upper stroke flowing into a deep blue lower stroke, on a green-to-blue gradient tile. Source file supplied by the user (uploads/logo.png). The club's colors are green and blue from this logo. Original logo (Campestre Aguascalientes, high resolution) in `icons/marca/logo-campestre-original.jpg`: the mark is a rounded "C" whose upper loop is olive green `#628B2F` and lower stroke petrol blue `#145678`; the wordmark is gray `#76777B`.
 - Voice: Spanish (México), informal "tú", short and direct.
 
 ## Evidence on Hand
