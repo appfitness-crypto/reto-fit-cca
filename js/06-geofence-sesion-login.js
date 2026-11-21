@@ -227,7 +227,8 @@ function entrarComoStaff(usuario, rolDB){
   const badge=document.getElementById('staff-role-badge');
   badge.style.display='inline-block';
   badge.textContent=sc((entObj&&!esCoord?entTipoLabel(entObj):(esCoord?'director':staffRol)).toUpperCase());
-  document.getElementById('staff-nombre').textContent=(entObj&&entObj.nombre)||(esCoord?'Director':usuario);
+  const nomStaff=(entObj&&entObj.nombre)||(esCoord?'Director':usuario);
+  document.getElementById('staff-nombre').textContent = nomStaff.trim().toLowerCase()===badge.textContent.trim().toLowerCase() ? '' : nomStaff;
   staffActivoId=null;
   staffLimpiarPanel();
   staffRenderList();

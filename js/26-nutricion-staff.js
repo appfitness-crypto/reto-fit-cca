@@ -180,12 +180,11 @@ function abrirEntrenadores(){
     const activos=socios.filter(s=>s.status==='activo').length, pend=socios.filter(s=>s.status==='pendiente').length;
     const tieneFilo=t.filosofia && t.filosofia.tagline;
     return `<div style="border:1px solid var(--b);border-radius:12px;padding:16px;background:var(--gl);display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px">
-      <div style="flex:0 0 auto;${tieneFilo?'':'opacity:.25'}">${svgRadarFilosofia(t.filosofia,54)}</div>
+      <div style="flex:0 0 auto">${tieneFilo?svgRadarFilosofia(t.filosofia,54):(typeof entAvatarHTML==='function'?entAvatarHTML(t,'ent-av ent-av-l'):'')}</div>
       <div style="flex:1;min-width:220px">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="font-family:var(--fd);font-size:var(--fs-xl)">${esc(t.nombre)}</div>
           <span style="font-size:var(--fs-2xs);letter-spacing:.02em;color:var(--mu);font-family:var(--fb);border:1px solid var(--b);border-radius:10px;padding:2px 7px">${esc(entTipoLabel(t)).toUpperCase()}</span>
-          <span style="font-size:var(--fs-2xs);letter-spacing:.02em;color:var(--mu);font-family:var(--fb)">usuario: ${esc(t.id)}</span>
         </div>
         <div style="font-size:var(--fs-xs);margin:5px 0;${tieneFilo?'color:var(--v);font-style:italic':'color:var(--mu)'}">${tieneFilo?'"'+esc(t.filosofia.tagline)+'"':'Sin filosofía definida todavía'}</div>
         <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">${(t.especialidades||[]).map(s=>`<span style="font-size:var(--fs-2xs);text-transform:uppercase;letter-spacing:.03em;background:var(--in-bg2);border:1px solid var(--b);color:var(--mu);padding:2px 7px;border-radius:20px">${esc(s)}</span>`).join('')||'<span style="font-size:var(--fs-2xs);color:var(--mu)">Sin especialidades registradas</span>'}</div>
@@ -194,7 +193,7 @@ function abrirEntrenadores(){
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button onclick="abrirEditarEntrenador('${esc(t.id)}')" style="padding:7px 12px;border:1px solid var(--b);border-radius:7px;background:none;color:var(--tx);font-size:var(--fs-2xs);cursor:pointer">✎ Editar</button>
         ${esCoord?'':`<button onclick="abrirMiFilosofia('${esc(t.id)}')" style="padding:7px 12px;border:1px solid color-mix(in srgb,var(--p) 35%,transparent);border-radius:7px;background:none;color:var(--p);font-size:var(--fs-2xs);cursor:pointer">🧬 ${tieneFilo?'Editar':'Llenar'} filosofía</button>`}
-        ${esCoord?'':`<button onclick="confirmarEliminarEntrenador('${esc(t.id)}')" style="padding:7px 12px;border:1px solid color-mix(in srgb,var(--r) 30%,transparent);border-radius:7px;background:none;color:var(--r);font-size:var(--fs-2xs);cursor:pointer">🗑 Eliminar</button>`}
+        ${esCoord?'':`<button onclick="confirmarEliminarEntrenador('${esc(t.id)}')" class="ent-del">Eliminar</button>`}
       </div>
     </div>`;
   };

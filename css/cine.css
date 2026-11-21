@@ -746,3 +746,89 @@ html:is([data-theme="light"],[data-theme="light2"]) .btn-go.soft{background:var(
 .masc-grid:has(> :nth-child(4)){grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .masc-grid:has(> :nth-child(4)) .masc-op{min-width:0;padding-left:4px;padding-right:4px}
 .masc-grid:has(> :nth-child(4)) .masc-op small,.masc-grid:has(> :nth-child(4)) .masc-op span{font-size:11.5px}
+
+/* ═══ REVISIÓN DE DISEÑO (noviembre) ═══ */
+/* El aviso y la tarjeta del reto solo en Inicio: en las demás pestañas el contenido empieza arriba */
+#s-dash:not([data-tab="inicio"]) #avisos-socio,
+#s-dash:not([data-tab="inicio"]) #reto-banner-socio{display:none;}
+/* Inicio: un solo resumen de la semana (cuántas llevas, racha y los 7 días) */
+.ci-wk .ci-wk-strip{grid-column:1/-1;margin:12px 0 0;order:3;}
+.ci-wk .ci-ver{grid-column:1/-1;order:4;justify-self:end;display:inline-flex;align-items:center;gap:2px;min-height:40px;margin-top:2px;border:0;background:none;color:var(--tx);font:700 13.5px/1 var(--fb);cursor:pointer;}
+.ci-wk .ci-ver .ico{width:16px;height:16px;}
+html:is([data-theme="light"],[data-theme="light2"]) .ci-wk .wk{background:rgba(255,255,255,.55);}
+/* Detalle del día: el título encima de la foto, siempre legible */
+.dd-hero-cine::after{background:linear-gradient(0deg,rgba(10,14,19,.78) 0%,rgba(10,14,19,.35) 42%,rgba(10,14,19,0) 70%);z-index:1;}
+.dd-big{z-index:2;color:var(--cine-acc);text-shadow:0 6px 30px rgba(0,0,0,.45);}
+html[data-theme="light"] .dd-big{color:#FFFFFF;}
+.dd-hero-cine .dd-hero-tx{z-index:3;}
+/* Perfil: la mascota en una fila que abre "Mi compañero" */
+.pf-masc{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 12px;padding:10px 14px 10px 10px;border:0;border-radius:24px;text-align:left;cursor:pointer;color:var(--tx);font:inherit;
+  background:linear-gradient(160deg,var(--cine-deep2),var(--cine-deep) 70%);color:#fff;box-shadow:0 14px 28px -18px rgba(0,0,0,.6);}
+html[data-theme="dark"] .pf-masc{background:linear-gradient(160deg,#1E2933,#0F151C 70%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
+.pf-masc-f{width:70px;height:70px;flex:none;}
+.pf-masc-f img,.pf-masc-f svg{width:100%;height:100%;object-fit:contain;}
+.pf-masc-t{flex:1;min-width:0;display:grid;gap:2px;}
+.pf-masc-t small{font:700 12px/1.2 var(--fb);color:var(--cine-acc2,var(--cine-acc));}
+.pf-masc-t b{font:700 17px/1.15 var(--fd);}
+.pf-masc-t em{font-style:normal;font-size:13px;color:rgba(238,244,241,.78);}
+.pf-masc-bar{height:6px;border-radius:9px;background:rgba(255,255,255,.14);margin-top:6px;overflow:hidden;}
+.pf-masc-bar i{display:block;height:100%;border-radius:inherit;background:var(--cine-acc);}
+.pf-masc>.ico{color:rgba(238,244,241,.7);}
+.pr-pts-mas{margin-top:10px;}
+.pr-pts-mas>summary{cursor:pointer;min-height:40px;display:flex;align-items:center;font-weight:700;font-size:14px;color:var(--tx);}
+.ms-cambiar-s{margin-top:0;color:var(--mu);font-weight:500;}
+/* Plan generado: lo del entrenador en una sola tarjeta */
+.pv-ent{margin-top:14px;padding:4px 4px 12px;border-radius:24px;background:var(--q-glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:inset 0 0 0 1px var(--q-edge),var(--q-sh);}
+.pv-ent .pv-coach{margin:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;}
+.pv-ent .pv-nota{margin:0 12px;padding:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;font-size:13.5px;}
+.pv-ent #pv-metodo{margin:10px 12px 0;}
+.pv-ent #pv-metodo>*{margin:0;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;}
+/* Registro y entrar: arriba una franja de la foto de la portada */
+#s-registro,#s-login{position:relative;isolation:isolate;}
+#s-registro::before,#s-login::before{content:"";position:absolute;left:0;right:0;top:0;height:38vh;z-index:-1;pointer-events:none;
+  background:url(../img/hero/bienvenida.webp) 50% 18%/cover no-repeat;
+  -webkit-mask-image:linear-gradient(180deg,#000 30%,transparent);mask-image:linear-gradient(180deg,#000 30%,transparent);opacity:.9;}
+/* Panel del staff: tema dentro del menú; botones principales oscuros; ficha con "Pasar a otro entrenador" */
+.staff-topbar .theme-slot{display:none;}
+.sm-tema{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 6px;}
+.sm-tema button{display:flex;align-items:center;justify-content:center;gap:6px;min-height:48px;border-radius:16px;border:0;background:var(--gl);box-shadow:inset 0 0 0 1px var(--b);color:var(--tx);font:600 14px/1 var(--fb);cursor:pointer;}
+.sm-tema button .ico{width:18px;height:18px;}
+.sm-tema button[aria-pressed="true"]{background:var(--cine-deep);color:#fff;box-shadow:none;}
+html[data-theme="dark"] .sm-tema button[aria-pressed="true"]{background:var(--cine-acc);color:#0A0E13;}
+html[data-theme] .tb-btn.av-pub{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border-radius:99px;border:0;background:var(--cine-deep);color:#fff;font:800 17px/1 var(--fd);box-shadow:0 14px 26px -14px rgba(0,0,0,.6);}
+html[data-theme="dark"] .tb-btn.av-pub{background:var(--cine-acc);color:#0A0E13;}
+.tb-btn.av-pub .ico{width:18px;height:18px;}
+.fx-pasar{display:flex;align-items:center;gap:10px;width:100%;margin:12px 0 4px;padding:10px 14px;min-height:52px;border:0;border-radius:16px;background:var(--gl);box-shadow:inset 0 0 0 1px var(--b);color:var(--tx);font:500 14px/1.2 var(--fb);text-align:left;cursor:pointer;}
+.fx-pasar .ico{width:18px;height:18px;color:var(--cine-acc);}
+.fx-pasar span{flex:1;}
+.fx-pasar em{font-style:normal;font-weight:700;color:var(--tx);padding:6px 12px;border-radius:99px;background:color-mix(in srgb,var(--cine-acc) 16%,transparent);white-space:nowrap;}
+.ent-av.ent-av-l{width:54px;height:54px;font-size:21px;}
+.ent-del{padding:7px 4px;border:0;background:none;color:var(--mu);font-size:var(--fs-2xs);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.av-in::placeholder,#staff-content input::placeholder,#staff-content textarea::placeholder{color:color-mix(in srgb,var(--tx) 52%,transparent);}
+/* Tablero: en el celular, el ranking como tarjetas en lugar de una tabla que se corta */
+@media (max-width:640px){
+  .tr-rk,.tr-rk tbody{display:block;width:100%;min-width:0!important;}
+  .tr-rk tr:has(th){display:none;}
+  .tr-rk tr{display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--b2);}
+  .tr-rk td{display:block;padding:0!important;border:0!important;font-size:13px;min-width:0;white-space:normal;}
+  .tr-rk td:nth-child(1){grid-column:1;grid-row:1;}
+  .tr-rk td:nth-child(2){grid-column:2/4;grid-row:1;}
+  .tr-rk td:nth-child(7){grid-column:4;grid-row:1;font-size:16px;text-align:right;}
+  .tr-rk td:nth-child(3){grid-column:2;grid-row:2;color:var(--mu);}
+  .tr-rk td:nth-child(4){grid-column:3/5;grid-row:2;color:var(--mu);}
+  .tr-rk td:nth-child(5){grid-column:2;grid-row:3;color:var(--mu);}
+  .tr-rk td:nth-child(6){grid-column:3/5;grid-row:3;color:var(--mu);}
+  .tr-rk td:nth-child(3)::before{content:"Sesiones ";font-weight:600;}
+  .tr-rk td:nth-child(4)::before{content:"Cambio ";font-weight:600;}
+  .tr-rk td:nth-child(5)::before{content:"Constancia ";font-weight:600;}
+  .tr-rk td:nth-child(6)::before{content:"Progreso ";font-weight:600;}
+  .tr-scroll:has(.tr-rk){overflow:visible;}
+}
+/* Letra pequeña: mínimo 13 px en etiquetas que se leen */
+.pv-mus em,.en-musc span,.en-heat-leg,.en-heat-leg span{font-size:13px;}
+.tr-tab,.sl-f{min-height:40px;}
+#dias-sem-opts .chk{min-height:52px;font-size:15px;}
+/* Cuestionario: sin la etiqueta "Paso 04 / 11", el título deja espacio a la barra de avance */
+html[data-theme] #s-quiz .q-sc>.q-title:first-child{margin-top:26px;}
+/* La pantalla de descanso cerrada queda oculta del todo (no solo movida hacia abajo) */
+#en-desc.en-desc:not(.on){visibility:hidden;transition:transform .32s var(--ease-drawer,ease),visibility 0s linear .32s;}

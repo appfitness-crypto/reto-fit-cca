@@ -645,7 +645,7 @@ function renderSes(){
     ${sig?`<button type="button" class="en-next" onclick="sesIr(1)"><span class="en-next-th">${pic(basesEjercicioMini(sig),'dumbbell','thumb')}</span><span class="en-next-t"><small>Después</small><b>${esc(sig.nm)}</b></span>${ico('chev')}</button>`:''}
     <div class="en-nav">
       ${i>0?`<button type="button" class="en-btn en-btn-g en-btn-ic" aria-label="Ejercicio anterior" onclick="sesIr(-1)">${ico('chevl')}</button>`:''}
-      <button type="button" class="en-btn en-btn-p" id="en-sig" data-pend="${sesAvance(i,e0)<1?1:0}" onclick="${sig?'sesIr(1)':'sesTerminar()'}">${sig?'Siguiente ejercicio':'Terminar sesión'}</button>
+      ${sig?'':`<button type="button" class="en-btn en-btn-p" id="en-sig" data-pend="${sesAvance(i,e0)<1?1:0}" onclick="sesTerminar()">Terminar sesión</button>`}
     </div>`;
 }
 // Cargas y caminatas por distancia ("30 m", "20 metros"): se registran en metros, no en repeticiones

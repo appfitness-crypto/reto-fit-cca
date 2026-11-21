@@ -33,12 +33,14 @@ function socioPuntosHTML(s){
     </div>
     <div class="pr-pts-bar" aria-hidden="true"><i style="width:${pc}%"></i><i style="width:${r.puntos?100-pc:0}%"></i></div>
     <div class="pr-pts-l"><span>Constancia <b>${r.ptsConst.toLocaleString('es-MX')}</b></span><span>Progreso <b>${r.ptsProg.toLocaleString('es-MX')}</b></span></div>
+    <details class="pr-pts-mas"><summary>Cómo sumo puntos</summary>
     <div class="pr-pts-rows">
       <div class="pr-pts-row"><span>Sesiones registradas<small>+${P.sesion} cada una, +${P.completa} si la completas</small></span><b>${r.sesiones}</b></div>
       <div class="pr-pts-row"><span>Semanas cumplidas<small>3 o más sesiones · +${P.semana}</small></span><b>${r.semanasOk}</b></div>
       <div class="pr-pts-row"><span>Semanas con medidas<small>registrar peso o medidas en Progreso · +${P.medicion} por semana</small></span><b>${r.mediciones}</b></div>
       <div class="pr-pts-row"><span>Tu cambio<small>según tu objetivo</small></span><b>${esc(x.cambio)}</b></div>
     </div>
+    </details>
     <p class="pr-pts-tip">${esc(tip)}</p>
   </div>`;
 }
