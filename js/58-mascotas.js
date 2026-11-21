@@ -23,7 +23,9 @@ const MASCOTAS=[
   {id:'buho',    nm:'Búho',    estilo:'serenos',    color:'#8A6A4F', frase:'Yoga y movilidad: entrena con cabeza.'},
   {id:'aguila',  nm:'Águila real', estilo:'serenos', color:'#6E4B2A', frase:'Pesas: visión clara, metas altas.'},
   {id:'venado',  nm:'Venado',  estilo:'serenos',    color:'#B07A4A', frase:'Pilates: elegante y constante.'},
-  {id:'gorila',  nm:'Gorila',  estilo:'fuertes',    color:'#4A4F57', frase:'Fuerza pesada: nada lo detiene.'}
+  {id:'gorila',  nm:'Gorila',  estilo:'fuertes',    color:'#4A4F57', frase:'Fuerza pesada: nada lo detiene.'},
+  {id:'leon',    nm:'León',    estilo:'fuertes',    color:'#C8862E', frase:'Box: golpea fuerte, nunca se rinde.'},
+  {id:'rinoceronte', nm:'Rinoceronte', estilo:'fuertes', color:'#6F7680', frase:'Pierna y potencia: imparable.'}
 ];
 const MASCOTA_ETAPAS=[
   {n:1, nm:'Cría',      pts:0},
