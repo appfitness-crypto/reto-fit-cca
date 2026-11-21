@@ -72,7 +72,7 @@ if(typeof go==='function'){
 /* ── Letra gigante: cada línea con data-fit="0.74" se ajusta a esa fracción del ancho de su caja ── */
 function cineAjustar(raiz){
   (raiz||document).querySelectorAll('[data-fit]').forEach(el=>{
-    const caja=el.closest('.ci-title,.ms-name,.rt-title'); if(!caja || !caja.clientWidth) return;
+    const caja=el.closest('.ci-title,.ms-name,.rt-title,.fn-name'); if(!caja || !caja.clientWidth) return;
     el.style.fontSize='100px';
     const w=el.getBoundingClientRect().width; if(!w) return;
     el.style.fontSize=Math.min(220,100*caja.clientWidth*parseFloat(el.dataset.fit)/w).toFixed(1)+'px';
@@ -208,3 +208,9 @@ if(typeof openDay==='function'){
   window.openDay=openDay=function(){ const r=_od.apply(this,arguments); try{ const d=document.getElementById('dd'); cineAjustar(d); cineTrasFuentes(()=>cineAjustar(d)); cineReproducir(d); }catch(_){} return r; };
 }
 addEventListener('resize',()=>{ clearTimeout(cineRutina._t); cineRutina._t=setTimeout(()=>{ cineAjustar(document.getElementById('dsec-rutina')); cineAjustar(document.getElementById('dd')); },150); });
+
+// Fin de sesión: el nombre de la mascota se ajusta al ancho cuando sale en lugar de los puntos
+if(typeof mostrarResumenSesion==='function'){
+  const _mrs=mostrarResumenSesion;
+  window.mostrarResumenSesion=mostrarResumenSesion=function(){ const r=_mrs.apply(this,arguments); const c=document.getElementById('en-fin'); if(c){ cineAjustar(c); cineTrasFuentes(()=>cineAjustar(c)); } return r; };
+}
