@@ -37,28 +37,91 @@ function patLogoHTML(p,cls){
   return `<span class="pat-lg ${cls||''}">${p.logo?`<img src="${esc(p.logo)}" alt="" decoding="async">`:`<i aria-hidden="true">${esc(String(p.nombre).trim().charAt(0).toUpperCase())}</i>`}<b>${esc(p.nombre)}</b></span>`;
 }
 
-// ── Portada: franja que se mueve sola (se detiene al tocarla) ──
+// Imagen grande del patrocinador (cartel o foto); si no subieron una, su logo
+function patFoto(p){ return (p&&(p.img||p.logo))||''; }
+// Tarjeta con la imagen grande: la imagen completa sobre su propio fondo difuminado (nunca se recorta)
+function patTarjetaHTML(p,lugar,i){
+  const f=patFoto(p);
+  return `<button type="button" class="pat-big${p.img?'':' solo-logo'}" onclick="patVer('${esc(lugar)}',${i})" aria-label="${esc(p.nombre)}${p.promo?': '+esc(p.promo):''}. Toca para ver la promoción.">
+    <span class="pat-big-m">${f?`<img class="pat-big-bg" src="${esc(f)}" alt="" aria-hidden="true"><img class="pat-big-img" src="${esc(f)}" alt="" decoding="async">`:`<i aria-hidden="true">${esc(String(p.nombre).trim().charAt(0).toUpperCase())}</i>`}</span>
+    <span class="pat-big-t"><b>${esc(p.promo||p.nombre)}</b><small>${esc(p.nombre)}</small></span>
+  </button>`;
+}
+// Carrusel: 2 tarjetas en pantalla; si hay más, avanza solo cada 4.5 s (se detiene al tocarlo)
+function patCarruselHTML(L,lugar){
+  return `<div class="pat-car2${L.length===1?' uno':''}" data-lugar="${esc(lugar)}">${L.map((p,i)=>patTarjetaHTML(p,lugar,i)).join('')}</div>
+    ${L.length>2?`<div class="pat-dots" aria-hidden="true">${L.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div>`:''}`;
+}
+function patCarruselVivo(root){
+  (root||document).querySelectorAll('.pat-car2').forEach(car=>{
+    if(car._vivo) return; car._vivo=1;
+    const dots=car.nextElementSibling&&car.nextElementSibling.classList.contains('pat-dots')?car.nextElementSibling.children:null;
+    const marcar=()=>{ if(!dots) return; const w=car.firstElementChild?car.firstElementChild.offsetWidth+10:1; const k=Math.round(car.scrollLeft/w); [...dots].forEach((d,n)=>d.classList.toggle('on',n===k)); };
+    car.addEventListener('scroll',()=>{ clearTimeout(car._t); car._t=setTimeout(marcar,80); },{passive:true});
+    if(car.children.length<=2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let pausa=0; ['pointerdown','touchstart'].forEach(ev=>car.addEventListener(ev,()=>{ pausa=Date.now()+8000; },{passive:true}));
+    const iv=setInterval(()=>{
+      if(!document.body.contains(car)){ clearInterval(iv); return; }
+      if(Date.now()<pausa || car.offsetParent===null) return;
+      const w=car.firstElementChild.offsetWidth+10, fin=car.scrollLeft+car.clientWidth>=car.scrollWidth-4;
+      car.scrollTo({left:fin?0:car.scrollLeft+w,behavior:'smooth'});
+    },4500);
+  });
+}
+
+// ── Portada: carrusel de imágenes grandes ──
 function patPintarPortada(){
   const box=document.getElementById('pat-portada'); if(!box) return;
   const L=patEn('portada');
   if(!L.length){ box.innerHTML=''; box.hidden=true; return; }
-  const item=(p,dup)=>`<button type="button" class="pat-chip" onclick="patAbrir('${esc(p.id)}')"${dup?' aria-hidden="true" tabindex="-1"':` aria-label="${esc(p.nombre)}${p.promo?': '+esc(p.promo):''}"`}>${patLogoHTML(p)}</button>`;
-  const rep=L.length<4?Math.ceil(4/L.length):1, base=[].concat(...Array(rep).fill(L));
   box.hidden=false;
-  box.innerHTML=`<p class="pat-h">Patrocinan el reto</p>
-    <div class="pat-marq${base.length<3?' quieta':''}"><div class="pat-track" style="--n:${base.length}">${base.map(p=>item(p,false)).join('')}${base.length>=3?base.map(p=>item(p,true)).join(''):''}</div></div>`;
+  box.innerHTML=`<p class="pat-h">Patrocinan el reto</p>${patCarruselHTML(L,'portada')}`;
+  patCarruselVivo(box);
 }
 
-// ── Inicio: tarjetas al final, una promoción y un botón cada una ──
+// ── Inicio: el mismo carrusel, al final ──
 function patInicioHTML(){
   const L=patEn('inicio'); if(!L.length) return '';
+  setTimeout(()=>patCarruselVivo(document.getElementById('dsec-inicio')),50);
   return `<section class="pat-ini" aria-label="Aliados del reto">
     <div class="sec-row"><div class="sec-t">Aliados del reto</div></div>
-    <div class="pat-car">${L.map(p=>{ const u=patUrl(p);
-      return `<article class="pat-card">${patLogoHTML(p,'en-card')}${p.promo?`<p>${esc(p.promo)}</p>`:''}${p.detalle?`<small>${esc(p.detalle)}</small>`:''}
-        ${u?`<button type="button" class="pat-cta" onclick="patAbrir('${esc(p.id)}')">${ico(patEsWa(p)?'chat':'arrow')}${patEsWa(p)?'Escribir':'Ver más'}</button>`:''}</article>`; }).join('')}</div>
+    ${patCarruselHTML(L,'inicio')}
   </section>`;
 }
+
+// ── Al tocar: banner con las imágenes arriba (se deslizan) y abajo la promoción del que se ve ──
+function patVer(lugar,i){
+  const L=patEn(lugar); if(!L.length) return;
+  i=Math.max(0,Math.min(L.length-1,i||0));
+  let ov=document.getElementById('pat-ov'); if(ov) ov.remove();
+  ov=document.createElement('div'); ov.id='pat-ov'; ov.className='av-ov pat-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Patrocinadores del reto');
+  ov.innerHTML=`<div class="av-sheet pat-sheet">
+    <span class="av-grab" aria-hidden="true"></span>
+    <div class="pat-vis">${L.map(p=>{ const f=patFoto(p); return `<div class="pat-vis-i">${f?`<img class="pat-big-bg" src="${esc(f)}" alt="" aria-hidden="true"><img class="pat-vis-img" src="${esc(f)}" alt="${esc(p.nombre)}">`:`<i aria-hidden="true">${esc(String(p.nombre).trim().charAt(0).toUpperCase())}</i>`}</div>`; }).join('')}</div>
+    ${L.length>1?`<div class="pat-dots pat-vis-dots" aria-hidden="true">${L.map((_,n)=>`<i class="${n===i?'on':''}"></i>`).join('')}</div>`:''}
+    <div class="pat-info" aria-live="polite"></div>
+    <button type="button" class="av-link" onclick="patCerrarVer()">Cerrar</button>
+  </div>`;
+  const info=()=>{
+    const vis=ov.querySelector('.pat-vis'), k=Math.round(vis.scrollLeft/Math.max(1,vis.clientWidth)), p=L[Math.max(0,Math.min(L.length-1,k))], u=patUrl(p);
+    ov.querySelectorAll('.pat-vis-dots i').forEach((d,n)=>d.classList.toggle('on',n===k));
+    ov.querySelector('.pat-info').innerHTML=`${p.logo&&p.img?`<span class="pat-info-lg"><img src="${esc(p.logo)}" alt=""></span>`:''}
+      <small class="pat-info-k">${esc(p.nombre)}</small>
+      <h2>${esc(p.promo||p.nombre)}</h2>
+      ${p.detalle?`<p>${esc(p.detalle)}</p>`:''}
+      ${p.hasta?`<p class="pat-info-f">${ico('calendar')}Válido hasta el ${esc(patFecha(p.hasta))}</p>`:''}
+      ${u?`<button type="button" class="av-go" onclick="patAbrir('${esc(p.id)}')">${ico(patEsWa(p)?'chat':'arrow')}${patEsWa(p)?'Escribir por WhatsApp':'Ver más'}</button>`:''}`;
+  };
+  ov.addEventListener('click',e=>{ if(e.target===ov) patCerrarVer(); });
+  document.addEventListener('keydown',patEsc);
+  document.body.appendChild(ov);
+  const vis=ov.querySelector('.pat-vis');
+  vis.addEventListener('scroll',()=>{ clearTimeout(vis._t); vis._t=setTimeout(info,90); },{passive:true});
+  requestAnimationFrame(()=>{ vis.scrollLeft=i*vis.clientWidth; info(); ov.classList.add('on'); });
+  const sh=ov.querySelector('.av-sheet'); sh.tabIndex=-1; sh.focus({preventScroll:true});
+}
+function patEsc(e){ if(e.key==='Escape') patCerrarVer(); }
+function patCerrarVer(){ document.removeEventListener('keydown',patEsc); document.getElementById('pat-ov')?.remove(); }
 
 // ── Fin de sesión: un patrocinador por sesión (rota) con un código del día ──
 function patCodigo(s){
@@ -69,7 +132,8 @@ function patFinHTML(s,est){
   if(est==='incompleta') return '';
   const L=patEn('fin'); if(!L.length) return '';
   const n=(s&&s.logs&&Array.isArray(s.logs.sesiones))?s.logs.sesiones.length:0, p=L[n%L.length], u=patUrl(p);
-  return `<section class="pat-prem" aria-label="Premio de ${esc(p.nombre)}">
+  return `<section class="pat-prem${p.img?' con-img':''}" aria-label="Premio de ${esc(p.nombre)}">
+    ${p.img?`<div class="pat-prem-img"><img class="pat-big-bg" src="${esc(p.img)}" alt="" aria-hidden="true"><img src="${esc(p.img)}" alt=""></div>`:''}
     <div class="pat-prem-h">${patLogoHTML(p,'solo')}<p>${esc(p.promo||'Gracias por entrenar')}<small>${esc(p.nombre)} · regalo por terminar tu sesión</small></p></div>
     <div class="pat-cod"><b class="num">${patCodigo(s)}</b><span>Muestra esta pantalla<br>${p.detalle?esc(p.detalle):'Válido solo hoy'}</span></div>
     ${u?`<button type="button" class="pat-cta" onclick="patAbrir('${esc(p.id)}')">${ico(patEsWa(p)?'chat':'arrow')}${patEsWa(p)?'Escribir':'Ver más'}</button>`:''}
@@ -77,7 +141,7 @@ function patFinHTML(s,est){
 }
 
 // ── Director: subir, pausar, cambiar de lugar y borrar ──
-let patDraft={logo:'', lugares:{portada:true, inicio:true, fin:false}};
+let patDraft={logo:'', img:'', lugares:{portada:true, inicio:true, fin:false}};
 function abrirPatrocinadores(){
   if(staffRol!=='coordinador'){ showToast('Los patrocinadores los da de alta el director'); return; }
   staffActivoId=null; if(typeof staffRenderList==='function') staffRenderList();
@@ -89,8 +153,9 @@ function abrirPatrocinadores(){
     <div><h2 class="tr-h">Patrocinadores</h2><p class="tr-p">Salen en la app de los socios donde elijas. Nunca mientras registran una serie.</p></div>
     <div class="tr-card av-form pat-form">
       <h3 class="tr-h3">Nuevo patrocinador</h3>
+      <label class="pat-up-big" id="pat-img-prev">${patDraft.img?`<img src="${patDraft.img}" alt="Imagen grande">`:`${ico('plus')}<b>Imagen grande</b><span>Cartel, foto del producto o del lugar. Es lo que más se ve.</span>`}<input type="file" accept="image/*" onchange="patImagen(this)" hidden></label>
       <div class="pat-up">
-        <label class="pat-up-b" id="pat-prev">${patDraft.logo?`<img src="${patDraft.logo}" alt="Logo">`:`${ico('plus')}<span>Subir logo</span>`}<input type="file" accept="image/*" onchange="patLogo(this)" hidden></label>
+        <label class="pat-up-b" id="pat-prev">${patDraft.logo?`<img src="${patDraft.logo}" alt="Logo">`:`${ico('plus')}<span>Logo (opcional)</span>`}<input type="file" accept="image/*" onchange="patLogo(this)" hidden></label>
         <label class="av-l" style="flex:1">Nombre<input id="pat-nombre" class="av-in" maxlength="40" placeholder="Ej. Farmacia del club"></label>
       </div>
       <label class="av-l">Promoción<input id="pat-promo" class="av-in" maxlength="90" placeholder="Ej. 10 % en suplementos para socios del reto"></label>
@@ -112,10 +177,21 @@ function abrirPatrocinadores(){
         <div class="av-row-t"><b>${esc(p.nombre)}</b>${p.promo?`<span>${esc(p.promo)}</span>`:''}<small>${p.desde?esc(patFecha(p.desde)):'hoy'} → ${p.hasta?esc(patFecha(p.hasta)):'sin fecha final'}${patUrl(p)?' · '+(patEsWa(p)?'WhatsApp':'página'):''}</small>
           <div class="pat-lug">${Object.entries(PAT_LUGARES).map(([k,nm])=>`<button type="button" class="tr-tab${p.lugares&&p.lugares[k]?' on':''}" aria-pressed="${!!(p.lugares&&p.lugares[k])}" onclick="patLugar('${esc(p.id)}','${k}')">${esc(nm)}</button>`).join('')}</div></div>
         <span class="tr-tag ${cl}">${et}</span>
-        <div class="pat-acc"><button type="button" class="tb-btn" onclick="patPausar('${esc(p.id)}')">${p.activo===false?'Reanudar':'Pausar'}</button><button type="button" class="tb-btn" style="color:var(--r)" onclick="patBorrar('${esc(p.id)}')">Borrar</button></div>
+        <div class="pat-acc"><label class="tb-btn pat-img-btn">${p.img?'Cambiar imagen':'Subir imagen grande'}<input type="file" accept="image/*" hidden onchange="patImagenDe('${esc(p.id)}',this)"></label><button type="button" class="tb-btn" onclick="patPausar('${esc(p.id)}')">${p.activo===false?'Reanudar':'Pausar'}</button><button type="button" class="tb-btn" style="color:var(--r)" onclick="patBorrar('${esc(p.id)}')">Borrar</button></div>
       </div>`; }).join(''):'<p class="tr-mu">Todavía no hay patrocinadores.</p>'}
     </div>
   </div>`;
+}
+// Imagen grande: hasta 960 px para que se vea nítida a todo lo ancho
+async function patImagen(inp){
+  const f=inp.files&&inp.files[0]; if(!f) return;
+  try{ patDraft.img=await aparComprimir(f,960); const b=document.getElementById('pat-img-prev'); if(b){ b.querySelectorAll('img,span,b,svg').forEach(x=>x.remove()); b.insertAdjacentHTML('afterbegin',`<img src="${patDraft.img}" alt="Imagen grande">`); } }
+  catch(e){ showToast('No se pudo usar esa imagen: '+(e&&e.message||'')); }
+}
+async function patImagenDe(id,inp){
+  const f=inp.files&&inp.files[0]; const p=patCopia(id); if(!f||!p) return;
+  try{ p.img=await aparComprimir(f,960); patGuardar(id,p,'✓ Imagen actualizada'); }
+  catch(e){ showToast('No se pudo usar esa imagen: '+(e&&e.message||'')); }
 }
 async function patLogo(inp){
   const f=inp.files&&inp.files[0]; if(!f) return;
@@ -143,8 +219,8 @@ function patPublicar(){
   if(enlace && !patUrl({enlace})){ err.textContent='Escribe un WhatsApp de 10 dígitos o una página (ej. www.ejemplo.mx).'; return; }
   if(!fbListo){ err.textContent='Necesitas conexión con la base de datos para publicar.'; return; }
   const id='p'+Date.now().toString(36);
-  const p={nombre, promo, detalle, enlace, logo:patDraft.logo||'', lugares:Object.assign({},patDraft.lugares), desde:desde||fechaISO(new Date()), hasta:hasta||'', activo:true, creado:new Date().toISOString()};
-  patDraft={logo:'', lugares:{portada:true, inicio:true, fin:false}};
+  const p={nombre, promo, detalle, enlace, logo:patDraft.logo||'', img:patDraft.img||'', lugares:Object.assign({},patDraft.lugares), desde:desde||fechaISO(new Date()), hasta:hasta||'', activo:true, creado:new Date().toISOString()};
+  patDraft={logo:'', img:'', lugares:{portada:true, inicio:true, fin:false}};
   patGuardar(id,p,'✓ Patrocinador publicado');
 }
 function patCopia(id){ const a=(DB.config&&DB.config.patrocinadores)||{}; return a[id]?Object.assign({},a[id]):null; }

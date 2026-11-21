@@ -66,12 +66,21 @@ function calcEvolucion(s){
 // No depende de medidas corporales — usa datos reales que ya se registran en la app (PRs, sesiones, cardio, nivel).
 function calcularRendimiento(s){
   const ev=calcEvolucion(s);
-  const prs=Object.values(s.logs?.prs||{});
+  // Fuerza: mejor peso de cada ejercicio (récords + lo que registró en sus series) contra su peso corporal,
+  // más un extra por lo que ha subido. Antes solo leía los récords y salía en 0 aunque el socio sí subiera.
+  const mejor={}, porMes={};
+  Object.entries(s.logs?.prs||{}).forEach(([n,p])=>{ if(p&&+p.kg>0) mejor[n]=Math.max(mejor[n]||0,+p.kg); });
+  (s.logs?.sesiones||[]).forEach(x=>{ const det=Array.isArray(x.detalle)?x.detalle:Object.values(x.detalle||{});
+    det.forEach(d=>{ if(!d||d.alt||!(+d.kg>0)) return; mejor[d.n]=Math.max(mejor[d.n]||0,+d.kg);
+      if(x.fecha){ const m=x.fecha.slice(0,7); (porMes[d.n]=porMes[d.n]||{})[m]=Math.max((porMes[d.n]||{})[m]||0,+d.kg); } }); });
   let fuerza=0;
-  if(prs.length && s.peso){
-    const ratios=prs.map(p=>p.kg/s.peso);
-    const avgRatio=ratios.reduce((a,b)=>a+b,0)/ratios.length;
-    fuerza=Math.max(0,Math.min(100,Math.round(avgRatio*55)));
+  const pesoC=+s.peso || +((s.logs?.pesoCorporal||[]).slice(-1)[0]||{}).kg || 0;
+  const top=Object.values(mejor).sort((a,b)=>b-a).slice(0,4);
+  if(top.length && pesoC){
+    const rel=top.reduce((a,k)=>a+k/pesoC,0)/top.length*55;
+    const subidas=Object.values(porMes).map(o=>{ const v=Object.keys(o).sort().map(m=>o[m]); return v.length>=2&&v[0]>0?(v[v.length-1]-v[0])/v[0]*100:null; }).filter(x=>x!=null);
+    const extra=subidas.length?Math.min(25,Math.max(0,subidas.reduce((a,b)=>a+b,0)/subidas.length*1.5)):0;
+    fuerza=Math.max(0,Math.min(100,Math.round(rel+extra)));
   }
   const cardioMap={'NUNCA O CASI NUNCA':20,'1 – 2 VECES POR SEMANA':55,'3 O MÁS VECES':90};
   const resistencia = cardioMap[(s.cardio||'').toUpperCase()] ?? 40;
