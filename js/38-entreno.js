@@ -929,10 +929,20 @@ function finCine(s, info, est){
     gan=(+P.sesion||0)+(est==='completa'?(+P.completa||0):0);
     chips.push([P.sesion,'por registrarla']); if(est==='completa') chips.push([P.completa,'por completarla']);
   }
-  if(!(gan>0)) return null;
   // Mascota en su etapa actual; si con esta sesión subió de etapa, se avisa
   let pet='', subio='';
   const m=(typeof mascotaEstado==='function' && !s.mascotaOculta)?mascotaEstado(s):null;
+  // Sin puntos (sesión incompleta): la mascota con su nombre gigante detrás, como en su pantalla, y una frase de ánimo
+  if(!(gan>0)){
+    if(!m) return null;
+    const frase=est==='incompleta'?'¡La próxima la terminamos juntos!':pd.antes?'Ya entrenamos. Mis puntos cuentan desde el arranque.':'¡Buen trabajo hoy!';
+    return {stage:`<div class="fn-stage fn-nombre">
+      <p class="rt-title fn-name" aria-hidden="true"><span class="ci-ln"><span data-fit="0.9" style="--i:0">${esc(m.nombre)}</span></span></p>
+      <div class="fn-light"></div><div class="fn-ring"></div><div class="fn-pulse"></div><div class="fn-sh"></div>
+      <p class="fn-bubble">${esc(frase)}</p>
+      ${mascotaImgHTML(m.m, m.etapa.n, 'fn-pet')}
+    </div>`, chips:''};
+  }
   if(m){
     pet=mascotaImgHTML(m.m, m.etapa.n, 'fn-pet');
     if(desde!=null && typeof mascotaEtapas==='function'){
