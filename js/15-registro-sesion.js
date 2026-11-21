@@ -157,6 +157,7 @@ function openModal(idx){
   const d=s.rutina[activeRutinaKey];
   const ej=d.ejercicios[idx]; if(!ej) return;
   window._modalIdx=idx;
+  document.getElementById('modal-ej').classList.remove('m-cardio');
   const alt=ejEjecutado(ej,idx);
   const nmHoy=alt?alt.nm:ej.nm;
   document.getElementById('m-tag').textContent=((alt?alt.ms:ej.ms)||'Ejercicio')+(ej.grupo?' · grupo '+ej.grupo:'');
@@ -231,6 +232,12 @@ function openModal(idx){
       : (ev==='bajo'?'Sube un poco la velocidad o la resistencia.':ev==='alto'?'Baja un poco el ritmo para quedarte en zona.':'Mantén el ritmo.');
     return cap(`📊 Última vez: <b>${ult.fc} lpm</b> promedio (meta ${lo}–${hi}) — ${ev==='ok'?'en zona':ev==='bajo'?'por debajo de la meta':'por encima de la meta'}. ${acc}`);
   };
+  if(esEjCardio(ej) && typeof cardioCineHTML==='function'){
+    if(head) head.style.display='none';
+    document.getElementById('m-sets').innerHTML=cardioCineHTML(idx,alt||ej,cardioRx(ej,s),saved[0]||{});
+    document.getElementById('modal-ej').classList.add('open','m-cardio');
+    return;
+  }
   if(esEjCardio(ej)){
     if(head) head.style.display='none';
     const s0=saved[0]||{}, r=cardioRx(ej,s);
@@ -319,6 +326,45 @@ function setCardioOk(idx,el){
   el.classList.toggle('ok',on); el.querySelector('span').textContent=on?'Completado':'Marcar como completado';
   if(on) vibrarToque();
   sesionTemp.ej[idx].sets[0].ok=on;
+}
+// Registro de cardio "cine" (css/cine.css): el tiempo hecho en grande, los latidos con − / + y una barra que dice si quedaste en tu zona
+function cardioCineHTML(idx,ej,r,s0){
+  const fc=s0.fc!=null?+s0.fc:null, lo=r.lo, hi=r.hi, min=Math.max(60,lo-35), max=hi+35;
+  const pct=v=>Math.max(0,Math.min(100,(v-min)/(max-min)*100));
+  const ejs=typeof sesEjs==='function'?sesEjs():[], sig=ejs[idx+1];
+  const t=r.bloques>1?r.minTxt:r.per+':00';
+  return `<div class="mcr">
+    <div class="mc-stage">${pic(basesEjercicio(ej),'heart','thumb')}<div class="mc-t"><b class="num">${esc(t)}</b><span>${ico('check')}${esc(ej.nm)}</span></div></div>
+    <div class="mc-fc"><div class="mc-h"><b>¿A qué ritmo fuiste?</b><span>opcional</span></div>
+      <div class="en-step mc-step"><button type="button" aria-label="Menos latidos" onclick="cardioPaso(${idx},-2)">${ico('minus')}</button>
+        <label><input type="number" inputmode="numeric" id="mc-fc" value="${fc!=null?fc:''}" placeholder="—" aria-label="Latidos por minuto en promedio" oninput="cardioFcCambia(${idx},this.value)"><small>latidos por minuto</small></label>
+        <button type="button" aria-label="Más latidos" onclick="cardioPaso(${idx},2)">${ico('mas')}</button></div>
+      <div class="mc-zona" data-min="${min}" data-max="${max}" aria-label="Tu meta: ${lo} a ${hi} latidos"><span class="ok" style="left:${pct(lo)}%;width:${pct(hi)-pct(lo)}%"></span><span class="me" id="mc-me" style="left:${fc!=null?pct(fc):50}%;${fc!=null?'':'display:none'}">${fc!=null?fc:''}</span></div>
+      <div class="mc-zl"><span>Suave</span><span>Tu meta: ${lo}–${hi}</span><span>Fuerte</span></div>
+    </div>
+    <button type="button" class="en-btn en-btn-p mc-go" onclick="cardioGuardar(${idx})">${ico('check')}${sig?'Guardar y seguir':'Guardar'}</button>
+    ${sig?`<p class="mc-sig">Siguiente: ${esc(sig.nm)}</p>`:''}
+  </div>`;
+}
+function cardioFcCambia(idx,v){
+  setCardioFc(idx,v);
+  const z=document.querySelector('.mc-zona'), me=document.getElementById('mc-me'); if(!z||!me) return;
+  const n=parseFloat(v); if(isNaN(n)){ me.style.display='none'; return; }
+  const min=+z.dataset.min, max=+z.dataset.max;
+  me.style.display=''; me.textContent=Math.round(n); me.style.left=Math.max(0,Math.min(100,(n-min)/(max-min)*100))+'%';
+}
+function cardioPaso(idx,d){
+  const inp=document.getElementById('mc-fc'); if(!inp) return;
+  const z=document.querySelector('.mc-zona'), base=inp.value===''?Math.round((+z.dataset.min + +z.dataset.max)/2):+inp.value;
+  inp.value=Math.max(40,Math.min(220,base+d)); cardioFcCambia(idx,inp.value);
+}
+function cardioGuardar(idx){
+  if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
+  if(!sesionTemp.ej[idx].sets[0]) sesionTemp.ej[idx].sets[0]={};
+  sesionTemp.ej[idx].sets[0].ok=true; vibrarToque();
+  const ejs=typeof sesEjs==='function'?sesEjs():[];
+  if(document.getElementById('s-ses')?.classList.contains('on') && ejs[idx+1] && typeof sesRegistroSiguiente==='function') sesRegistroSiguiente();
+  else closeModal();
 }
 function setFcRonda(idx,i,v){
   if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};

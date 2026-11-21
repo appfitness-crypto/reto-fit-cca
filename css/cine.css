@@ -437,3 +437,129 @@ html[data-theme="dark"] .dd-mus span.p{background:color-mix(in srgb,var(--cine-a
 .en-ses .en-media .pic-ph,.en-card-cine .en-fig .pic-ph,#en-desc .en-desc-fig .pic-ph,.dd-hero-cine .pic-ph{display:none;}
 #en-desc .en-desc-in{align-items:stretch;}
 #en-desc .en-desc-a button{width:100%;margin:0;}
+
+/* ═══ SESIÓN · SEGUNDA VUELTA ═══
+   1. La foto vive en una "pantalla de gimnasio": tarjeta del mismo negro que el fondo de las fotos,
+      igual en Salvia, Claro y Oscuro (sin neblina ni cortes).
+   2. Número fantasma: tono sobre tono, abajo a la izquierda y cortado por el borde; con lighten nunca pisa la figura.
+   3. El verde de los músculos de las fotos es el único verde; el acento del tema queda para botones y avance. */
+:root{--cine-screen:#0A0E13;--cine-ghost:#232A33;--cine-musc:#C8F23A;}
+.en-ses .en-stage-w{position:relative;}
+.en-ses .en-media{height:250px;margin:0;width:100%;border-radius:28px;background:var(--cine-screen);}
+.en-ses .en-media::after{display:none;}
+.en-ses .en-media .pic img{object-position:62% 60%;}
+.en-big{inset:auto auto -34px 10px;display:block;color:var(--cine-ghost);font-size:200px;}
+.en-big.largo{font-size:150px;bottom:-26px;}
+.en-big small{font-size:.4em;margin:0 0 0 .04em;align-self:auto;}
+.en-ses .en-media-cta{left:auto;right:12px;bottom:12px;height:38px;background:#EEF2F6;color:#0A0E13;}
+.en-ses .en-media-cta .ico{color:#0A0E13;}
+.en-ses .en-new{position:absolute;top:12px;right:12px;left:auto;background:var(--cine-musc);color:#0A0E13;}
+.en-cambia{position:absolute;top:12px;left:12px;z-index:3;width:38px;height:38px;border:0;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);color:#EEF2F6;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+.en-cambia[aria-expanded="true"]{background:#EEF2F6;color:#0A0E13;}
+.en-cambia .ico{width:17px;height:17px;}
+/* Avance con miniaturas */
+.en-rail{display:flex;gap:6px;}
+.en-rail-i{position:relative;flex:1;min-width:0;height:40px;padding:0;border:0;border-radius:12px;overflow:hidden;background:var(--cine-screen);cursor:pointer;}
+.en-rail-i .pic{position:absolute;inset:0;border-radius:0;background:transparent;}
+.en-rail-i .pic img{object-fit:cover;object-position:50% 35%;opacity:.45;}
+.en-rail-i .pic-ph{display:none;}
+.en-rail-i.ok .pic img{opacity:.8;}
+.en-rail-i.ok::after{content:"";position:absolute;right:5px;bottom:5px;width:14px;height:14px;border-radius:50%;background:var(--cine-musc) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A0E13' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/10px no-repeat;}
+.en-rail-i.now{flex:1.8;box-shadow:inset 0 0 0 2px var(--cine-acc);}
+.en-rail-i.now .pic img{opacity:1;}
+/* Una línea de datos y el consejo en una línea */
+.en-ses .en-ex h3{font-size:28px;margin-top:4px;}
+.en-data{margin:0;font-size:14px;color:var(--mu);}
+.en-data b{color:var(--tx);font-weight:700;}
+.en-cue{display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;border:0;border-radius:14px;background:var(--fill-track);color:var(--tx);font-family:var(--fb);font-size:14px;text-align:left;cursor:pointer;}
+.en-cue span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.en-cue .ico{width:16px;height:16px;color:var(--mu);}
+/* Tarjeta de la serie: puntos en vez de filas */
+.en-sets-cine .en-set.cur{background:var(--dk3,var(--gl));}
+.en-cur-h{align-items:center;}
+.en-cur-h b .ico{width:18px;height:18px;margin-right:6px;vertical-align:-3px;color:var(--cine-acc);}
+.en-dots{display:flex;gap:5px;align-items:center;}
+.en-dots i,.en-dots button{width:22px;height:6px;padding:0;border:0;border-radius:9px;background:var(--fill-track);}
+.en-dots i.now{background:var(--cine-acc);}
+.en-dots button.ok{background:color-mix(in srgb,var(--cine-acc) 45%,transparent);cursor:pointer;height:10px;}
+.en-cur-nota{margin:4px 0 0;font-size:12.5px;color:var(--mu);}
+.en-step.vacio input::placeholder{color:var(--mu);}
+.en-step.vacio .en-unit{text-decoration:none;}
+.en-set.cur.listo{box-shadow:var(--shadow);}
+/* Después, con miniatura */
+.en-ses .en-next{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px 8px 8px;border:0;border-radius:18px;background:var(--gl);color:var(--tx);text-align:left;cursor:pointer;font-family:var(--fb);}
+.en-next-th{position:relative;width:44px;height:44px;border-radius:12px;overflow:hidden;background:var(--cine-screen);flex:none;}
+.en-next-th .pic{position:absolute;inset:0;border-radius:0;background:transparent;}
+.en-next-th .pic img{object-fit:cover;object-position:50% 30%;}
+.en-next-th .pic-ph{display:none;}
+.en-next-t{flex:1;min-width:0;}
+.en-next-t small{display:block;font-size:12.5px;color:var(--mu);}
+.en-next-t b{font-family:var(--fd);font-weight:700;font-size:15px;}
+.en-ses .en-next>.ico{width:18px;height:18px;color:var(--mu);}
+/* Descanso: misma pantalla de gimnasio */
+#en-desc .en-desc-in{background:radial-gradient(90% 60% at 50% 38%,#121A22 0%,var(--cine-screen) 60%,#05070A 100%);}
+
+/* ═══ FICHA DE TÉCNICA ═══ */
+.en-f-cine .en-f-fig,.en-f-cine .en-f-tec .tec-vid{position:relative;height:300px;border-radius:24px;overflow:hidden;background:var(--cine-screen);isolation:isolate;}
+.en-f-cine .en-f-fig .pic{position:absolute;inset:0;background:transparent;border-radius:0;}
+.en-f-cine .en-f-fig .pic img{object-fit:contain;mix-blend-mode:lighten;}
+.en-f-cine .en-f-fig .pic-ph{display:none;}
+.en-f-cine .en-f-tec{position:relative;}
+.en-f-cine .tec-seg{position:absolute;top:12px;left:12px;z-index:3;margin:0;padding:3px;border-radius:99px;background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+.en-f-cine .tec-seg button{min-height:32px;color:rgba(238,242,246,.8);}
+.en-f-cine .tec-seg button[aria-selected="true"]{background:#EEF2F6;color:#0A0E13;}
+.en-f-cine .tec-tag{display:none;}
+.en-f-mus{position:absolute;left:12px;bottom:12px;z-index:3;display:flex;gap:6px;flex-wrap:wrap;}
+.en-f-cine .en-f-tec .en-f-mus{bottom:auto;top:252px;}
+.en-f-mus span{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 11px;border-radius:99px;background:rgba(255,255,255,.12);color:#EEF2F6;font-size:12.5px;font-weight:600;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+.en-f-mus i{width:8px;height:8px;border-radius:50%;background:rgba(238,242,246,.5);}
+.en-f-mus .p i{background:var(--cine-musc);box-shadow:0 0 8px var(--cine-musc);}
+.en-f-cine h3{margin-top:14px;}
+.en-f-cine .en-pasos{list-style:none;margin:16px 0 0;padding:0;counter-reset:p;display:block;}
+.en-f-cine .en-pasos li{position:relative;display:grid;grid-template-columns:34px 1fr;gap:12px;padding:0 0 16px;font-size:16px;line-height:1.35;color:var(--tx);}
+.en-f-cine .en-pasos li::before{counter-increment:p;content:counter(p);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--tx);color:var(--dk3,#fff);font-family:var(--fd);font-weight:700;font-size:15px;}
+.en-f-cine .en-pasos li:not(:last-child)::after{content:"";position:absolute;left:16px;top:38px;bottom:2px;width:2px;background:var(--b2,var(--fill-track));}
+.en-evita{display:flex;gap:10px;align-items:flex-start;margin:2px 0 0;padding:12px 14px;border-radius:16px;background:rgba(201,53,62,.08);font-size:14.5px;color:var(--tx);}
+.en-evita .x{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#C9353E;color:#fff;flex:none;}
+.en-evita .x .ico{width:14px;height:14px;stroke-width:3;}
+.en-f-coach{display:flex;gap:12px;align-items:flex-start;margin:14px 0 0;}
+.en-f-coach .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--tx);color:var(--dk3,#fff);font-family:var(--fd);font-weight:700;font-size:16px;flex:none;}
+.en-f-coach .av .ico{width:20px;height:20px;}
+.en-f-coach p{flex:1;margin:0;padding:12px 14px;border-radius:4px 18px 18px 18px;background:var(--fill-track);font-size:14.5px;color:var(--tx);}
+.en-f-coach small{display:block;font-size:12px;font-weight:700;color:var(--mu);margin-bottom:3px;}
+.en-f-b{position:sticky;bottom:0;margin:14px -4px 0;padding:18px 4px 4px;background:linear-gradient(180deg,transparent,var(--dk3,#fff) 40%);}
+.en-f-b .en-btn{width:100%;min-height:58px;}
+
+/* ═══ REGISTRO DE CARDIO ═══ */
+.m-cardio #m-tag,.m-cardio #m-title,.m-cardio #m-sub,.m-cardio #m-musculo,.m-cardio #m-sig,.m-cardio #m-metodo,.m-cardio #m-pr{display:none!important;}
+.mc-stage{position:relative;height:220px;border-radius:24px;overflow:hidden;background:var(--cine-screen);isolation:isolate;}
+.mc-stage .pic{position:absolute;inset:0;background:transparent;border-radius:0;opacity:.55;}
+.mc-stage .pic img{object-fit:contain;mix-blend-mode:lighten;}
+.mc-stage .pic-ph{display:none;}
+.mc-t{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#EEF2F6;text-align:center;padding:0 16px;}
+.mc-t b{font-family:var(--fd);font-style:italic;font-weight:800;font-size:76px;line-height:.9;letter-spacing:-.03em;}
+.mc-t span{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-weight:700;font-size:14px;color:var(--cine-musc);}
+.mc-t span .ico{width:16px;height:16px;stroke-width:3;}
+.mc-fc{margin-top:16px;}
+.mc-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+.mc-h b{font-family:var(--fd);font-weight:700;font-size:17px;}
+.mc-h span{font-size:12.5px;color:var(--mu);}
+.mc-step{grid-template-columns:56px 1fr 56px;}
+.mc-step input{width:100%;height:40px;border:0;background:transparent;color:var(--tx);font-family:var(--fd);font-weight:700;font-size:32px;text-align:center;-moz-appearance:textfield;appearance:textfield;}
+.mc-step input::-webkit-inner-spin-button{-webkit-appearance:none;}
+.mc-zona{position:relative;height:14px;margin:32px 0 6px;border-radius:99px;background:var(--fill-track);}
+.mc-zona .ok{position:absolute;top:0;bottom:0;border-radius:99px;background:color-mix(in srgb,var(--cine-acc) 38%,transparent);}
+.mc-zona .me{position:absolute;top:-26px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-family:var(--fd);font-weight:700;font-size:13px;color:var(--tx);}
+.mc-zona .me::after{content:"";width:3px;height:30px;border-radius:9px;background:var(--tx);margin-top:4px;}
+.mc-zl{display:flex;justify-content:space-between;font-size:12px;color:var(--mu);}
+.mc-go{width:100%;min-height:60px;margin-top:20px;font-size:19px;}
+.mc-sig{margin:8px 0 0;text-align:center;font-size:13px;color:var(--mu);}
+/* Correcciones: el contenido no se sale de lo ancho, pasos 1-2-3, el registro de cardio con sus colores */
+.en-ses{grid-template-columns:minmax(0,1fr);}
+.en-ses>*,.en-ses .en-ex,.en-ses .en-ex>*{min-width:0;}
+.en-cue{max-width:100%;}
+.en-f-cine .en-pasos li{counter-increment:p;}
+.en-f-cine .en-pasos li::before{counter-increment:none;}
+.mcr{color:var(--tx);}
+.en-step .en-unit{white-space:nowrap;font-size:11.5px;}
+.en-esp.con-tm>p{display:none;}
