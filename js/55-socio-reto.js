@@ -47,8 +47,8 @@ function socioPuntosHTML(s){
 let _ptsMostrados=null;
 function socioPuntosBannerHTML(){
   const x=socioPuntos(activeSocio); if(!x) return '';
-  return `<button type="button" class="rb-pts" onclick="dashTab('perfil');setTimeout(()=>document.getElementById('mis-puntos')?.scrollIntoView({behavior:'smooth',block:'start'}),80)" aria-label="Mis puntos: ${x.r.puntos}">
-    <b id="rb-pts-n">${(_ptsMostrados==null?x.r.puntos:_ptsMostrados).toLocaleString('es-MX')}</b><small>${x.antes?'pts · aún no cuenta':'pts'}</small></button>`;
+  return `<button type="button" class="rb-pts" onclick="dashTab('perfil');setTimeout(()=>document.getElementById('mis-puntos')?.scrollIntoView({behavior:'smooth',block:'start'}),80)" aria-label="Mis puntos: ${x.r.puntos}${x.antes?', aún no cuentan':''}">
+    <b id="rb-pts-n">${(_ptsMostrados==null?x.r.puntos:_ptsMostrados).toLocaleString('es-MX')}</b><small>pts</small></button>`;
 }
 function socioPuntosAnimar(){
   const el=document.getElementById('rb-pts-n'), x=socioPuntos(activeSocio); if(!el||!x) return;

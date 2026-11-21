@@ -41,11 +41,12 @@ function retoBannerHTML(){
   const pts=(typeof socioPuntosBannerHTML==='function' && typeof activeSocio!=='undefined' && activeSocio)?socioPuntosBannerHTML():'';
   let izq;
   if(e.estado==='antes'){
-    izq=`<div class="rb-t">${nom}</div><div class="rb-s">Arranca el ${esc(retoFechaTxt(e.inicio))} · ${e.faltan===1?'mañana':'faltan '+e.faltan+' días'}</div>`;
+    let dia=''; try{ dia=e.inicio.toLocaleDateString('es-MX',{weekday:'long'}); dia=dia.charAt(0).toUpperCase()+dia.slice(1)+' '; }catch(_){}
+    izq=`<div class="rb-k">${nom} arranca en</div><div class="rb-big">${e.faltan}<span>${e.faltan===1?'día':'días'}</span></div><div class="rb-s">${esc(dia)}${esc(retoFechaTxt(e.inicio))} · ${e.semanas} semanas</div>`;
   } else if(e.estado==='terminado'){
     izq=`<div class="rb-t">${nom} terminado</div><div class="rb-s">Revisa tu evaluación final con tu entrenador.</div>`;
   } else {
-    izq=`<div class="rb-t">Semana ${e.semana} de ${e.semanas}</div>
+    izq=`<div class="rb-k">${nom} · día ${e.dia} de ${e.totalDias}</div><div class="rb-big">Semana ${e.semana}<span>de ${e.semanas}</span></div>
     <div class="rb-bar"><i style="width:${e.pct}%"></i></div>
     <div class="rb-s">Día ${e.dia}/${e.totalDias}${e.fase?' · '+esc(e.fase.nombre):''}${e.evalSem?' · semana de evaluación':''}</div>`;
   }
