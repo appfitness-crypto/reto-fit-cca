@@ -139,7 +139,7 @@ function abrirAvisos(){
       <p class="tr-mu">"Importante" no se puede cerrar: se queda visible hasta la fecha final. Los demás el socio los puede cerrar.</p>
       <div class="av-err" id="av-err" role="alert"></div>
       ${grupo?`<div class="av-to">${ico('user')}<span>Le llega a <b>tus ${avisoGrupoN()} atleta${avisoGrupoN()===1?'':'s'}</b>, no a todo el gym.</span></div>`:''}
-      <button type="button" class="tb-btn av-pub" onclick="avisoPublicar()">📣 ${grupo?'Publicar a mi grupo':'Publicar aviso'}</button>
+      <button type="button" class="tb-btn av-pub" onclick="avisoPublicar()">${ico('bell')}${grupo?'Publicar a mi grupo':'Publicar aviso'}</button>
     </div>
     <div class="tr-card">
       <h3 class="tr-h3">Avisos publicados</h3>

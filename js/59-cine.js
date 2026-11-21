@@ -154,6 +154,7 @@ function mascotaAbrir(){
         <li><span>Semana con peso o medidas</span><b>+${P.medicion}</b></li>
       </ul><p class="ms-nota">También suma tu progreso según tu objetivo.</p></section>
       <button type="button" class="ms-cambiar" onclick="mascotaAbrirSelector(true)">Cambiar nombre o mascota</button>
+      <button type="button" class="ms-cambiar ms-cambiar-s" onclick="mascotaCerrar();mascotaDiscreto(true)">Prefiero sin mascota (modo discreto)</button>
     </div>`;
   go('s-mascota');
   cineAjustar(w);
@@ -175,7 +176,11 @@ if(typeof mascotaPerfilHTML==='function'){
   const _mp=mascotaPerfilHTML;
   window.mascotaPerfilHTML=mascotaPerfilHTML=function(s){
     const h=_mp.apply(this,arguments); if(!h || (s && s.mascotaOculta)) return h;
-    return h.replace('<div class="masc-fig">','<button type="button" class="masc-fig masc-abrir" onclick="mascotaAbrir()" aria-label="Ver a mi compañero">').replace(/(<div class="masc-tx">)/,'$1').replace('</div>\n    <div class="masc-tx">','</button>\n    <div class="masc-tx">');
+    const st=mascotaEstado(s); if(!st) return h;
+    const sub=st.antes?'Empieza a crecer cuando arranque el reto':st.sig?`Te faltan ${st.faltan.toLocaleString('es-MX')} pts para ${esc(st.sig.nm)}`:'Llegó a su forma final';
+    return `<button type="button" class="pf-masc" id="mi-mascota" onclick="mascotaAbrir()" aria-label="Ver a mi compañero ${esc(st.nombre)}">
+      <span class="pf-masc-f">${mascotaImgHTML(st.m, st.etapa.n)}</span>
+      <span class="pf-masc-t"><small>Mi compañero · ${esc(st.m.nm)}</small><b>${esc(st.nombre)} · ${esc(st.etapa.nm)}</b><em>${sub}</em>${st.sig?`<span class="pf-masc-bar"><i style="width:${Math.max(3,st.pct)}%"></i></span>`:''}</span>${ico('chev')}</button>`;
   };
 }
 // Si cambia el nombre o la mascota con la pantalla abierta, se vuelve a pintar

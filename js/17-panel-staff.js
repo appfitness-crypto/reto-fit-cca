@@ -60,9 +60,10 @@ function actualizarFbBadge(){
 // ── Menú del staff (celular): agrupa las acciones que antes ocupaban toda la barra ──
 function staffMenu(){
   const grupos=[
-    ['Reto',['btn-tablero','btn-avisos','btn-reparto','btn-patro','btn-demo-cargar','btn-demo-borrar']],
+    ['Reto',['btn-tablero','btn-avisos','btn-reparto','btn-patro']],
     ['Personas',['btn-mi-codigo','btn-mi-filosofia','btn-ver-ent','btn-nuevo-ent','btn-conocimiento']],
     ['Datos y sistema',['btn-resumen','btn-apariencia','btn-lugares','btn-respaldo','btn-firebase','btn-reset']],
+    ['Pruebas (antes del reto)',['btn-demo-cargar','btn-demo-borrar']],
     ['Cuenta',['btn-eliminar-cuenta','btn-logout']]
   ];
   let html='';
@@ -80,6 +81,9 @@ function staffMenu(){
     const on=verPerfilActivo();
     html=html.replace('<div class="sm-g">Cuenta</div>',`<div class="sm-g">Herramientas</div><button type="button" class="sm-row" role="switch" aria-checked="${on}" onclick="verPerfilAlternar();staffMenu()"><span class="sm-ic">${ico('user')}</span><span style="flex:1">Botón "Ver su perfil"<small class="sm-sub">Entra a la app del socio para explicarle cómo funciona</small></span><span class="sm-sw${on?' on':''}" aria-hidden="true"></span></button><div class="sm-g">Cuenta</div>`);
   }
+  // Apariencia (antes ocupaba la barra de arriba)
+  const tA=typeof temaActual==='function'?temaActual():'';
+  html=html.replace(/(<div class="sm-g">(?:Pruebas|Cuenta))/,`<div class="sm-g">Tema de color</div><div class="sm-tema" role="group" aria-label="Tema de color">${[['light','sun','Claro'],['light2','spark','Salvia'],['dark','moon','Oscuro']].map(([t,i,n])=>`<button type="button" aria-pressed="${tA===t}" onclick="setTema('${t}');staffMenu()">${ico(i)}${n}</button>`).join('')}</div>$1`);
   document.getElementById('staff-menu-title').textContent='Menú';
   document.getElementById('staff-menu-body').innerHTML=html;
   document.getElementById('modal-staff-menu').classList.add('open');
@@ -230,6 +234,7 @@ function staffRenderContent(s){
         <div class="fx-id"><div class="fx-nom">${esc(tc(s.nombre))}</div><div class="fx-sub">${esc(sub)}<span class="fx-cod">${esc(s.id)}</span></div></div>
         ${me.estado==='activo'&&!puedeEd?'':membBadgeHTML(s,puedeEd)}
       </div>
+      ${puedeEd?`<button type="button" class="fx-pasar" onclick="fxPasarEntrenador()">${ico('refresh')}<span>Entrenador: <b>${esc((DB.entrenadores[s.entrenadorId]&&DB.entrenadores[s.entrenadorId].nombre)||s.asignado||'Sin asignar')}</b></span><em>Pasar a otro</em></button>`:''}
       ${isPend?`<div class="sd-alert">Plan generado por cuestionario: pendiente de tu revisión y aprobación.${s.origenRutina==='plantilla'?' <b>Se generó con la plantilla base (la IA no estaba disponible); revísalo con más detalle.</b>':s.origenRutina==='ia'?' Generado con IA.':''}</div>`:''}
       ${tabsHTML}
       ${pane('evolucion',fxResumenHTML(s,ev,pesoNow,puedeEd))}
@@ -361,4 +366,10 @@ function staffRerender(code,k){
   const s=getSocio(code); if(!s) return;
   if(k) rtDia[code]=k;
   staffRenderContent(s);
+}
+
+// Abre "Cambiar entrenador o nutriólogo" de la ficha (pestaña Resumen) y lo trae a la vista
+function fxPasarEntrenador(){
+  try{ if(typeof staffSetTab==='function') staffSetTab('evolucion'); }catch(e){}
+  setTimeout(()=>{ const d=document.querySelector('#staff-content .fx-asig'); if(!d) return; d.open=true; d.scrollIntoView({behavior:'smooth',block:'center'}); },60);
 }

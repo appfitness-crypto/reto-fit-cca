@@ -46,7 +46,7 @@ function actualizarBotonMiFilosofia(){
   const bV=document.getElementById('btn-ver-ent'); if(bV) bV.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bTr=document.getElementById('btn-tablero'); if(bTr) bTr.style.display = (staffRol==='coordinador' || staffActivoEntId) ? 'inline-block' : 'none';   // Reto Fit CCA (js/54-tablero-reto.js)
   ['btn-reparto','btn-patro','btn-demo-cargar','btn-demo-borrar'].forEach(id=>{ const b=document.getElementById(id); if(b) b.style.display = staffRol==='coordinador' ? 'inline-block' : 'none'; });
-  const bAv=document.getElementById('btn-avisos'); if(bAv){ bAv.style.display = (staffRol==='coordinador' || staffActivoEntId) ? 'inline-block' : 'none'; bAv.textContent = staffRol==='coordinador' ? '📣 Avisos' : '📣 Mi grupo y avisos'; }   // el entrenador avisa solo a su grupo (js/61-reparto.js)   // socios de prueba (js/56-demo-reto.js)
+  const bAv=document.getElementById('btn-avisos'); if(bAv){ bAv.style.display = (staffRol==='coordinador' || staffActivoEntId) ? 'inline-block' : 'none'; bAv.innerHTML = '<svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>'+(staffRol==='coordinador' ? 'Avisos' : 'Mi grupo y avisos'); }   // el entrenador avisa solo a su grupo (js/61-reparto.js)   // socios de prueba (js/56-demo-reto.js)
   const bRes=document.getElementById('btn-resumen'); if(bRes) bRes.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bAp=document.getElementById('btn-apariencia'); if(bAp) bAp.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bLu=document.getElementById('btn-lugares'); if(bLu) bLu.style.display = (staffRol==='coordinador' && GYM.geofence) ? 'inline-block' : 'none';

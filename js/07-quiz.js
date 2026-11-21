@@ -88,13 +88,16 @@ function qNext(step){
   // Tras elegir cuántos días: pedir CUÁLES días y si toma clases grupales
   if(step===4){
     qAnswers.dias=parseInt(document.getElementById('qr-dias').value);
-    abrirDiasSemana();
-    mostrarSub('qq4b');
+    mostrarSub('qq4a');
     window.scrollTo(0,0);
     return;
   }
   showQStep(step+1); window.scrollTo(0,0);
 }
+// Q4a: su día fuera del gym → luego qué días específicos
+function qNext4a(){ if(document.getElementById('qb4a').disabled) return; abrirDiasSemana(); mostrarSub('qq4b'); window.scrollTo(0,0); }
+// Los pasos ya no repiten "Paso 04 / 11": la barra de arriba marca el avance
+document.querySelectorAll('#s-quiz .q-tag').forEach(t=>{ if(/^Paso \d/.test(t.textContent.trim())) t.remove(); });
 function qPrev(step){
   if(step===5){ mostrarSub('qq4c'); window.scrollTo(0,0); return; }
   if(step===3 && qPrev3()) return;   // regresa a la sub-pantalla de donde vino (js/46-registro-objetivo.js)

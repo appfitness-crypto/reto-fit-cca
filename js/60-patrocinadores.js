@@ -103,7 +103,7 @@ function abrirPatrocinadores(){
       </div>
       <p class="tr-mu">En el fin de sesión sale uno a la vez, rotando, con un código del día que el socio muestra en la tienda.</p>
       <div class="av-err" id="pat-err" role="alert"></div>
-      <button type="button" class="tb-btn av-pub" onclick="patPublicar()">🤝 Publicar patrocinador</button>
+      <button type="button" class="tb-btn av-pub" onclick="patPublicar()">${ico('check')}Publicar patrocinador</button>
     </div>
     <div class="tr-card">
       <h3 class="tr-h3">Publicados</h3>

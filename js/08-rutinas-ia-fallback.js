@@ -440,8 +440,10 @@ function renderPreview(rutina){
 
   // ── Tu semana ──
   const cont=document.getElementById('pv-semana');
-  cont.innerHTML=rutina.semana.map((dia,di)=>{
-    const isRest=!dia.ejercicios||dia.ejercicios.length===0;
+  const descansos=rutina.semana.filter(d=>!d.ejercicios||!d.ejercicios.length).map(d=>sc(String(d.dia||'')).substring(0,3));
+  const listaDias=a=>a.length>1?a.slice(0,-1).join(', ')+' y '+a[a.length-1]:a.join('');
+  cont.innerHTML=rutina.semana.filter(d=>d.ejercicios&&d.ejercicios.length).map((dia,di)=>{
+    const isRest=false;
     const mus=isRest?[]:pvMusculos(dia), n=isRest?0:dia.ejercicios.length;
     const ejHTML=isRest?'':dia.ejercicios.map((e,ei)=>{ const rx=rxTexto(e,qAnswers); return `<li><span class="pv-en">${String(ei+1).padStart(2,'0')}</span><div><b>${esc(e.nm||e.nombre)}</b><small>${esc(rx.sr)} · ${esc(rx.carga)}${e.descanso?' · descanso '+esc(e.descanso):''}</small>${e.metodo?`<small class="pv-met">${e.grupo?esc(e.grupo)+' · ':''}${esc(e.metodo.nm)}${e.metodo.detalle?' — '+esc(e.metodo.detalle):''}</small>`:''}${(e.alternativas||[]).length?`<small>Si está ocupado: ${e.alternativas.map(a=>esc(a.nm)).join(' · ')}</small>`:''}${e.tip?`<small class="pv-tip">${esc(String(e.tip).replace(/<[^>]*>/g,''))}</small>`:''}</div></li>`; }).join('');
     return `<div class="pv-day${isRest?' rest':''}">
@@ -452,7 +454,9 @@ function renderPreview(rutina){
       </button>
       ${isRest?'':`<ol class="pv-ej" id="pv-d${di}">${ejHTML}</ol>`}
     </div>`;
-  }).join('');
+  }).join('') + (descansos.length?`<div class="pv-day rest"><div class="pv-day-h" role="group" aria-label="Días de descanso">
+      <span class="pv-dph">${pic(basesSesion('descanso'),'moon','fill')}<span>${descansos.length}</span></span>
+      <span class="pv-dt"><b>${esc(listaDias(descansos))}: descanso</b><small>Recuperar también es entrenar</small></span></div></div>`:'');
 }
 
 // ── Confirmar: el plan se guarda en la cuenta del cliente (/socios/<uid>) ──
@@ -525,7 +529,7 @@ async function confirmarRutina(){
   document.querySelectorAll('.q-sc .opt').forEach(o=>o.classList.remove('sel'));
   document.querySelectorAll('.q-sc .chk').forEach(c=>c.classList.remove('ck'));
   qAnswers.actividad=''; qAnswers.actividadLbl='';
-  ['qb2','qb3','qb4','qb6','qb11','qbT'].forEach(id=>{const b=document.getElementById(id); if(b) b.disabled=true;});
+  ['qb2','qb3','qb4a','qb6','qb11','qbT'].forEach(id=>{const b=document.getElementById(id); if(b) b.disabled=true;});
   go('s-pending');
 }
 
@@ -1413,6 +1417,7 @@ function dashTab(t){
     document.getElementById('dtab-'+x).setAttribute('aria-selected', String(x===t));
     document.getElementById('dsec-'+x).classList.toggle('on', x===t);
   });
+  const sd=document.getElementById('s-dash'); if(sd) sd.dataset.tab=t;   // el CSS lo usa: aviso y tarjeta del reto solo en Inicio
   if(t==='inicio') refreshDash();
   if(t==='rutina') renderRutinaTab();
   if(t==='progreso') renderProgresoTab();
@@ -1516,7 +1521,8 @@ function refreshDash(){
       <div class="ci-wk">
         <div><h2>Vas <span id="ring-num">${ev.estaSemana}</span> de ${meta}</h2><p>esta semana${ev.estaSemana>=meta?' · ¡semana cumplida!':''}</p></div>
         <div class="ci-racha" aria-label="Racha de ${ev.racha} semanas">${ico('flame')}<b>${ev.racha}</b><small>${ev.racha===1?'semana':'semanas'}</small></div>
-        <div class="ci-slots" aria-hidden="true">${slots}</div>
+        <button type="button" class="ci-ver" onclick="dashTab('rutina')">Ver plan${ico('chev')}</button>
+        <div class="wk-strip ci-wk-strip">${semana}</div>
       </div>
     </div>
 
@@ -1526,10 +1532,7 @@ function refreshDash(){
     ${typeof objMetaCardHTML==='function'?objMetaCardHTML(s):''}
     ${typeof instTarjetaHTML==='function'?instTarjetaHTML():''}
     ${rmAvisoHTML(s)}
-    ${typeof mascotaInicioHTML==='function'?mascotaInicioHTML(s):''}
 
-    <section class="ci-semana"><div class="sec-row"><div class="sec-t">Tu semana</div><button type="button" class="sec-link" onclick="dashTab('rutina')">Ver plan${ico('chev')}</button></div>
-    <div class="wk-strip">${semana}</div></section>
     ${typeof patInicioHTML==='function'?patInicioHTML():''}`;
   if(typeof cineInicio==='function') cineInicio();
 }

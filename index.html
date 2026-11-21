@@ -490,13 +490,20 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
         <input type="range" id="qr-dias" aria-label="Días de entrenamiento por semana" min="2" max="6" value="4" oninput="document.getElementById('dias-v').textContent=this.value">
         <div class="s-labels"><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
       </div>
-      <div class="q-sub" style="margin-top:20px">¿Cómo es tu trabajo o tu día fuera del gym? Cambia cuántas calorías gastas.</div>
+<div class="nav-row"><div class="btn-prev" onclick="qPrev(4)">←</div><button class="btn-next" id="qb4" onclick="qNext(4)">Continuar</button></div>
+    </div>
+
+    <!-- Q4a ¿cómo es su día fuera del gym? (antes iba en el mismo paso que los días) -->
+    <div class="q-sc" id="qq4a">
+      <div class="q-tag">Tu día</div>
+      <div class="q-title">¿Cómo es tu día<br>fuera del gym?</div>
+      <div class="q-sub">Tu trabajo cambia cuántas calorías gastas.</div>
       <div class="opts" style="grid-template-columns:1fr;gap:8px">
         <div class="opt" onclick="qSel(this,'actividadLbl');qAnswers.actividad='sentado'"><div class="ol">Sentado la mayor parte del día</div><div class="os">Oficina, escuela, manejar</div></div>
         <div class="opt" onclick="qSel(this,'actividadLbl');qAnswers.actividad='depie'"><div class="ol">De pie o caminando</div><div class="os">Comercio, docencia, mesero, enfermería</div></div>
         <div class="opt" onclick="qSel(this,'actividadLbl');qAnswers.actividad='fisico'"><div class="ol">Trabajo físico</div><div class="os">Cargar, construcción, campo, almacén</div></div>
       </div>
-      <div class="nav-row"><div class="btn-prev" onclick="qPrev(4)">←</div><button class="btn-next" id="qb4" disabled onclick="qNext(4)">Continuar</button></div>
+      <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qq4')">←</div><button class="btn-next" id="qb4a" disabled onclick="qNext4a()">Continuar</button></div>
     </div>
 
     <!-- Q4b ¿qué días específicos de la semana? -->
@@ -506,7 +513,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="q-sub">Elige tus <b id="q4b-need">4</b> días. Si un día no puedes (ej. domingo), no lo marques — el plan respeta tu horario real.</div>
       <div id="dias-sem-opts" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px"></div>
       <div class="q-sub" id="q4b-count" style="margin-top:2px;font-size:var(--fs-xs)"></div>
-      <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qq4')">←</div><button class="btn-next" disabled id="qb4b" onclick="qNext4b()">Continuar</button></div>
+      <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qq4a')">←</div><button class="btn-next" disabled id="qb4b" onclick="qNext4b()">Continuar</button></div>
     </div>
 
     <!-- Q4c ¿toma clases grupales? -->
@@ -618,8 +625,8 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="q-sub">Para balancear cardio con fuerza en tu plan.</div>
       <div class="opts s1">
         <div class="opt" onclick="qSel(this,'cardio')"><div class="ol">Nunca o casi nunca</div><div class="os">Prefiero el puro gimnasio</div></div>
-        <div class="opt" onclick="qSel(this,'cardio')"><div class="ol">1 – 2 Veces por semana</div><div class="os">Cardio ocasional</div></div>
-        <div class="opt" onclick="qSel(this,'cardio')"><div class="ol">3 O más veces</div><div class="os">Parte importante de mi rutina</div></div>
+        <div class="opt" onclick="qSel(this,'cardio')"><div class="ol">1 – 2 veces por semana</div><div class="os">Cardio ocasional</div></div>
+        <div class="opt" onclick="qSel(this,'cardio')"><div class="ol">3 o más veces</div><div class="os">Parte importante de mi rutina</div></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="qPrev(11)">←</div><button class="btn-next" disabled id="qb11" onclick="qNextToTrainer(generarRutina,'qq11')">Continuar</button></div>
     </div>
@@ -649,9 +656,9 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
   <div class="pv-c">
     <div class="pv-hero" id="pv-hero"></div>
     <div class="pv-body">
-    <div id="pv-coach"></div>
+    <div class="pv-ent"><div id="pv-coach"></div>
     <p class="pv-nota" id="pv-nota"></p>
-    <div id="pv-metodo" style="display:none;margin-bottom:14px"></div>
+    <div id="pv-metodo" style="display:none"></div></div>
     <div class="pv-cons" id="pv-consejos" style="display:none"></div>
     <div id="pv-nutri"></div>
     <div class="pv-sec"><h3>Tu semana</h3><small>Toca un día para ver sus ejercicios</small></div>
@@ -801,11 +808,11 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="tb-btn" id="btn-nuevo-ent" onclick="abrirNuevoEntrenador()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador</div>
       <div class="tb-btn" id="btn-conocimiento" onclick="abrirConocimiento()" style="color:var(--p);border-color:color-mix(in srgb,var(--p) 25%,transparent)">📚 Conocimiento</div>
       <div class="tb-btn" id="btn-tablero" onclick="abrirTableroReto()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🏆 Tablero del reto</div>
-      <div class="tb-btn" id="btn-avisos" onclick="abrirAvisos()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">📣 Avisos</div>
-      <div class="tb-btn" id="btn-reparto" onclick="abrirReparto()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🔁 Reparto de entrenadores</div>
-      <div class="tb-btn" id="btn-patro" onclick="abrirPatrocinadores()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🤝 Patrocinadores</div>
-      <div class="tb-btn" id="btn-demo-cargar" onclick="demoRetoCargar()" style="display:none">🧪 Cargar 15 socios de prueba</div>
-      <div class="tb-btn" id="btn-demo-borrar" onclick="demoRetoBorrar()" style="display:none;color:var(--r)">🗑 Borrar socios de prueba</div>
+      <div class="tb-btn" id="btn-avisos" onclick="abrirAvisos()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>Avisos</div>
+      <div class="tb-btn" id="btn-reparto" onclick="abrirReparto()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)"><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg>Reparto de entrenadores</div>
+      <div class="tb-btn" id="btn-patro" onclick="abrirPatrocinadores()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)"><svg class="ico" aria-hidden="true"><use href="#i-briefcase"/></svg>Patrocinadores</div>
+      <div class="tb-btn" id="btn-demo-cargar" onclick="demoRetoCargar()" style="display:none"><svg class="ico" aria-hidden="true"><use href="#i-box"/></svg>Cargar 15 socios de prueba</div>
+      <div class="tb-btn" id="btn-demo-borrar" onclick="demoRetoBorrar()" style="display:none;color:var(--r)"><svg class="ico" aria-hidden="true"><use href="#i-trash"/></svg>Borrar socios de prueba</div>
       <div class="tb-btn" id="btn-resumen" onclick="abrirResumen()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">📊 Resumen</div>
       <div class="tb-btn" id="btn-apariencia" onclick="abrirApariencia()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🎨 Apariencia</div>
       <div class="tb-btn" id="btn-lugares" onclick="abrirLugares()" style="display:none;color:var(--p);border-color:color-mix(in srgb, var(--p) 30%, transparent)">📍 Lugares</div>
