@@ -73,8 +73,11 @@ function patCarruselVivo(root){
 function patPintarPortada(){
   const box=document.getElementById('pat-portada'); if(!box) return;
   const L=patEn('portada');
-  if(!L.length){ box.innerHTML=''; box.hidden=true; return; }
-  box.hidden=false;
+  const mas=document.querySelector('#s-inicio .wc-mas');
+  if(!L.length){ box.innerHTML=''; box.hidden=true; if(mas) mas.hidden=true; return; }
+  box.hidden=false; if(mas) mas.hidden=false;
+  // Aparece al deslizar hacia abajo
+  if('IntersectionObserver' in window && !box._obs){ box._obs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) box.classList.add('visto'); }),{threshold:.15}); box._obs.observe(box); }
   box.innerHTML=`<p class="pat-h">Patrocinan el reto</p>${patCarruselHTML(L,'portada')}`;
   patCarruselVivo(box);
 }

@@ -215,12 +215,13 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
         <span class="ic-arrow"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
       </button>
     </div>
-    <div id="pat-portada" class="pat-portada" hidden></div>
     <div class="wc-staff">
       <!-- Reto Fit CCA: los entrenadores no se registran solos; el director los da de alta (Menú → Entrenadores) -->
       <button type="button" class="staff-link" onclick="go('s-login')">Soy entrenador del reto: entrar con mi cuenta <svg class="ico" aria-hidden="true" style="width:14px;height:14px"><use href="#i-arrow"/></svg></button>
     </div>
+    <button type="button" class="wc-mas" hidden onclick="document.getElementById('pat-portada').scrollIntoView({behavior:'smooth',block:'start'})">Patrocinan el reto<svg class="ico" aria-hidden="true"><use href="#i-chev"/></svg></button>
   </div>
+  <div id="pat-portada" class="pat-portada" hidden></div>
 </div>
 
 <!-- ═══ S1: ENTRAR (cliente o entrenador) ═══ -->

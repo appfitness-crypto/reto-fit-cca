@@ -42,8 +42,8 @@
 
 /* ── Portada en computadora: dos mitades ── */
 @media (min-width:1025px){
-  html[data-theme] #s-inicio{justify-content:center;background:linear-gradient(180deg,var(--cine-top) 0%,var(--cine-deep) 46%);}
-  html[data-theme] #s-inicio .wc-hero{position:absolute;top:0;bottom:0;left:auto;right:0;width:54vw;height:auto;margin:0;
+  html[data-theme] #s-inicio{justify-content:flex-start;background:linear-gradient(180deg,var(--cine-top) 0%,var(--cine-deep) 46%) top/100% 100svh no-repeat,var(--cine-deep);}
+  html[data-theme] #s-inicio .wc-hero{position:absolute;top:0;bottom:auto;height:100svh!important;left:auto;right:0;width:54vw;height:auto;margin:0;
     -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 24%);mask-image:linear-gradient(90deg,transparent 0,#000 24%);}
   html[data-theme] #s-inicio .wc-num{font-size:min(44vw,calc((100svh - 64px)*.62),620px);}
   html[data-theme] #s-inicio .wc-ov{background:linear-gradient(180deg,transparent 55%,color-mix(in srgb,var(--cine-deep) 75%,transparent) 100%);}

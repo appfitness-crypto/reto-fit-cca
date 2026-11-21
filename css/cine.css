@@ -893,3 +893,21 @@ html[data-theme="dark"] .av-chip{color:#0A0E13;}
 .av-sheet:focus{outline:none;}
 /* En la portada las tarjetas son cuadradas para que la foto del reto siga luciendo */
 .pat-portada .pat-big-m{aspect-ratio:1/1;}
+
+/* ═══ PORTADA: la primera pantalla queda completa (foto, texto y botones);
+   los patrocinadores aparecen al deslizar hacia abajo ═══ */
+html[data-theme] #s-inicio{justify-content:flex-start;background:linear-gradient(180deg,var(--cine-top) 0%,var(--cine-top) 16%,var(--cine-deep) 64%) top/100% 100svh no-repeat,var(--cine-deep);}
+html[data-theme] #s-inicio .wc-hero{bottom:auto;height:100svh;}
+html[data-theme] #s-inicio .inicio-wrap{min-height:100svh;justify-content:flex-end;box-sizing:border-box;}
+.wc-mas{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;min-height:40px;margin-top:2px;border:0;background:none;color:var(--cine-on2);font:600 13px/1 var(--fb);cursor:pointer;}
+.wc-mas .ico{width:16px;height:16px;transform:rotate(90deg);animation:wc-baja 1.8s ease-in-out infinite;}
+@keyframes wc-baja{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(4px)}}
+html[data-theme] #s-inicio .pat-portada{position:relative;z-index:2;width:100%;max-width:560px;margin:0 auto;padding:18px 0 calc(28px + env(safe-area-inset-bottom,0px));
+  opacity:0;transform:translateY(24px);transition:opacity .6s var(--cine-out,ease),transform .7s var(--cine-expo,ease);}
+html[data-theme] #s-inicio .pat-portada.visto{opacity:1;transform:none;}
+html[data-theme] #s-inicio .pat-portada .pat-car2{padding:4px 20px 6px;}
+@media (prefers-reduced-motion:reduce){ .wc-mas .ico{animation:none;} html[data-theme] #s-inicio .pat-portada{opacity:1;transform:none;transition:none;} }
+@media (min-width:1025px){ html[data-theme] #s-inicio .inicio-wrap{min-height:100svh;justify-content:center;} html[data-theme] #s-inicio .pat-portada{max-width:960px;} html[data-theme] #s-inicio .pat-big{flex-basis:calc(33.33% - 7px);} }
+html[data-theme] #s-inicio .inicio-wrap{background:none;}
+html[data-theme] #s-inicio .wc-ov{background:linear-gradient(180deg,transparent 30%,color-mix(in srgb,var(--cine-deep) 80%,transparent) 46%,var(--cine-deep) 56%);}
+@media (min-width:1025px){ html[data-theme] #s-inicio .wc-ov{background:linear-gradient(180deg,transparent 55%,color-mix(in srgb,var(--cine-deep) 75%,transparent) 100%);} html[data-theme] #s-inicio .pat-car2.uno{justify-content:center;} html[data-theme] #s-inicio .pat-car2.uno .pat-big{flex-basis:min(100%,520px);} }
