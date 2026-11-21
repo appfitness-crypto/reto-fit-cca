@@ -284,7 +284,7 @@ function updateTb(id){
     tba.innerHTML = `<div class="tb-btn" onclick="logoutSocio()"><svg class="ico" aria-hidden="true"><use href="#i-logout"/></svg>Salir</div>`;
   } else if(id==='s-inicio'||id==='s-login'){
     tba.innerHTML = '';
-    if(id==='s-inicio') actualizarContadorSocios();
+    if(id==='s-inicio'){ actualizarContadorSocios(); if(typeof patFirmaPintar==='function') setTimeout(()=>patFirmaPintar(),0); }
   } else { tba.innerHTML=''; }
 }
 function logoutSocio(){ if(typeof vistaSocioActiva==='function' && vistaSocioActiva()) return salirVistaSocio(); miCuerpoDestruir(); fbDetenerSocio(); activeSocio=null; borrarSesion(); cuentaSalir(); go('s-inicio'); }

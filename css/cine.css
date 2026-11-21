@@ -911,3 +911,15 @@ html[data-theme] #s-inicio .pat-portada .pat-car2{padding:4px 20px 6px;}
 html[data-theme] #s-inicio .inicio-wrap{background:none;}
 html[data-theme] #s-inicio .wc-ov{background:linear-gradient(180deg,transparent 30%,color-mix(in srgb,var(--cine-deep) 80%,transparent) 46%,var(--cine-deep) 56%);}
 @media (min-width:1025px){ html[data-theme] #s-inicio .wc-ov{background:linear-gradient(180deg,transparent 55%,color-mix(in srgb,var(--cine-deep) 75%,transparent) 100%);} html[data-theme] #s-inicio .pat-car2.uno{justify-content:center;} html[data-theme] #s-inicio .pat-car2.uno .pat-big{flex-basis:min(100%,520px);} }
+
+/* ═══ PORTADA · "Presentado por": el patrocinador firma la portada junto al logo ═══ */
+.pat-firma{display:flex;align-items:center;gap:8px;max-width:190px;min-height:48px;padding:4px 12px 4px 4px;border:0;border-radius:16px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 8px 20px -10px rgba(0,0,0,.45);color:#17231F;text-align:left;cursor:pointer;font:inherit;
+  transition:opacity .3s var(--cine-out,ease),transform .45s var(--cine-expo,ease);}
+.pat-firma.cambia{opacity:0;transform:translateY(6px);}
+.pat-firma img,.pat-firma i{width:40px;height:40px;border-radius:11px;object-fit:cover;flex:none;background:#EEF2F0;}
+.pat-firma i{display:grid;place-items:center;font-style:normal;font-family:var(--fd);font-weight:800;font-size:17px;}
+.pat-firma-t{display:grid;min-width:0;}
+.pat-firma-t small{font:600 10.5px/1.15 var(--fb);color:#56635E;}
+.pat-firma-t b{font-family:var(--fd);font-weight:700;font-size:13.5px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+@media (prefers-reduced-motion:reduce){.pat-firma{transition:none;}}
+.wc-mas[hidden],#s-inicio .pat-portada[hidden]{display:none!important;}

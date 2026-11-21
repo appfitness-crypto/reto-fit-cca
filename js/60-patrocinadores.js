@@ -69,12 +69,38 @@ function patCarruselVivo(root){
   });
 }
 
+// ── Portada: "Presentado por" en la barra de arriba, a la derecha del logo; rota cada 4 s ──
+const PAT_PORTADA_MODO='firma';   // 'firma' (arriba) o 'abajo' (carrusel al deslizar)
+let patFirmaI=0, patFirmaIv=null;
+function patFirmaHTML(L,i){
+  const p=L[i%L.length], f=p.logo||p.img;
+  return `<button type="button" class="pat-firma" onclick="patVer('portada',${i%L.length})" aria-label="Presentado por ${esc(p.nombre)}. Toca para ver la promoción.">
+    ${f?`<img src="${esc(f)}" alt="" decoding="async">`:`<i aria-hidden="true">${esc(String(p.nombre).trim().charAt(0).toUpperCase())}</i>`}
+    <span class="pat-firma-t"><small>Presentado por</small><b>${esc(p.nombre)}</b></span></button>`;
+}
+function patFirmaPintar(L){
+  L=L||patEn('portada');
+  const tba=document.getElementById('tb-actions'), enInicio=document.getElementById('s-inicio')?.classList.contains('on');
+  clearInterval(patFirmaIv); patFirmaIv=null;
+  if(!tba || !enInicio || !L.length || PAT_PORTADA_MODO!=='firma'){ const v=tba&&tba.querySelector('.pat-firma'); if(v) v.remove(); return; }
+  patFirmaI=patFirmaI%L.length;
+  tba.innerHTML=patFirmaHTML(L,patFirmaI);
+  if(L.length<2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  patFirmaIv=setInterval(()=>{
+    const b=tba.querySelector('.pat-firma'); if(!b || !document.getElementById('s-inicio')?.classList.contains('on')){ clearInterval(patFirmaIv); return; }
+    b.classList.add('cambia');
+    setTimeout(()=>{ patFirmaI=(patFirmaI+1)%L.length; const n=document.createElement('div'); n.innerHTML=patFirmaHTML(L,patFirmaI); const nb=n.firstElementChild; nb.classList.add('cambia'); b.replaceWith(nb); requestAnimationFrame(()=>nb.classList.remove('cambia')); },320);
+  },4000);
+}
+
 // ── Portada: carrusel de imágenes grandes ──
 function patPintarPortada(){
   const box=document.getElementById('pat-portada'); if(!box) return;
   const L=patEn('portada');
   const mas=document.querySelector('#s-inicio .wc-mas');
-  if(!L.length){ box.innerHTML=''; box.hidden=true; if(mas) mas.hidden=true; return; }
+  patFirmaPintar(L);
+  // Portada elegida por el club: "Presentado por" arriba a la derecha (opción A). La sección de abajo queda apagada.
+  if(!L.length || PAT_PORTADA_MODO==='firma'){ box.innerHTML=''; box.hidden=true; if(mas) mas.hidden=true; return; }
   box.hidden=false; if(mas) mas.hidden=false;
   // Aparece al deslizar hacia abajo
   if('IntersectionObserver' in window && !box._obs){ box._obs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) box.classList.add('visto'); }),{threshold:.15}); box._obs.observe(box); }
