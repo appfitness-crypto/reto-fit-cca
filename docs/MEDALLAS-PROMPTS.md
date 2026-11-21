@@ -19,7 +19,7 @@ Las medallas de hoy se ven de cualquier app: listón y círculo de color. La pro
 ## Cómo pedirla
 
 1. Abre un chat nuevo en ChatGPT.
-2. **Adjunta la imagen del logo del club** (el archivo `icons/icon-512.png` o el logo original). Así copia bien la forma de la C.
+2. **Adjunta el logo original del club** (`icons/marca/logo-campestre-original.jpg`). Así copia bien la forma de la C: lazo superior verde olivo (#628B2F) y trazo inferior azul petróleo (#145678).
 3. Pega el bloque de abajo.
 4. Si sale con texto, letras, números o desordenada, pídele: "sin texto, letras ni números; las 5 insignias en una sola fila, mismo tamaño, fondo liso".
 5. Mándame la imagen y yo la recorto y la subo a la app.
@@ -42,3 +42,7 @@ Las medallas de hoy se ven de cualquier app: listón y círculo de color. La pro
 ## Variante si se quiere más "trofeo"
 
 Cambiar "placa metálica circular" por "escudo con forma de blasón redondeado, como el escudo de un club deportivo". Lo demás queda igual.
+
+## Resultado
+
+La hoja que creó el club quedó recortada en `img/medallas/nivel-1.webp` … `nivel-5.webp`. La forma de la C coincide con el logo original del Campestre Aguascalientes.
