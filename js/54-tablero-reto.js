@@ -223,6 +223,7 @@ function abrirTableroReto(obj){
   const totObj = Math.max(1, Object.values(T.porObj).reduce((a,b)=>a+b,0));
   const ents = Object.values(T.porEnt).sort((a,b)=>b.total-a.total);
   const rk = trRanking(T.filas, trObj);
+  if(dir) setTimeout(()=>trPublicarLugares(T),300);
   const rkVis = trVerTodos ? rk : rk.slice(0,20);
   const iniciales = n=>String(n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 
@@ -333,4 +334,35 @@ function trActualizarResumenes(){
       .catch(e=>console.warn('resumen',c,e)).then(()=>setTimeout(sig,40));
   };
   sig();
+}
+
+// ── Lugar de cada socio en su objetivo: el director lo publica en /lugares/<uid> (solo ese socio lo lee) ──
+// Se calcula con el mismo ranking del tablero; se publica al abrir el tablero y, en segundo plano, al cargar el panel.
+const TR_LUG_LS='tr_lugares_pub_v1';
+function trPublicarLugares(T){
+  if(staffRol!=='coordinador' || typeof fbDB==='undefined' || !fbDB || !fbListo) return;
+  try{
+    T=T||trCalcTablero();
+    let prev={}; try{ prev=JSON.parse(localStorage.getItem(TR_LUG_LS))||{}; }catch(e){}
+    const nuevo={}, hoy=fechaISO(new Date());
+    trObjetivos().forEach(o=>{
+      const rk=trRanking(T.filas,o);
+      rk.forEach((r,i)=>{ const code=r.s&&r.s.code; if(!code) return;
+        const v={l:i+1, de:rk.length, o, p:r.puntos||0};
+        nuevo[code]=v;
+        const a=prev[code];
+        if(!a||a.l!==v.l||a.de!==v.de||a.p!==v.p||a.o!==v.o) fbDB.ref('/lugares/'+code).set(Object.assign({f:hoy},v)).catch(()=>{});
+      });
+    });
+    localStorage.setItem(TR_LUG_LS,JSON.stringify(nuevo));
+  }catch(e){ console.warn('lugares',e); }
+}
+let _trLugT=null, _trLugUlt=0;
+if(typeof staffRenderList==='function'){
+  const _srlLug=staffRenderList;
+  window.staffRenderList=staffRenderList=function(){
+    const r=_srlLug.apply(this,arguments);
+    if(staffRol==='coordinador' && Date.now()-_trLugUlt>10*60*1000){ clearTimeout(_trLugT); _trLugT=setTimeout(()=>{ _trLugUlt=Date.now(); trPublicarLugares(); },5000); }
+    return r;
+  };
 }
