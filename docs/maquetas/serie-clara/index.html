@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#002941">
+<title>Reto Fit CCA · Pantalla de serie más clara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* La pantalla de serie, igual de estructura pero sin jerga: cada cosa dice qué es.
+   Tema Claro (el de la captura del club): azul marino #002941 y coral #FD6E6E. */
+:root{--fd:'Kanit','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --navy:#002941;--coral:#FD6E6E;--coral2:#FFA8A8;--tx:#0E2233;--mu:#4D6170;--screen:#0A0E13;
+  --glass:linear-gradient(160deg,rgba(255,255,255,.88),rgba(255,255,255,.66));--edge:rgba(255,255,255,.9);
+  --sh:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.7),0 14px 30px -18px rgba(0,41,65,.45);
+  --trk:rgba(0,41,65,.1);--expo:cubic-bezier(.16,1,.3,1)}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#CFE3F0}
+body{margin:0;font-family:var(--fb);font-size:15px;line-height:1.45;color:var(--tx);background:linear-gradient(172deg,#E6F1F8,#BBD6E8);min-height:100vh;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+::selection{background:var(--coral);color:#fff}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--coral);outline-offset:2px;border-radius:12px}
+img{display:block}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pg{max-width:1400px;margin:0 auto;padding:44px 32px 96px}
+.pg-h{max-width:900px;margin:0 auto 40px}
+.pg-h h1{font:italic 800 clamp(34px,4.6vw,58px)/.92 var(--fd);text-transform:uppercase;margin:0 0 14px;color:var(--navy);text-wrap:balance}
+.pg-h p{margin:0;max-width:66ch;color:var(--mu);font-size:16.5px}
+.pg-h p b{color:var(--tx)}
+.rail{display:grid;grid-template-columns:repeat(3,410px);gap:56px 28px;justify-content:center}
+@media (max-width:1320px){.rail{grid-template-columns:repeat(2,410px)}}
+@media (max-width:899px){.rail{grid-template-columns:410px}}
+.shot{display:flex;flex-direction:column;align-items:center}
+.shot h2{width:390px;margin:0 0 4px;font:italic 800 23px/1 var(--fd);text-transform:uppercase;color:var(--navy)}
+.shot .q{width:390px;margin:0 0 16px;color:var(--mu);font-size:14.5px}
+.notes{width:390px;margin:22px 0 0;padding:0;list-style:none;display:grid;gap:9px;counter-reset:n}
+.notes li{display:grid;grid-template-columns:24px 1fr;gap:10px;font-size:14px;color:var(--mu);counter-increment:n}
+.notes li::before{content:counter(n);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--coral);color:#fff;font:800 12px/1 var(--fb)}
+.notes b{color:var(--tx)}
+.phone{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;isolation:isolate;box-shadow:0 0 0 10px #071822,0 0 0 11px #36566B,0 46px 80px -34px rgba(0,41,65,.55);transform:translateZ(0);
+  background:radial-gradient(120% 60% at 120% 80%,#002941 0 38%,transparent 38.2%),linear-gradient(180deg,#DCEFFA,#BFE0F2)}
+.phone.antes img{width:100%;height:auto}
+.phone .tag{position:absolute;top:58px;right:14px;z-index:80;padding:6px 12px;border-radius:99px;background:#0E2233;color:#fff;font:800 12px/1 var(--fb)}
+.scr{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:52px 16px 40px}
+.scr::-webkit-scrollbar{display:none}
+.sb{position:absolute;top:0;left:0;right:0;height:46px;z-index:70;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 40px;font:600 16px/1 var(--fb);color:var(--tx);pointer-events:none}
+.sb svg{height:13px;width:auto}
+.mark{position:absolute;z-index:60;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--coral);color:#fff;font:800 12px/1 var(--fb);box-shadow:0 0 0 3px #fff,0 6px 12px -4px rgba(0,0,0,.4);pointer-events:none}
+
+/* barra de arriba */
+.top{display:flex;align-items:center;gap:8px}
+.ib{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass);box-shadow:var(--sh)}
+.ib .ico{width:20px;height:20px}
+.top .t{flex:1;min-width:0}
+.top .t b{display:block;font:700 16px/1.1 var(--fd)}
+.top .t small{display:flex;white-space:nowrap;align-items:center;gap:4px;font:600 12.5px/1 var(--fb);color:var(--mu);margin-top:3px}
+.top .t small .ico{width:13px;height:13px}
+.crono{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:99px;background:var(--glass);box-shadow:var(--sh);font:700 12.5px/1 var(--fb)}
+.crono .ico{width:17px;height:17px}
+.fin{min-height:44px;padding:0 14px;border-radius:99px;background:var(--glass);box-shadow:var(--sh);font:700 13px/1 var(--fb)}
+
+/* avance de ejercicios */
+.avance{margin-top:12px}
+.avance-l{display:flex;justify-content:space-between;align-items:baseline;margin:0 2px 6px}
+.avance-l b{font:800 13px/1 var(--fb);color:var(--navy)}
+.avance-l span{font:600 12px/1 var(--fb);color:var(--mu)}
+.rail6{display:flex;gap:6px}
+.rail6 span{position:relative;flex:1;height:44px;border-radius:12px;overflow:hidden;background:var(--screen)}
+.rail6 img{width:100%;height:100%;object-fit:cover;opacity:.45}
+.rail6 em{position:absolute;left:5px;top:4px;font:italic 800 12px/1 var(--fd);font-style:normal;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.rail6 .now{flex:1.9;box-shadow:inset 0 0 0 3px var(--coral)}
+.rail6 .now img{opacity:1}
+.rail6 .ok img{opacity:.8}
+.rail6 .ok::after{content:"";position:absolute;right:4px;bottom:4px;width:16px;height:16px;border-radius:50%;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23002941' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/10px no-repeat}
+
+/* foto */
+.stage{position:relative;height:250px;margin-top:10px;border-radius:26px;overflow:hidden;background:var(--screen)}
+.stage img{width:100%;height:100%;object-fit:contain;object-position:60% 60%}
+.cambiar{position:absolute;left:10px;top:10px;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:99px;background:rgba(255,255,255,.14);color:#fff;font:700 12.5px/1 var(--fb);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.cambiar .ico{width:15px;height:15px}
+.tec{position:absolute;right:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:99px;background:#fff;color:var(--screen);font:700 13.5px/1 var(--fb)}
+.tec .ico{width:14px;height:14px}
+
+.name{margin:14px 2px 0;font:italic 800 30px/.95 var(--fd);text-transform:uppercase;color:var(--navy)}
+.eq{display:flex;align-items:center;gap:6px;margin:6px 2px 0;font-size:13.5px;color:var(--mu)}
+.eq .ico{width:15px;height:15px}
+.tres{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.tres div{padding:10px 12px;border-radius:18px;background:var(--glass);box-shadow:var(--sh)}
+.tres b{display:block;font:italic 800 26px/1 var(--fd);color:var(--navy)}
+.tres small{font-size:12px;color:var(--mu)}
+.como{display:flex;gap:10px;align-items:flex-start;margin-top:10px;padding:12px 14px;border-radius:18px;background:var(--glass);box-shadow:var(--sh)}
+.como .ico{width:20px;height:20px;color:var(--coral);margin-top:1px}
+.como b{display:block;font:700 12.5px/1 var(--fb);color:var(--mu);margin-bottom:3px}
+.como p{margin:0;font-size:14px;color:var(--tx)}
+.como a{display:inline-block;margin-top:4px;font:700 13px/1 var(--fb);color:var(--navy);text-decoration:underline;text-underline-offset:3px}
+
+/* tarjeta de la serie */
+.cur{margin-top:12px;padding:14px;border-radius:24px;background:#fff;box-shadow:0 0 0 2px var(--coral),0 18px 30px -18px rgba(0,41,65,.5)}
+.cur-h{display:flex;justify-content:space-between;align-items:center}
+.cur-h b{font:800 19px/1 var(--fd)}
+.cur-h b small{font-size:15px;color:var(--mu)}
+.dots{display:flex;gap:5px}.dots i{width:22px;height:6px;border-radius:9px;background:var(--trk)}.dots i.on{background:var(--coral)}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.step{border-radius:18px;background:#EEF3F7;padding:6px 6px 8px}
+.step-r{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;height:56px}
+.step-r button{height:100%;display:grid;place-items:center}
+.step-r .v{text-align:center;font:800 30px/1 var(--fd);color:var(--tx)}
+.step-r .v.vacio{color:#9AA9B5}
+.step small{display:block;text-align:center;font:700 12px/1 var(--fb);color:var(--mu)}
+.step.sug small{color:#0E7A4A}
+.ayuda{display:flex;gap:8px;align-items:flex-start;margin-top:10px;padding:10px 12px;border-radius:14px;background:rgba(253,110,110,.1);font-size:13px;color:var(--tx)}
+.ayuda .ico{width:16px;height:16px;color:var(--coral);margin-top:1px}
+.ayuda b{font-weight:700}
+.unit{display:inline-flex;margin-left:auto;border-radius:99px;background:#EEF3F7;padding:2px}
+.unit button{min-height:26px;padding:0 9px;border-radius:99px;font:700 11.5px/1 var(--fb);color:var(--mu)}
+.unit button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.go{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:60px;margin-top:10px;border-radius:99px;background:var(--coral);color:#fff;font:800 20px/1 var(--fd);box-shadow:0 14px 26px -14px rgba(253,110,110,.9)}
+.go .ico{width:20px;height:20px;stroke-width:3}
+.luego{margin:8px 0 0;text-align:center;font-size:12.5px;color:var(--mu)}
+.next{display:flex;align-items:center;gap:12px;margin-top:12px;padding:8px 14px 8px 8px;border-radius:20px;background:var(--glass);box-shadow:var(--sh)}
+.next img{width:48px;height:48px;border-radius:12px;object-fit:cover;background:var(--screen)}
+.next span{flex:1}.next small{display:block;font:700 12px/1 var(--fb);color:var(--mu)}.next b{font:700 15px/1.2 var(--fd)}
+.next .ico{color:var(--mu);width:16px;height:16px}
+@media (max-width:520px){.pg{padding:28px 0 64px}.pg-h{padding:0 20px}.rail{grid-template-columns:1fr}.shot h2,.shot .q,.notes{width:auto;align-self:stretch;margin-left:20px;margin-right:20px}.phone{width:100%;border-radius:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-chevl" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2 1.5M9.5 2.5h5M12 2.5V6"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-dumb" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3Z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="sbar" viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></symbol>
+</svg>
+<div class="pg">
+  <header class="pg-h">
+    <h1>La pantalla de serie, sin dudas</h1>
+    <p>Misma pantalla y mismo orden, pero <b>cada cosa dice qué es</b>: en qué ejercicio vas, cuántas series, cuántas repeticiones, cuánto descansas y cómo hacerlo, sin palabras técnicas. Y la primera vez, una ayuda para elegir el peso. Los números en coral marcan cada cambio.</p>
+  </header>
+  <main class="rail">
+    <section class="shot"><h2>Hoy</h2><p class="q">La pantalla tal como está (tu captura).</p>
+      <div class="phone antes"><span class="tag">Hoy</span><img src="img/antes.webp" alt="Pantalla de serie actual"></div>
+    </section>
+
+    <section class="shot"><h2>Propuesta · primera vez</h2><p class="q">Cuando nunca has hecho el ejercicio y no hay peso sugerido.</p>
+      <div class="phone"><div class="scr">
+        <div class="top"><button type="button" class="ib" aria-label="Salir"><svg class="ico"><use href="#i-chevl"/></svg></button>
+          <div class="t"><b>Pierna B</b><small><svg class="ico"><use href="#i-clock"/></svg>Sesión 00:07</small></div>
+          <button type="button" class="crono"><svg class="ico"><use href="#i-timer"/></svg>Cronómetro</button><button type="button" class="fin">Terminar</button></div>
+        <div class="avance"><div class="avance-l"><b>Ejercicio 1 de 6</b><span>0 terminados</span></div>
+          <div class="rail6"><span class="now"><img src="img/mini-sentadilla-bulgara.webp" alt=""><em>1</em></span><span><img src="img/mini-peso-muerto-sumo.webp" alt=""><em>2</em></span><span><img src="img/mini-step-up-al-cajon.webp" alt=""><em>3</em></span><span><img src="img/mini-hip-thrust.webp" alt=""><em>4</em></span><span><img src="img/mini-extension-de-cuadriceps.webp" alt=""><em>5</em></span><span><img src="img/mini-curl-femoral-sentado.webp" alt=""><em>6</em></span></div></div>
+        <div class="stage"><img src="img/sentadilla-bulgara.webp" alt=""><button type="button" class="cambiar"><svg class="ico"><use href="#i-swap"/></svg>¿Ocupado? Cambiar</button><button type="button" class="tec"><svg class="ico"><use href="#i-play"/></svg>Ver técnica</button></div>
+        <h1 class="name">Sentadilla búlgara</h1>
+        <p class="eq"><svg class="ico"><use href="#i-dumb"/></svg>Banca y mancuernas</p>
+        <div class="tres"><div><b>4</b><small>series</small></div><div><b>10</b><small>repeticiones</small></div><div><b>90 s</b><small>de descanso</small></div></div>
+        <div class="como"><svg class="ico"><use href="#i-bulb"/></svg><div><b>Cómo hacerlo</b><p>Baja en 3 segundos, haz una pausa de 1 segundo abajo y sube en 1 segundo.</p><a>Ver la técnica completa</a></div></div>
+        <div class="cur"><div class="cur-h"><b>Serie 1 <small>de 4</small></b><span class="dots"><i class="on"></i><i></i><i></i><i></i></span></div>
+          <div class="steps"><div class="step"><div class="step-r"><button type="button" aria-label="Menos peso"><svg class="ico"><use href="#i-minus"/></svg></button><span class="v vacio">—</span><button type="button" aria-label="Más peso"><svg class="ico"><use href="#i-plus"/></svg></button></div><small>peso en lb</small></div>
+            <div class="step"><div class="step-r"><button type="button" aria-label="Menos repeticiones"><svg class="ico"><use href="#i-minus"/></svg></button><span class="v">10</span><button type="button" aria-label="Más repeticiones"><svg class="ico"><use href="#i-plus"/></svg></button></div><small>repeticiones</small></div></div>
+          <div class="ayuda"><svg class="ico"><use href="#i-info"/></svg><span><b>Primera vez:</b> elige un peso con el que llegues a 10 con esfuerzo, sin perder la forma. Si te sobran muchas, sube la próxima serie.</span></div>
+          <button type="button" class="go"><svg class="ico"><use href="#i-check"/></svg>Terminé la serie 1</button>
+          <p class="luego">Después descansas 90 s · el cronómetro arranca solo</p></div>
+        <div class="next"><img src="img/mini-peso-muerto-sumo.webp" alt=""><span><small>Sigue</small><b>Peso muerto sumo</b></span><svg class="ico"><use href="#i-chev"/></svg></div>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div>
+      <span class="mark" style="left:150px;top:44px">7</span><span class="mark" style="left:142px;top:104px">1</span><span class="mark" style="left:2px;top:146px">2</span><span class="mark" style="left:2px;top:202px">3</span><span class="mark" style="left:352px;top:500px">4</span><span class="mark" style="left:352px;top:580px">5</span><span class="mark" style="left:2px;top:770px">6</span></div>
+      <ul class="notes"><li><span><b>"Ejercicio 1 de 6"</b> en lugar del "1/4" gris dentro de la foto.</span></li><li><span>Las miniaturas llevan <b>su número</b>; la actual con borde y las terminadas con palomita.</span></li><li><span>El botón de flechas dice <b>"¿Ocupado? Cambiar"</b>.</span></li><li><span>Tres datos grandes: <b>series, repeticiones y descanso</b>. Sin "tempo", "excéntrico" ni "hipertrofia".</span></li><li><span><b>Cómo hacerlo</b> completo, en palabras, con enlace a la técnica.</span></li><li><span><b>Ayuda la primera vez</b> para elegir el peso, y debajo del botón: qué pasa después.</span></li><li><span>Arriba dice <b>"Sesión 00:07"</b> y el reloj dice "Cronómetro".</span></li></ul>
+    </section>
+
+    <section class="shot"><h2>Propuesta · ya lo has hecho</h2><p class="q">Con historial: el peso ya viene puesto y te dice por qué.</p>
+      <div class="phone"><div class="scr">
+        <div class="top"><button type="button" class="ib" aria-label="Salir"><svg class="ico"><use href="#i-chevl"/></svg></button>
+          <div class="t"><b>Pierna B</b><small><svg class="ico"><use href="#i-clock"/></svg>Sesión 06:40</small></div>
+          <button type="button" class="crono"><svg class="ico"><use href="#i-timer"/></svg>Cronómetro</button><button type="button" class="fin">Terminar</button></div>
+        <div class="avance"><div class="avance-l"><b>Ejercicio 1 de 6</b><span>Serie 3 de 4</span></div>
+          <div class="rail6"><span class="now"><img src="img/mini-sentadilla-bulgara.webp" alt=""><em>1</em></span><span><img src="img/mini-peso-muerto-sumo.webp" alt=""><em>2</em></span><span><img src="img/mini-step-up-al-cajon.webp" alt=""><em>3</em></span><span><img src="img/mini-hip-thrust.webp" alt=""><em>4</em></span><span><img src="img/mini-extension-de-cuadriceps.webp" alt=""><em>5</em></span><span><img src="img/mini-curl-femoral-sentado.webp" alt=""><em>6</em></span></div></div>
+        <div class="stage"><img src="img/sentadilla-bulgara.webp" alt=""><button type="button" class="cambiar"><svg class="ico"><use href="#i-swap"/></svg>¿Ocupado? Cambiar</button><button type="button" class="tec"><svg class="ico"><use href="#i-play"/></svg>Ver técnica</button></div>
+        <h1 class="name">Sentadilla búlgara</h1>
+        <p class="eq"><svg class="ico"><use href="#i-dumb"/></svg>Banca y mancuernas</p>
+        <div class="tres"><div><b>4</b><small>series</small></div><div><b>10</b><small>repeticiones</small></div><div><b>90 s</b><small>de descanso</small></div></div>
+        <div class="cur"><div class="cur-h"><b>Serie 3 <small>de 4</small></b><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+          <div class="steps"><div class="step sug"><div class="step-r"><button type="button" aria-label="Menos peso"><svg class="ico"><use href="#i-minus"/></svg></button><span class="v">25</span><button type="button" aria-label="Más peso"><svg class="ico"><use href="#i-plus"/></svg></button></div><small>lb · +5 vs la vez pasada</small></div>
+            <div class="step"><div class="step-r"><button type="button" aria-label="Menos repeticiones"><svg class="ico"><use href="#i-minus"/></svg></button><span class="v">10</span><button type="button" aria-label="Más repeticiones"><svg class="ico"><use href="#i-plus"/></svg></button></div><small>repeticiones</small></div></div>
+          <div class="ayuda" style="background:rgba(14,122,74,.1)"><svg class="ico" style="color:#0E7A4A"><use href="#i-up"/></svg><span><b>Sube 5 lb:</b> la vez pasada completaste las 4 series con 20 lb.</span></div>
+          <button type="button" class="go"><svg class="ico"><use href="#i-check"/></svg>Terminé la serie 3</button>
+          <p class="luego">Después descansas 90 s · te falta 1 serie</p></div>
+        <div class="next"><img src="img/mini-peso-muerto-sumo.webp" alt=""><span><small>Sigue</small><b>Peso muerto sumo</b></span><svg class="ico"><use href="#i-chev"/></svg></div>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div></div>
+      <ul class="notes"><li><span>El peso <b>ya viene puesto</b> con lo que te toca hoy, y abajo dice cuánto subiste.</span></li><li><span>Un renglón explica <b>por qué</b> sube o se repite.</span></li><li><span>"Cómo hacerlo" se oculta a partir de la serie 2 para dejar más espacio; sigue en "Ver técnica".</span></li></ul>
+    </section>
+  </main>
+</div>
+</body>
+</html>
