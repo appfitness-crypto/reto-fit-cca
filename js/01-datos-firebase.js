@@ -244,11 +244,19 @@ function guardarLocal(){
 // Firebase NO guarda arrays ni objetos vacíos: un socio nuevo vuelve sin "sesiones", "prs", etc.
 // Esta función los restaura para que registrar una sesión nunca falle por un campo faltante.
 function comoArray(v){ return Array.isArray(v) ? v : (v && typeof v==='object' ? Object.values(v) : []); }
+const LOG_LLAVES={
+  sesiones:x=>x.ts?('t'+x.ts):(x.fecha+'|'+(x.hora||'')+'|'+(x.diaKey||'')),
+  asistencia:x=>x.fecha, pesoCorporal:x=>x.fecha, medidas:x=>x.fecha,
+  lesiones:x=>(x.protoId||'')+'|'+(x.fechaInicio||'')
+};
 function asegurarLogs(s){
   if(!s) return s;
   if(!s.logs || typeof s.logs!=='object') s.logs={};
   const L=s.logs;
   ['sesiones','pesoCorporal','asistencia','medidas','lesiones'].forEach(k=>{ L[k]=comoArray(L[k]); });
+  // Sesiones que el socio eliminó: se recuerdan para que ninguna sincronización las vuelva a traer
+  L.sesBorradas=comoArray(L.sesBorradas).filter(x=>typeof x==='string');
+  if(L.sesBorradas.length){ const b=new Set(L.sesBorradas); L.sesiones=L.sesiones.filter(x=>!x||!b.has(LOG_LLAVES.sesiones(x))); }
   if(!L.prs || typeof L.prs!=='object' || Array.isArray(L.prs)) L.prs={};
   s.limitaciones=comoArray(s.limitaciones);
   s.zonas=comoArray(s.zonas);
@@ -302,14 +310,12 @@ function camposSocio(a,b){ const k=new Set([...Object.keys(a||{}),...Object.keys
 function baseDeSocio(s){ const o={}; camposSocio(s,null).forEach(k=>{ o[k]=huella(s[k]); }); return o; }
 
 // Historial: se unen los registros de ambos lados (nada se pierde)
-const LOG_LLAVES={
-  sesiones:x=>x.ts?('t'+x.ts):(x.fecha+'|'+(x.hora||'')+'|'+(x.diaKey||'')),
-  asistencia:x=>x.fecha, pesoCorporal:x=>x.fecha, medidas:x=>x.fecha,
-  lesiones:x=>(x.protoId||'')+'|'+(x.fechaInicio||'')
-};
 function unirLogs(L,S){
   L=L||{}; S=S||{};
   const out=Object.assign({},S,L);
+  // Borradas en cualquiera de los dos lados: se unen y esas sesiones no regresan
+  const borr=[...new Set(comoArray(S.sesBorradas).concat(comoArray(L.sesBorradas)).filter(x=>typeof x==='string'))].slice(-400), bset=new Set(borr);
+  out.sesBorradas=borr;
   Object.keys(LOG_LLAVES).forEach(k=>{
     const la=comoArray(L[k]), sa=comoArray(S[k]), key=LOG_LLAVES[k], vistos=new Set(la.filter(Boolean).map(key));
     const extra=sa.filter(x=>x && !vistos.has(key(x)));
@@ -319,6 +325,7 @@ function unirLogs(L,S){
       else if(k==='sesiones') r=r.sort((a,b)=>String(a.fecha||'').localeCompare(String(b.fecha||''))||((a.ts||0)-(b.ts||0)));
       else if(k==='pesoCorporal'||k==='medidas') r=r.sort((a,b)=>String(a.fecha||'').localeCompare(String(b.fecha||'')));
     }
+    if(k==='sesiones' && bset.size) r=r.filter(x=>!x||!bset.has(key(x)));
     out[k]=r;
   });
   const pl=(L.prs&&typeof L.prs==='object')?L.prs:{}, ps=(S.prs&&typeof S.prs==='object')?S.prs:{}, prs=Object.assign({},ps);
