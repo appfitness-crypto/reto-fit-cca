@@ -1495,39 +1495,42 @@ function refreshDash(){
   const coach=ent&&ent.nombre&&ent.rol!=='coordinador'?`<p class="ci-coach"><i aria-hidden="true">${esc(iniciales(ent.nombre).slice(0,1))}</i><span>Plan de <b>${esc(tc(ent.nombre).split(' ')[0])}</b>, tu entrenador</span></p>`:'';
   const hoyTxt=`${sc(DIAS_NAMES[HOY_KEY])} ${new Date().getDate()}`;
   const slots=Array.from({length:meta},(_,i)=>`<i class="${i<ev.estaSemana?'ok':(i===ev.estaSemana&&!esDescanso&&!hechoHoy?'hoy':'')}" style="--i:${i}"></i>`).join('');
-  // Inicio (propuesta elegida por el club, docs/maquetas/principales): el día es la pantalla, un solo botón,
-  // la barra del reto sobre la foto, la frase del entrenador y dos cuadros (tu semana y tu compañero)
-  const frase=ent&&ent.filosofia&&ent.filosofia.tagline;
-  const dots=Array.from({length:meta},(_,i)=>`<i class="${i<ev.estaSemana?'ok':(i===ev.estaSemana&&!esDescanso&&!hechoHoy?'now':'')}"></i>`).join('');
+  // Inicio (propuesta B elegida por el club, docs/maquetas/inicio-acceso): el aviso es una franja dentro de la foto,
+  // la mascota acompaña al botón de entrenar y abajo va la semana a todo lo ancho
   const ptsX=typeof socioPuntos==='function'?socioPuntos(s):null, pts=ptsX?ptsX.r.puntos:0;
-  const mst=(!s.mascotaOculta&&s.mascota&&typeof mascotaEstado==='function')?mascotaEstado(s):null;
-  const niv=(s.mascotaOculta&&typeof nivelEstado==='function')?nivelEstado(s):null;
-  const mascTile=!GYM.reto?'':mst
-    ? `<button type="button" class="ih-tile ih-masc" onclick="mascotaAbrir()" aria-label="${esc(mst.nombre)}, ${esc(mst.etapa.nm)}, ${pts} puntos"><span class="ih-k">${esc(mst.nombre)} · ${esc(mst.etapa.nm)}</span><span class="ih-n">${pts.toLocaleString('es-MX')}<small>pts</small></span>${mst.sig?`<span class="ih-bar"><i style="width:${Math.max(3,mst.pct)}%"></i></span>`:''}<span class="ih-pet">${mascotaImgHTML(mst.m,mst.etapa.n)}</span></button>`
-    : niv
-    ? `<button type="button" class="ih-tile ih-masc" onclick="dashTab('perfil')"><span class="ih-k">Nivel ${esc(niv.nivel)}</span><span class="ih-n">${pts.toLocaleString('es-MX')}<small>pts</small></span>${niv.sig?`<span class="ih-bar"><i style="width:${Math.max(3,niv.pct)}%"></i></span>`:''}<span class="ih-pet ih-med">${medallaSVG(niv.etapa.n,96)}</span></button>`
-    : `<button type="button" class="ih-tile ih-masc" onclick="mascotaAbrirSelector(false)"><span class="ih-k">Tu compañero</span><span class="ih-n ih-n-s">Elige tu mascota</span></button>`;
+  const mst=(GYM.reto&&!s.mascotaOculta&&s.mascota&&typeof mascotaEstado==='function')?mascotaEstado(s):null;
+  const niv=(GYM.reto&&s.mascotaOculta&&typeof nivelEstado==='function')?nivelEstado(s):null;
+  const compa=mst?{fig:mascotaImgHTML(mst.m,mst.etapa.n), nm:mst.nombre, et:mst.etapa.nm, pct:mst.sig?mst.pct:null, on:'mascotaAbrir()'}
+    : niv?{fig:medallaSVG(niv.etapa.n,96), nm:'Nivel '+niv.nivel, et:'', pct:niv.sig?niv.pct:null, on:"dashTab('perfil')", med:1}
+    : (GYM.reto&&!s.mascotaOculta)?{fig:'', nm:'Elige tu compañero', et:'', pct:null, on:'mascotaAbrirSelector(false)'}:null;
+  const faltanSes=Math.max(0,meta-ev.estaSemana);
+  const dias7=DIAS_ORDER.map((k,i)=>{
+    const d=s.rutina[k], rest=!d||!d.ejercicios||!d.ejercicios.length, esHoy=k===HOY_KEY;
+    return `<button type="button" class="ih-d${sem[i]?' ok':''}${esHoy?' hoy':''}${rest&&!sem[i]?' rest':''}" ${rest?'disabled':`onclick="openDay('${k}')"`} aria-label="${esc(DIAS_NAMES[k])} ${fechas[i]}${sem[i]?', entrenado':rest?', descanso':''}${esHoy?', hoy':''}">
+      <small>${esc(sc(DIAS_NAMES[k]).substring(0,3))}</small><b>${fechas[i]}</b><i>${sem[i]?ico('check'):''}</i></button>`;
+  }).join('');
   cont.innerHTML=`
-    <section class="ci-scene ih" id="ci-scene">
+    <section class="ci-scene ih ih-b${compa?' con-compa':''}" id="ci-scene">
       <div class="ci-cam">
         <img class="ci-ph ci-bg" src="${imgSrc('hero/inicio.webp')}" alt="" decoding="async">
         <h1 class="ci-title" aria-label="Hoy: ${titulo}">${cineLineas(titulo)}</h1>
         <img class="ci-ph ci-cut" src="img/hero/inicio-recorte.webp" alt="" decoding="async" onerror="this.remove()">
       </div>
       ${typeof retoBarraHTML==='function'?retoBarraHTML('en-foto ih-reto'):''}
+      <div id="ih-aviso" class="ih-aviso"></div>
+      ${compa&&compa.fig?`<button type="button" class="ih-compa${compa.med?' med':''}" onclick="${compa.on}" aria-label="${esc(compa.nm)}${compa.et?', '+esc(compa.et):''}. ${pts} puntos.">${compa.fig}</button>`:''}
       <div class="ih-meta">
+        ${compa?`<button type="button" class="ih-lv" onclick="${compa.on}"><b>${esc(compa.nm)}</b><span>${compa.et?esc(compa.et)+' · ':''}${pts.toLocaleString('es-MX')} pts</span></button>${compa.pct!=null?`<span class="ih-lvbar"><i style="width:${Math.max(3,compa.pct)}%"></i></span>`:''}`:''}
         <small>Hoy · ${esc(hoyTxt.toLowerCase())}</small>
         <p>${detalle}</p>
-        <div class="today-cta ih-cta">${cta}</div>
+        <div class="today-cta ih-cta">${compa?cta.replace('Iniciar entrenamiento','Iniciar'):cta}</div>
       </div>
     </section>
-    <div class="ih-body${hechoHoy?' done':''}">
-      ${ent&&ent.nombre&&ent.rol!=='coordinador'?`<div class="ih-coach"><span class="ih-av">${esc(iniciales(ent.nombre))}</span><p><b>${esc(tc(ent.nombre).split(' ')[0])}:</b> ${frase?'“'+esc(frase)+'”':'Tu plan lo arma y lo revisa tu entrenador.'}</p></div>`:''}
-      <div class="ih-duo">
-        <button type="button" class="ih-tile" onclick="dashTab('rutina')" aria-label="Esta semana: ${ev.estaSemana} de ${meta} sesiones. Ver mi plan."><span class="ih-k">Esta semana</span><span class="ih-n">${ev.estaSemana}<small>de ${meta}</small></span><span class="ih-dots">${dots}</span></button>
-        ${mascTile}
-      </div>
-    </div>
+    <section class="ih-sem${hechoHoy?' done':''}" aria-label="Tu semana">
+      <div class="ih-sem-h"><div><span class="ih-k">Esta semana</span><span class="ih-sn">${ev.estaSemana}<small>de ${meta}</small></span></div><span class="ih-racha">${ico('flame')}<b>${ev.racha}</b> ${ev.racha===1?'semana':'semanas'}</span></div>
+      <div class="ih-dias">${dias7}</div>
+      <div class="ih-sem-f"><span>${faltanSes?`Te ${faltanSes===1?'falta <b>1 sesión</b>':'faltan <b>'+faltanSes+' sesiones</b>'} esta semana`:'<b>¡Semana cumplida!</b> Lo que sumes es extra'}</span><button type="button" onclick="dashTab('rutina')">Mi plan${ico('chev')}</button></div>
+    </section>
     ${asist?`<div class="asist-w">${asist}</div>`:''}
     ${pqCardSocio(s)}
     ${evalCardSocio(s)}

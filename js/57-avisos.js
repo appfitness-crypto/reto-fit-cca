@@ -46,6 +46,7 @@ function avisoMascota(){
 }
 function avisosVisibles(){ const cerr=avisosCerrados(); return avisosActivos().filter(a=>a.tipo==='importante' || !cerr.includes(a.id)); }
 function avisosPintar(){
+  avisoFranjaPintar();
   const box=document.getElementById('avisos-socio'); if(!box) return;
   const lista=avisosVisibles();
   if(!lista.length){ box.innerHTML=''; return; }
@@ -228,3 +229,15 @@ function avisoGrupoCabeza(id){
   const orig=window[fn];
   window[fn]=function(){ const r=orig.apply(this,arguments); try{ avisosPintar(); }catch(e){} return r; };
 });
+
+// Inicio: el aviso va como franja dentro de la foto del día (propuesta B)
+function avisoFranjaPintar(){
+  const box=document.getElementById('ih-aviso'); if(!box) return;
+  const lista=avisosVisibles();
+  if(!lista.length){ box.innerHTML=''; return; }
+  const a=lista[0], t=AVISO_TIPOS[a.tipo]||AVISO_TIPOS.aviso, linea=[t.nm, avisoCuandoTxt(a)].filter(Boolean).join(' · ');
+  box.innerHTML=`<button type="button" class="ih-av-f av-m-${esc(a.tipo||'aviso')}" onclick="avisoAbrir('${esc(a.id)}')" aria-label="${esc(t.nm)}: ${esc(a.titulo)}. Toca para ver el aviso.">
+    ${a.img?`<img src="${esc(a.img)}" alt="" decoding="async">`:`<span class="ih-av-ic">${ico(t.ic)}</span>`}
+    <span class="ih-av-t"><small>${esc(linea)}${a.grupo?' · '+esc(a.autor||'tu entrenador'):''}</small><b>${esc(a.titulo)}</b></span>
+    ${lista.length>1?`<span class="ih-av-n">+${lista.length-1}</span>`:ico('chev')}</button>`;
+}
