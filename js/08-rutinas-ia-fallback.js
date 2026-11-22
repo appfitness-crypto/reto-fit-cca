@@ -1495,39 +1495,39 @@ function refreshDash(){
   const coach=ent&&ent.nombre&&ent.rol!=='coordinador'?`<p class="ci-coach"><i aria-hidden="true">${esc(iniciales(ent.nombre).slice(0,1))}</i><span>Plan de <b>${esc(tc(ent.nombre).split(' ')[0])}</b>, tu entrenador</span></p>`:'';
   const hoyTxt=`${sc(DIAS_NAMES[HOY_KEY])} ${new Date().getDate()}`;
   const slots=Array.from({length:meta},(_,i)=>`<i class="${i<ev.estaSemana?'ok':(i===ev.estaSemana&&!esDescanso&&!hechoHoy?'hoy':'')}" style="--i:${i}"></i>`).join('');
+  // Inicio (propuesta elegida por el club, docs/maquetas/principales): el día es la pantalla, un solo botón,
+  // la barra del reto sobre la foto, la frase del entrenador y dos cuadros (tu semana y tu compañero)
+  const frase=ent&&ent.filosofia&&ent.filosofia.tagline;
+  const dots=Array.from({length:meta},(_,i)=>`<i class="${i<ev.estaSemana?'ok':(i===ev.estaSemana&&!esDescanso&&!hechoHoy?'now':'')}"></i>`).join('');
+  const ptsX=typeof socioPuntos==='function'?socioPuntos(s):null, pts=ptsX?ptsX.r.puntos:0;
+  const mst=(!s.mascotaOculta&&s.mascota&&typeof mascotaEstado==='function')?mascotaEstado(s):null;
+  const niv=(s.mascotaOculta&&typeof nivelEstado==='function')?nivelEstado(s):null;
+  const mascTile=!GYM.reto?'':mst
+    ? `<button type="button" class="ih-tile ih-masc" onclick="mascotaAbrir()" aria-label="${esc(mst.nombre)}, ${esc(mst.etapa.nm)}, ${pts} puntos"><span class="ih-k">${esc(mst.nombre)} · ${esc(mst.etapa.nm)}</span><span class="ih-n">${pts.toLocaleString('es-MX')}<small>pts</small></span>${mst.sig?`<span class="ih-bar"><i style="width:${Math.max(3,mst.pct)}%"></i></span>`:''}<span class="ih-pet">${mascotaImgHTML(mst.m,mst.etapa.n)}</span></button>`
+    : niv
+    ? `<button type="button" class="ih-tile ih-masc" onclick="dashTab('perfil')"><span class="ih-k">Nivel ${esc(niv.nivel)}</span><span class="ih-n">${pts.toLocaleString('es-MX')}<small>pts</small></span>${niv.sig?`<span class="ih-bar"><i style="width:${Math.max(3,niv.pct)}%"></i></span>`:''}<span class="ih-pet ih-med">${medallaSVG(niv.etapa.n,96)}</span></button>`
+    : `<button type="button" class="ih-tile ih-masc" onclick="mascotaAbrirSelector(false)"><span class="ih-k">Tu compañero</span><span class="ih-n ih-n-s">Elige tu mascota</span></button>`;
   cont.innerHTML=`
-    <section class="ci-scene" id="ci-scene">
-      ${typeof retoBarraHTML==='function'?retoBarraHTML('en-foto'):''}
+    <section class="ci-scene ih" id="ci-scene">
       <div class="ci-cam">
         <img class="ci-ph ci-bg" src="${imgSrc('hero/inicio.webp')}" alt="" decoding="async">
         <h1 class="ci-title" aria-label="Hoy: ${titulo}">${cineLineas(titulo)}</h1>
         <img class="ci-ph ci-cut" src="img/hero/inicio-recorte.webp" alt="" decoding="async" onerror="this.remove()">
       </div>
-      <div class="app-h home">
-        <div class="app-h-l">${logoMiniHTML()}<div>
-          <div class="app-t">Hola, ${esc(primer)}</div>
-          <div class="app-sub">Tu mejor versión, cada día.</div>
-        </div></div>
-        <div class="app-act">
-          <button type="button" class="ib" onclick="temaToque()" aria-label="Cambiar tema. Toca para claro u oscuro; doble toque desde oscuro para el tema nuevo en prueba">${ico(temaActual()==='dark'?'sun':'moon')}</button>
-          <button type="button" class="av" onclick="dashTab('perfil')" aria-label="Mi perfil">${esc(iniciales(s.nombre))}</button>
-        </div>
+      ${typeof retoBarraHTML==='function'?retoBarraHTML('en-foto ih-reto'):''}
+      <div class="ih-meta">
+        <small>Hoy · ${esc(hoyTxt.toLowerCase())}</small>
+        <p>${detalle}</p>
+        <div class="today-cta ih-cta">${cta}</div>
       </div>
-      <div class="ci-tags"><span class="ci-tag">${ico('calendar')}Hoy, ${esc(hoyTxt.toLowerCase())}</span><span class="ci-tag">${ico(icoT)}${detalle}</span></div>
     </section>
-
-    <div class="ci-body${hechoHoy?' done':''}">
-      ${coach}
-      <div class="today-cta">${cta}</div>
-      <div class="ci-wk">
-        <div><h2>Vas <span id="ring-num">${ev.estaSemana}</span> de ${meta}</h2><p>esta semana${ev.estaSemana>=meta?' · ¡semana cumplida!':''}</p></div>
-        <div class="ci-racha" aria-label="Racha de ${ev.racha} semanas">${ico('flame')}<b>${ev.racha}</b><small>${ev.racha===1?'semana':'semanas'}</small></div>
-        <button type="button" class="ci-ver" onclick="dashTab('rutina')">Ver plan${ico('chev')}</button>
-        <div class="wk-strip ci-wk-strip">${semana}</div>
+    <div class="ih-body${hechoHoy?' done':''}">
+      ${ent&&ent.nombre&&ent.rol!=='coordinador'?`<div class="ih-coach"><span class="ih-av">${esc(iniciales(ent.nombre))}</span><p><b>${esc(tc(ent.nombre).split(' ')[0])}:</b> ${frase?'“'+esc(frase)+'”':'Tu plan lo arma y lo revisa tu entrenador.'}</p></div>`:''}
+      <div class="ih-duo">
+        <button type="button" class="ih-tile" onclick="dashTab('rutina')" aria-label="Esta semana: ${ev.estaSemana} de ${meta} sesiones. Ver mi plan."><span class="ih-k">Esta semana</span><span class="ih-n">${ev.estaSemana}<small>de ${meta}</small></span><span class="ih-dots">${dots}</span></button>
+        ${mascTile}
       </div>
     </div>
-
-    ${typeof mascotaPresenciaHTML==='function'?mascotaPresenciaHTML(s):''}
     ${asist?`<div class="asist-w">${asist}</div>`:''}
     ${pqCardSocio(s)}
     ${evalCardSocio(s)}
