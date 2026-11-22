@@ -98,3 +98,22 @@ retoLeerLinkEnt();
 document.addEventListener('DOMContentLoaded', ()=>{ retoPintar(); });
 // Cambia de día si la app queda abierta (revisa cada hora)
 setInterval(retoPintar, 3600*1000);
+
+// Barra del reto: una rayita por semana (hechas, la actual en naranja y las de evaluación con borde)
+function retoBarraHTML(cls){
+  const e=retoEstado(); if(!e) return '';
+  const n=e.semanas||12, ev=(GYM.reto.evaluaciones||[]).filter(x=>x>0);
+  let izq, der;
+  if(e.estado==='antes'){
+    izq=e.faltan===1?'El reto arranca mañana':`Arranca en ${e.faltan} días`;
+    der=retoFechaTxt(e.inicio)+' · '+n+' semanas';
+  } else if(e.estado==='terminado'){ izq='Reto terminado'; der=n+' semanas cumplidas'; }
+  else {
+    izq=`Semana ${e.semana} de ${n}`;
+    const prox=ev.find(x=>x>=e.semana);
+    der=prox===e.semana?'Evaluación esta semana':prox===e.semana+1?'Evaluación la próxima semana':(e.fase?e.fase.nombre||e.fase.nm||'':'');
+  }
+  const sem=e.estado==='en curso'?e.semana:e.estado==='terminado'?n+1:0;
+  const rayas=Array.from({length:n},(_,i)=>{ const w=i+1; return `<i class="${w<sem?'ok':w===sem?'now':''}${ev.includes(w)?' ev':''}"></i>`; }).join('');
+  return `<div class="rb12 ${cls||''}" aria-label="${esc(izq)}. ${esc(der)}"><div class="rb12-l"><b>${esc(izq)}</b><span>${esc(der)}</span></div><div class="rb12-w" style="grid-template-columns:repeat(${n},1fr)" aria-hidden="true">${rayas}</div></div>`;
+}

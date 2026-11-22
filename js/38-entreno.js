@@ -379,7 +379,7 @@ function renderRutinaTab(){
       <div class="en-weeks" style="grid-template-columns:repeat(${b.semanas},1fr)" aria-hidden="true">${weeks}</div>
     </div>`}
     ${casaChipSocio(s)}
-    <div class="en-strip" role="group" aria-label="Días de esta semana">${strip}</div>
+    <div class="en-cal">${typeof retoBarraHTML==='function'?retoBarraHTML():''}<div class="en-strip" role="group" aria-label="Días de esta semana">${strip}</div></div>
     <div id="en-dia">${rutDiaHTML(s)}</div>
     <div class="en-tip">${ico('spark')}<span>Toca un ejercicio para ver cómo se hace. El peso sugerido sale de tu última sesión: si completaste todas las series, subes un poco; si no, repites el peso.</span></div>`;
 }
@@ -420,12 +420,12 @@ function rutCardHTML(s,rk,vk){
     : esHoy&&!fuera
     ? `<button type="button" class="en-btn en-btn-p" onclick="iniciarSesion('${k}')">${ico('play')}${enCurso?'Continuar sesión':hecho?'Registrar otra sesión':'Empezar sesión'}</button>${!hecho&&!movida&&!enCurso?`<button type="button" class="en-btn en-btn-g" onclick="moverSesion('${k}')">${ico('calendar')}Hoy no puedo, moverla</button>`:''}`
     : `${!hecho?`<button type="button" class="en-btn en-btn-p" onclick="moverSesion('${k}','${HOY_KEY}')">${ico('play')}Hacerla hoy</button>`:''}<div class="en-cta-2"><button type="button" class="en-btn en-btn-g" onclick="openDay('${k}')">${ico('info')}Ver detalle</button>${!hecho&&!movida?`<button type="button" class="en-btn en-btn-g" onclick="moverSesion('${k}')">${ico('calendar')}Mover a otro día</button>`:movida?`<button type="button" class="en-btn en-btn-g" onclick="movDeshacer('${k}')">${ico('arrow')}Regresarla al ${movTxtDia(k)}</button>`:''}</div>`;
-  return `<article class="en-card en-card-cine${movida?' en-card-mov':''}">
-    <div class="en-hero en-stage">
-      <span class="en-fig" aria-hidden="true">${pic(basesEjercicio(ejs[0]),'dumbbell','thumb')}</span>
-      <div class="en-k">${ico(hecho?'check':'calendar')}${estado} · ${EN_DIAS[vi]} ${fechas[vi]}</div>
-      <h3 class="rt-title" aria-label="${esc(sc(d.tipo))}">${typeof cineLineas==='function'?cineLineas(esc(sc(d.tipo)),0.62):esc(sc(d.tipo))}</h3>
-      <div class="en-meta"><span>${ico('dumbbell')}${ejs.length} ejercicios</span><span>${ico('clock')}~${minutosDia(d,s)} min</span>${grupos.length?`<span>${ico('target')}${esc(enListaY(grupos))}</span>`:''}</div>
+  const series=ejs.reduce((a,e)=>a+(parseInt(e.series)||0),0);
+  return `<article class="en-card en-card-dia${movida?' en-card-mov':''}">
+    <div class="en-dh">
+      <div class="en-dh-top"><h3 class="en-dh-t">${esc(sc(d.tipo))}</h3><span class="en-dh-chip${esHoy&&!hecho?' hoy':''}${hecho?' ok':''}">${hecho?ico('check'):''}${estado}</span></div>
+      <p class="en-dh-f">${EN_DIAS[vi]} ${fechas[vi]}${grupos.length?' · '+esc(enListaY(grupos)):''}</p>
+      <div class="en-dh-n"><div><b>~${minutosDia(d,s)}</b><small>min</small></div><div><b>${ejs.length}</b><small>ejercicios</small></div>${series?`<div><b>${series}</b><small>series</small></div>`:''}</div>
     </div>
     <div class="en-cta">${cta}</div>
     <div class="en-ejs">${filas}</div>

@@ -16,7 +16,7 @@ function perfilCredencialHTML(s){
     <h2 class="cred-n">${esc(tc(s.nombre))}</h2>
     ${obj?`<span class="cred-obj">${esc(obj)}</span>`:''}
     <div class="cred-f">
-      <button type="button" onclick="document.getElementById('mis-puntos')?.scrollIntoView({behavior:'smooth',block:'start'})"><b>${pts.toLocaleString('es-MX')}</b><small>puntos</small></button>
+      <button type="button" onclick="${s.mascotaOculta?'':'mascotaAbrir()'}" aria-label="Mis puntos: cómo se ganan"><b>${pts.toLocaleString('es-MX')}</b><small>puntos</small></button>
       <div><b>${ev.total}</b><small>sesiones</small></div>
       <div><b>${ev.racha}</b><small>${ev.racha===1?'semana':'semanas'} de racha</small></div>
     </div>
@@ -29,7 +29,7 @@ function perfilListaHTML(s){
   const m=(()=>{ try{ const e=entRutina(s.entrenadorId); return (e&&metLineas(e.filosofia,e,s))||s.metodo; }catch(e){ return null; } })();
   const fila=(on,izq,b,small,der)=>`<button type="button" class="pfl-it" onclick="${on}">${izq}<span class="pfl-t"><b>${b}</b>${small?`<small>${small}</small>`:''}</span>${der||ico('chev')}</button>`;
   const estTxt=pend?'En revisión':(est==='tolerancia'?'Por renovar':'Activa');
-  let html=fila(m&&m.tagline?"const d=document.querySelector('#dsec-perfil .pf-met');if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'})}":"",
+  let html=fila(ent&&typeof abrirMetodoSocio==='function'?'abrirMetodoSocio()':'',
     `<span class="pfl-av">${ent?esc(iniciales(ent.nombre)):ico('user')}</span>`,
     ent?esc(tc(ent.nombre)):'Plan del club',
     (ent?'Tu entrenador':'Un entrenador del gym lo revisa')+(m&&m.tagline?' · «'+esc(m.tagline)+'»':''),
@@ -52,6 +52,29 @@ if(typeof renderPerfilTab==='function'){
       h.insertAdjacentHTML('beforebegin', perfilCredencialHTML(s)+perfilListaHTML(s));
       // Lo que la credencial y la lista ya muestran
       [h, sec.querySelector('.memb-c'), sec.querySelector('.stats3'), sec.querySelector('.pf-masc'), sec.querySelector('.masc-elige')].forEach(el=>el&&el.remove());
+      // Más simple: sin puntos (la credencial y Mi compañero ya los explican), sin logros y sin el método aparte
+      const lg=sec.querySelector('.logros'); if(lg){ const t=lg.previousElementSibling; if(t&&t.classList.contains('sec-row')) t.remove(); lg.remove(); }
+      [sec.querySelector('#mis-puntos'), sec.querySelector('.pf-met')].forEach(el=>el&&el.remove());
+      // Mis datos: solo los que cambian (peso, cintura) y los que la app necesita que llene
+      sec.querySelectorAll('.pf-grid>.pf-t').forEach(t=>{ const k=(t.querySelector('.pf-k')||{}).textContent||''; if(/^(Objetivo|Nivel|Frecuencia|Edad)$/.test(k.trim())) t.remove(); });
+      // Cerrar sesión como texto, junto a Eliminar mi cuenta
+      sec.querySelectorAll('.pf-card').forEach(c=>{ const b=c.querySelector('.pf-row.danger'); if(b && c.children.length===1){ c.replaceWith(Object.assign(document.createElement('button'),{type:'button',className:'pf-salir',textContent:'Cerrar sesión',onclick:()=>logoutSocio()})); } });
+      if(s.mascotaOculta){ const n=sec.querySelector('#mi-mascota'); if(n) n.classList.add('pf-nivel-c'); }
     }catch(e){ console.warn('credencial',e); }
   };
+}
+// El método del entrenador en una hoja (antes era una tarjeta más en el Perfil)
+function abrirMetodoSocio(){
+  const s=activeSocio; if(!s) return;
+  const ent=getEntrenador(s.entrenadorId);
+  let m=null; try{ const e=entRutina(s.entrenadorId); m=(e&&metLineas(e.filosofia,e,s))||s.metodo; }catch(e){}
+  let ov=document.getElementById('av-ov'); if(ov) ov.remove();
+  ov=document.createElement('div'); ov.id='av-ov'; ov.className='av-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Tu entrenador');
+  ov.innerHTML=`<div class="av-sheet" tabindex="-1"><span class="av-grab" aria-hidden="true"></span>
+    <div class="met-h"><span class="pfl-av">${ent?esc(iniciales(ent.nombre)):ico('user')}</span><div><small>Tu entrenador</small><h2>${ent?esc(tc(ent.nombre)):'Plan del club'}</h2></div></div>
+    ${m&&m.tagline?`<p class="met-tag">«${esc(m.tagline)}»</p>`:''}
+    ${m&&(m.lineas||[]).length?`<ul class="met-l">${m.lineas.map(l=>`<li>${esc(typeof l==='string'?l:(l.t||l.txt||''))}</li>`).join('')}</ul>`:'<p class="av-msg">Tu entrenador arma tu rutina con su método y la ajusta contigo.</p>'}
+    <button type="button" class="av-link" onclick="avisoCerrarHoja()">Cerrar</button></div>`;
+  ov.addEventListener('click',e=>{ if(e.target===ov) avisoCerrarHoja(); });
+  document.body.appendChild(ov); requestAnimationFrame(()=>ov.classList.add('on')); ov.querySelector('.av-sheet').focus({preventScroll:true});
 }

@@ -219,3 +219,27 @@ if(typeof mostrarResumenSesion==='function'){
   const _mrs=mostrarResumenSesion;
   window.mostrarResumenSesion=mostrarResumenSesion=function(){ const r=_mrs.apply(this,arguments); const c=document.getElementById('en-fin'); if(c){ cineAjustar(c); cineTrasFuentes(()=>cineAjustar(c)); } return r; };
 }
+
+/* ═══ INICIO · la mascota con presencia: tarjeta grande con la figura saliendo del marco ═══ */
+function mascotaPresenciaHTML(s){
+  if(!s || !GYM.reto) return '';
+  const x=typeof socioPuntos==='function'?socioPuntos(s):null, pts=x?x.r.puntos:0;
+  if(s.mascotaOculta){
+    const n=typeof nivelEstado==='function'?nivelEstado(s):null; if(!n) return '';
+    return `<button type="button" class="mp" onclick="dashTab('perfil')" aria-label="Mi nivel: ${esc(n.nivel)}">
+      <span class="mp-fig mp-med">${medallaSVG(n.etapa.n,150)}</span>
+      <span class="mp-t"><small>Mi nivel en el reto</small><b>${esc(n.nivel)}</b>
+        <span class="mp-pts"><b>${pts.toLocaleString('es-MX')}</b> pts</span>
+        ${n.sig?`<span class="mp-bar"><i style="width:${Math.max(3,n.pct)}%"></i></span><em>${n.antes?'Empieza a subir cuando arranque el reto':`Te faltan ${n.faltan.toLocaleString('es-MX')} pts para ${esc(n.nivelSig)}`}</em>`:'<em>Nivel máximo del reto</em>'}</span></button>`;
+  }
+  if(!s.mascota) return `<button type="button" class="mp mp-vacia" onclick="mascotaAbrirSelector(false)"><span class="mp-t"><small>Tu compañero del reto</small><b>Elige tu mascota</b><em>Crece contigo con cada punto que ganas</em></span>${ico('chev')}</button>`;
+  const st=mascotaEstado(s); if(!st) return '';
+  const msg=st.antes?'Empieza a crecer cuando arranque el reto'
+    :st.cansada?`Te extraña: llevas ${st.dias} días sin entrenar`
+    :st.sig?`Te faltan ${st.faltan.toLocaleString('es-MX')} pts para ${esc(st.sig.nm)}`:'Llegó a su forma final';
+  return `<button type="button" class="mp${st.cansada?' cansada':''}" onclick="mascotaAbrir()" aria-label="${esc(st.nombre)}, ${esc(st.etapa.nm)}. ${pts} puntos. Toca para verlo.">
+    <span class="mp-fig">${mascotaImgHTML(st.m, st.etapa.n)}</span>
+    <span class="mp-t"><small>Tu compañero · ${esc(st.etapa.nm)}</small><b>${esc(st.nombre)}</b>
+      <span class="mp-pts"><b>${pts.toLocaleString('es-MX')}</b> pts</span>
+      ${st.sig?`<span class="mp-bar"><i style="width:${Math.max(3,st.pct)}%"></i></span>`:''}<em>${msg}</em></span></button>`;
+}
