@@ -1497,6 +1497,7 @@ function refreshDash(){
   const slots=Array.from({length:meta},(_,i)=>`<i class="${i<ev.estaSemana?'ok':(i===ev.estaSemana&&!esDescanso&&!hechoHoy?'hoy':'')}" style="--i:${i}"></i>`).join('');
   cont.innerHTML=`
     <section class="ci-scene" id="ci-scene">
+      ${typeof retoBarraHTML==='function'?retoBarraHTML('en-foto'):''}
       <div class="ci-cam">
         <img class="ci-ph ci-bg" src="${imgSrc('hero/inicio.webp')}" alt="" decoding="async">
         <h1 class="ci-title" aria-label="Hoy: ${titulo}">${cineLineas(titulo)}</h1>
@@ -1526,6 +1527,7 @@ function refreshDash(){
       </div>
     </div>
 
+    ${typeof mascotaPresenciaHTML==='function'?mascotaPresenciaHTML(s):''}
     ${asist?`<div class="asist-w">${asist}</div>`:''}
     ${pqCardSocio(s)}
     ${evalCardSocio(s)}
