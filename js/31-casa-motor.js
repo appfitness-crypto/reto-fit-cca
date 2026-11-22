@@ -64,6 +64,7 @@ const CASA_SPLIT={
   4:[['Torso A','verde'],['Pierna A','gold'],['Torso B','neon'],['Pierna B','gold']],
   5:[['Torso A','verde'],['Pierna A','gold'],['Torso B','neon'],['Pierna B','gold'],['Accesorios + Core','hombro']],
   6:[['Pecho + Tríceps','verde'],['Espalda + Bíceps','neon'],['Pierna','gold'],['Hombro + Core','hombro'],['Full Body Funcional','red'],['Cardiovascular','red']],
+  7:[['Pecho + Tríceps','verde'],['Pierna A','gold'],['Espalda + Bíceps','neon'],['Pierna B','gold'],['Hombro + Core','hombro'],['Full Body Funcional','red'],['Recuperación activa','hombro']],
 };
 
 // ── Elección de un ejercicio para un hueco ──
@@ -162,7 +163,7 @@ function casaGenerar(s,opts){
   const base=(opts.dias&&opts.dias.length)?DIAS_ORDER.filter(d=>opts.dias.includes(d)):((s.diasSemana&&s.diasSemana.length)?s.diasSemana:DIAS_ORDER.slice(0,parseInt(s.dias)||3));
   const deriv=casaDerivarDias(s,base);
   const nFull=deriv.puro.length;
-  const tiposSesion=CASA_SPLIT[nFull]||CASA_SPLIT[Math.max(1,Math.min(6,nFull))]||CASA_SPLIT[4];
+  const tiposSesion=CASA_SPLIT[nFull]||CASA_SPLIT[Math.max(1,Math.min(7,nFull))]||CASA_SPLIT[4];
   const mapa={};
   deriv.puro.forEach((d,i)=>{ const t=tiposSesion[i]||tiposSesion[tiposSesion.length-1]; mapa[d]={tipo:t[0],color:t[1]}; });
   deriv.conClase.forEach(d=>{ mapa[d]={tipo:'Complemento — '+deriv.info[d].clase,color:'hombro',clase:deriv.info[d].clase}; });
@@ -185,7 +186,7 @@ function casaGenerar(s,opts){
     if(!m||m.vacio){ rutina[k]={label:DIAS_NAMES[k],tipo:m?m.tipo:'DESCANSO',color:'descanso',ejercicios:[]}; return; }
     estado.enDia=new Set();
     const ejs=[];
-    if(m.flex){
+    if(m.flex || /recuperaci[oó]n activa/i.test(m.tipo||'')){
       ejs.push(casaMov('Movilidad articular dinámica'));
       const poolM=pool.filter(x=>/^h_mov_/.test(x.id));
       const orden=poolM.slice().sort(()=>rnd()-.5).slice(0,4);

@@ -86,7 +86,8 @@ function metSplitTipos(ph,nFull,nivel){
   else if(k==='ppl') nombres=nFull<3?['Full Body A','Full Body B']:['Empuje · Pecho + Tríceps','Jalón · Espalda + Bíceps','Pierna A','Empuje · Pecho + Tríceps B','Jalón · Espalda + Bíceps B','Pierna B'];
   else nombres=nFull<4?null:['Pecho + Tríceps','Espalda + Bíceps','Pierna A','Hombro + Core','Pierna B','Full Body Funcional'];
   if(!nombres) return null;
-  const out=[]; for(let i=0;i<nFull;i++) out.push([nombres[i%nombres.length], col[i%col.length]]);
+  const out=[]; for(let i=0;i<Math.min(nFull,6);i++) out.push([nombres[i%nombres.length], col[i%col.length]]);
+  if(nFull>=7) out.push(['Recuperación activa','hombro']);   // 7 días: uno es de recuperación activa (cardio suave y movilidad)
   return {clave:k, tipos:out};
 }
 const MET_SPLIT_TXT={full:'cuerpo completo en cada sesión',torso:'torso y pierna en días alternos',hibrido:'torso, pierna y cuerpo completo combinados',ppl:'empuje, jalón y pierna',grupos:'un grupo muscular por día'};

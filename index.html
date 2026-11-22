@@ -490,8 +490,9 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="q-sub">Por semana. Determina el split de tu rutina y tu gasto calórico.</div>
       <div class="slider-wrap">
         <div class="s-val"><span id="dias-v">4</span><span class="s-unit">días / semana</span></div>
-        <input type="range" id="qr-dias" aria-label="Días de entrenamiento por semana" min="2" max="6" value="4" oninput="document.getElementById('dias-v').textContent=this.value">
-        <div class="s-labels"><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+        <input type="range" id="qr-dias" aria-label="Días de entrenamiento por semana" min="2" max="7" value="4" oninput="document.getElementById('dias-v').textContent=this.value;document.getElementById('dias-7').hidden=this.value!=='7'">
+        <div class="s-labels"><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
+        <p class="q-sub" id="dias-7" hidden style="margin:12px 0 0">Con 7 días, uno será de <b>recuperación activa</b> (cardio suave y movilidad): el músculo crece cuando descansa.</p>
       </div>
 <div class="nav-row"><div class="btn-prev" onclick="qPrev(4)">←</div><button class="btn-next" id="qb4" onclick="qNext(4)">Continuar</button></div>
     </div>

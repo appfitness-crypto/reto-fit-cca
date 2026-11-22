@@ -563,6 +563,7 @@ function buildFallback(){
     4:[['Torso A','verde'],['Pierna A','gold'],['Torso B','neon'],['Pierna B','gold']],
     5:[['Torso A','verde'],['Pierna A','gold'],['Torso B','neon'],['Pierna B','gold'],['Accesorios + Core','hombro']],
     6:[['Pecho + Tríceps','verde'],['Espalda + Bíceps','neon'],['Pierna','gold'],['Hombro + Core','hombro'],['Full Body Funcional','red'],['Cardiovascular','red']],
+    7:[['Pecho + Tríceps','verde'],['Pierna A','gold'],['Espalda + Bíceps','neon'],['Pierna B','gold'],['Hombro + Core','hombro'],['Full Body Funcional','red'],['Recuperación activa','hombro']],
   };
   // Cruce días elegidos × clases grupales: solo los días "puro" llevan sesión completa;
   // los días "conClase" llevan sesión ligera que evita el enfoque de la clase; "soloClase" queda en descanso de gym.
@@ -570,7 +571,7 @@ function buildFallback(){
   const nFull=deriv.puro.length;
   const entFB=entRutina(qAnswers.entrenadorId), filoFB=entFB&&entFB.filosofia;
   const splitCoach=metSplitTipos(filoFB, nFull, nivelNum(qAnswers.nivel));   // cómo organiza la semana el entrenador elegido
-  let tiposSesion=(splitCoach&&splitCoach.tipos)||TIPOS_SPLIT[nFull]||TIPOS_SPLIT[Math.max(1,Math.min(6,nFull))]||TIPOS_SPLIT[4];
+  let tiposSesion=(splitCoach&&splitCoach.tipos)||TIPOS_SPLIT[nFull]||TIPOS_SPLIT[Math.max(1,Math.min(7,nFull))]||TIPOS_SPLIT[4];
   // Recuperación: dos sesiones de cuerpo completo en días seguidos cargan los mismos músculos sin 48 h de descanso.
   // En cada racha de días seguidos se alterna torso / pierna (y un full body ligero si son 3).
   tiposSesion=splitRecuperacion(deriv.puro, tiposSesion, filoFB&&filoFB.tagline&&filoFB.sesion&&filoFB.sesion.seguidos);
@@ -700,6 +701,13 @@ function buildFallback(){
         add('Elevaciones Laterales',4,'15 reps — resistencia','Ligero — 35% 1RM','Deltoides Lateral','Lidera con el codo hasta la altura del hombro; siente el costado, no el trapecio.'); }
       add('Encogimientos',4,'12 reps — hipertrofia','Moderado — 60% 1RM','Trapecio','Hombros a las orejas sin rotar; pausa arriba.');
       add('Plancha Frontal',3,'40 seg — isométrico','Corporal','Core','Abdomen firme, cuerpo en línea.');
+    }
+    else if(t.includes('recuperación activa')||t.includes('recuperacion activa')){
+      add('Caminata o Bici Suave',1,'25 min — zona 1-2','Ritmo conversacional','Cardiovascular','Muy suave: debes poder platicar sin esfuerzo. Ayuda a recuperar las piernas.');
+      add('Movilidad de Cadera y Hombro',1,'8 min','Sin carga','General','Círculos amplios y lentos; el objetivo es soltar, no fatigar.');
+      add('Movilidad de columna (gato-camello)',2,'10 reps','Corporal','Columna','Respira profundo y mueve vértebra por vértebra.');
+      add('Movilidad y Estiramiento',1,'10 min','Sin carga','General','Mantén cada posición 30 segundos respirando; sin rebotes.');
+      return L;
     }
     else if(t.includes('cardio')||t.includes('accesorios')){
       add('Caminata Inclinada / Elíptica',1,'20 min — zona 2','65–75% FCmáx','Cardiovascular','Ritmo donde puedas hablar con frases cortas; trabajo cardiovascular con propósito.');
