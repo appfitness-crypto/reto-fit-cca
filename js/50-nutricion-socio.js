@@ -29,7 +29,9 @@ function nxFilaHTML(m,i,op,sig,menor,conOtra){
   if(!m.p) return `<li class="nx-m"><div class="nx-m-h nx-sin"><span class="nx-t"><b>${esc(nxHora12(m.hora))}</b><small>${esc(m.nombre)}</small></span><span class="nx-ph">${ico('food')}</span>
     <span class="nx-d"><b>Sin platillo con tus filtros</b><small>Toca "Ajustar" y quita algún filtro.</small></span><span></span></div></li>`;
   const fid=menuFotoId(m.p.id), rol=m.rol==='pre'?'Antes de entrenar':m.rol==='post'?'Después de entrenar':'';
-  return `<li class="nx-m${op?' op':''}${sig?' sig':''}">
+  const hecha=nxHechas().includes(m.nombre);
+  return `<li class="nx-m${op?' op':''}${sig?' sig':''}${hecha?' hecha':''}">
+    <button type="button" class="nx-ck" aria-pressed="${hecha}" aria-label="${hecha?'Ya la comí: '+esc(m.nombre):'Marcar '+esc(m.nombre)+' como comida'}" onclick="nxMarcar('${esc(m.nombre)}')">${ico('check')}</button>
     <button type="button" class="nx-m-h" aria-expanded="${op}" onclick="nxAbrir(${i})">
       <span class="nx-t"><b>${esc(nxHora12(m.hora))}</b><small>${esc(m.nombre)}</small></span>
       ${fid?`<img src="${menuFotoSrc(fid)}" alt="" width="56" height="56" loading="lazy" decoding="async">`:`<span class="nx-ph">${ico('food')}</span>`}
@@ -72,7 +74,7 @@ function nutTabHTML(s){
     const suma=items.reduce((a,m)=>a+(m.k||0),0), dev=nut.kcal?(suma-nut.kcal)/nut.kcal:0, ok=Math.abs(dev)<=MENU_TOL_DIA;
     const horaTxt={manana:'entrenas en la mañana',mediodia:'entrenas a mediodía',tarde:'entrenas en la tarde'}[s.horaEntreno]||'';
     dia=`<section class="nx-dia">
-      <div class="nx-dia-h"><div><h2>Tu menú de hoy</h2><p>${d.plan?'Armado por '+esc(d.plan.por||'tu entrenador'):d.n+' comidas'+(horaTxt?' · '+horaTxt:'')}</p></div>
+      <div class="nx-dia-h"><div><h2>Tu día</h2><p>${d.plan?'Armado por '+esc(d.plan.por||'tu entrenador'):d.n+' comidas'+(horaTxt?' · '+horaTxt:'')}</p></div>
         ${d.plan?'':`<button type="button" class="nx-aj" onclick="nxAjustes(true)">${ico('settings')}Ajustar</button>`}</div>
       <ol class="nx-lista">${items.map((m,i)=>nxFilaHTML(m,i,i===abierta,i===sig,menor,!d.plan)).join('')}</ol>
       ${menor?`<p class="nx-tot">${ico('info')}<span>Eres menor de edad: tu menú cubre lo que gastas, sin dietas para bajar de peso.</span></p>`
@@ -85,8 +87,38 @@ function nutTabHTML(s){
     <p>${esc(base.nota)}</p>
     <p class="nx-legal">Sugerencia educativa con equivalentes del Sistema Mexicano de Alimentos Equivalentes. Si tienes diabetes, enfermedad renal, embarazo, alergias o alguna condición médica, revisa tu alimentación con tu médico o nutriólogo.</p>
   </div></details>`;
-  return sum+dia+mas;
+  // Lo que toca ahora, en grande (solo con menú de platillos)
+  let ahora='';
+  if(!menor && !(edad>0&&edad<12) && !( !plan&&legado.length )){
+    const d2=nxComidas(s,nut), it2=d2.items, mins=new Date().getHours()*60+new Date().getMinutes();
+    let k=it2.findIndex(m=>m.p&&!nxHechas().includes(m.nombre)&&(nxMin(m.hora)??0)>=mins-60); if(k<0) k=it2.findIndex(m=>m.p&&!nxHechas().includes(m.nombre));
+    const m=it2[k];
+    if(m && m.p){
+      const fid=menuFotoId(m.p.id), hm=nxMin(m.hora)??0, ya=mins>=hm-30, paso=mins>hm+90;
+      ahora=`<button type="button" class="nx-ahora" onclick="nxIrA(${k})" aria-label="${paso?'Pendiente':ya?'Ahora':'Siguiente'}: ${esc(m.p.n)}, ${esc(nxHora12(m.hora))}. Toca para ver porciones.">
+        ${fid?`<img src="${menuFotoSrc(fid)}" alt="" decoding="async">`:''}
+        <span class="nx-ahora-tag">${ico('clock')}${paso?'Pendiente':ya?'Ahora':'Siguiente'} · ${esc(nxHora12(m.hora))}</span>
+        <span class="nx-ahora-t"><small>${esc(m.nombre)}</small><b>${esc(m.p.n)}</b><em>${nxNum(m.k)} kcal · ${nxNum(m.P)} g proteína · toca para ver porciones</em></span></button>`;
+    }
+    const hech=it2.filter(m=>m.p&&nxHechas().includes(m.nombre)), sk=hech.reduce((a,m)=>a+(m.k||0),0), sp=hech.reduce((a,m)=>a+(m.P||0),0), sc2=hech.reduce((a,m)=>a+(m.C||0),0), sg=hech.reduce((a,m)=>a+(m.G||0),0);
+    const pc=x=>Math.max(0,Math.min(100,x));
+    ahora+=`<section class="nx-llevas"><div class="nx-ll-top"><b>${nxNum(sk)}<small>de ${nxNum(nut.kcal)} kcal</small></b><span>hoy</span></div>
+      <div class="nx-ll-bar" aria-hidden="true"><i style="width:${pc(sk/(nut.kcal||1)*100)}%"></i></div>
+      <dl class="nx-ll-mac"><div><dt>Proteína</dt><dd>${nxNum(sp)} / ${nut.prot} g</dd></div><div><dt>Carbos</dt><dd>${nxNum(sc2)} / ${nut.carbs} g</dd></div><div><dt>Grasas</dt><dd>${nxNum(sg)} / ${nut.grasas} g</dd></div></dl>
+      <p class="nx-ll-tip">${hech.length?'Marca cada comida al terminarla.':'Marca con la palomita cada comida al terminarla y aquí verás cuánto llevas.'}</p></section>`;
+  }
+  return ahora+dia+sum+mas;
 }
+// Comidas marcadas hoy (se guardan en este celular)
+function nxHechasKey(){ const s=activeSocio; return 'nx_hechas_'+(s&&s.code||'')+'_'+fechaISO(new Date()); }
+function nxHechas(){ try{ return JSON.parse(localStorage.getItem(nxHechasKey()))||[]; }catch(e){ return []; } }
+function nxMarcar(nombre){
+  const h=nxHechas(), i=h.indexOf(nombre); if(i<0) h.push(nombre); else h.splice(i,1);
+  try{ localStorage.setItem(nxHechasKey(),JSON.stringify(h)); }catch(e){}
+  if(i<0){ try{ vibrarToque&&vibrarToque(12); }catch(e){} }
+  const y=window.scrollY; renderNutricionTab(); window.scrollTo(0,y);
+}
+function nxIrA(i){ NX_ABIERTA=i; renderNutricionTab(); setTimeout(()=>{ const el=document.querySelectorAll('#dsec-nutricion .nx-m')[i]; if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); },60); }
 // Hoja "Ajustar mi menú": vive en <body> para que ningún contenedor de la pestaña recorte el modal
 function nxHojaMontar(s){
   let w=document.getElementById('nx-hoja'); if(!w){ w=document.createElement('div'); w.id='nx-hoja'; document.body.appendChild(w); }
