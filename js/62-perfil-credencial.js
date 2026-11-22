@@ -20,8 +20,20 @@ function perfilCredencialHTML(s){
       <div><b>${ev.total}</b><small>sesiones</small></div>
       <div><b>${ev.racha}</b><small>${ev.racha===1?'semana':'semanas'} de racha</small></div>
     </div>
+    ${credLogrosHTML(s,ev)}
     ${fig?`<button type="button" class="cred-fig" onclick="${st?'mascotaAbrir()':"document.getElementById('mi-mascota')?.scrollIntoView({behavior:'smooth'})"}" aria-label="${st?'Ver a '+esc(st.nombre):'Ver mi nivel'}">${fig}</button>`:''}
   </section>`;
+}
+// Logros dentro de la credencial (los mismos 4 de siempre): encendidos al cumplirse
+function credLogrosHTML(s,ev){
+  const prsN=Object.keys((s.logs&&s.logs.prs)||{}).length;
+  const L=[
+    {i:'flame',t:'Constancia',v:ev.racha+' sem',on:ev.racha>=2},
+    {i:'dumbbell',t:'Fuerza',v:prsN+' récords',on:prsN>=3},
+    {i:'star',t:'Disciplina',v:ev.total+' ses.',on:ev.total>=10},
+    {i:'target',t:'Adherencia',v:ev.adherencia+'%',on:ev.adherencia>=80}];
+  const n=L.filter(l=>l.on).length;
+  return `<div class="cred-lg" role="list" aria-label="Logros: ${n} de 4">${L.map(l=>`<span class="cred-lgi${l.on?' on':''}" role="listitem" aria-label="${l.t}: ${esc(l.v)}${l.on?', logrado':''}"><i>${ico(l.i)}</i><b>${l.t}</b><small>${esc(l.v)}</small></span>`).join('')}</div>`;
 }
 function perfilListaHTML(s){
   const ent=getEntrenador(s.entrenadorId), pend=s.status==='pendiente', est=typeof membEstado==='function'?membEstado(s).estado:'';
