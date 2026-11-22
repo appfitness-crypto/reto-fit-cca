@@ -999,7 +999,12 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
         </div>
       </div>
       <input type="text" class="ti" id="ee-nombre" aria-label="Nombre completo" placeholder="Nombre completo">
-      <input type="text" class="ti" id="ee-pass" aria-label="Nueva contraseña de acceso" placeholder="Contraseña de acceso (mín. 6) — vacío = sin cambios">
+      <div class="ee-acc">
+        <div class="ee-acc-h"><b>Acceso para entrar</b><span id="ee-acc-actual"></span></div>
+        <input type="text" class="ti" id="ee-usuario" aria-label="Nuevo usuario o correo para entrar" placeholder="Nuevo usuario o correo" autocapitalize="off" autocomplete="off" inputmode="email">
+        <input type="text" class="ti" id="ee-pass" aria-label="Nueva contraseña de acceso" placeholder="Nueva contraseña (mín. 6)" autocomplete="new-password">
+        <small id="ee-acc-nota">Déjalos vacíos para no cambiar nada.</small>
+      </div>
       <div class="q-sub" style="margin:2px 0 4px">¿Qué da? (elige al menos una)</div>
       <div class="chk-grid" style="grid-template-columns:1fr 1fr">
         <div class="chk" id="ee-func-ent" onclick="this.classList.toggle('ck')">🏋️ Entrenamiento</div>
@@ -1009,7 +1014,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="chk-grid" id="ee-especialidades" style="max-height:160px;overflow-y:auto"></div>
       <input type="text" class="ti" id="ee-otras" aria-label="Otras especialidades" placeholder="Otras especialidades, separadas por coma">
     </div>
-    <div style="font-size:var(--fs-xs);color:var(--mu);margin-top:10px;line-height:1.5">El usuario (para iniciar sesión) no se puede cambiar aquí. Su filosofía se edita desde su propia sesión, en 🧬 MI FILOSOFÍA. El entrenador también puede cambiar su foto desde su panel de Avisos.</div>
+    <div style="font-size:var(--fs-xs);color:var(--mu);margin-top:10px;line-height:1.5">Su filosofía se edita desde su propia sesión, en 🧬 MI FILOSOFÍA. El entrenador también puede cambiar su foto desde su panel de Avisos.</div>
     <button class="btn-main" style="margin-top:14px" onclick="guardarEdicionEntrenador()">Guardar cambios</button>
   </div>
 </div>

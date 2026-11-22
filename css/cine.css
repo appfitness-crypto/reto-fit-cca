@@ -1488,3 +1488,9 @@ html[data-theme="dark"] .chat-env{color:#0A0E13;}
 .chat-desde-met{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;}
 .chat-desde-met .ico{width:18px;height:18px;}
 @media (prefers-reduced-motion:reduce){.chat-ov,.chat-hoja{transition:none;}}
+/* Editar entrenador: bloque de acceso */
+.ee-acc{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:18px;border:1px solid var(--b);background:color-mix(in srgb,var(--tx) 3%,transparent);}
+.ee-acc-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px;}
+.ee-acc-h b{font-size:var(--fs-sm);color:var(--tx);}
+.ee-acc-h span{font-size:var(--fs-xs);color:var(--mu);}
+.ee-acc small{font-size:var(--fs-xs);color:var(--mu);line-height:1.45;}

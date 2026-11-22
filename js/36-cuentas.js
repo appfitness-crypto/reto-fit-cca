@@ -173,6 +173,12 @@ async function entrarConCuenta(user){
     else if(DB.socios[user.uid] && !BASE[user.uid]){ socio=DB.socios[user.uid]; dbSave(user.uid); }   // plan creado aquí que Firebase aún no aceptó: se reintenta
   }catch(e){ console.warn('Sin expediente',e); socio=getSocio(user.uid); }
   if(socio){ abrirPlanSocio(socio); return; }
+  // Acceso de staff que el director reemplazó (o dio de baja): no se convierte en socio
+  if(String(user.email||'').endsWith(STAFF_DOM)){
+    cuentaSalir(); go('s-login');
+    cuentaErr('in-err','Este acceso ya no está activo. Pídele al director tu usuario y contraseña nuevos.');
+    return;
+  }
   guardarSesion({tipo:'cuenta', uid:user.uid});
   empezarPlanCliente(user.displayName||'');
 }
