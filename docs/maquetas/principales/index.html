@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1D2B27">
+<title>Reto Fit CCA · Propuesta de pantallas principales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Propuesta para las 5 pestañas del socio. Mismo mundo de la app (cine + Salvia): títulos Kanit en itálica,
+   fotos grandes, vidrio blanco sobre salvia, verde casi negro para lo activo y naranja para lo que avanza.
+   La idea que las une: el reto de 12 semanas es el marco de todo; cada pestaña responde UNA pregunta. */
+:root{--fd:'Kanit','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --deep:#1D2B27;--deep2:#2C403A;--night:#111A17;--acc:#F07A2B;--acc2:#FFB07A;--tx:#17231F;--mu:#56635E;
+  --on:#EEF4F1;--on2:rgba(226,236,232,.78);--glass:rgba(255,255,255,.62);--glass2:rgba(255,255,255,.86);--edge:rgba(255,255,255,.85);
+  --trk:rgba(34,51,47,.12);--sh:0 12px 26px -18px rgba(17,26,23,.45);--expo:cubic-bezier(.16,1,.3,1)}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#C9D7D2}
+body{margin:0;font-family:var(--fb);font-size:15px;line-height:1.45;color:var(--tx);background:linear-gradient(172deg,#E6EEEB,#B9CBC4);min-height:100vh;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+::selection{background:var(--acc);color:#fff}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px;border-radius:12px}
+img{display:block}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pg{max-width:2200px;margin:0 auto;padding:44px 32px 96px}
+.pg-h{max-width:900px;margin:0 auto 40px}
+.pg-h h1{font:italic 800 clamp(34px,4.6vw,62px)/.92 var(--fd);text-transform:uppercase;margin:0 0 14px;color:var(--deep);text-wrap:balance}
+.pg-h p{margin:0 0 10px;max-width:66ch;color:#4A5954;font-size:16.5px}
+.pg-h p b{color:var(--tx)}
+.rail{display:grid;grid-template-columns:repeat(auto-fit,410px);gap:60px 26px;justify-content:center}
+.shot{display:flex;flex-direction:column;align-items:center}
+.shot h2{width:390px;margin:0 0 4px;font:italic 800 24px/1 var(--fd);text-transform:uppercase;color:var(--deep)}
+.shot .q{width:390px;margin:0 0 16px;color:#4A5954;font-size:14.5px}
+.shot .q b{color:var(--tx)}
+.notes{width:390px;margin:22px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.notes li{display:grid;grid-template-columns:18px 1fr;gap:10px;font-size:14px;color:#4A5954}
+.notes li .ico{width:16px;height:16px;margin-top:3px;color:var(--acc)}
+.notes b{color:var(--tx)}
+
+.phone{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;isolation:isolate;box-shadow:0 0 0 10px #0E1714,0 0 0 11px #3A4A45,0 46px 80px -34px rgba(17,26,23,.55);transform:translateZ(0);
+  background:radial-gradient(80% 55% at 10% -8%,rgba(255,255,255,.75),transparent 60%),radial-gradient(90% 70% at 85% 110%,rgba(110,138,129,.55),transparent 65%),linear-gradient(172deg,#E6EEEB 0%,#CCDAD5 46%,#A3B8B1 100%)}
+.scr{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:0 16px 120px}
+.scr::-webkit-scrollbar{display:none}
+.sb{position:absolute;top:0;left:0;right:0;height:46px;z-index:70;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 40px;font:600 16px/1 var(--fb);pointer-events:none}
+.sb.w{color:#fff}
+.sb svg{height:13px;width:auto}
+.glass{background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:inset 0 0 0 1px var(--edge),var(--sh);border-radius:24px}
+.k{font:700 12.5px/1.2 var(--fb);color:var(--mu)}
+.h{font:italic 800 22px/1 var(--fd);text-transform:uppercase;color:var(--deep);margin:0}
+.row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 2px 10px}
+.row small{font-size:12.5px;color:var(--mu);white-space:nowrap}
+
+/* Barra del reto: la misma en las 5 pestañas, delgada, arriba. Semana, fase y días que faltan. */
+.reto{position:sticky;top:0;z-index:30;margin:0 -16px;padding:50px 16px 10px;background:linear-gradient(180deg,rgba(220,230,226,.94) 70%,rgba(220,230,226,0));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.reto.dk{background:linear-gradient(180deg,rgba(17,26,23,.82) 70%,rgba(17,26,23,0));color:var(--on)}
+.reto-l{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.reto-l b{font:italic 800 15px/1 var(--fd);text-transform:uppercase;letter-spacing:.01em}
+.reto-l span{font:600 12.5px/1 var(--fb);color:var(--mu)}
+.reto.dk .reto-l span{color:var(--on2)}
+.wk12{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:8px}
+.wk12 i{height:5px;border-radius:9px;background:rgba(34,51,47,.16)}
+.reto.dk .wk12 i{background:rgba(238,244,241,.2)}
+.wk12 i.ok{background:var(--deep)}
+.reto.dk .wk12 i.ok{background:var(--on)}
+.wk12 i.now{background:var(--acc)}
+.wk12 i.ev{box-shadow:0 0 0 1.5px var(--acc)}
+
+/* Barra de pestañas */
+.tbc{position:absolute;left:12px;right:12px;bottom:16px;z-index:40;display:flex;height:70px;padding:6px;border-radius:28px;background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);box-shadow:inset 0 0 0 1px var(--edge),0 16px 30px -16px rgba(17,26,23,.45)}
+.tbc a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:22px;font:600 11.5px/1 var(--fb);color:var(--mu);text-decoration:none}
+.tbc a.ac{background:var(--deep);color:#fff}
+.tbc .ico{width:21px;height:21px}
+
+/* ── 1 · INICIO: hoy es la pantalla ── */
+.hoy{position:relative;height:560px;margin:0 -16px;overflow:hidden;background:var(--night);color:#fff}
+.hoy img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 0}
+.hoy .cut{z-index:2}
+.hoy::after{content:"";position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(17,26,23,.35) 0%,transparent 22%,transparent 46%,rgba(17,26,23,.88) 78%,var(--night) 100%)}
+.hoy .big{position:absolute;left:14px;top:150px;z-index:1;margin:0;font:italic 800 84px/.84 var(--fd);text-transform:uppercase;color:var(--acc);letter-spacing:-.03em}
+.hoy .big span{display:block;color:#fff;font-size:.78em}
+.hoy .meta{position:absolute;left:16px;right:16px;bottom:22px;z-index:4}
+.hoy .meta small{display:block;font:700 13px/1 var(--fb);color:var(--acc2)}
+.hoy .meta p{margin:8px 0 14px;color:var(--on2);font-size:14px}
+.go{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:8px 22px 8px 8px;border-radius:99px;background:var(--acc);color:#fff;font:800 20px/1 var(--fd);box-shadow:0 16px 30px -14px rgba(240,122,43,.8)}
+.go .d{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--acc)}
+.go .d .ico{margin-left:2px}
+.go small{margin-left:auto;font:600 13px/1 var(--fb);opacity:.9}
+.coach{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px 14px 10px 10px}
+.av{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;font:italic 800 16px/1 var(--fd);color:var(--deep);background:radial-gradient(circle at 35% 30%,#FFD2B0,var(--acc) 72%)}
+.coach p{margin:0;font-size:13.5px;color:var(--tx)}
+.coach p b{font-weight:700}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.tile{padding:14px}
+.tile .n{display:flex;align-items:baseline;gap:4px;margin-top:6px;font:italic 800 38px/.9 var(--fd);color:var(--deep)}
+.tile .n small{font:700 13px/1 var(--fb);font-style:normal;color:var(--mu)}
+.dots7{display:flex;gap:4px;margin-top:10px}
+.dots7 i{flex:1;height:6px;border-radius:9px;background:var(--trk)}
+.dots7 i.ok{background:var(--deep)}.dots7 i.now{background:var(--acc)}
+.masc{position:relative;overflow:hidden}
+.masc img{position:absolute;right:-6px;bottom:-8px;width:74px;height:74px;object-fit:contain}.masc .n{position:relative;z-index:1}
+.masc .bar{height:6px;border-radius:9px;background:var(--trk);margin-top:10px;width:58%;overflow:hidden}.masc .bar i{display:block;height:100%;width:42%;background:var(--acc);border-radius:inherit}
+
+/* ── 2 · MI PLAN: la semana como tira de fotos ── */
+.tit{margin:8px 2px 0;font:italic 800 34px/.92 var(--fd);text-transform:uppercase;color:var(--deep)}
+.sub{margin:6px 2px 0;color:var(--mu);font-size:14px}
+.tira{display:flex;gap:8px;overflow-x:auto;margin:16px -16px 0;padding:2px 16px 6px;scrollbar-width:none;scroll-snap-type:x mandatory}
+.tira::-webkit-scrollbar{display:none}
+.dia{position:relative;flex:0 0 74px;height:118px;border-radius:20px;overflow:hidden;background:var(--night);color:#fff;scroll-snap-align:start;text-align:left}
+.dia img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.6}
+.dia::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(17,26,23,.85))}
+.dia b{position:absolute;left:9px;bottom:26px;z-index:2;font:italic 800 18px/1 var(--fd);text-transform:uppercase}
+.dia small{position:absolute;left:9px;bottom:10px;z-index:2;font:600 11px/1 var(--fb);color:var(--on2)}
+.dia .ck{position:absolute;right:7px;top:7px;z-index:2;width:20px;height:20px;border-radius:50%;background:var(--on);color:var(--deep);display:grid;place-items:center}
+.dia .ck .ico{width:12px;height:12px;stroke-width:3}
+.dia.on{flex-basis:132px;box-shadow:0 0 0 3px var(--acc)}
+.dia.on img{opacity:.9}
+.dia.rest{background:#C7D3CE;color:var(--deep)}.dia.rest::after{display:none}.dia.rest small{color:var(--mu)}
+.sel{margin-top:14px;padding:16px}
+.sel-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.sel-h h3{margin:0;font:italic 800 26px/.95 var(--fd);text-transform:uppercase;color:var(--deep)}
+.sel-h .chip{flex:none}
+.chip{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:99px;background:rgba(34,51,47,.08);font:600 12px/1 var(--fb);color:var(--deep)}
+.chip.o{background:rgba(240,122,43,.16);color:#8A4210}
+.stats{display:flex;gap:18px;margin-top:12px}
+.stats div b{display:block;font:italic 800 26px/1 var(--fd);color:var(--deep)}
+.stats div small{font-size:12px;color:var(--mu)}
+.ejs{display:grid;gap:2px;margin-top:14px}
+.ej{display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:12px;padding:8px 0;border-top:1px solid rgba(34,51,47,.08)}
+.ej img{width:46px;height:46px;border-radius:13px;object-fit:cover;background:var(--night)}
+.ej b{display:block;font:700 14.5px/1.2 var(--fb)}
+.ej small{font-size:12.5px;color:var(--mu)}
+.ej .kg{font:italic 800 17px/1 var(--fd);color:var(--deep);text-align:right}
+.ej .kg small{display:block;font:600 11px/1.3 var(--fb);font-style:normal;color:#2F7A4A}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:58px;margin-top:14px;border-radius:99px;background:var(--deep);color:#fff;font:800 18px/1 var(--fd)}
+.btn .ico{width:18px;height:18px}
+
+/* ── 3 · PROGRESO: tu cambio contra tu objetivo ── */
+.cambio{position:relative;margin-top:8px;padding:18px;border-radius:28px;background:linear-gradient(160deg,var(--deep2),var(--deep) 70%);color:#fff;overflow:hidden}
+.cambio small{font:700 12.5px/1 var(--fb);color:var(--acc2)}
+.cambio .n{display:flex;align-items:baseline;gap:6px;margin:8px 0 2px;font:italic 800 84px/.82 var(--fd);letter-spacing:-.03em}
+.cambio .n span{font:italic 800 24px/1 var(--fd);color:var(--acc)}
+.cambio p{margin:6px 0 0;color:var(--on2);font-size:14px}
+.cambio svg{display:block;width:100%;height:90px;margin-top:12px}
+.lugar{display:flex;align-items:center;gap:14px;margin-top:10px;padding:14px 16px}
+.lugar .p{font:italic 800 46px/.85 var(--fd);color:var(--deep)}
+.lugar .p sup{font-size:.4em;vertical-align:top;margin-left:2px}
+.lugar b{display:block;font:700 15px/1.2 var(--fd)}
+.lugar small{font-size:12.5px;color:var(--mu)}
+.eval{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.eval div{padding:12px 10px;border-radius:18px;text-align:center}
+.eval b{display:block;font:italic 800 20px/1 var(--fd);color:var(--deep)}
+.eval small{font-size:11.5px;color:var(--mu)}
+.eval .ok{background:var(--deep);color:#fff}.eval .ok b{color:#fff}.eval .ok small{color:var(--on2)}
+.eval .nx{box-shadow:inset 0 0 0 2px var(--acc)}
+.lift{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:12px 16px;margin-top:8px}
+.lift b{display:block;font:700 14.5px/1.2 var(--fb)}
+.lift small{font-size:12.5px;color:var(--mu)}
+.lift .v{text-align:right;font:italic 800 24px/1 var(--fd);color:var(--deep)}
+.lift .v small{display:block;font:700 12px/1.3 var(--fb);font-style:normal;color:#2F7A4A}
+
+/* ── 4 · NUTRICIÓN: lo que toca ahora ── */
+.ahora{position:relative;margin-top:8px;border-radius:28px;overflow:hidden;background:var(--night);color:#fff;height:300px}
+.ahora img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ahora::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,26,23,.1) 30%,rgba(17,26,23,.9))}
+.ahora .t{position:absolute;left:16px;right:16px;bottom:16px;z-index:2}
+.ahora .t small{font:700 13px/1 var(--fb);color:var(--acc2)}
+.ahora .t h3{margin:6px 0 4px;font:italic 800 28px/.95 var(--fd);text-transform:uppercase}
+.ahora .t p{margin:0;font-size:13.5px;color:var(--on2)}
+.ahora .tag{position:absolute;top:14px;left:14px;z-index:2;display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 12px;border-radius:99px;background:var(--acc);font:700 12.5px/1 var(--fb)}
+.dia-nut{padding:16px;margin-top:10px}
+.kc{display:flex;align-items:baseline;justify-content:space-between}
+.kc b{font:italic 800 40px/.9 var(--fd);color:var(--deep)}
+.kc b small{font:700 13px/1 var(--fb);font-style:normal;color:var(--mu);margin-left:4px}
+.kc span{font:600 13px/1 var(--fb);color:var(--mu)}
+.plato{display:flex;height:14px;border-radius:99px;overflow:hidden;margin-top:12px;gap:3px}
+.plato i:nth-child(1){flex:30;background:var(--deep)}.plato i:nth-child(2){flex:50;background:var(--acc)}.plato i:nth-child(3){flex:20;background:#8FA59D}
+.plato.hoy i{opacity:.25}
+.mac{display:grid;grid-template-columns:repeat(3,1fr);margin-top:10px}
+.mac div b{display:block;font:italic 800 20px/1 var(--fd);color:var(--deep)}
+.mac div small{font-size:12px;color:var(--mu)}
+.linea{display:grid;gap:8px;margin-top:4px}
+.com{display:grid;grid-template-columns:54px 56px 1fr auto;align-items:center;gap:10px;padding:8px 12px 8px 8px}
+.com .hr{font:italic 800 15px/1.1 var(--fd);color:var(--deep);text-align:center}
+.com .hr small{display:block;font:600 10.5px/1.2 var(--fb);font-style:normal;color:var(--mu)}
+.com img{width:56px;height:56px;border-radius:14px;object-fit:cover}
+.com b{display:block;font:700 14px/1.2 var(--fb)}
+.com small{font-size:12px;color:var(--mu)}
+.com .ok{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--deep);color:#fff}
+.com .ok .ico{width:14px;height:14px;stroke-width:3}
+.com .pend{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(34,51,47,.25)}
+.com.hecha{opacity:.62}
+
+/* ── 5 · PERFIL: tu credencial del reto ── */
+.cred{position:relative;margin-top:8px;padding:18px;border-radius:28px;color:#fff;overflow:hidden;background:linear-gradient(150deg,#34504A 0%,var(--deep) 55%,var(--night) 100%);box-shadow:0 22px 40px -22px rgba(17,26,23,.8)}
+.cred::before{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(closest-side,rgba(240,122,43,.35),transparent)}
+.cred-h{position:relative;display:flex;justify-content:space-between;align-items:center}
+.cred-h img{width:38px;height:38px;border-radius:11px}
+.cred-h span{font:700 12px/1 var(--fb);color:var(--on2);letter-spacing:.04em}
+.cred h3{position:relative;margin:26px 0 0;font:italic 800 38px/.9 var(--fd);text-transform:uppercase;max-width:9ch}
+.cred .obj{position:relative;margin-top:10px;display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border-radius:99px;background:var(--acc);font:700 12.5px/1 var(--fb)}
+.cred .pet{position:absolute;right:4px;bottom:-6px;width:128px;height:128px;object-fit:contain;filter:drop-shadow(0 10px 12px rgba(0,0,0,.4))}
+.cred-f{position:relative;display:flex;gap:18px;margin-top:22px;padding-top:14px;border-top:1px solid rgba(238,244,241,.14);max-width:62%}
+.cred-f b{display:block;font:italic 800 22px/1 var(--fd)}
+.cred-f small{font-size:11.5px;color:var(--on2)}
+.lst{margin-top:10px;padding:4px 0}
+.it{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:8px 16px;text-align:left;border-top:1px solid rgba(34,51,47,.08)}
+.it:first-child{border-top:0}
+.it .ib{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:rgba(240,122,43,.14);color:#8A4210;flex:none}
+.it .ib .ico{width:18px;height:18px}
+.it span{flex:1}.it span.av,.it span.ib{flex:none}.it b{display:block;font:600 14.5px/1.2 var(--fb)}.it small{font-size:12.5px;color:var(--mu)}
+.it .ch{color:var(--mu);width:16px;height:16px}
+.datos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.datos div{padding:12px}
+.datos b{display:block;font:italic 800 20px/1 var(--fd);color:var(--deep)}
+.datos small{font-size:11.5px;color:var(--mu)}
+.out{display:block;width:100%;min-height:48px;margin-top:14px;font:700 14.5px/1 var(--fb);color:#B4372F}
+@media (max-width:520px){.pg{padding:28px 0 64px}.pg-h{padding:0 20px}.rail{grid-template-columns:1fr}.shot h2,.shot .q,.notes{width:auto;align-self:stretch;margin-left:20px;margin-right:20px}.phone{width:100%;border-radius:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5a1 1 0 0 0 1 1H10v-5.5h4v5.5h3.5a1 1 0 0 0 1-1V10"/></symbol>
+  <symbol id="i-dumb" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1-4 4-6 7.5-6s6.5 2 7.5 6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
+  <symbol id="i-ruler" viewBox="0 0 24 24"><path d="m3 17 14-14 4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1.3" fill="currentColor"/><circle cx="12" cy="7.5" r="1.3" fill="currentColor"/><circle cx="16" cy="10" r="1.3" fill="currentColor"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="sbar" viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></symbol>
+</svg>
+
+<div class="pg">
+  <header class="pg-h">
+    <h1>Las 5 pantallas principales, una pregunta cada una</h1>
+    <p>Mismo estilo de la app. Lo que cambia es el orden: <b>cada pestaña responde una sola pregunta</b> y lo demás se va. Arriba, en las cinco, una barra delgada del reto con las 12 semanas: dónde vas, en qué fase y cuándo es tu próxima evaluación.</p>
+    <p>Datos de ejemplo (Carlos, semana 5, Fuerza e hipertrofia).</p>
+  </header>
+  <main class="rail">
+
+    <!-- 1 · INICIO -->
+    <section class="shot"><h2>Inicio</h2><p class="q"><b>¿Qué entreno hoy?</b> El día es la pantalla; un solo botón.</p>
+      <div class="phone"><div class="scr" style="padding-top:0">
+        <div class="hoy">
+          <img src="img/inicio.webp" alt=""><p class="big">Pierna<span>+ glúteo</span></p><img class="cut" src="img/inicio-recorte.webp" alt="">
+          <div class="reto dk" style="position:absolute;left:16px;right:16px;top:0;margin:0;padding-left:0;padding-right:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;z-index:5"><div class="reto-l"><b>Semana 5 de 12</b><span>Fuerza e hipertrofia · 52 días</span></div><div class="wk12"><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="now"></i><i class="ev"></i><i></i><i></i><i></i><i></i><i></i><i class="ev"></i></div></div>
+          <div class="meta"><small>Hoy · jueves 21</small><p>6 ejercicios · ~55 min · sube 2.5 kg en sentadilla</p>
+            <button type="button" class="go"><span class="d"><svg class="ico"><use href="#i-play"/></svg></span>Iniciar<small>Sesión 14</small></button></div>
+        </div>
+        <div class="coach glass"><span class="av">PR</span><p><b>Pedro:</b> “Hoy controla la bajada en 3 segundos. Sin prisa.”</p></div>
+        <div class="duo">
+          <div class="tile glass"><span class="k">Esta semana</span><div class="n">2<small>de 4</small></div><div class="dots7"><i class="ok"></i><i class="ok"></i><i class="now"></i><i></i></div></div>
+          <div class="tile glass masc"><span class="k">Bam · Joven</span><div class="n">640<small>pts</small></div><div class="bar"><i></i></div><img src="img/gorila-2.webp" alt=""></div>
+        </div>
+      </div><div class="sb w"><span>9:41</span><svg><use href="#sbar"/></svg></div>
+      <nav class="tbc"><a class="ac"><svg class="ico"><use href="#i-home"/></svg>Inicio</a><a><svg class="ico"><use href="#i-dumb"/></svg>Rutina</a><a><svg class="ico"><use href="#i-chart"/></svg>Progreso</a><a><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a><a><svg class="ico"><use href="#i-user"/></svg>Perfil</a></nav></div>
+      <ul class="notes"><li><svg class="ico"><use href="#i-check"/></svg><span>La foto y el botón ocupan la primera pantalla: entras, ves tu día y le das <b>Iniciar</b>.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>El consejo del día es <b>de tu entrenador</b>, con su nombre.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>Semana y mascota en dos cuadros; el aviso del club sigue saliendo arriba cuando hay.</span></li></ul>
+    </section>
+
+    <!-- 2 · MI PLAN -->
+    <section class="shot"><h2>Mi plan</h2><p class="q"><b>¿Qué me toca esta semana?</b> La semana como tira de fotos.</p>
+      <div class="phone"><div class="scr">
+        <div class="reto"><div class="reto-l"><b>Semana 5 de 12</b><span>Fuerza e hipertrofia</span></div><div class="wk12"><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="now"></i><i class="ev"></i><i></i><i></i><i></i><i></i><i></i><i class="ev"></i></div></div>
+        <h1 class="tit">Mi plan</h1><p class="sub">Armado por Pedro Ruiz · 4 días por semana</p>
+        <div class="tira">
+          <button type="button" class="dia"><img src="img/torso.webp" alt=""><span class="ck"><svg class="ico"><use href="#i-check"/></svg></span><b>Lun</b><small>Torso</small></button>
+          <button type="button" class="dia"><img src="img/espalda.webp" alt=""><span class="ck"><svg class="ico"><use href="#i-check"/></svg></span><b>Mar</b><small>Espalda</small></button>
+          <button type="button" class="dia rest"><b>Mié</b><small>Descanso</small></button>
+          <button type="button" class="dia on"><img src="img/pierna.webp" alt=""><b>Jue · hoy</b><small>Pierna</small></button>
+          <button type="button" class="dia"><img src="img/hombro.webp" alt=""><b>Vie</b><small>Hombro</small></button>
+          <button type="button" class="dia rest"><b>Sáb</b><small>Descanso</small></button>
+        </div>
+        <div class="sel glass">
+          <div class="sel-h"><h3>Pierna<br>+ glúteo</h3><span class="chip o">Hoy</span></div>
+          <div class="stats"><div><b>~55</b><small>min</small></div><div><b>6</b><small>ejercicios</small></div><div><b>20</b><small>series</small></div></div>
+          <div class="ejs">
+            <div class="ej"><img src="img/mini-sentadilla-libre.webp" alt=""><span><b>Sentadilla libre</b><small>4 × 8 · descanso 2 min</small></span><span class="kg">72.5<small>+2.5 kg</small></span></div>
+            <div class="ej"><img src="img/mini-peso-muerto-rumano.webp" alt=""><span><b>Peso muerto rumano</b><small>3 × 10</small></span><span class="kg">60<small>repite</small></span></div>
+            <div class="ej"><img src="img/mini-prensa-de-piernas.webp" alt=""><span><b>Prensa de piernas</b><small>3 × 12</small></span><span class="kg">140<small>+10 kg</small></span></div>
+            <div class="ej"><img src="img/mini-curl-femoral-acostado.webp" alt=""><span><b>Curl femoral acostado</b><small>3 × 12</small></span><span class="kg">35<small>repite</small></span></div>
+          </div>
+          <button type="button" class="btn"><svg class="ico"><use href="#i-play"/></svg>Empezar sesión</button>
+        </div>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div>
+      <nav class="tbc"><a><svg class="ico"><use href="#i-home"/></svg>Inicio</a><a class="ac"><svg class="ico"><use href="#i-dumb"/></svg>Rutina</a><a><svg class="ico"><use href="#i-chart"/></svg>Progreso</a><a><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a><a><svg class="ico"><use href="#i-user"/></svg>Perfil</a></nav></div>
+      <ul class="notes"><li><svg class="ico"><use href="#i-check"/></svg><span>Los días son <b>fotos</b>: se reconoce la semana de un vistazo; hoy va más ancho con borde naranja.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>Cada ejercicio dice <b>el peso que te toca hoy</b> y si sube o se repite.</span></li></ul>
+    </section>
+
+    <!-- 3 · PROGRESO -->
+    <section class="shot"><h2>Progreso</h2><p class="q"><b>¿Estoy cambiando?</b> Tu cambio, medido con tu objetivo.</p>
+      <div class="phone"><div class="scr">
+        <div class="reto"><div class="reto-l"><b>Semana 5 de 12</b><span>Evaluación en 1 semana</span></div><div class="wk12"><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="now"></i><i class="ev"></i><i></i><i></i><i></i><i></i><i></i><i class="ev"></i></div></div>
+        <h1 class="tit">Mi progreso</h1><p class="sub">Objetivo: incremento de masa muscular</p>
+        <div class="cambio"><small>Tu fuerza desde la semana 0</small><div class="n">+11<span>%</span></div><p>Promedio de tus 4 ejercicios principales. Es lo que más pesa en tu objetivo.</p>
+          <svg viewBox="0 0 320 90" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F07A2B" stop-opacity=".45"/><stop offset="1" stop-color="#F07A2B" stop-opacity="0"/></linearGradient></defs><path d="M0 78 L64 70 L128 62 L192 46 L256 34 L320 18 L320 90 L0 90Z" fill="url(#g)"/><path d="M0 78 L64 70 L128 62 L192 46 L256 34 L320 18" fill="none" stroke="#F07A2B" stroke-width="3" stroke-linecap="round"/><circle cx="320" cy="18" r="5" fill="#F07A2B"/><g fill="rgba(226,236,232,.6)" font-family="Figtree" font-size="10" font-weight="600"><text x="0" y="12">Sem 0</text><text x="282" y="12">Sem 5</text></g></svg></div>
+        <div class="lugar glass"><span class="p">4<sup>º</sup></span><span><b>Tu lugar en masa muscular</b><small>De 38 socios con tu mismo objetivo · subiste 2</small></span></div>
+        <div class="row"><h2 class="h">Evaluaciones</h2><small>0 · 6 · 12</small></div>
+        <div class="eval"><div class="ok"><b>Sem 0</b><small>Hecha · 11 ene</small></div><div class="glass nx"><b>Sem 6</b><small>En 1 semana</small></div><div class="glass"><b>Sem 12</b><small>Cierre · 5 abr</small></div></div>
+        <div class="row"><h2 class="h">Tus ejercicios</h2><small>mejor peso</small></div>
+        <div class="lift glass"><span><b>Sentadilla libre</b><small>64 → 71 kg</small></span><span class="v">71<small>+7 kg</small></span></div>
+        <div class="lift glass"><span><b>Press banca plano</b><small>53.5 → 59.5 kg</small></span><span class="v">59.5<small>+6 kg</small></span></div>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div>
+      <nav class="tbc"><a><svg class="ico"><use href="#i-home"/></svg>Inicio</a><a><svg class="ico"><use href="#i-dumb"/></svg>Rutina</a><a class="ac"><svg class="ico"><use href="#i-chart"/></svg>Progreso</a><a><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a><a><svg class="ico"><use href="#i-user"/></svg>Perfil</a></nav></div>
+      <ul class="notes"><li><svg class="ico"><use href="#i-check"/></svg><span>Arriba, <b>un número</b>: el que cuenta para tu objetivo (fuerza en masa muscular, grasa en definición).</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>Tu lugar en el reto, <b>solo el tuyo</b>, sin nombres de otros socios.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>Las evaluaciones de las semanas 0, 6 y 12 a la vista.</span></li></ul>
+    </section>
+
+    <!-- 4 · NUTRICIÓN -->
+    <section class="shot"><h2>Nutrición</h2><p class="q"><b>¿Qué como ahora?</b> La comida que toca, en grande.</p>
+      <div class="phone"><div class="scr">
+        <div class="reto"><div class="reto-l"><b>Semana 5 de 12</b><span>Fuerza e hipertrofia</span></div><div class="wk12"><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="now"></i><i class="ev"></i><i></i><i></i><i></i><i></i><i></i><i class="ev"></i></div></div>
+        <h1 class="tit">Nutrición</h1><p class="sub">Calculado con tus datos · 4 comidas</p>
+        <div class="ahora"><img src="img/m-bistec.webp" alt=""><span class="tag"><svg class="ico" style="width:14px;height:14px"><use href="#i-clock"/></svg>Ahora · 2:30 pm</span>
+          <div class="t"><small>Comida</small><h3>Bistec con arroz y verduras</h3><p>1,015 kcal · 57 g proteína · toca para ver porciones</p></div></div>
+        <div class="dia-nut glass"><div class="kc"><b>1,560<small>de 2,926 kcal</small></b><span>hoy</span></div>
+          <div class="plato"><i></i><i></i><i></i></div>
+          <div class="mac"><div><b>92 / 169 g</b><small>Proteína</small></div><div><b>190 / 380 g</b><small>Carbos</small></div><div><b>40 / 81 g</b><small>Grasas</small></div></div></div>
+        <div class="row"><h2 class="h">Tu día</h2><small>marca lo que comiste</small></div>
+        <div class="linea">
+          <div class="com glass hecha"><span class="hr">8:00<small>am</small></span><img src="img/d-avena.webp" alt=""><span><b>Avena con plátano</b><small>Desayuno · 545 kcal</small></span><span class="ok"><svg class="ico"><use href="#i-check"/></svg></span></div>
+          <div class="com glass"><span class="hr">2:30<small>pm</small></span><img src="img/m-bistec.webp" alt=""><span><b>Bistec con arroz</b><small>Comida · 1,015 kcal</small></span><span class="pend"></span></div>
+          <div class="com glass"><span class="hr">5:30<small>pm</small></span><img src="img/c-licuado.webp" alt=""><span><b>Licuado post entreno</b><small>Colación · 410 kcal</small></span><span class="pend"></span></div>
+        </div>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div>
+      <nav class="tbc"><a><svg class="ico"><use href="#i-home"/></svg>Inicio</a><a><svg class="ico"><use href="#i-dumb"/></svg>Rutina</a><a><svg class="ico"><use href="#i-chart"/></svg>Progreso</a><a class="ac"><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a><a><svg class="ico"><use href="#i-user"/></svg>Perfil</a></nav></div>
+      <ul class="notes"><li><svg class="ico"><use href="#i-check"/></svg><span>La comida <b>de esta hora</b> sale grande con su foto; las demás, en línea de tiempo.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>Marcas lo que ya comiste y ves <b>cuánto te falta</b> del día.</span></li></ul>
+    </section>
+
+    <!-- 5 · PERFIL -->
+    <section class="shot"><h2>Perfil</h2><p class="q"><b>¿Quién soy en el reto?</b> Tu credencial del club.</p>
+      <div class="phone"><div class="scr">
+        <div class="reto"><div class="reto-l"><b>Semana 5 de 12</b><span>Fuerza e hipertrofia</span></div><div class="wk12"><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="now"></i><i class="ev"></i><i></i><i></i><i></i><i></i><i></i><i class="ev"></i></div></div>
+        <div class="cred">
+          <div class="cred-h"><img src="img/icon-192.png" alt="Reto Fit CCA"><span>SOCIO #CC-1234</span></div>
+          <h3>Carlos Fitness</h3><span class="obj">Masa muscular</span>
+          <div class="cred-f"><div><b>640</b><small>puntos</small></div><div><b>14</b><small>sesiones</small></div><div><b>4º</b><small>lugar</small></div></div>
+          <img class="pet" src="img/gorila-2.webp" alt="Bam, etapa Joven">
+        </div>
+        <div class="lst glass">
+          <button type="button" class="it"><span class="av" style="width:36px;height:36px;font-size:14px">PR</span><span><b>Pedro Ruiz</b><small>Tu entrenador · “Técnica primero”</small></span><svg class="ico ch"><use href="#i-chev"/></svg></button>
+          <button type="button" class="it"><span class="ib"><svg class="ico"><use href="#i-user"/></svg></span><span><b>Bam · Joven</b><small>Mi compañero · 160 pts para Entrenado</small></span><svg class="ico ch"><use href="#i-chev"/></svg></button>
+        </div>
+        <div class="row"><h2 class="h">Mis datos</h2><small>toca para cambiar</small></div>
+        <div class="datos"><div class="glass"><b>80 kg</b><small>Peso</small></div><div class="glass"><b>178</b><small>Estatura</small></div><div class="glass"><b>86 cm</b><small>Cintura</small></div></div>
+        <div class="lst glass">
+          <button type="button" class="it"><span class="ib"><svg class="ico"><use href="#i-file"/></svg></span><span><b>Mi rutina en PDF</b></span><svg class="ico ch"><use href="#i-chev"/></svg></button>
+          <button type="button" class="it"><span class="ib"><svg class="ico"><use href="#i-palette"/></svg></span><span><b>Apariencia</b><small>Salvia</small></span><svg class="ico ch"><use href="#i-chev"/></svg></button>
+        </div>
+        <button type="button" class="out">Cerrar sesión</button>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div>
+      <nav class="tbc"><a><svg class="ico"><use href="#i-home"/></svg>Inicio</a><a><svg class="ico"><use href="#i-dumb"/></svg>Rutina</a><a><svg class="ico"><use href="#i-chart"/></svg>Progreso</a><a><svg class="ico"><use href="#i-leaf"/></svg>Nutrición</a><a class="ac"><svg class="ico"><use href="#i-user"/></svg>Perfil</a></nav></div>
+      <ul class="notes"><li><svg class="ico"><use href="#i-check"/></svg><span>Una <b>credencial</b> con tu nombre, objetivo, puntos, lugar y tu mascota: se presume.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>Entrenador y mascota en una lista corta; tus datos en tres cuadros; lo de la cuenta al final.</span></li></ul>
+    </section>
+  </main>
+</div>
+</body>
+</html>
