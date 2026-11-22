@@ -1169,8 +1169,8 @@ html[data-theme="dark"] .ih-d.hoy{background:color-mix(in srgb,var(--cine-acc) 2
 .ih-sem-f button .ico{width:16px;height:16px;}
 
 /* ═══ ACCESO · "Regresa al reto" ═══ */
-#s-login{position:relative;min-height:100vh;min-height:100svh;padding:0;overflow:hidden;background:var(--cine-night,#111A17);color:#fff;justify-content:flex-end;}
-#s-login::before{display:none;}
+#s-login,#s-registro{position:relative;min-height:100vh;min-height:100svh;padding:0;overflow:hidden;background:var(--cine-night,#111A17);color:#fff;justify-content:flex-end;}
+#s-login::before,#s-registro::before{display:none;}
 .lg-esc{position:absolute;inset:0;}
 .lg-ph{position:absolute;left:0;top:0;width:100%;height:68%;object-fit:cover;object-position:46% 0;}
 .lg-num{position:absolute;left:0;right:0;top:calc(52px + env(safe-area-inset-top,0px));margin:0;text-align:center;color:var(--cine-acc);font:italic 800 min(78vw,300px)/.74 var(--fd);letter-spacing:-.06em;padding-right:5%;}
@@ -1195,8 +1195,8 @@ html[data-theme="dark"] .ih-d.hoy{background:color-mix(in srgb,var(--cine-acc) 2
 .lg-f>.ico{position:absolute;left:16px;top:20px;width:20px;height:20px;color:rgba(226,236,232,.8);}
 .lg-ver{position:absolute;right:8px;top:8px;width:44px;height:44px;display:grid;place-items:center;border:0;background:none;color:rgba(226,236,232,.8);cursor:pointer;border-radius:12px;}
 .lg-ver[aria-pressed="true"]{color:var(--cine-acc);}
-#s-login .login-err{margin:2px 2px 8px;color:#FFB4A8;font-size:13.5px;}
-#s-login .login-err:empty{display:none;}
+#s-login .login-err,#s-registro .login-err{margin:2px 2px 8px;color:#FFB4A8;font-size:13.5px;}
+#s-login .login-err:empty,#s-registro .login-err:empty{display:none;}
 .lg-go{display:flex;align-items:center;gap:14px;width:100%;min-height:62px;margin-top:6px;padding:8px 22px 8px 8px;border:0;border-radius:99px;background:var(--cine-acc);color:#fff;font:800 19px/1 var(--fd);cursor:pointer;box-shadow:0 16px 30px -14px color-mix(in srgb,var(--cine-acc) 80%,transparent);}
 html[data-theme="dark"] .lg-go{color:#0A0E13;}
 .lg-go:disabled{opacity:.6;}
@@ -1204,7 +1204,7 @@ html[data-theme="dark"] .lg-go{color:#0A0E13;}
 html[data-theme="dark"] .lg-d{background:#0A0E13;}
 .lg-links{display:flex;justify-content:space-between;margin-top:12px;}
 .lg-links button{min-height:44px;border:0;background:none;color:rgba(226,236,232,.85);font:600 13.5px/1 var(--fb);cursor:pointer;}
-@media (min-width:1025px){ .lg-ph{left:auto;right:0;width:56vw;height:100%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 26%);mask-image:linear-gradient(90deg,transparent,#000 26%);} .lg-num{left:auto;right:0;width:56vw;font-size:min(40vw,560px);} .lg-ov{background:linear-gradient(90deg,var(--cine-night,#111A17) 38%,transparent 62%);} #s-login{justify-content:center;} .lg-hoja{margin:0 0 0 max(6vw,48px);} }
+@media (min-width:1025px){ .lg-ph{left:auto;right:0;width:56vw;height:100%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 26%);mask-image:linear-gradient(90deg,transparent,#000 26%);} .lg-num{left:auto;right:0;width:56vw;font-size:min(40vw,560px);} .lg-ov{background:linear-gradient(90deg,var(--cine-night,#111A17) 38%,transparent 62%);} #s-login,#s-registro{justify-content:center;} .lg-hoja{margin:0 0 0 max(6vw,48px);} }
 @media (prefers-reduced-motion:reduce){.lg-hoja{animation:none;}}
 
 /* ═══ MI PLAN · calendario del reto (un solo bloque) ═══ */
@@ -1394,10 +1394,10 @@ html[data-theme="dark"] .cred-lgi.on i{color:#0A0E13;}
 html[data-theme] #s-inicio .wc-num{top:calc(var(--wc-top) + 22px);font-size:min(78vw,calc((100svh - 64px)*.4),420px);}
 html[data-theme] #s-inicio .wc-num.dos{display:flex;justify-content:space-between;padding:0 4.5% 0 2.5%;letter-spacing:0;}
 html[data-theme] #s-inicio .wc-num.dos span{display:block;}
-html[data-theme] #s-login .lg-num{top:calc(78px + env(safe-area-inset-top,0px));font-size:min(66vw,280px);}
-#s-login .lg-num.dos{display:flex;justify-content:space-between;padding:0 6% 0 4%;letter-spacing:0;}
-#s-login .lg-num.dos span{display:block;}
-@media (min-width:1025px){ #s-login .lg-num.dos{justify-content:center;gap:14vw;padding:0;} }
+html[data-theme] :is(#s-login,#s-registro) .lg-num{top:calc(78px + env(safe-area-inset-top,0px));font-size:clamp(110px,calc((100svh - 600px)*1.3),min(66vw,280px));}
+#s-login .lg-num.dos,#s-registro .lg-num.dos{display:flex;justify-content:space-between;padding:0 6% 0 4%;letter-spacing:0;}
+#s-login .lg-num.dos span,#s-registro .lg-num.dos span{display:block;}
+@media (min-width:1025px){ :is(#s-login,#s-registro) .lg-num.dos{justify-content:center;gap:14vw;padding:0;} }
 
 /* ═══ Orden y aire entre tarjetas (socio) ═══ */
 /* Mi plan: el calendario y la tarjeta del día ya no se tocan */
@@ -1427,3 +1427,6 @@ html[data-theme="dark"] button.btn-back-link.pf-del{background:rgba(255,255,255,
 .ev-l .ev-acc{flex:none;width:auto;margin-left:auto;min-height:34px;padding:0 14px;font-size:var(--fs-xs);border-radius:99px;}
 .ev-l li{padding:10px 0;border-top:1px solid color-mix(in srgb,var(--tx) 8%,transparent);}
 .ev-l li:first-child{border-top:0;padding-top:2px;}
+/* Registro: un solo enlace centrado debajo del botón */
+.lg-links-c{justify-content:center;}
+.lg-links-c b{color:var(--cine-acc);font-weight:800;}
