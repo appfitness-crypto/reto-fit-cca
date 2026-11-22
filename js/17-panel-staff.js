@@ -124,7 +124,10 @@ function staffRenderList(){
     att.innerHTML=[['r','Urgente'],['y','Atención'],['g','Al día']].map(([k,l])=>
       `<button type="button" aria-pressed="${staffSemVal===k}" onclick="staffFiltroSem('${k}')"><b>${nS(k)}</b><span><i class="sl-dot ${k}"></i>${l}</span></button>`).join('');
   }
+  staffEntPintar(todos);
   let list=todos.slice();
+  if(staffEntVal==='_sin') list=list.filter(socioSinEntrenador);
+  else if(staffEntVal) list=list.filter(s=>s.entrenadorId===staffEntVal);
   if(staffFilterVal==='sinent') list=list.filter(socioSinEntrenador);
   else if(staffFilterVal==='progresion') list=list.filter(pqNecesitaAccion);
   else if(staffFilterVal==='activo') list=list.filter(s=>{const e=est(s);return e==='activo'||e==='tolerancia';});
@@ -175,6 +178,23 @@ function staffSideAlt(){ const p=document.getElementById('s-panel'); staffSideMi
     else if(min&&dx>0) staffSideMin(false);
   },{passive:true});
 })();
+// Filtro por entrenador (director): ver los socios de cada uno, o los que no tienen
+let staffEntVal='';
+function staffEntPintar(todos){
+  const box=document.getElementById('staff-entf'), sel=document.getElementById('staff-ent-sel'); if(!box||!sel) return;
+  const ents=Object.entries(DB.entrenadores||{}).map(([k,e])=>e?Object.assign({},e,{id:e.id||k}):null).filter(e=>e&&e.rol!=='coordinador');
+  box.hidden=!(staffRol==='coordinador' && ents.length);
+  if(box.hidden){ staffEntVal=''; return; }
+  if(staffEntVal && staffEntVal!=='_sin' && !ents.some(e=>e.id===staffEntVal)) staffEntVal='';
+  const n=id=>todos.filter(s=>s.entrenadorId===id).length, nSin=todos.filter(socioSinEntrenador).length;
+  ents.sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||''),'es'));
+  sel.innerHTML=`<option value="">Todos los entrenadores (${todos.length})</option>`+
+    ents.map(e=>`<option value="${esc(e.id)}">${esc(tc(e.nombre||'Entrenador'))} (${n(e.id)})</option>`).join('')+
+    `<option value="_sin">Sin entrenador (${nSin})</option>`;
+  sel.value=staffEntVal;
+  box.classList.toggle('on',!!staffEntVal);
+}
+function staffFiltroEnt(v){ staffEntVal=v||''; staffRenderList(); }
 function staffFiltroSem(k){ staffSemVal=staffSemVal===k?null:k; staffRenderList(); }
 function staffFiltroDirecto(val){
   const btn=[...document.querySelectorAll('#staff-filters .sl-f')].find(b=>(b.getAttribute('onclick')||'').includes("'"+val+"'"));
