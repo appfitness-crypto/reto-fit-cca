@@ -1359,3 +1359,15 @@ html[data-theme="dark"] .en-ayuda.sube .ico{color:#7EE0A8;}
 .en-s-t>span{overflow:visible!important;text-overflow:clip!important;}
 .en-crono{padding:0 10px;gap:4px;font-size:12px;}
 .en-s-top .en-btn-sm{padding-left:12px;padding-right:12px;}
+/* Logros dentro de la credencial */
+.cred-lg{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:16px;}
+.cred-lgi{display:grid;justify-items:center;gap:3px;padding:10px 4px 9px;border-radius:16px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);text-align:center;opacity:.55;}
+.cred-lgi i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.1);color:#fff;font-style:normal;}
+.cred-lgi i .ico{width:16px;height:16px;}
+.cred-lgi b{font:700 11.5px/1.1 var(--fb);color:#fff;}
+.cred-lgi small{font-size:10.5px;color:rgba(226,236,232,.75);}
+.cred-lgi.on{opacity:1;background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cine-acc) 45%,transparent);}
+.cred-lgi.on i{background:var(--cine-acc);color:#fff;}
+html[data-theme="dark"] .cred-lgi.on i{color:#0A0E13;}
+.cred:has(.cred-lg) .cred-fig{bottom:auto;top:96px;width:128px;height:128px;}
+.cred:has(.cred-lg) .cred-f{max-width:64%;}
