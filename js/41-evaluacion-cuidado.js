@@ -215,12 +215,44 @@ function evalVerSocio(){
   const s=activeSocio; if(!s) return; const E=evalEstado(s); if(!E) return;
   const refTxt=E.ref.map(k=>EVAL_REF[k][0]).join(', ');
   let m=document.getElementById('modal-eval'); if(!m){ m=document.createElement('div'); m.className='modal'; m.id='modal-eval'; m.onclick=e=>{ if(e.target===m) m.classList.remove('open'); }; document.body.appendChild(m); }
+  const ent=getEntrenador(s.entrenadorId), quien=ent&&ent.nombre?entCortoEval(ent.nombre):'tu entrenador';
+  const fila=x=>{
+    const dato=evalDato(s,x.id);
+    if(x.ok) return `<li class="ok"><b>✓ ${esc(x.nm)}</b>${dato?`<span>${esc(dato)}</span>`:''}</li>`;
+    const acc=EVAL_ACCION_SOCIO[x.id];
+    const pista=EVAL_PISTA_SOCIO[x.id]?EVAL_PISTA_SOCIO[x.id]:x.id==='rm'?EVAL_PISTA.rm+(refTxt||'tus ejercicios principales')+'.':(EVAL_COMO[x.id]?EVAL_COMO[x.id]+' Pídeselo a '+quien+': lo registra en tu ficha.':EVAL_PISTA[x.id]);
+    return `<li><b>${esc(x.nm)}</b>${acc?`<button type="button" class="sd-b ev-acc" onclick="evalAccionSocio('${x.id}')">${esc(acc)}</button>`:''}<span>${esc(pista)}</span></li>`;
+  };
   m.innerHTML=`<div class="mbox" style="max-width:460px" role="dialog" aria-modal="true">
     <div class="pg-home-k">${E.inicial?'Tu evaluación inicial':'Toca reevaluarte'}</div>
-    <div style="font-size:var(--fs-md);color:var(--mu);line-height:1.5;margin:6px 0 12px">Sirve para medir tu punto de partida y ajustar tu plan. Lo que se hace en piso lo marca tu entrenador.</div>
-    <ul class="ev-l">${E.items.map(x=>`<li class="${x.ok?'ok':''}"><b>${x.ok?'✓ ':''}${esc(x.nm)}</b>${x.ok?'':`<span>${esc(EVAL_PISTA[x.id]+(x.id==='rm'?(refTxt||'tus ejercicios principales')+'.':''))}</span>`}</li>`).join('')}</ul>
+    <div style="font-size:var(--fs-md);color:var(--mu);line-height:1.5;margin:6px 0 12px">Sirve para medir tu punto de partida y ajustar tu plan. Lo que tiene botón lo haces tú aquí; las pruebas en piso las registra ${esc(quien)}.</div>
+    <ul class="ev-l">${E.items.map(fila).join('')}</ul>
     <button type="button" class="sd-pri" style="width:100%;margin-top:16px" onclick="document.getElementById('modal-eval').classList.remove('open')">Entendido</button></div>`;
   m.classList.add('open');
+}
+function entCortoEval(n){ return String(n||'').trim().split(/\s+/)[0]||'tu entrenador'; }
+// Lo que el socio puede hacer él mismo desde la hoja
+const EVAL_ACCION_SOCIO={peso_cintura:'Anotar cintura', grasa:'Anotar cintura', rm:'Ir a mi rutina'};
+const EVAL_PISTA_SOCIO={peso_cintura:'Con una cinta métrica, a la altura del ombligo, sin apretar y después de soltar el aire. Tu peso se actualiza en Perfil.',
+  grasa:'Se calcula solo con tu cintura y tu estatura, sin báscula especial.'};
+// Cómo es cada prueba en piso (para que el socio sepa qué esperar)
+const EVAL_COMO={
+  movilidad:'Sentadilla con brazos arriba y revisión de hombro y cadera, unos 5 minutos.',
+  cardio:'Escalón de 3 minutos (se mide tu pulso al terminar) o 12 minutos de carrera, unos 15 minutos.',
+  saltos:'Salto vertical: 3 intentos, cuenta el mejor.',
+  fotos:'Frente, perfil y espalda, con la misma luz y ropa ajustada.'};
+function evalAccionSocio(id){
+  const m=document.getElementById('modal-eval'); if(m) m.classList.remove('open');
+  if(id==='rm'){ dashTab('rutina'); return; }
+  if(id==='peso_cintura' || id==='grasa'){ const s=activeSocio; if(s && !(+s.peso)) return editarPeso(); return editarCintura(); }
+}
+// Resultado guardado de una prueba (o el valor que la completó), en texto
+function evalDato(s,id){
+  const d=((s.evaluacion||{}).datos||{})[id];
+  if(d && d.t) return d.t+(d.f?' · '+fmtFecha(d.f):'');
+  if(id==='peso_cintura' && +s.cintura) return pesoActual(s)+' kg · cintura '+s.cintura+' cm';
+  if(id==='grasa' && +s.cintura && typeof composicionCorporal==='function'){ const g=composicionCorporal(s,pesoActual(s)).grasa; if(g!=null) return '≈ '+g+'% estimado con tu cintura y estatura'; }
+  return '';
 }
 function evalFilaPerfilHTML(s){
   if(!s || s.status!=='activo') return ''; const E=evalEstado(s); if(!E || !E.pendientes) return '';
@@ -230,10 +262,52 @@ function evalStaffHTML(s){
   const E=evalEstado(s); if(!E) return '';
   const tit=E.inicial?'Evaluación inicial':E.toca?'Toca reevaluar':'Evaluación';
   const ult=s.evaluacion&&s.evaluacion.fecha;
+  const c=esc(s.code);
+  const boton=x=>{
+    if(x.id==='peso_cintura'||x.id==='grasa') return x.ok?'':`<button type="button" class="sd-b" onclick="evalCinturaStaff('${c}')">Anotar cintura</button>`;
+    if(x.id==='rm'||x.id==='salud') return x.ok||(x.auto&&E.inicial)?'':`<button type="button" class="sd-b" onclick="evalMarcar('${c}','${x.id}')">Marcar hecho</button>`;
+    if(EVAL_PRUEBA[x.id]) return `<button type="button" class="sd-b" onclick="evalRegistrar('${c}','${x.id}')">${x.ok?'Cambiar':'Registrar'}</button>`;
+    return x.ok?'':`<button type="button" class="sd-b" onclick="evalMarcar('${c}','${x.id}')">Marcar hecho</button>`;
+  };
   return `<div class="sd-sec">${tit} <small>${ult?'última: '+esc(fmtFecha(ult)):'según la filosofía de su entrenador'}</small></div>
-    <div class="sd-body"><ul class="ev-l">${E.items.map(x=>`<li class="${x.ok?'ok':''}"><b>${x.ok?'✓ ':''}${esc(x.nm)}</b>
-      ${x.ok||(x.auto&&E.inicial)?'':`<button type="button" class="sd-b" onclick="evalMarcar('${esc(s.code)}','${x.id}')">Marcar hecho</button>`}</li>`).join('')}</ul>
-      ${E.toca||E.inicial?`<button type="button" class="sd-pri" style="margin-top:10px" ${E.pendientes?'disabled':''} onclick="evalCerrar('${esc(s.code)}')">${E.pendientes?'Faltan '+E.pendientes+' por completar':'Registrar evaluación completa'}</button>`:''}</div>`;
+    <div class="sd-body"><ul class="ev-l">${E.items.map(x=>{ const d=evalDato(s,x.id); return `<li class="${x.ok?'ok':''}"><b>${x.ok?'✓ ':''}${esc(x.nm)}</b>${boton(x)}${d?`<span>${esc(d)}</span>`:(!x.ok&&EVAL_COMO[x.id]?`<span>${esc(EVAL_COMO[x.id])}</span>`:'')}</li>`; }).join('')}</ul>
+      ${E.toca||E.inicial?`<button type="button" class="sd-pri" style="margin-top:10px" ${E.pendientes?'disabled':''} onclick="evalCerrar('${c}')">${E.pendientes?'Faltan '+E.pendientes+' por completar':'Registrar evaluación completa'}</button>`:''}</div>`;
+}
+// Pruebas en piso: el entrenador elige el resultado (y, si aplica, escribe el número)
+const EVAL_PRUEBA={
+  movilidad:{msg:'Movilidad: sentadilla con brazos arriba, hombro y cadera. ¿Cómo salió?', ops:[
+    {value:'Completa, sin compensar',label:'Completa, sin compensar',sub:'Baja profundo con talones abajo y brazos alineados'},
+    {value:'Con compensaciones',label:'Con compensaciones',sub:'Rodillas hacia dentro, talones arriba o tronco muy inclinado'},
+    {value:'Limitada',label:'Limitada',sub:'Rango corto o con molestia: conviene trabajar movilidad'}]},
+  cardio:{msg:'Prueba cardiovascular: ¿cuál hizo?', ops:[
+    {value:'escalon',label:'Escalón de 3 minutos',sub:'Pulso (lpm) un minuto después de terminar'},
+    {value:'cooper',label:'Cooper 12 minutos',sub:'Metros recorridos'}],
+    num:{escalon:['Pulso al terminar, en latidos por minuto','Ej. 110',60,200,v=>'Escalón 3 min: '+v+' lpm'],
+         cooper:['Metros recorridos en 12 minutos','Ej. 2200',500,5000,v=>'Cooper: '+v+' m']}},
+  saltos:{num1:['Salto vertical: el mejor de 3 intentos, en centímetros','Ej. 38',5,120,v=>'Salto vertical: '+v+' cm']}};
+function evalGuardarDato(code,id,t){
+  const s=getSocio(code); if(!s) return;
+  const hoy=fechaISO(new Date());
+  s.evaluacion=Object.assign({},s.evaluacion||{});
+  s.evaluacion.items=Object.assign({},s.evaluacion.items||{},{[id]:hoy});
+  s.evaluacion.datos=Object.assign({},s.evaluacion.datos||{},{[id]:{t,f:hoy}});
+  pqGuardarStaff(s,['evaluacion']); staffRenderContent(s); showToast('✓ '+(EVAL_ITEMS[id]||'Prueba')+' registrada');
+}
+function evalNumero(code,id,cfg){
+  const [msg,ph,min,max,txt]=cfg;
+  uiEntrada(msg,ph,'Guardar',v=>{ const n=Math.round(parseFloat(String(v).replace(',','.'))); if(!(n>=min&&n<=max)){ showToast('Escribe un número entre '+min+' y '+max); return; } evalGuardarDato(code,id,txt(n)); });
+}
+function evalRegistrar(code,id){
+  const P=EVAL_PRUEBA[id]; if(!P) return evalMarcar(code,id);
+  if(P.num1) return evalNumero(code,id,P.num1);
+  uiOpciones(P.msg,P.ops,v=>{ if(P.num&&P.num[v]) setTimeout(()=>evalNumero(code,id,P.num[v]),220); else evalGuardarDato(code,id,v); });
+}
+function evalCinturaStaff(code){
+  const s=getSocio(code); if(!s) return;
+  uiEntrada('Cintura de '+(s.nombre||'el socio')+' en centímetros, a la altura del ombligo, sin apretar la cinta.','Ej. 86','Guardar',v=>{
+    const c=parseInt(v); if(!(c>=50&&c<=180)){ showToast('Escribe una medida entre 50 y 180 cm'); return; }
+    s.cintura=c; pqGuardarStaff(s,['cintura']); staffRenderContent(s); showToast('✓ Cintura guardada');
+  });
 }
 function evalMarcar(code,id){
   const s=getSocio(code); if(!s) return;

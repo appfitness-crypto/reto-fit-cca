@@ -1082,7 +1082,10 @@ function sesBorrarPreg(ts,fecha){
 }
 function sesBorrar(x){
   const s=activeSocio; if(!s) return;
-  s.logs.sesiones=comoArray(s.logs.sesiones).filter(o=>o!==x);
+  // Se anota como borrada: así Firebase (o el otro celular) no la vuelve a traer al sincronizar
+  const llave=LOG_LLAVES.sesiones(x);
+  s.logs.sesBorradas=[...new Set(comoArray(s.logs.sesBorradas).concat(llave))].slice(-400);
+  s.logs.sesiones=comoArray(s.logs.sesiones).filter(o=>o!==x && !(o && LOG_LLAVES.sesiones(o)===llave));
   // Récords que salieron de ese día: se recalculan con lo que queda (o se quitan si no hay otro registro)
   const prs=s.logs.prs||{};
   Object.keys(prs).forEach(k=>{

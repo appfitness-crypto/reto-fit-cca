@@ -1616,6 +1616,18 @@ function editarCintura(){
     s.cintura=c; dbSave(s.code); showToast('Cintura guardada: tu plan de nutrición ya la considera'); renderPerfilTab();
   });
 }
+// Peso de hoy desde Perfil (queda en el historial de Progreso → Cuerpo)
+function editarPeso(){
+  const s=activeSocio; if(!s) return;
+  uiEntrada('Tu peso de hoy en kilos. De preferencia en la mañana, antes de desayunar.','Ej. '+(pesoActual(s)||75),'Guardar',v=>{
+    const kg=Math.round(parseFloat(String(v).replace(',','.'))*10)/10;
+    if(!(kg>=30&&kg<=250)){ showToast('Escribe un peso entre 30 y 250 kg'); return; }
+    asegurarLogs(s); const hoy=fechaISO(new Date());
+    const ex=s.logs.pesoCorporal.find(p=>p.fecha===hoy); if(ex) ex.kg=kg; else s.logs.pesoCorporal.push({fecha:hoy,kg});
+    if(!(+s.peso)) s.peso=kg;
+    dbSave(s.code); showToast('✓ Peso guardado: '+kg+' kg'); renderPerfilTab();
+  });
+}
 function editarActividad(){
   const s=activeSocio; if(!s) return;
   uiOpciones('¿Cómo es tu trabajo o tu día fuera del gym? Con esto se calculan mejor tus calorías.',
@@ -1640,7 +1652,7 @@ function renderPerfilTab(){
   const datos=[
     {k:'Objetivo',v:sc(s.objetivo),ancho:1},
     {k:'Nivel',v:sc(s.nivel)},{k:'Frecuencia',v:s.dias+' días/sem'},
-    {k:'Peso actual',v:pesoActual(s)+' kg'},{k:'Estatura',v:s.estatura+' cm'},
+    {k:'Peso actual',v:pesoActual(s)+' kg',ed:'editarPeso()'},{k:'Estatura',v:s.estatura+' cm'},
     {k:'Edad',v:s.edad+' años'},
     {k:'Cintura',v:s.cintura?s.cintura+' cm':'Agregar',ed:'editarCintura()',vacio:!s.cintura},
     {k:'Fuera del gym',v:act?act.lbl:'Indícalo',ed:'editarActividad()',vacio:!act,ancho:1},
