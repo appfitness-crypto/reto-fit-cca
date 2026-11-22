@@ -1500,7 +1500,7 @@ function refreshDash(){
 
   // Inicio "cine" (css/cine.css, js/59-cine.js): el entrenamiento de hoy en letra gigante detrás del socio de la foto
   const ent=s.entrenadorId?getEntrenador(s.entrenadorId):null;
-  const coach=ent&&ent.nombre&&ent.rol!=='coordinador'?`<p class="ci-coach"><i aria-hidden="true">${esc(iniciales(ent.nombre).slice(0,1))}</i><span>Plan de <b>${esc(tc(ent.nombre).split(' ')[0])}</b>, tu entrenador</span></p>`:'';
+  const coach=ent&&ent.nombre&&ent.rol!=='coordinador'?`<p class="ci-coach"><i aria-hidden="true"${ent.foto?' class="foto"':''}>${ent.foto?`<img src="${esc(ent.foto)}" alt="" decoding="async">`:esc(iniciales(ent.nombre).slice(0,1))}</i><span>Plan de <b>${esc(tc(ent.nombre).split(' ')[0])}</b>, tu entrenador</span></p>`:'';
   const hoyTxt=`${sc(DIAS_NAMES[HOY_KEY])} ${new Date().getDate()}`;
   const slots=Array.from({length:meta},(_,i)=>`<i class="${i<ev.estaSemana?'ok':(i===ev.estaSemana&&!esDescanso&&!hechoHoy?'hoy':'')}" style="--i:${i}"></i>`).join('');
   // Inicio (propuesta B elegida por el club, docs/maquetas/inicio-acceso): el aviso es una franja dentro de la foto,

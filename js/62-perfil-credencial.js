@@ -42,7 +42,7 @@ function perfilListaHTML(s){
   const fila=(on,izq,b,small,der)=>`<button type="button" class="pfl-it" onclick="${on}">${izq}<span class="pfl-t"><b>${b}</b>${small?`<small>${small}</small>`:''}</span>${der||ico('chev')}</button>`;
   const estTxt=pend?'En revisión':(est==='tolerancia'?'Por renovar':'Activa');
   let html=fila(ent&&typeof abrirMetodoSocio==='function'?'abrirMetodoSocio()':'',
-    `<span class="pfl-av">${ent?esc(iniciales(ent.nombre)):ico('user')}</span>`,
+    `<span class="pfl-av${ent&&ent.foto?' foto':''}">${ent?(ent.foto?`<img src="${esc(ent.foto)}" alt="" decoding="async">`:esc(iniciales(ent.nombre))):ico('user')}</span>`,
     ent?esc(tc(ent.nombre)):'Plan del club',
     (ent?'Tu entrenador':'Un entrenador del gym lo revisa')+(m&&m.tagline?' · «'+esc(m.tagline)+'»':''),
     `<span class="pfl-st ${pend?'pend':(est==='tolerancia'?'tol':'ok')}">${estTxt}</span>`);
@@ -83,7 +83,7 @@ function abrirMetodoSocio(){
   let ov=document.getElementById('av-ov'); if(ov) ov.remove();
   ov=document.createElement('div'); ov.id='av-ov'; ov.className='av-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Tu entrenador');
   ov.innerHTML=`<div class="av-sheet" tabindex="-1"><span class="av-grab" aria-hidden="true"></span>
-    <div class="met-h"><span class="pfl-av">${ent?esc(iniciales(ent.nombre)):ico('user')}</span><div><small>Tu entrenador</small><h2>${ent?esc(tc(ent.nombre)):'Plan del club'}</h2></div></div>
+    <div class="met-h"><span class="pfl-av${ent&&ent.foto?' foto grande':''}">${ent?(ent.foto?`<img src="${esc(ent.foto)}" alt="Foto de ${esc(tc(ent.nombre))}" decoding="async">`:esc(iniciales(ent.nombre))):ico('user')}</span><div><small>Tu entrenador</small><h2>${ent?esc(tc(ent.nombre)):'Plan del club'}</h2></div></div>
     ${m&&m.tagline?`<p class="met-tag">«${esc(m.tagline)}»</p>`:''}
     ${m&&(m.lineas||[]).length?`<ul class="met-l">${m.lineas.map(l=>`<li>${esc(typeof l==='string'?l:(l.t||l.txt||''))}</li>`).join('')}</ul>`:'<p class="av-msg">Tu entrenador arma tu rutina con su método y la ajusta contigo.</p>'}
     <button type="button" class="av-link" onclick="avisoCerrarHoja()">Cerrar</button></div>`;
