@@ -53,7 +53,7 @@ function calcNutricion(s){
 
   // Factor de actividad: actividad del trabajo (base) + cada día de entrenamiento.
   // Socios registrados antes de esta pregunta conservan la tabla anterior (solo días de entrenamiento).
-  const factores = {2:1.375, 3:1.45, 4:1.55, 5:1.65, 6:1.725};
+  const factores = {2:1.375, 3:1.45, 4:1.55, 5:1.65, 6:1.725, 7:1.76};
   const act = ACTIVIDAD_TRABAJO[s.actividad];
   const factor = act ? Math.min(1.9, Math.round((act.f + 0.05*(parseInt(s.dias)||4))*1000)/1000) : (factores[s.dias] || 1.55);
   const tdee = Math.round(bmr * factor);

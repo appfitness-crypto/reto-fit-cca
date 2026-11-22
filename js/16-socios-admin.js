@@ -22,7 +22,7 @@ function abrirEditarSocio(code){
   document.getElementById('es-genero').innerHTML=opcionesSel(['MASCULINO','FEMENINO'],s.genero);
   document.getElementById('es-objetivo').innerHTML=opcionesSel(OBJETIVOS_LISTA,s.objetivo);
   document.getElementById('es-nivel').innerHTML=opcionesSel(['PRINCIPIANTE','INTERMEDIO','AVANZADO'],s.nivel);
-  document.getElementById('es-dias').innerHTML=[2,3,4,5,6].map(n=>`<option value="${n}" ${+s.dias===n?'selected':''}>${n} días por semana</option>`).join('');
+  document.getElementById('es-dias').innerHTML=[2,3,4,5,6,7].map(n=>`<option value="${n}" ${+s.dias===n?'selected':''}>${n} días por semana</option>`).join('');
   const ents=Object.values(DB.entrenadores||{}).filter(e=>e&&e.rol!=='coordinador');
   document.getElementById('es-ent').innerHTML='<option value="">Sin asignar</option>'+ents.map(e=>`<option value="${esc(e.id)}" ${s.entrenadorId===e.id?'selected':''}>${esc(e.nombre)}</option>`).join('');
   const nutris=staffNutricionistas();
