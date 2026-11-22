@@ -227,8 +227,27 @@ function abrirEditarEntrenador(id){
   const otras=actuales.filter(e=>!clavesLista.includes(normEsp(e))); // especialidades propias que no están en la lista fija (no se pierden)
   cont.innerHTML=todas.map(nm=>`<div class="chk ${actualesKeys.has(normEsp(nm))?'ck':''}" onclick="this.classList.toggle('ck')">${esc(nm)}</div>`).join('');
   document.getElementById('ee-otras').value=otras.join(', ');
+  eeFotoDraft=undefined; eeFotoPintar();
   document.getElementById('modal-editar-ent').classList.add('open');
 }
+// Foto del entrenador: se prepara aquí y se guarda con "Guardar cambios" (undefined = sin cambios, '' = quitarla)
+let eeFotoDraft;
+function eeFotoActual(){
+  if(eeFotoDraft!==undefined) return eeFotoDraft;
+  const t=DB.entrenadores[document.getElementById('ee-id').value]; return (t&&t.foto)||'';
+}
+function eeFotoPintar(){
+  const id=document.getElementById('ee-id').value, t=DB.entrenadores[id]||{};
+  const foto=eeFotoActual();
+  document.getElementById('ee-foto-prev').innerHTML=entAvatarHTML({nombre:document.getElementById('ee-nombre').value||t.nombre, foto},'ent-av ee-av');
+  document.getElementById('ee-foto-quitar').hidden=!foto;
+}
+async function eeFotoElegir(inp){
+  const f=inp.files&&inp.files[0]; inp.value=''; if(!f) return;
+  try{ eeFotoDraft=await aparComprimir(f,320); eeFotoPintar(); showToast('Foto lista. Toca Guardar cambios.'); }
+  catch(er){ showToast('No se pudo usar esa imagen: '+(er&&er.message||'')); }
+}
+function eeFotoQuitar(){ eeFotoDraft=''; eeFotoPintar(); }
 function cerrarModalEditarEnt(){ document.getElementById('modal-editar-ent').classList.remove('open'); }
 async function guardarEdicionEntrenador(){
   if(staffRol!=='coordinador'){ showToast('Solo el director puede editar entrenadores'); return; }
@@ -251,6 +270,7 @@ async function guardarEdicionEntrenador(){
   const marcadas=[...document.querySelectorAll('#ee-especialidades .chk.ck')].map(e=>e.textContent.trim());
   const otras=limpiarTexto(document.getElementById('ee-otras').value).split(',').map(x=>x.trim()).filter(Boolean);
   t.especialidades=[...marcadas,...otras];
+  if(eeFotoDraft!==undefined){ if(eeFotoDraft) t.foto=eeFotoDraft; else delete t.foto; eeFotoDraft=undefined; }
   // Reflejar el nombre en los socios que ya lo tenían asignado
   sociosDeEntrenador(id).forEach(s=>{ s.asignado=nombre; dbSaveStaff(s.code); });
   dbSaveEntrenador(id);
