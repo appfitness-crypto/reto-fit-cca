@@ -455,10 +455,15 @@ function actualizarPillSync(){
   else if(n && fbListo){ txt='Sincronizando '+cambios+'…'; }
   else if(!n && pillHabiaPend){ cls='ok'; txt='✓ Todo sincronizado'; }
   pillHabiaPend = n>0;
-  if(!txt){ if(!el.classList.contains('ok')) el.classList.remove('on'); return; }
+  if(!txt){ if(!el.classList.contains('ok')) el.classList.remove('on','mini'); el.dataset.st=''; return; }
   clearTimeout(pillTimer);
-  el.className='sync-pill on '+cls;
+  // Si sigue igual unos segundos, se reduce a un punto para no tapar los títulos de la pantalla
+  const mismo=el.dataset.st===(cls||'sync'), mini=mismo && el.classList.contains('mini');
+  el.dataset.st=cls||'sync';
+  el.className='sync-pill on '+cls+(mini?' mini':'');
   el.innerHTML='<span class="dot"></span><span></span>'; el.lastChild.textContent=txt;
+  el.setAttribute('aria-label',txt);
+  if(!mismo){ clearTimeout(el._mini); if(cls!=='ok') el._mini=setTimeout(()=>{ if(el.classList.contains('on')&&!el.classList.contains('ok')) el.classList.add('mini'); },3000); }
   if(cls==='ok') pillTimer=setTimeout(()=>{ el.classList.remove('on'); setTimeout(()=>el.classList.remove('ok'),350); },2500);
 }
 function cargarScript(src){ return new Promise((res,rej)=>{ const sc=document.createElement('script'); sc.src=src; sc.crossOrigin='anonymous'; sc.onload=res; sc.onerror=rej; document.head.appendChild(sc); }); }

@@ -1388,3 +1388,38 @@ html[data-theme="dark"] .cred-lgi.on i{color:#0A0E13;}
 .ee-foto-b{cursor:pointer;font:700 var(--fs-xs)/1 var(--fb);padding:9px 14px;border-radius:99px;border:1px solid var(--b);background:transparent;color:var(--tx);}
 .ee-foto-b.q{color:var(--mu);}
 .ee-foto-b[hidden]{display:none;}
+
+/* Portada: el número arranca debajo de la barra superior (antes ésta le cortaba la parte de arriba) y, si son
+   dos cifras, van una a cada lado de la persona para que las dos se lean y ella quede al frente */
+html[data-theme] #s-inicio .wc-num{top:calc(var(--wc-top) + 22px);font-size:min(78vw,calc((100svh - 64px)*.4),420px);}
+html[data-theme] #s-inicio .wc-num.dos{display:flex;justify-content:space-between;padding:0 4.5% 0 2.5%;letter-spacing:0;}
+html[data-theme] #s-inicio .wc-num.dos span{display:block;}
+html[data-theme] #s-login .lg-num{top:calc(78px + env(safe-area-inset-top,0px));font-size:min(66vw,280px);}
+#s-login .lg-num.dos{display:flex;justify-content:space-between;padding:0 6% 0 4%;letter-spacing:0;}
+#s-login .lg-num.dos span{display:block;}
+@media (min-width:1025px){ #s-login .lg-num.dos{justify-content:center;gap:14vw;padding:0;} }
+
+/* ═══ Orden y aire entre tarjetas (socio) ═══ */
+/* Mi plan: el calendario y la tarjeta del día ya no se tocan */
+.rcal{margin-bottom:14px;}
+#en-dia>.en-card+.en-card{margin-top:0;}
+/* Sesión movida: contorno fino del color del tema en vez de línea punteada */
+.en-card-mov{border:0;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--cine-acc) 55%,transparent),var(--q-sh,var(--shadow));}
+/* Nutrición: el resumen del menú y la tarjeta de calorías separados */
+.nx-dia{margin-bottom:14px;}
+/* Perfil: credencial y lista con el mismo aire que el resto */
+.cred{margin-bottom:14px;}
+.pfl{margin-bottom:16px;}
+/* Apariencia: los tres temas en una fila completa debajo del título, sin amontonarse */
+.pf-tema{row-gap:10px;}
+.pf-tema .seg2{flex:1 0 100%;grid-template-columns:repeat(3,1fr);}
+.pf-tema .seg2 button{padding:0 8px;}
+html:is([data-theme="light"],[data-theme="light2"]) .seg2 button[aria-pressed="true"]{color:#FFFFFF;}
+html:is([data-theme="light"],[data-theme="light2"]) .seg2 button[aria-pressed="true"] .ico{stroke:#FFFFFF;}
+/* "Eliminar mi cuenta" legible sobre el fondo oscuro de abajo */
+button.btn-back-link.pf-del{position:relative;z-index:1;width:fit-content;min-height:40px;padding:10px 18px;border:0;border-radius:99px;background:rgba(255,255,255,.82);color:#4A5954;font-weight:600;}
+html[data-theme="dark"] button.btn-back-link.pf-del{background:rgba(255,255,255,.08);color:#C9D2DA;}
+/* Aviso de sincronización: tras 3 s queda como un punto discreto arriba (antes tapaba títulos y botones) */
+.sync-pill.mini{top:calc(env(safe-area-inset-top,0px) + 6px);gap:0;padding:4px;max-width:none;}
+.sync-pill.mini>span:last-child{display:none;}
+.sync-pill.mini .dot{width:8px;height:8px;}
