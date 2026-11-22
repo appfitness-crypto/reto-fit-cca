@@ -228,6 +228,9 @@ function abrirEditarEntrenador(id){
   document.getElementById('ee-id').value=id;
   document.getElementById('ee-nombre').value=t.nombre||'';
   document.getElementById('ee-pass').value='';
+  document.getElementById('ee-usuario').value='';
+  document.getElementById('ee-acc-actual').textContent=t.acceso?('Hoy entra con: '+t.acceso):(t.uid?'Tiene acceso (usuario sin registrar en la app)':'Aún no tiene acceso');
+  document.getElementById('ee-acc-nota').textContent=t.uid?'Déjalos vacíos para no cambiar nada. Si los llenas, se le crea un acceso nuevo con todo lo suyo (socios, código y filosofía) y el anterior deja de servir.':'Escribe un usuario o correo y una contraseña para que pueda entrar.';
   document.getElementById('ee-func-ent').classList.toggle('ck', entHace(t,'entrenamiento'));
   document.getElementById('ee-func-nut').classList.toggle('ck', entHace(t,'nutricion'));
   const cont=document.getElementById('ee-especialidades');
@@ -270,14 +273,25 @@ async function guardarEdicionEntrenador(){
   if(!funciones.length){ showToast('Elige al menos una función: entrenamiento o nutrición'); return; }
   t.nombre=nombre; t.funciones=funciones;
   const pass=document.getElementById('ee-pass').value.trim();
-  if(pass){
-    if(t.uid){ showToast('ℹ️ La contraseña de un acceso existente se cambia en Firebase → Authentication'); }
-    else if(pass.length<6){ showToast('La contraseña debe tener al menos 6 caracteres'); return; }
-    else{
-      try{ t.uid=await fbCrearAccesoStaff(id,pass,'entrenador'); t.acceso=id; delete t.pass; showToast('🔐 Acceso seguro creado para '+nombre); }
-      catch(e){ showToast('❌ '+msgErrorAcceso(e)); return; }
-    }
+  const crudo=document.getElementById('ee-usuario').value.trim().toLowerCase();
+  const usuario=crudo.includes('@')?(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(crudo)?crudo:''):crudo.replace(/[^a-z0-9_]/g,'');
+  let nuevoId=null;
+  if(crudo||pass){
+    if(!usuario){ showToast('Escribe un usuario (letras y números) o un correo válido'); return; }
+    if(pass.length<6){ showToast('La contraseña debe tener al menos 6 caracteres'); return; }
+    if(!navigator.onLine||!fbListo){ showToast('Necesitas conexión para cambiar el acceso'); return; }
+    const btn=document.querySelector('#modal-editar-ent .btn-main'); if(btn) btn.disabled=true;
+    try{
+      if(t.uid){ nuevoId=await entCambiarAcceso(id,usuario,pass); }
+      else { t.uid=await fbCrearAccesoStaff(usuario,pass,'entrenador'); t.acceso=usuario; delete t.pass; }
+    }catch(e){ showToast('❌ '+msgErrorAcceso(e)); if(btn) btn.disabled=false; return; }
+    if(btn) btn.disabled=false;
   }
+  const msg=usuario?'✓ Listo: ahora entra con '+(usuario.includes('@')?'el correo ':'el usuario ')+usuario:'';
+  entEdicionTerminar(nuevoId||id,nombre,msg);
+}
+function entEdicionTerminar(id,nombre,msg){
+  const t=DB.entrenadores[id]; if(!t) return;
   const marcadas=[...document.querySelectorAll('#ee-especialidades .chk.ck')].map(e=>e.textContent.trim());
   const otras=limpiarTexto(document.getElementById('ee-otras').value).split(',').map(x=>x.trim()).filter(Boolean);
   t.especialidades=[...marcadas,...otras];
@@ -287,7 +301,35 @@ async function guardarEdicionEntrenador(){
   dbSaveEntrenador(id);
   cerrarModalEditarEnt();
   abrirEntrenadores();
-  showToast('✓ Entrenador actualizado');
+  showToast(msg||'✓ Entrenador actualizado');
+}
+// Acceso nuevo para un entrenador que ya tenía cuenta: Firebase no deja cambiar la contraseña de otra persona
+// desde la app, así que se crea otra cuenta y se le pasa todo lo suyo (perfil, código, socios y avisos de grupo).
+async function entCambiarAcceso(viejoId,usuario,pass){
+  const t=DB.entrenadores[viejoId]; if(!t) throw new Error('No se encontró al entrenador');
+  const nuevo=await fbCrearAccesoStaff(usuario,pass,'entrenador');
+  const ent=Object.assign({},t,{id:nuevo, uid:nuevo, acceso:usuario}); delete ent.pass;
+  // 1) Perfil con la llave nueva (antes que nada, para que el código y los socios apunten a algo que existe)
+  await fbDB.ref('/entrenadores/'+nuevo).set(limpio(ent));
+  DB.entrenadores[nuevo]=ent;
+  // 2) Su código de entrenador pasa a la cuenta nueva (las reglas piden borrarlo y volverlo a crear)
+  if(t.codigo){ try{ await fbDB.ref('/codigos/'+t.codigo).remove(); await fbDB.ref('/codigos/'+t.codigo).set(nuevo); }catch(e){ console.warn('codigo',e); } }
+  // 3) Sus socios (entrenamiento y nutrición)
+  Object.values(DB.socios||{}).forEach(s=>{
+    if(!s) return; let cambio=false;
+    if(s.entrenadorId===viejoId){ s.entrenadorId=nuevo; cambio=true; }
+    if(s.nutriologoId===viejoId){ s.nutriologoId=nuevo; cambio=true; }
+    if(cambio) dbSaveStaff(s.code);
+  });
+  // 4) Avisos de grupo
+  try{ const sn=await fbDB.ref('/avisosGrupo/'+viejoId).once('value'); if(sn.exists()){ await fbDB.ref('/avisosGrupo/'+nuevo).set(sn.val()); await fbDB.ref('/avisosGrupo/'+viejoId).remove(); } }catch(e){ console.warn('avisos',e); }
+  // 5) La cuenta anterior deja de ser entrenador y se quita su perfil viejo
+  if(t.uid){ try{ await fbDB.ref('/roles/'+t.uid).remove(); }catch(e){} }
+  delete DB.entrenadores[viejoId]; guardarLocal();
+  OUTBOX=OUTBOX.filter(x=>x.path!=='/entrenadores/'+viejoId); outGuardar();
+  fbEncolar('/entrenadores/'+viejoId,'remove',null);
+  if(typeof staffEntVal!=='undefined' && staffEntVal===viejoId) staffEntVal=nuevo;
+  return nuevo;
 }
 function confirmarEliminarEntrenador(id){
   if(staffRol!=='coordinador'){ showToast('Solo el director puede eliminar entrenadores'); return; }
