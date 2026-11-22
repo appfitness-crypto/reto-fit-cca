@@ -1423,3 +1423,7 @@ html[data-theme="dark"] button.btn-back-link.pf-del{background:rgba(255,255,255,
 .sync-pill.mini{top:calc(env(safe-area-inset-top,0px) + 6px);gap:0;padding:4px;max-width:none;}
 .sync-pill.mini>span:last-child{display:none;}
 .sync-pill.mini .dot{width:8px;height:8px;}
+/* Evaluación: botón de cada punto que el socio puede completar él mismo */
+.ev-l .ev-acc{flex:none;width:auto;margin-left:auto;min-height:34px;padding:0 14px;font-size:var(--fs-xs);border-radius:99px;}
+.ev-l li{padding:10px 0;border-top:1px solid color-mix(in srgb,var(--tx) 8%,transparent);}
+.ev-l li:first-child{border-top:0;padding-top:2px;}
