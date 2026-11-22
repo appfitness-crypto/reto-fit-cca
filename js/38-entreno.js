@@ -570,7 +570,8 @@ function renderSes(){
     : w?`<button type="button" class="en-btn en-btn-l" onclick="sesTrabajo(${i})">${ico('timer')}Temporizador ${w<120?w+' s':Math.round(w/6)/10+' min'}</button>`:'';
   const nSer=seriesHoy(e0,aj)||parseInt(e0.series)||1, big=sesBigTxt(e0,i,especial,w,nSer), dist=sesEsDist(e0);
   const alts=e0.alternativas||[], altSel=reg.alt;
-  const prog=ejs.map((x,j)=>{ const p=sesAvance(j,x); return `<button type="button" class="en-rail-i${p>=1?' ok':''}${j===i?' now':''}" onclick="sesIrA(${j})" aria-label="Ejercicio ${j+1}: ${esc(x.nm)}${p>=1?', hecho':''}"${j===i?' aria-current="step"':''}>${pic(basesEjercicioMini(x),'dumbbell','thumb')}</button>`; }).join('');
+  const prog=ejs.map((x,j)=>{ const p=sesAvance(j,x); return `<button type="button" class="en-rail-i${p>=1?' ok':''}${j===i?' now':''}" onclick="sesIrA(${j})" aria-label="Ejercicio ${j+1}: ${esc(x.nm)}${p>=1?', hecho':''}"${j===i?' aria-current="step"':''}>${pic(basesEjercicioMini(x),'dumbbell','thumb')}<em class="en-rail-n" aria-hidden="true">${j+1}</em></button>`; }).join('');
+  const hechosN=ejs.filter((x,j)=>sesAvance(j,x)>=1).length;
   let series='';
   if(especial){
     const r=rxTexto(e0,s), n=sesHechas(i);
@@ -600,13 +601,15 @@ function renderSes(){
         ${ant||c?`<p class="en-cur-nota">${ant?'Anterior: '+esc(ant):'Sugerido hoy: '+enKgCarga(c)}</p>`:''}
         <div class="en-steps">
           <div class="en-step${kg?'':' vacio'}"><button type="button" aria-label="Menos peso" onclick="sesPaso(${i},${j},'kg',-${pasoKg})">${ico('minus')}</button>
-            <label><input type="number" inputmode="decimal" step="0.5" min="0" data-k="kg" value="${kg?kgToDisplay(kg):''}" placeholder="—" aria-label="${unidadPeso==='kg'?'Kilos':'Libras'} ${nomS.toLowerCase()} ${j+1}" oninput="sesValor(${i},${j},'kg',this.value)"><button type="button" class="en-unit" onclick="sesUnidad()" aria-label="Cambiar a ${unidadPeso==='kg'?'libras':'kilos'}">${kg?unidadPeso:'anota tus '+unidadPeso}</button></label>
+            <label><input type="number" inputmode="decimal" step="0.5" min="0" data-k="kg" value="${kg?kgToDisplay(kg):''}" placeholder="—" aria-label="${unidadPeso==='kg'?'Kilos':'Libras'} ${nomS.toLowerCase()} ${j+1}" oninput="sesValor(${i},${j},'kg',this.value)"><button type="button" class="en-unit" onclick="sesUnidad()" aria-label="Cambiar a ${unidadPeso==='kg'?'libras':'kilos'}">${'peso en '+unidadPeso}</button></label>
             <button type="button" aria-label="Más peso" onclick="sesPaso(${i},${j},'kg',${pasoKg})">${ico('mas')}</button></div>
           <div class="en-step"><button type="button" aria-label="Menos ${dist?'metros':'repeticiones'}" onclick="sesPaso(${i},${j},'r',-${pasoR})">${ico('minus')}</button>
             <label><input type="number" inputmode="numeric" min="0" data-k="r" value="${rr||''}" placeholder="—" aria-label="${dist?'Metros':'Repeticiones'} ${nomS.toLowerCase()} ${j+1}" oninput="sesValor(${i},${j},'r',this.value)"><small>${dist?'metros':'reps'}</small></label>
             <button type="button" aria-label="Más ${dist?'metros':'repeticiones'}" onclick="sesPaso(${i},${j},'r',${pasoR})">${ico('mas')}</button></div>
         </div>
-        <button type="button" class="en-btn en-btn-p en-lista" onclick="sesMarcar(${i},${j})">${ico('check')}${nomS} ${j+1} lista</button>
+        ${sesAyudaPeso(s,e0,c,j)}
+        <button type="button" class="en-btn en-btn-p en-lista" onclick="sesMarcar(${i},${j})">${ico('check')}Terminé ${dist?'la vuelta':'la serie'} ${j+1}</button>
+        <p class="en-luego">${j<B.length-1?(dPlan.nada?'Sigue la '+(j+2)+'ª':'Después descansas '+(dPlan.libre?'lo que necesites':(des<120?des+' s':Math.round(des/60*10)/10+' min'))+' · el cronómetro arranca solo'):(sig?'Es la última: después sigue '+esc(sig.nm):'Es la última serie de tu sesión')}</p>
       </div>`;
     }
     series=`${btnTiempo?`<div class="en-tm-row">${btnTiempo}</div>`:''}<div class="en-sets en-sets-cine">${card}</div>`;
@@ -615,25 +618,26 @@ function renderSes(){
   cont.innerHTML=`
     <div class="en-s-top">
       <button type="button" class="en-icon-btn" aria-label="Salir de la sesión (se guarda lo que llevas)" onclick="sesSalir()">${ico('chevl')}</button>
-      <div class="en-s-t"><b>${esc(sc(d.tipo))}</b><span>${ico('clock')}<span class="num" id="en-reloj">${enMMSS((Date.now()-sesionTemp.t0)/1000)}</span></span></div>
-      <button type="button" class="en-icon-btn" aria-label="Cronómetro y temporizador" onclick="tmMenu()">${ico('timer')}</button>
+      <div class="en-s-t"><b>${esc(sc(d.tipo))}</b><span>${ico('clock')}Sesión <span class="num" id="en-reloj">${enMMSS((Date.now()-sesionTemp.t0)/1000)}</span></span></div>
+      <button type="button" class="en-crono" aria-label="Cronómetro y temporizador" onclick="tmMenu()">${ico('timer')}<span>Cronómetro</span></button>
       <button type="button" class="en-btn-sm" onclick="sesTerminar()">Terminar</button>
     </div>
+    <div class="en-avance"><b>Ejercicio ${i+1} de ${ejs.length}</b><span>${especial?(hechosN?hechosN+' terminado'+(hechosN===1?'':'s'):'Empieza cuando quieras'):sesHechas(i)?'Serie '+Math.min(sesHechas(i)+1,nSer)+' de '+nSer:(hechosN?hechosN+' terminado'+(hechosN===1?'':'s'):'0 terminados')}</span></div>
     <div class="en-rail" role="group" aria-label="Ejercicio ${i+1} de ${ejs.length}">${prog}</div>
     <div class="en-ex">
       <div class="en-stage-w">
         <button type="button" class="en-media" onclick="abrirFicha(sesEjActual())" aria-label="Ver la técnica de ${esc(e.nm)}">
-          ${big?`<span class="en-big${/:/.test(big)?' largo':''}" aria-hidden="true">${big}</span>`:''}${pic(basesEjercicio(e),'dumbbell','thumb')}${videoEjHTML(e)}
+          ${big&&especial?`<span class="en-big${/:/.test(big)?' largo':''}" aria-hidden="true">${big}</span>`:''}${pic(basesEjercicio(e),'dumbbell','thumb')}${videoEjHTML(e)}
           ${!especial&&!histEj(s,e0.nm).length?'<span class="en-new">Primera vez</span>':''}
-          <span class="en-media-cta">${ico('play')}Técnica</span>
+          <span class="en-media-cta">${ico('play')}Ver técnica</span>
         </button>
-        ${alts.length?`<button type="button" class="en-cambia" aria-expanded="${sesUI.alts}" aria-label="¿Área ocupada? Cámbialo solo por hoy" onclick="sesUI.alts=!sesUI.alts;renderSes()">${ico('shuffle')}</button>`:''}
+        ${alts.length?`<button type="button" class="en-cambia" aria-expanded="${sesUI.alts}" aria-label="¿Área ocupada? Cámbialo solo por hoy" onclick="sesUI.alts=!sesUI.alts;renderSes()">${ico('shuffle')}<span>¿Ocupado? Cambiar</span></button>`:''}
       </div>
       <h3>${esc(e.nm)}</h3>
-      <p class="en-data">${esEmom?`<b>EMOM ${esc(e0.series)} min</b> · ${esc(e0.reps)}`:!especial?`<b>${esc(seriesHoy(e0,aj)||e0.series)} × ${esc(limpiarRepsTxt(e0.reps))}</b>`:`<b>${esc(rxTexto(e0,s).sr)}</b>`}${dPlan.nada?'':dPlan.libre?(dPlan.meta?' · descanso ~'+(dPlan.meta<120?dPlan.meta+' s':Math.round(dPlan.meta/6)/10+' min'):''):des?' · descanso '+(des<120?des+' s':Math.round(des/60*10)/10+' min'):''}${M&&!esEmom?' · '+esc(ddMetCorto(M.nm)):''}${f.eq?' · '+esc(f.eq):''}</p>
+      ${!especial&&!esEmom?`${f.eq?`<p class="en-eq">${ico('dumbbell')}${esc(f.eq)}</p>`:''}${sesTresHTML(e0,aj,dist,dPlan,des)}`:`<p class="en-data">${esEmom?`<b>EMOM ${esc(e0.series)} min</b> · ${esc(e0.reps)}`:!especial?`<b>${esc(seriesHoy(e0,aj)||e0.series)} × ${esc(limpiarRepsTxt(e0.reps))}</b>`:`<b>${esc(rxTexto(e0,s).sr)}</b>`}${dPlan.nada?'':dPlan.libre?(dPlan.meta?' · descanso ~'+(dPlan.meta<120?dPlan.meta+' s':Math.round(dPlan.meta/6)/10+' min'):''):des?' · descanso '+(des<120?des+' s':Math.round(des/60*10)/10+' min'):''}${M&&!esEmom?' · '+esc(ddMetCorto(M.nm)):''}${f.eq?' · '+esc(f.eq):''}</p>`}
       ${alt?`<div class="en-swap">Solo hoy, en lugar de ${esc(e0.nm)}</div>`:''}
       ${alts.length&&sesUI.alts?`<div class="en-alts">${alts.map((a,ai)=>`<button type="button" class="en-alt" aria-pressed="${altSel===ai}" onclick="sesAlternativa(${i},${ai})"><span><b>${esc(a.nm)}</b><span>${esc(a.nota||a.ms||'')}</span></span><em>${altSel===ai?'Hoy':'Usar'}</em></button>`).join('')}</div>`:''}
-      ${(M&&M.como)||e.tip?`<button type="button" class="en-cue" onclick="abrirFicha(sesEjActual())"><span>${esc(sinEmoji(M&&M.como?M.como:e.tip))}</span>${ico('chev')}</button>`:''}
+      ${((M&&M.como)||e.tip)&&!sesHechas(i)?`<div class="en-como">${ico('bulb')}<div><b>Cómo hacerlo</b><p>${esc(sinEmoji(M&&M.como?M.como:e.tip))}</p><button type="button" onclick="abrirFicha(sesEjActual())">Ver la técnica completa</button></div></div>`:''}
     </div>
     ${aj&&aj.notas.length?`<div class="en-aj" role="status">${ico('spark')}<span>${aj.notas.map(esc).join(' ')}</span></div>`:''}
     ${c&&c.nota&&!especial?`<div class="en-aj soft">${esc(c.nota)}</div>`:''}
@@ -643,6 +647,22 @@ function renderSes(){
       ${i>0?`<button type="button" class="en-btn en-btn-g en-btn-ic" aria-label="Ejercicio anterior" onclick="sesIr(-1)">${ico('chevl')}</button>`:''}
       ${sig?'':`<button type="button" class="en-btn en-btn-p" id="en-sig" data-pend="${sesAvance(i,e0)<1?1:0}" onclick="sesTerminar()">Terminar sesión</button>`}
     </div>`;
+}
+// Tres datos grandes: series, repeticiones (o metros/segundos) y descanso, sin jerga
+function sesTresHTML(e0,aj,dist,dPlan,des){
+  const n=seriesHoy(e0,aj)||e0.series, r=String(e0.reps||''), m=r.match(/\d+(?:\s*[-–a]\s*\d+)?/);
+  const u=dist?'metros':/min/i.test(r)?'minutos':/seg|\bs\b/i.test(r)?'segundos':(/c\/l|por lado|por pierna|por brazo/i.test(r)?'reps por lado':'repeticiones');
+  const dTxt=dPlan.nada?'':dPlan.libre?(dPlan.meta?'~'+(dPlan.meta<120?dPlan.meta+' s':Math.round(dPlan.meta/6)/10+' min'):'libre'):des?(des<120?des+' s':Math.round(des/60*10)/10+' min'):'';
+  return `<div class="en-tres"><div><b>${esc(n)}</b><small>series</small></div><div><b>${esc(m?m[0].replace(/\s+/g,''):r)}</b><small>${u}</small></div>${dTxt?`<div><b>${esc(dTxt)}</b><small>de descanso</small></div>`:''}</div>`;
+}
+// Ayuda para el peso: la primera vez cómo elegirlo; con historial, por qué sube o se repite
+function sesAyudaPeso(s,e0,c,j){
+  if(j>0) return '';
+  const u=typeof unidadPeso!=='undefined'?unidadPeso:'kg';
+  if(!c && !histEj(s,e0.nm).length) return `<div class="en-ayuda">${ico('info')}<span><b>Primera vez:</b> elige un peso con el que llegues a las repeticiones con esfuerzo, sin perder la forma. Si te sobran muchas, sube en la siguiente serie.</span></div>`;
+  if(c && c.sube>0 && c.ult!=null) return `<div class="en-ayuda sube">${ico('up')}<span><b>Sube ${kgToDisplay(c.sube)} ${u}:</b> la vez pasada completaste todas las series con ${kgToDisplay(c.ult)} ${u}.</span></div>`;
+  if(c && c.ult!=null) return `<div class="en-ayuda igual">${ico('refresh')}<span><b>Repite ${kgToDisplay(c.ult)} ${u}:</b> la vez pasada no completaste todas las series; termínalas hoy y la próxima subes.</span></div>`;
+  return '';
 }
 // Cargas y caminatas por distancia ("30 m", "20 metros"): se registran en metros, no en repeticiones
 function sesEsDist(e){ const r=String(e&&e.reps||'').toLowerCase(); return /\d\s*(m|mts?|metros?)\b/.test(r) && !/min|seg|\brep/.test(r); }
