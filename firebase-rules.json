@@ -116,12 +116,6 @@
           }
         }
       }
-    },
-    "lugares": {
-      "$uid": {
-        ".read": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador')",
-        ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'"
-      }
     }
   }
 }
