@@ -75,6 +75,7 @@ const PRECACHE_LOCAL = [
   './js/61-reparto.js',
   './js/62-perfil-credencial.js',
   './js/63-plan-intro.js',
+  './js/64-mensajes.js',
   './img/qr/app.png',
   './js/22-resumen-coordinacion.js',
   './js/23-conocimiento-staff.js',
