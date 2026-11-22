@@ -2301,7 +2301,7 @@ html[data-theme="light"] .st-l,html[data-theme="light"] .memb-k{color:#4A5866;}
 #s-registro .login-card::before{display:none;}
 .reg-volver{margin:-6px 0 14px -6px;}
 .reg-volver .ico{width:20px;height:20px;}
-@media(max-width:480px){ #s-registro > div{padding:16px !important;} #s-registro .login-card{padding:22px 18px;} }
+@media(max-width:480px){ #s-registro .login-card{padding:22px 18px;} }
 
 /* La bienvenida siempre es oscura: el enlace del entrenador se ve también con el tema claro guardado */
 #s-inicio button.staff-link{color:rgba(255,255,255,.72);}

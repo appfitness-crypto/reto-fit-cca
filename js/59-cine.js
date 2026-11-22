@@ -22,8 +22,8 @@ function cinePortadaOriginal(){
 function cinePortada(){
   const sc=document.getElementById('s-inicio'); if(!sc) return;
   const n=document.getElementById('wc-num');
-  const lg=document.getElementById('lg-num');
-  [n,lg].forEach(n=>{ if(!n) return; const sem=(typeof GYM!=='undefined' && GYM.reto && +GYM.reto.semanas) || 12; n.innerHTML=String(sem).split('').map(c=>`<span>${c}</span>`).join(''); n.classList.toggle('dos',String(sem).length===2); });
+  const lg=document.getElementById('lg-num'), rg=document.getElementById('reg-num');
+  [n,lg,rg].forEach(n=>{ if(!n) return; const sem=(typeof GYM!=='undefined' && GYM.reto && +GYM.reto.semanas) || 12; n.innerHTML=String(sem).split('').map(c=>`<span>${c}</span>`).join(''); n.classList.toggle('dos',String(sem).length===2); });
   sc.classList.toggle('con-recorte', cinePortadaOriginal() && !!document.getElementById('wc-cut'));
 }
 

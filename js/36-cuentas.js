@@ -43,11 +43,11 @@ function cuentaSinFirebase(errId){
 function abrirRegistro(tipo){
   cuentaTipo = tipo==='entrenador' ? 'entrenador' : 'cliente';
   const ent = cuentaTipo==='entrenador';
-  document.getElementById('reg-title').innerHTML = ent ? 'Crea tu cuenta<br>de entrenador' : 'Crea tu cuenta';
+  document.getElementById('reg-title').innerHTML = ent ? 'Crea tu cuenta<br>de <span>entrenador</span>' : 'Empieza<br>tu <span>reto</span>';
   document.getElementById('reg-sub').textContent = ent
     ? 'Recibirás un código para tus clientes. Tú defines tu filosofía y las rutinas salen con tu estilo.'
-    : 'Después respondes tu evaluación y la app arma tu plan.';
-  document.getElementById('reg-btn').textContent = ent ? 'Crear cuenta de entrenador' : 'Crear cuenta y empezar';
+    : 'Crea tu cuenta, responde tu evaluación y la app arma tu plan.';
+  document.getElementById('reg-btn-t').textContent = ent ? 'Crear cuenta de entrenador' : 'Crear cuenta y empezar';
   cuentaErr('reg-err','');
   go('s-registro');
 }

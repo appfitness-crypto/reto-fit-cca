@@ -771,29 +771,29 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 </div>
 
 <!-- ═══ REGISTRO (cliente o entrenador) ═══ -->
-<div class="sc" id="s-registro">
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px;">
-    <div class="login-card" style="max-width:400px;">
-      <button type="button" class="btn-bk reg-volver" onclick="go('s-inicio')" aria-label="Volver al inicio"><svg class="ico" aria-hidden="true"><use href="#i-chevl"/></svg></button>
-      <div class="lc-title" id="reg-title">Crea tu cuenta</div>
-      <div class="lc-sub" id="reg-sub"></div>
-      <div style="margin-bottom:10px;">
-        <label for="reg-nombre" style="display:block;font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--mu);margin-bottom:5px;">NOMBRE</label>
-        <input type="text" class="ti" id="reg-nombre" aria-label="Nombre" placeholder="Nombre y apellido" maxlength="60" autocomplete="name">
-      </div>
-      <div style="margin-bottom:10px;">
-        <label for="reg-correo" style="display:block;font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--mu);margin-bottom:5px;">CORREO</label>
-        <input type="email" class="ti" id="reg-correo" aria-label="Correo" placeholder="tu@correo.com" autocomplete="email" inputmode="email">
-      </div>
-      <div style="margin-bottom:16px;">
-        <label for="reg-pass" style="display:block;font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--mu);margin-bottom:5px;">CONTRASEÑA (MÍN. 6)</label>
-        <input type="password" class="ti" id="reg-pass" aria-label="Contraseña, mínimo 6 caracteres" placeholder="••••••" autocomplete="new-password" onkeydown="if(event.key==='Enter')crearCuenta()">
-      </div>
-      <button class="btn-main" id="reg-btn" style="background:var(--grad)" onclick="crearCuenta()">Crear cuenta</button>
-      <div class="login-err" id="reg-err"></div>
-      <button type="button" class="btn-back-link" onclick="go('s-login')">¿Ya tienes cuenta? <span>Entra</span></button>
-    </div>
+<!-- Mismo formato que "Regresa al reto" (css/cine.css, bloque ACCESO): la foto con el 12 arriba y el formulario abajo -->
+<div class="sc lg-sc" id="s-registro">
+  <div class="lg-esc" aria-hidden="true">
+    <img class="lg-ph" src="img/hero/bienvenida.webp" alt="" decoding="async">
+    <p class="lg-num dos" id="reg-num"><span>1</span><span>2</span></p>
+    <img class="lg-ph lg-cut" src="img/hero/bienvenida-recorte.webp" alt="" decoding="async" onerror="this.remove()">
+    <div class="lg-ov"></div>
   </div>
+  <div class="lg-top">
+    <img src="icons/icon-192.png" alt="Reto Fit CCA" width="42" height="42">
+    <button type="button" class="lg-volver" onclick="go('s-inicio')"><svg class="ico" aria-hidden="true"><use href="#i-chevl"/></svg>Inicio</button>
+  </div>
+  <form class="lg-hoja" onsubmit="event.preventDefault();crearCuenta()" novalidate>
+    <h1 class="lg-t" id="reg-title">Empieza<br>tu <span>reto</span></h1>
+    <p class="lg-s" id="reg-sub">Crea tu cuenta, responde tu evaluación y la app arma tu plan.</p>
+    <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg><input type="text" id="reg-nombre" placeholder="nombre" maxlength="60" autocomplete="name" autocapitalize="words"><span>Nombre y apellido</span></label>
+    <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg><input type="email" id="reg-correo" placeholder="correo" autocomplete="email" inputmode="email" autocapitalize="off"><span>Tu correo</span></label>
+    <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg><input type="password" id="reg-pass" placeholder="contraseña" autocomplete="new-password"><span>Contraseña (mínimo 6)</span>
+      <button type="button" class="lg-ver" aria-label="Ver contraseña" aria-pressed="false" onclick="const i=document.getElementById('reg-pass'),v=i.type==='password';i.type=v?'text':'password';this.setAttribute('aria-pressed',v);this.setAttribute('aria-label',v?'Ocultar contraseña':'Ver contraseña')"><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg></button></label>
+    <div class="login-err" id="reg-err" role="alert"></div>
+    <button type="submit" class="lg-go" id="reg-btn"><span class="lg-d"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span><span id="reg-btn-t">Crear cuenta y empezar</span></button>
+    <div class="lg-links lg-links-c"><button type="button" onclick="go('s-login')">¿Ya tienes cuenta? <b>Entra</b></button></div>
+  </form>
 </div>
 
 <!-- ═══ PANEL STAFF ═══ -->

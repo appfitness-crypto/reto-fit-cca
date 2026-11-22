@@ -277,7 +277,7 @@ function go(id){
 function updateTb(id){
   const tba=document.getElementById('tb-actions');
   const g=document.getElementById('global-tb');
-  if(g) g.style.display=(['s-panel','s-quiz','s-det','s-preview','s-dash','s-ses','s-fin','s-mascota','s-login'].includes(id))?'none':'';
+  if(g) g.style.display=(['s-panel','s-quiz','s-det','s-preview','s-dash','s-ses','s-fin','s-mascota','s-login','s-registro'].includes(id))?'none':'';
   if(g) g.classList.toggle('tb-bienvenida', id==='s-inicio');   // en bienvenida el logo grande va en la pantalla, no en la barra
   if(g) g.classList.toggle('tb-acceso', ['s-inicio','s-login','s-registro'].includes(id));   // sin selector de tema antes de entrar
   if(id==='s-dash'){
