@@ -169,6 +169,15 @@ function nutRestablecer(code){
   },{label:'Restablecer',danger:true});
 }
 
+// Lista de socios filtrada por un entrenador (desde su tarjeta)
+function entVerSocios(id){ staffEntVal=id; if(typeof staffVolverLista==='function') staffVolverLista(); staffRenderList(); }
+// Con qué entra el entrenador (lo ve solo el director para decírselo)
+function entAccesoHTML(t){
+  const acc=t.acceso||'';
+  const txt=acc?(acc.includes('@')?'Entra con el correo <b>'+esc(acc)+'</b>':'Entra con el usuario <b>'+esc(acc)+'</b>')
+    :(t.uid?'Entra con el usuario que le diste al darlo de alta':'Aún no tiene acceso: ponle contraseña en Editar');
+  return `<div class="ent-acc">🔑 ${txt} · en la portada, “Soy entrenador del reto”</div>`;
+}
 function abrirEntrenadores(){
   if(staffRol!=='coordinador'){ showToast('Solo el director puede ver esta sección'); return; }
   staffActivoId=null; staffRenderList();
@@ -180,7 +189,7 @@ function abrirEntrenadores(){
     const activos=socios.filter(s=>s.status==='activo').length, pend=socios.filter(s=>s.status==='pendiente').length;
     const tieneFilo=t.filosofia && t.filosofia.tagline;
     return `<div style="border:1px solid var(--b);border-radius:12px;padding:16px;background:var(--gl);display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px">
-      <div style="flex:0 0 auto">${tieneFilo?svgRadarFilosofia(t.filosofia,54):(typeof entAvatarHTML==='function'?entAvatarHTML(t,'ent-av ent-av-l'):'')}</div>
+      <div style="flex:0 0 auto">${t.foto||!tieneFilo?(typeof entAvatarHTML==='function'?entAvatarHTML(t,'ent-av ent-av-l'):''):svgRadarFilosofia(t.filosofia,54)}</div>
       <div style="flex:1;min-width:220px">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="font-family:var(--fd);font-size:var(--fs-xl)">${esc(t.nombre)}</div>
@@ -189,9 +198,11 @@ function abrirEntrenadores(){
         <div style="font-size:var(--fs-xs);margin:5px 0;${tieneFilo?'color:var(--v);font-style:italic':'color:var(--mu)'}">${tieneFilo?'"'+esc(t.filosofia.tagline)+'"':'Sin filosofía definida todavía'}</div>
         <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">${(t.especialidades||[]).map(s=>`<span style="font-size:var(--fs-2xs);text-transform:uppercase;letter-spacing:.03em;background:var(--in-bg2);border:1px solid var(--b);color:var(--mu);padding:2px 7px;border-radius:20px">${esc(s)}</span>`).join('')||'<span style="font-size:var(--fs-2xs);color:var(--mu)">Sin especialidades registradas</span>'}</div>
         ${esCoord?'':`<div style="font-size:var(--fs-2xs);color:var(--mu);font-family:var(--fb)">${socios.length} socio${socios.length===1?'':'s'} asignado${socios.length===1?'':'s'} · ${activos} activos · ${pend} pendientes</div>`}
+        ${esCoord?'':entAccesoHTML(t)}
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button onclick="abrirEditarEntrenador('${esc(t.id)}')" style="padding:7px 12px;border:1px solid var(--b);border-radius:7px;background:none;color:var(--tx);font-size:var(--fs-2xs);cursor:pointer">✎ Editar</button>
+        ${esCoord||!socios.length?'':`<button onclick="entVerSocios('${esc(t.id)}')" style="padding:7px 12px;border:1px solid var(--b);border-radius:7px;background:none;color:var(--tx);font-size:var(--fs-2xs);cursor:pointer">👥 Ver sus socios</button>`}
         ${esCoord?'':`<button onclick="abrirMiFilosofia('${esc(t.id)}')" style="padding:7px 12px;border:1px solid color-mix(in srgb,var(--p) 35%,transparent);border-radius:7px;background:none;color:var(--p);font-size:var(--fs-2xs);cursor:pointer">🧬 ${tieneFilo?'Editar':'Llenar'} filosofía</button>`}
         ${esCoord?'':`<button onclick="confirmarEliminarEntrenador('${esc(t.id)}')" class="ent-del">Eliminar</button>`}
       </div>
@@ -263,7 +274,7 @@ async function guardarEdicionEntrenador(){
     if(t.uid){ showToast('ℹ️ La contraseña de un acceso existente se cambia en Firebase → Authentication'); }
     else if(pass.length<6){ showToast('La contraseña debe tener al menos 6 caracteres'); return; }
     else{
-      try{ t.uid=await fbCrearAccesoStaff(id,pass,'entrenador'); delete t.pass; showToast('🔐 Acceso seguro creado para '+nombre); }
+      try{ t.uid=await fbCrearAccesoStaff(id,pass,'entrenador'); t.acceso=id; delete t.pass; showToast('🔐 Acceso seguro creado para '+nombre); }
       catch(e){ showToast('❌ '+msgErrorAcceso(e)); return; }
     }
   }

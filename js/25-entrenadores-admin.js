@@ -20,11 +20,13 @@ function abrirNuevoEntrenador(){
 function cerrarModalNuevoEnt(){ document.getElementById('modal-nuevo-ent').classList.remove('open'); }
 function crearNuevoEntrenador(){
   const nombre=limpiarTexto(document.getElementById('ne-nombre').value);
-  const usuario=document.getElementById('ne-usuario').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
+  const crudo=document.getElementById('ne-usuario').value.trim().toLowerCase();
+  // Acepta un correo real (así puede recuperar su contraseña) o un usuario corto
+  const usuario=crudo.includes('@') ? (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(crudo)?crudo:'') : crudo.replace(/[^a-z0-9_]/g,'');
   const pass=document.getElementById('ne-pass').value;
   const funciones=[document.getElementById('ne-func-ent').classList.contains('ck')?'entrenamiento':null, document.getElementById('ne-func-nut').classList.contains('ck')?'nutricion':null].filter(Boolean);
   if(!nombre||!usuario||!pass||pass.length<6||!funciones.length||STAFF_USERS[usuario]||(DB.entrenadores&&DB.entrenadores[usuario])){
-    document.getElementById('ne-err').textContent='❌ Completa nombre, usuario, contraseña (mín. 6) y elige al menos una función. El usuario ya podría estar en uso.'; document.getElementById('ne-err').style.display='block'; return;
+    document.getElementById('ne-err').textContent='❌ Completa nombre, correo o usuario, contraseña (mín. 6) y elige al menos una función. El usuario ya podría estar en uso.'; document.getElementById('ne-err').style.display='block'; return;
   }
   // Evitar duplicados accidentales: si ya existe alguien con ese nombre, confirmar antes de crear otro
   const yaExiste=Object.values(DB.entrenadores||{}).some(e=>e && e.nombre && e.nombre.trim().toLowerCase()===nombre.toLowerCase());
@@ -36,7 +38,7 @@ async function fbCrearAccesoStaff(usuario, pass, rol){
   if(!fbListo||!fbAuth||!fbEsStaff||fbRolDB!=='coordinador') throw new Error('permiso');
   let sec; try{ sec=firebase.app('sec'); }catch(e){ sec=firebase.initializeApp(fbApp.options,'sec'); }
   const sa=sec.auth();
-  const cred=await sa.createUserWithEmailAndPassword(usuario+STAFF_DOM, pass);
+  const cred=await sa.createUserWithEmailAndPassword(usuario.includes('@')?usuario:usuario+STAFF_DOM, pass);
   const uid=cred.user.uid;
   try{ await sa.signOut(); }catch(e){}
   await fbDB.ref('/roles/'+uid).set(rol||'entrenador');
@@ -64,10 +66,10 @@ async function crearNuevoEntrenadorFinal(usuario,pass,nombre,funciones){
   catch(e){ const er=document.getElementById('ne-err'); er.textContent='❌ '+msgErrorAcceso(e); er.style.display='block'; return; }
   // Misma forma que un entrenador que se registra solo: llave = uid y código para sus clientes
   let ent;
-  try{ ent=await entRegistrarPerfilPorDirector(uid, nombre, {especialidades, funciones}); }
+  try{ ent=await entRegistrarPerfilPorDirector(uid, nombre, {especialidades, funciones, acceso:usuario}); }
   catch(e){ const er=document.getElementById('ne-err'); er.textContent='❌ '+msgErrorAcceso(e); er.style.display='block'; return; }
   cerrarModalNuevoEnt();
-  showToast('✓ '+entTipoLabel(ent)+' creado: entra con el usuario "'+usuario+'" · código para clientes '+ent.codigo);
+  showToast('✓ '+entTipoLabel(ent)+' creado: entra en “Soy entrenador del reto” con '+(usuario.includes('@')?'el correo ':'el usuario ')+'"'+usuario+'" · código para clientes '+ent.codigo);
   // Refrescar la vista si estamos parados en la lista de Entrenadores, para ver la tarjeta nueva de inmediato
   if(staffRol==='coordinador' && document.getElementById('staff-content')?.innerHTML.includes('Entrenadores')) abrirEntrenadores();
 }

@@ -150,6 +150,8 @@ async function entrarConCuenta(user){
   fbUid=user.uid;
   const rol=await fbCargarRol(user);
   if(rol){
+    // El director ve en la tarjeta del entrenador con qué entra (usuario o correo)
+    if(rol==='entrenador' && user.email){ try{ fbDB.ref('/entrenadores/'+user.uid+'/acceso').set(String(user.email).replace(STAFF_DOM,'')); }catch(e){} }
     guardarSesion({tipo:'staff', user:user.uid, rol});
     fbEscuchar();
     fbEscucharStaff();
@@ -196,6 +198,7 @@ function abrirPlanSocio(socio){
 
 async function recuperarPass(){
   const correo=document.getElementById('in-correo').value.trim().toLowerCase();
+  if(correo && correo.indexOf('@')<0){ cuentaErr('in-err','Si entras con usuario, pídele al director una contraseña nueva (la cambia en la consola de Firebase, en Authentication).'); return; }
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo)){ cuentaErr('in-err','Escribe arriba tu correo y vuelve a tocar "Olvidé mi contraseña".'); return; }
   if(cuentaSinFirebase('in-err')) return;
   try{ await fbAuth.sendPasswordResetEmail(correo); showToast('📧 Te enviamos un correo para cambiar tu contraseña'); cuentaErr('in-err',''); }
@@ -317,3 +320,22 @@ async function cuentaBorrar(pw){
   go('s-inicio');
   showToast('Tu cuenta fue eliminada.');
 }
+
+// ── Entrada de entrenadores: misma pantalla de acceso, con textos para el staff (usuario o correo) ──
+let loginEntPend=false;
+function abrirAccesoEntrenador(){ loginEntPend=true; go('s-login'); }
+function loginModo(ent){
+  const sc=document.getElementById('s-login'); if(!sc) return;
+  sc.classList.toggle('modo-ent',ent);
+  const t=document.getElementById('in-title'), sb=document.getElementById('in-sub'), l=document.getElementById('in-correo-l'), i=document.getElementById('in-correo');
+  if(t) t.innerHTML=ent?'Entra como<br><span>entrenador</span>':'Regresa<br>al <span>reto</span>';
+  if(sb) sb.textContent=ent?'Usa el usuario (o correo) y la contraseña que te dio el director.':'Tu rutina, tus pesos y tu mascota te están esperando. Entrenadores también entran aquí.';
+  if(l) l.textContent=ent?'Usuario o correo':'Tu correo';
+  const ic=i&&i.parentElement.querySelector('use'); if(ic) ic.setAttribute('href',ent?'#i-user':'#i-mail');
+  if(i){ i.type=ent?'text':'email'; i.setAttribute('inputmode',ent?'text':'email'); i.setAttribute('autocomplete',ent?'username':'email'); }
+  cuentaErr('in-err','');
+}
+(function(){
+  const _go=go;
+  window.go=go=function(id){ if(id==='s-login'){ loginModo(loginEntPend); loginEntPend=false; } return _go.apply(this,arguments); };
+})();

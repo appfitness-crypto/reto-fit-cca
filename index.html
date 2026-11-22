@@ -217,7 +217,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
     </div>
     <div class="wc-staff">
       <!-- Reto Fit CCA: los entrenadores no se registran solos; el director los da de alta (Menú → Entrenadores) -->
-      <button type="button" class="staff-link" onclick="go('s-login')">Soy entrenador del reto: entrar con mi cuenta <svg class="ico" aria-hidden="true" style="width:14px;height:14px"><use href="#i-arrow"/></svg></button>
+      <button type="button" class="staff-link" onclick="abrirAccesoEntrenador()">Soy entrenador del reto: entrar con mi cuenta <svg class="ico" aria-hidden="true" style="width:14px;height:14px"><use href="#i-arrow"/></svg></button>
     </div>
     <button type="button" class="wc-mas" hidden onclick="document.getElementById('pat-portada').scrollIntoView({behavior:'smooth',block:'start'})">Patrocinan el reto<svg class="ico" aria-hidden="true"><use href="#i-chev"/></svg></button>
   </div>
@@ -238,14 +238,14 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
     <button type="button" class="lg-volver" onclick="go('s-inicio')"><svg class="ico" aria-hidden="true"><use href="#i-chevl"/></svg>Inicio</button>
   </div>
   <form class="lg-hoja" onsubmit="event.preventDefault();doEntrar()" novalidate>
-    <h1 class="lg-t">Regresa<br>al <span>reto</span></h1>
-    <p class="lg-s">Tu rutina, tus pesos y tu mascota te están esperando. Entrenadores también entran aquí.</p>
-    <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg><input type="email" id="in-correo" placeholder="correo" autocomplete="email" inputmode="email" autocapitalize="off"><span>Tu correo</span></label>
+    <h1 class="lg-t" id="in-title">Regresa<br>al <span>reto</span></h1>
+    <p class="lg-s" id="in-sub">Tu rutina, tus pesos y tu mascota te están esperando. Entrenadores también entran aquí.</p>
+    <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg><input type="email" id="in-correo" placeholder="correo" autocomplete="email" inputmode="email" autocapitalize="off"><span id="in-correo-l">Tu correo</span></label>
     <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg><input type="password" id="in-pass" placeholder="contraseña" autocomplete="current-password"><span>Contraseña</span>
       <button type="button" class="lg-ver" aria-label="Ver contraseña" aria-pressed="false" onclick="const i=document.getElementById('in-pass'),v=i.type==='password';i.type=v?'text':'password';this.setAttribute('aria-pressed',v);this.setAttribute('aria-label',v?'Ocultar contraseña':'Ver contraseña')"><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg></button></label>
     <div class="login-err" id="in-err" role="alert"></div>
     <button type="submit" class="lg-go" id="in-btn"><span class="lg-d"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>Entrar</button>
-    <div class="lg-links"><button type="button" onclick="recuperarPass()">Olvidé mi contraseña</button><button type="button" onclick="abrirRegistro('cliente')">Soy nuevo</button></div>
+    <div class="lg-links"><button type="button" onclick="recuperarPass()">Olvidé mi contraseña</button><button type="button" class="lg-solo-socio" onclick="abrirRegistro('cliente')">Soy nuevo</button><button type="button" class="lg-solo-ent" onclick="go('s-login')">¿Eres socio? Entra aquí</button></div>
   </form>
 </div>
 
@@ -845,6 +845,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
         </label>
         <div class="sl-att" id="staff-att" role="group" aria-label="Filtrar por atención"></div>
         <div class="sl-sem-help"><span><i class="sl-dot r"></i>Más de 7 días sin entrenar o reportó dolor</span><span><i class="sl-dot y"></i>Faltan sesiones o se estancó</span></div>
+        <label class="sl-ent" id="staff-entf" hidden><span>Entrenador</span><select id="staff-ent-sel" onchange="staffFiltroEnt(this.value)" aria-label="Filtrar socios por entrenador"></select></label>
         <div class="sl-filters" id="staff-filters">
           <button type="button" class="sl-f ac" onclick="staffFilterStatus(this,'todos')">Todos <i id="slc-todos"></i></button>
           <button type="button" class="sl-f" id="slf-sinent" style="display:none" onclick="staffFilterStatus(this,'sinent')">Sin entrenador <i id="slc-sinent"></i></button>
@@ -1022,7 +1023,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
     <div class="q-sub" style="margin-bottom:14px">Crea su acceso. Al iniciar sesión por primera vez, le pediremos su propia filosofía de entrenamiento — así sus rutinas no se sentirán genéricas.</div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <input type="text" class="ti" id="ne-nombre" aria-label="Nombre completo" placeholder="Nombre completo (ej. Ana López)">
-      <input type="text" class="ti" id="ne-usuario" aria-label="Usuario" placeholder="Usuario (ej. entrenador4)">
+      <input type="text" class="ti" id="ne-usuario" aria-label="Correo o usuario para entrar" placeholder="Correo o usuario (ej. fer@correo.com o fernando)" autocapitalize="off" autocomplete="off" inputmode="email">
       <input type="text" class="ti" id="ne-pass" aria-label="Contraseña" placeholder="Contraseña">
       <div class="q-sub" style="margin:2px 0 4px">¿Qué va a dar de alta? (elige al menos una)</div>
       <div class="chk-grid" style="grid-template-columns:1fr 1fr">
