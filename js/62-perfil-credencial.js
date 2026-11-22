@@ -18,11 +18,24 @@ function perfilCredencialHTML(s){
     <div class="cred-f">
       <button type="button" onclick="${s.mascotaOculta?'':'mascotaAbrir()'}" aria-label="Mis puntos: cómo se ganan"><b>${pts.toLocaleString('es-MX')}</b><small>puntos</small></button>
       <div><b>${ev.total}</b><small>sesiones</small></div>
-      <div><b>${ev.racha}</b><small>${ev.racha===1?'semana':'semanas'} de racha</small></div>
+      <div id="cred-lugar">${credLugarHTML(s)}</div>
     </div>
     ${credLogrosHTML(s,ev)}
     ${fig?`<button type="button" class="cred-fig" onclick="${st?'mascotaAbrir()':"document.getElementById('mi-mascota')?.scrollIntoView({behavior:'smooth'})"}" aria-label="${st?'Ver a '+esc(st.nombre):'Ver mi nivel'}">${fig}</button>`:''}
   </section>`;
+}
+// Su lugar en el reto, dentro de su objetivo (lo publica el director desde el tablero: /lugares/<uid>)
+function credLugarHTML(s){
+  let v=s._lugar; if(v===undefined){ try{ v=JSON.parse(localStorage.getItem('mi_lugar_'+s.code)); }catch(e){ v=null; } credLugarLeer(s); }
+  return v&&v.l?`<b>${v.l}º</b><small>de ${v.de} en tu objetivo</small>`:`<b>—</b><small>tu lugar en el reto</small>`;
+}
+function credLugarLeer(s){
+  if(s._lugarLeyendo||typeof fbDB==='undefined'||!fbDB||!fbListo) return;
+  s._lugarLeyendo=true;
+  fbDB.ref('/lugares/'+s.code).once('value').then(sn=>{
+    s._lugar=sn.val()||null; try{ localStorage.setItem('mi_lugar_'+s.code,JSON.stringify(s._lugar)); }catch(e){}
+    const el=document.getElementById('cred-lugar'); if(el) el.innerHTML=credLugarHTML(s);
+  }).catch(()=>{ s._lugar=null; }).finally(()=>{ s._lugarLeyendo=false; });
 }
 // Logros dentro de la credencial (los mismos 4 de siempre): encendidos al cumplirse
 function credLogrosHTML(s,ev){
