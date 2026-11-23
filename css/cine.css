@@ -1700,3 +1700,57 @@ html[data-theme="dark"] .rm-btn{color:#0A0E13;}
 .nt-pasos small{grid-column:1/-1;font-size:12px;color:var(--mu);line-height:1.4;}
 .nt-pasos li.tot span,.nt-pasos li.tot b{color:var(--tx);}
 .nt-aviso{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--lime) 12%,transparent);font-size:13px;line-height:1.45;color:var(--tx);}
+
+/* ═══ FICHA DEL SOCIO (staff) ordenada ═══ */
+#staff-content .fx-head{display:block;padding:14px 16px 4px;}
+#staff-content .fx-id{min-width:0;}
+#staff-content .fx-nom{font:800 clamp(24px,7vw,30px)/1.05 var(--fd);color:var(--tx);overflow-wrap:anywhere;}
+.fx-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.fx-chips .sl-st,.fx-chips .fx-cat,.fx-chip{display:inline-flex;align-items:center;min-height:30px;margin:0;padding:0 11px;border-radius:99px;font:600 12.5px/1 var(--fb);white-space:nowrap;}
+.fx-chip,.fx-chips .fx-cat{background:color-mix(in srgb,#fff 70%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tx) 9%,transparent);color:var(--tx);border:0;}
+html[data-theme="dark"] .fx-chip,html[data-theme="dark"] .fx-chips .fx-cat{background:rgba(255,255,255,.07);}
+.fx-lin{display:block;margin-top:8px;font-size:12px;color:var(--mu);}
+.fx-acc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:6px 16px 4px;}
+.fx-acc .fx-chat{position:relative;display:grid;justify-items:center;gap:5px;min-height:0;padding:10px 4px 9px;border:0;border-radius:18px;text-align:center;font:700 12.5px/1.15 var(--fb);
+  background:var(--q-glass,var(--gl));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px var(--q-edge,var(--b)),var(--q-sh,var(--shadow));color:var(--tx);}
+.fx-acc .fx-chat .ico{width:20px;height:20px;}
+.fx-acc .fx-chat small{display:block;margin-top:3px;font:600 11px/1.2 var(--fb);color:var(--mu);}
+.fx-acc .chat-dot{position:absolute;top:8px;right:10px;}
+.fx-warn{display:flex;gap:10px;align-items:flex-start;margin:8px 16px 0;padding:11px 14px;border-radius:18px;background:#FFF1E6;box-shadow:inset 0 0 0 1px rgba(196,104,20,.25);font-size:13px;color:#5A3510;}
+html[data-theme="dark"] .fx-warn{background:rgba(255,166,77,.12);color:#FFD9B0;box-shadow:inset 0 0 0 1px rgba(255,166,77,.3);}
+.fx-warn .ico{width:18px;height:18px;margin-top:1px;color:#C46814;flex:none;}
+.fx-warn b{display:block;font-weight:700;}
+.fx-warn button{display:block;margin-top:6px;padding:0;border:0;background:none;color:inherit;font:700 13px/1 var(--fb);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+.fx-wk>div.cl i{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--cine-acc) 60%,transparent);}
+.fx-wk>div em{display:block;margin-top:2px;font:800 9px/1 var(--fb);font-style:normal;color:var(--cine-acc);text-transform:uppercase;letter-spacing:.02em;}
+/* Rutina: un solo botón de opciones */
+.rt-opc{margin:0 0 10px;border-radius:18px;background:var(--q-glass,var(--gl));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px var(--q-edge,var(--b)),var(--q-sh,var(--shadow));overflow:hidden;}
+.rt-opc>summary{display:flex;align-items:center;gap:10px;padding:12px 14px;list-style:none;cursor:pointer;}
+.rt-opc>summary::-webkit-details-marker{display:none;}
+.rt-opc>summary>.ico:first-child{width:38px;height:38px;padding:9px;border-radius:12px;background:color-mix(in srgb,var(--cine-acc) 15%,transparent);color:var(--tx);flex:none;}
+.rt-opc>summary span{flex:1;min-width:0;}
+.rt-opc>summary b{display:block;font:700 15px/1.2 var(--fd);color:var(--tx);}
+.rt-opc>summary small{font-size:12.5px;color:var(--mu);}
+.rt-opc>summary>.ico:last-child{width:16px;height:16px;color:var(--mu);transition:transform .25s;}
+.rt-opc[open]>summary>.ico:last-child{transform:rotate(90deg);}
+.rt-opc .rt-bar{display:grid;gap:6px;margin:0;padding:0 10px 10px;}
+.rt-opc .rt-bar .sd-b{display:block;width:100%;min-height:52px;padding:10px 14px;border-radius:14px;text-align:left;font:700 14px/1.2 var(--fb);background:color-mix(in srgb,#fff 65%,transparent);border:0;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tx) 8%,transparent);}
+html[data-theme="dark"] .rt-opc .rt-bar .sd-b{background:rgba(255,255,255,.06);}
+.rt-opc .rt-bar .sd-b[title]::after{content:attr(title);display:block;margin-top:3px;font:500 12px/1.3 var(--fb);color:var(--mu);}
+.rt-opc .rt-bar .sd-b .ico{width:16px;height:16px;margin-right:6px;vertical-align:-3px;}
+/* Evaluación como lista de pendientes */
+.ev-card{padding-top:4px;}
+.ev-av{display:flex;align-items:center;gap:12px;margin:2px 0 6px;}
+.ev-bar{flex:1;height:8px;border-radius:99px;background:color-mix(in srgb,var(--tx) 10%,transparent);overflow:hidden;}
+.ev-bar i{display:block;height:100%;border-radius:inherit;background:var(--cine-acc);}
+.ev-av b{font:800 13.5px/1 var(--fb);white-space:nowrap;}
+.ev-card .ev-l li{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;}
+.ev-card .ev-l li .ev-t b{display:block;font:700 14.5px/1.2 var(--fd);color:var(--tx);}
+.ev-card .ev-l li .ev-t span{display:block;margin-top:2px;font-size:12.5px;color:var(--mu);line-height:1.35;flex-basis:auto;}
+.ev-card .ev-l li>.sd-b{min-width:100px;min-height:38px;margin:0;padding:0 14px;border-radius:99px;background:var(--cine-deep);color:#fff;border:0;font:700 13px/1 var(--fb);}
+html[data-theme="dark"] .ev-card .ev-l li>.sd-b{background:var(--cine-acc);color:#0A0E13;}
+.ev-hecho{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:100px;min-height:38px;border-radius:99px;background:rgba(14,122,74,.12);color:#0E7A4A;font:700 13px/1 var(--fb);}
+html[data-theme="dark"] .ev-hecho{color:#7EE0A8;}
+.ev-hecho .ico{width:15px;height:15px;stroke-width:3;}
+/* Tema Claro y Salvia: las secciones de la ficha sobre vidrio */
+html:is([data-theme="light"],[data-theme="light2"]) #staff-content .sd-body,html:is([data-theme="light"],[data-theme="light2"]) #staff-content .fx-panel{background:var(--cl-glass,var(--gl));-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--cl-glass-sh,var(--shadow));}

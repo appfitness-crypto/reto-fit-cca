@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#002941">
+<title>Reto Fit CCA · Ficha del socio (staff)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Ficha del socio en el panel del staff, ordenada con el lenguaje de la app. Tema Claro (el de las capturas). */
+:root{--fd:'Kanit','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --navy:#002941;--coral:#FD6E6E;--tx:#0E2233;--mu:#4D6170;--ok:#0E7A4A;
+  --glass:linear-gradient(160deg,rgba(255,255,255,.9),rgba(255,255,255,.7));
+  --sh:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.7),0 14px 30px -18px rgba(0,41,65,.45);--line:rgba(0,41,65,.09)}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#CFE3F0}
+body{margin:0;font-family:var(--fb);font-size:15px;line-height:1.45;color:var(--tx);background:linear-gradient(172deg,#E6F1F8,#BBD6E8);min-height:100vh;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+::selection{background:var(--coral);color:#fff}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:3px solid var(--coral);outline-offset:2px;border-radius:12px}
+img{display:block}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pg{max-width:1400px;margin:0 auto;padding:44px 32px 96px}
+.pg-h{max-width:900px;margin:0 auto 40px}
+.pg-h h1{font:italic 800 clamp(34px,4.6vw,56px)/.92 var(--fd);text-transform:uppercase;margin:0 0 14px;color:var(--navy)}
+.pg-h p{margin:0;max-width:66ch;color:var(--mu);font-size:16.5px}
+.pg-h p b{color:var(--tx)}
+.grp{max-width:900px;margin:48px auto 20px;font:italic 800 24px/1 var(--fd);text-transform:uppercase;color:var(--navy);display:flex;align-items:center;gap:14px}
+.grp::after{content:"";flex:1;height:1px;background:rgba(0,41,65,.15)}
+.rail{display:grid;grid-template-columns:repeat(2,410px);gap:40px 28px;justify-content:center}
+@media (max-width:899px){.rail{grid-template-columns:410px}}
+.shot{display:flex;flex-direction:column;align-items:center}
+.shot h2{width:390px;margin:0 0 14px;font:italic 800 20px/1 var(--fd);text-transform:uppercase;color:var(--navy)}
+.notes{width:390px;margin:20px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.notes li{display:grid;grid-template-columns:18px 1fr;gap:10px;font-size:14px;color:var(--mu)}
+.notes li .ico{width:16px;height:16px;margin-top:3px;color:var(--coral)}
+.notes b{color:var(--tx)}
+.phone{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;isolation:isolate;box-shadow:0 0 0 10px #071822,0 0 0 11px #36566B,0 46px 80px -34px rgba(0,41,65,.55);transform:translateZ(0);
+  background:radial-gradient(120% 60% at 120% 85%,#002941 0 36%,transparent 36.2%),linear-gradient(180deg,#DCEFFA,#BFE0F2)}
+.phone.antes img{width:100%;height:auto}
+.tag{position:absolute;top:14px;right:14px;z-index:80;padding:6px 12px;border-radius:99px;background:#0E2233;color:#fff;font:800 12px/1 var(--fb)}
+.scr{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:0 16px 40px}
+.scr::-webkit-scrollbar{display:none}
+.top{position:sticky;top:0;z-index:20;margin:0 -16px;padding:50px 16px 10px;background:rgba(220,239,250,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.top img{width:40px;height:40px;border-radius:12px}
+.top .back{display:flex;align-items:center;gap:6px;flex:1;font:700 15px/1 var(--fb);color:var(--navy)}
+.top .back .ico{width:18px;height:18px}
+.top .menu{display:flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:99px;background:#fff;font:700 13.5px/1 var(--fb)}
+.top .menu .ico{width:17px;height:17px}
+.sb{position:absolute;top:0;left:0;right:0;height:46px;z-index:70;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 40px;font:600 16px/1 var(--fb);pointer-events:none}
+.sb svg{height:13px;width:auto}
+.glass{background:var(--glass);box-shadow:var(--sh);border-radius:22px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+
+/* encabezado */
+.hd{margin-top:16px}
+.hd h1{margin:0;font:800 30px/1.02 var(--fd);color:var(--navy)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:4px;min-height:30px;padding:0 11px;border-radius:99px;background:rgba(255,255,255,.75);box-shadow:inset 0 0 0 1px rgba(0,41,65,.08);font:600 12.5px/1 var(--fb);color:var(--tx)}
+.chip.ok{background:rgba(14,122,74,.12);color:var(--ok);box-shadow:none;font-weight:700}
+.chip.ok .ico{width:13px;height:13px}
+.idn{display:block;margin-top:8px;font-size:12px;color:var(--mu)}
+.acc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.acc button{position:relative;display:grid;justify-items:center;gap:5px;padding:10px 4px 9px;border-radius:18px;background:var(--glass);box-shadow:var(--sh);font:700 12px/1.15 var(--fb);text-align:center}
+.acc .ico{width:20px;height:20px;color:var(--navy)}
+.acc small{display:block;font:600 11px/1.2 var(--fb);color:var(--mu)}
+.acc .badge{position:absolute;top:6px;right:8px;min-width:20px;height:18px;padding:0 5px;border-radius:99px;background:var(--coral);color:#fff;font:800 10.5px/18px var(--fb)}
+.warn{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:11px 14px;border-radius:18px;background:#FFF1E6;box-shadow:inset 0 0 0 1px rgba(196,104,20,.25);font-size:13px;color:#5A3510}
+.warn .ico{width:18px;height:18px;color:#C46814;margin-top:1px}
+.warn b{display:block;font-weight:700;color:#3E2408}
+.warn button{margin-top:6px;font:700 13px/1 var(--fb);color:#8A4210;text-decoration:underline;text-underline-offset:3px}
+.tabs{position:sticky;top:101px;z-index:15;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:14px -4px 0;padding:4px;border-radius:99px;background:rgba(255,255,255,.85);box-shadow:var(--sh)}
+.tabs button{position:relative;min-height:40px;border-radius:99px;font:600 13px/1 var(--fb);color:var(--mu)}
+.tabs button.on{background:var(--navy);color:#fff}
+.tabs i{position:absolute;top:6px;right:10px;width:7px;height:7px;border-radius:50%;background:var(--coral)}
+
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 10px}
+.sec h2{margin:0;font:800 20px/1 var(--fd);color:var(--navy)}
+.sec small{font-size:12.5px;color:var(--mu);white-space:nowrap}
+.sec a{display:inline-flex;align-items:center;gap:4px;font:700 13.5px/1 var(--fb);color:var(--navy)}
+.sec a .ico{width:15px;height:15px}
+
+/* esta semana */
+.wk{padding:14px}
+.dias{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.d{display:grid;justify-items:center;gap:3px;padding:7px 0 8px;border-radius:14px;background:rgba(0,41,65,.04)}
+.d small{font:600 11px/1 var(--fb);color:var(--mu)}
+.d b{font:800 16px/1 var(--fd)}
+.d i{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(0,41,65,.2)}
+.d.cl{background:rgba(253,110,110,.1)}
+.d.cl i{box-shadow:none;background:var(--coral);mask:none;width:auto;height:auto;font:800 9px/1 var(--fb);color:#fff;padding:3px 5px;border-radius:99px;font-style:normal}
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.kpi b{display:block;font:800 22px/1 var(--fd);color:var(--navy)}
+.kpi small{font-size:12px;color:var(--mu);line-height:1.3}
+
+/* evaluación */
+.ev{padding:4px 0}
+.ev-h{display:flex;align-items:center;gap:12px;padding:12px 16px 10px}
+.ev-h .bar{flex:1;height:8px;border-radius:99px;background:rgba(0,41,65,.1);overflow:hidden}
+.ev-h .bar i{display:block;height:100%;width:20%;border-radius:inherit;background:var(--coral)}
+.ev-h b{font:800 14px/1 var(--fb);white-space:nowrap}
+.it{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid var(--line)}
+.it b{display:block;font:700 14.5px/1.2 var(--fd)}
+.it small{display:block;margin-top:2px;font-size:12.5px;color:var(--mu);line-height:1.35}
+.it .bt{min-width:96px;min-height:38px;padding:0 14px;border-radius:99px;background:var(--navy);color:#fff;font:700 13px/1 var(--fb)}
+.it .hecho{display:inline-flex;align-items:center;gap:5px;min-width:96px;justify-content:center;min-height:38px;border-radius:99px;background:rgba(14,122,74,.12);color:var(--ok);font:700 13px/1 var(--fb)}
+.it .hecho .ico{width:15px;height:15px;stroke-width:3}
+
+/* rutina */
+.opt{display:flex;align-items:center;gap:10px;width:100%;margin-top:14px;padding:12px 14px;border-radius:18px;background:var(--glass);box-shadow:var(--sh);text-align:left}
+.opt .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(253,110,110,.14);color:#B4372F}
+.opt>span:not(.ic){flex:1}.opt .ic{flex:none}.opt b{display:block;font:700 15px/1.2 var(--fd)}.opt small{font-size:12.5px;color:var(--mu)}
+.opt .ch{color:var(--mu);width:16px;height:16px}
+.cal{margin-top:10px;padding:12px}
+.cal .dias .d{cursor:pointer}
+.cal .d small{font-size:10.5px}
+.cal .d em{font-style:normal;font:600 10.5px/1 var(--fb);color:var(--mu)}
+.cal .d.on{background:var(--navy)}.cal .d.on small,.cal .d.on em{color:rgba(255,255,255,.8)}.cal .d.on b{color:#fff}
+.cal .d.rest{background:transparent;box-shadow:inset 0 0 0 1.5px rgba(0,41,65,.12)}
+.ser{margin:10px 2px 0;font-size:12.5px;color:var(--mu)}
+.ser b{color:var(--tx)}
+.dia-h{display:flex;justify-content:space-between;align-items:flex-end;margin:18px 2px 10px}
+.dia-h small{display:block;font:700 12.5px/1 var(--fb);color:var(--coral)}
+.dia-h h3{margin:4px 0 0;font:800 26px/1 var(--fd);color:var(--navy)}
+.dia-h p{margin:4px 0 0;font-size:13px;color:var(--mu)}
+.dia-h button{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#fff;box-shadow:var(--sh)}
+.ejs{padding:2px 0}
+.ej{display:grid;grid-template-columns:18px 30px 1fr auto;align-items:center;gap:10px;padding:11px 14px;border-top:1px solid var(--line)}
+.ej:first-child{border-top:0}
+.ej .gr{color:#9AA9B5;width:16px;height:16px}
+.ej .n{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(0,41,65,.06);font:800 13px/1 var(--fb);color:var(--navy)}
+.ej b{display:block;font:700 14px/1.2 var(--fb)}
+.ej small{display:block;font-size:12px;color:var(--mu)}
+.ej .m{color:#B4372F;font-weight:600}
+.ej .rx{text-align:right}.ej .rx b{font:800 16px/1 var(--fd)}.ej .rx small{margin-top:3px}
+
+/* hoja de opciones */
+.hoja{position:absolute;inset:0;z-index:50;display:flex;align-items:flex-end;background:rgba(0,20,32,.45)}
+.hoja-in{width:100%;padding:10px 16px 28px;border-radius:28px 28px 0 0;background:#F4F8FB}
+.grab{display:block;width:44px;height:5px;border-radius:9px;background:rgba(0,41,65,.15);margin:0 auto 12px}
+.hoja h3{margin:0 4px 10px;font:800 20px/1 var(--fd);color:var(--navy)}
+.hoja .opt{margin-top:8px;background:#fff}
+@media (max-width:520px){.pg{padding:28px 0 64px}.pg-h,.grp{padding:0 20px}.rail{grid-template-columns:1fr}.shot h2,.notes{width:auto;align-self:stretch;margin-left:20px;margin-right:20px}.phone{width:100%;border-radius:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-chevl" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17h.01"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.4" fill="currentColor"/><circle cx="15" cy="6" r="1.4" fill="currentColor"/><circle cx="9" cy="12" r="1.4" fill="currentColor"/><circle cx="15" cy="12" r="1.4" fill="currentColor"/><circle cx="9" cy="18" r="1.4" fill="currentColor"/><circle cx="15" cy="18" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></symbol>
+  <symbol id="i-dna" viewBox="0 0 24 24"><path d="M7 3c0 6 10 6 10 12s-10 6-10 6M17 3c0 6-10 6-10 12M8 7h8M8 17h8"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15.5-6.3L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.3L3 16M3 21v-5h5"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5a1 1 0 0 0 1 1H10v-5.5h4v5.5h3.5a1 1 0 0 0 1-1V10"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="m4 20 4-1 11-11-3-3L5 16l-1 4Z"/></symbol>
+  <symbol id="sbar" viewBox="0 0 66 13" fill="currentColor"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><rect x="47.5" y=".5" width="16" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".45"/><rect x="49.5" y="2.5" width="12" height="8" rx="2"/></symbol>
+</svg>
+<div class="pg">
+  <header class="pg-h">
+    <h1>Ficha del socio, ordenada</h1>
+    <p>Mismo contenido, acomodado con el estilo de la app: <b>encabezado limpio con tres acciones</b>, la rutina con un solo botón de opciones y la evaluación como lista de pendientes. Todo va sobre vidrio para que el fondo no tape el texto. A la izquierda, cómo se ve hoy.</p>
+  </header>
+
+  <div class="grp">Encabezado y Resumen</div>
+  <main class="rail">
+    <section class="shot"><h2>Hoy</h2><div class="phone antes"><span class="tag">Hoy</span><img src="img/antes1.webp" alt=""></div></section>
+    <section class="shot"><h2>Propuesta</h2>
+      <div class="phone"><div class="scr">
+        <div class="top"><img src="img/icon-192.png" alt=""><button type="button" class="back"><svg class="ico"><use href="#i-chevl"/></svg>Socios</button><button type="button" class="menu"><svg class="ico"><use href="#i-menu"/></svg>Menú</button></div>
+        <div class="hd"><h1>Lucía Herrera (prueba)</h1>
+          <div class="chips"><span class="chip ok"><svg class="ico"><use href="#i-check"/></svg>Activo ▾</span><span class="chip">Femenil</span><span class="chip">Principiante</span><span class="chip">Perder peso</span><span class="chip">7 días</span></div>
+          <span class="idn">#RF-DEMO-03 · entrena con Luis Fernando Jaime</span>
+          <div class="acc"><button type="button"><svg class="ico"><use href="#i-chat"/></svg>Mensajes<small>2 nuevos</small><span class="badge">2</span></button><button type="button"><svg class="ico"><use href="#i-clip"/></svg>Mediciones<small>0 de 3</small></button><button type="button"><svg class="ico"><use href="#i-swap"/></svg>Entrenador<small>Pasar a otro</small></button></div>
+          <div class="warn"><svg class="ico"><use href="#i-warn"/></svg><div><b>Su rutina tiene 5 días y ella eligió 7.</b>Puede ser una rutina de antes del cambio.<br><button type="button">Regenerar con el sistema</button></div></div>
+        </div>
+        <div class="tabs"><button type="button" class="on">Resumen</button><button type="button">Rutina</button><button type="button">Nutrición</button><button type="button">Progresión<i></i></button></div>
+        <div class="sec"><h2>Esta semana</h2><small>0 de 7 sesiones</small></div>
+        <div class="wk glass"><div class="dias"><div class="d cl"><small>L</small><b>23</b><i>Clase</i></div><div class="d"><small>M</small><b>24</b><i></i></div><div class="d cl"><small>M</small><b>25</b><i>Clase</i></div><div class="d"><small>J</small><b>26</b><i></i></div><div class="d cl"><small>V</small><b>27</b><i>Clase</i></div><div class="d"><small>S</small><b>28</b><i></i></div><div class="d"><small>D</small><b>29</b><i></i></div></div>
+          <div class="kpi"><div><b>0</b><small>sesiones en total</small></div><div><b>0%</b><small>asistencia (4 sem)</small></div><div><b>—</b><small>cambio de peso</small></div></div></div>
+        <div class="sec"><h2>Evaluación inicial</h2><small>con la filosofía de Luis</small></div>
+        <div class="ev glass"><div class="ev-h"><span class="bar"><i></i></span><b>1 de 5 hechas</b></div>
+          <div class="it"><span><b>Peso, cintura y % de grasa</b><small>El % de grasa sale de la cintura</small></span><button type="button" class="bt">Registrar</button></div>
+          <div class="it"><span><b>Movilidad</b><small>Sentadilla con brazos arriba, hombro y cadera · 5 min</small></span><button type="button" class="bt">Registrar</button></div>
+          <div class="it"><span><b>Prueba cardiovascular</b><small>Escalón de 3 minutos · 15 min</small></span><button type="button" class="bt">Registrar</button></div>
+          <div class="it"><span><b>Cuestionario de salud</b><small>Lo llenó al registrarse</small></span><span class="hecho"><svg class="ico"><use href="#i-check"/></svg>Hecho</span></div>
+          <div class="it"><span><b>Fotos de progreso</b><small>Frente, perfil y espalda</small></span><button type="button" class="bt">Marcar</button></div>
+        </div>
+        <div class="sec"><h2>Datos</h2><a><svg class="ico"><use href="#i-pencil"/></svg>Editar</a></div>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div></div>
+      <ul class="notes"><li><svg class="ico"><use href="#i-check"/></svg><span>Nombre a lo ancho; <b>estado, sexo, nivel, objetivo y días como etiquetas</b>, sin encimarse.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span><b>Tres acciones iguales:</b> Mensajes, Mediciones y Entrenador. Ya no se salen de la pantalla.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>Aviso cuando <b>los días del socio no coinciden con su rutina</b>.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>En la semana se ven <b>sus días de clase grupal</b>.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>Evaluación como <b>lista de pendientes</b> con avance; peso, cintura y % de grasa en un solo renglón.</span></li></ul>
+    </section>
+  </main>
+
+  <div class="grp">Rutina</div>
+  <main class="rail">
+    <section class="shot"><h2>Hoy</h2><div class="phone antes"><span class="tag">Hoy</span><img src="img/antes2.webp" alt=""></div></section>
+    <section class="shot"><h2>Propuesta</h2>
+      <div class="phone"><div class="scr">
+        <div class="top"><img src="img/icon-192.png" alt=""><button type="button" class="back"><svg class="ico"><use href="#i-chevl"/></svg>Socios</button><button type="button" class="menu"><svg class="ico"><use href="#i-menu"/></svg>Menú</button></div>
+        <div class="hd"><h1 style="font-size:24px">Lucía Herrera (prueba)</h1></div>
+        <div class="tabs" style="top:101px"><button type="button">Resumen</button><button type="button" class="on">Rutina</button><button type="button">Nutrición</button><button type="button">Progresión<i></i></button></div>
+        <button type="button" class="opt"><span class="ic"><svg class="ico"><use href="#i-more"/></svg></span><span><b>Opciones de la rutina</b><small>Métodos, rehacer, regenerar o en casa</small></span><svg class="ico ch"><use href="#i-chev"/></svg></button>
+        <div class="cal glass"><div class="dias">
+          <div class="d on"><small>LUN</small><b>5</b><em>ej</em></div><div class="d"><small>MAR</small><b>4</b><em>ej</em></div><div class="d"><small>MIÉ</small><b>6</b><em>ej</em></div><div class="d"><small>JUE</small><b>3</b><em>ej</em></div><div class="d"><small>VIE</small><b>3</b><em>ej</em></div><div class="d rest"><small>SÁB</small><b>—</b><em>libre</em></div><div class="d rest"><small>DOM</small><b>—</b><em>libre</em></div></div>
+          <p class="ser">Series por semana: <b>Pierna 16</b> · <b>Espalda 12</b> · <b>Pecho 10</b> · Hombro 8</p></div>
+        <div class="dia-h"><div><small>Lunes</small><h3>Pecho + tríceps</h3><p>5 ejercicios · 17 series · ~30 min</p></div><button type="button" aria-label="Más opciones del día"><svg class="ico"><use href="#i-more"/></svg></button></div>
+        <div class="ejs glass">
+          <div class="ej"><svg class="ico gr"><use href="#i-grip"/></svg><span class="n">1</span><span><b>Press banca plano</b><small>Pecho mayor · <span class="m">Reps con pausa</span></small></span><span class="rx"><b>4 × 6</b><small>70 kg · 90 s</small></span></div>
+          <div class="ej"><svg class="ico gr"><use href="#i-grip"/></svg><span class="n">2</span><span><b>Press inclinado mancuernas</b><small>Pecho superior</small></span><span class="rx"><b>3 × 12</b><small>22 kg · 90 s</small></span></div>
+          <div class="ej"><svg class="ico gr"><use href="#i-grip"/></svg><span class="n">3</span><span><b>Aperturas en cable</b><small>Pecho interno</small></span><span class="rx"><b>3 × 15</b><small>12 kg · 60 s</small></span></div>
+          <div class="ej"><svg class="ico gr"><use href="#i-grip"/></svg><span class="n">A1</span><span><b>Press francés</b><small>Tríceps · <span class="m">Biserie</span></small></span><span class="rx"><b>3 × 12</b><small>30 kg · sin desc.</small></span></div>
+          <div class="ej"><svg class="ico gr"><use href="#i-grip"/></svg><span class="n">A2</span><span><b>Extensión tríceps polea</b><small>Tríceps · <span class="m">Biserie</span></small></span><span class="rx"><b>4 × 15</b><small>18 kg · 60 s</small></span></div>
+        </div>
+      </div><div class="sb"><span>9:41</span><svg><use href="#sbar"/></svg></div>
+      <div class="hoja"><div class="hoja-in"><span class="grab"></span><h3>Opciones de la rutina</h3>
+        <button type="button" class="opt"><span class="ic"><svg class="ico"><use href="#i-spark"/></svg></span><span><b>Métodos y opciones</b><small>Superseries, pausas, descansos</small></span><svg class="ico ch"><use href="#i-chev"/></svg></button>
+        <button type="button" class="opt"><span class="ic"><svg class="ico"><use href="#i-dna"/></svg></span><span><b>Rehacer con el método de Luis</b><small>Arma la semana con su filosofía</small></span><svg class="ico ch"><use href="#i-chev"/></svg></button>
+        <button type="button" class="opt"><span class="ic"><svg class="ico"><use href="#i-refresh"/></svg></span><span><b>Regenerar con el sistema</b><small>Con sus respuestas del cuestionario</small></span><svg class="ico ch"><use href="#i-chev"/></svg></button>
+        <button type="button" class="opt"><span class="ic"><svg class="ico"><use href="#i-home"/></svg></span><span><b>Rutina en casa</b><small>Con lo que tiene en casa</small></span><svg class="ico ch"><use href="#i-chev"/></svg></button>
+      </div></div></div>
+      <ul class="notes"><li><svg class="ico"><use href="#i-check"/></svg><span>Los 4 botones van en <b>una sola hoja de opciones</b>, cada uno con su explicación (aquí se ve abierta).</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>Días como el calendario de la app; las <b>series por semana en una línea</b>.</span></li><li><svg class="ico"><use href="#i-check"/></svg><span>La lista de ejercicios igual, sobre vidrio y con el método en coral.</span></li></ul>
+    </section>
+  </main>
+</div>
+</body>
+</html>
