@@ -33,10 +33,11 @@ function idxDeSocio(s){
     e:s.entrenadorId||'', nu:s.nutriologoId||'', as:s.asignado===undefined?null:s.asignado,
     d:s.dias||null, fr:s.fechaRegistro||null, b:s.bloque||null,
     pe:(s.progresion&&s.progresion.estado)||'',
-    f:ses.slice(-20).map(x=>sesCuenta(x)?{f:x.fecha, t:x.ts||null}:{f:x.fecha, t:x.ts||null, c:0}),   // c:0 = incompleta (no cuenta para la semana)
+    f:ses.slice(-20).map(x=>sesCuenta(x)?(typeof retoSesionCuenta==='function'&&!retoSesionCuenta(x)?{f:x.fecha, t:x.ts||null, g:0}:{f:x.fecha, t:x.ts||null}):{f:x.fecha, t:x.ts||null, c:0}),   // c:0 = incompleta; g:0 = no suma para el reto (fuera del gym o muy corta)
     p1:ses.length?ses[0].fecha:null,
     x:est, u:Date.now()
   };
+  try{ if(typeof retoCategoria==='function'){ const c=retoCategoria(s); if(c) o.ct=c; } }catch(e){}
   if(typeof huellaRutina==='function' && s.rutina){ o.k=unicaSegmento(s.objetivo,s.nivel); o.h=huellaRutina(s.rutina); }   // rutina única (js/42)
   if(m.vence||m.ancla||m.suspendido) o.m={v:m.vence||null, a:m.ancla||null, su:m.suspendido||null};
   // Reto Fit CCA: resumen de puntos para que el tablero no tenga que descargar el expediente completo (js/54)
@@ -51,14 +52,14 @@ function idxLite(code){
   // La ficha ligera no trae el detalle de cada sesión: se marca con el estado que guardó el índice
   // (los índices anteriores no lo traen y cuentan como completas) y, sin hora, se usa la fecha.
   const tsDe=r=>r.t || new Date(r.f+'T12:00:00').getTime() || 0;
-  const ses=comoArray(x.f).map(r=>({fecha:r.f, ts:tsDe(r), estado:r.c===0?'incompleta':'completa'}));
+  const ses=comoArray(x.f).map(r=>({fecha:r.f, ts:tsDe(r), estado:r.c===0?'incompleta':'completa', _lite:true, g:r.g}));
   if(x.p1 && !ses.some(r=>r.fecha===x.p1)) ses.unshift({fecha:x.p1, ts:tsDe({f:x.p1}), estado:'completa'});
   const lite={code, nombre:x.n, id:x.i, objetivo:x.o, status:x.st, entrenadorId:x.e||'', nutriologoId:x.nu||'',
     asignado:x.as, dias:x.d, fechaRegistro:x.fr, bloque:x.b||undefined,
     progresion:x.pe?{estado:x.pe}:undefined,
     membresia:x.m?{vence:x.m.v||undefined, ancla:x.m.a||undefined, suspendido:x.m.su||undefined}:undefined,
     logs:{sesiones:ses, asistencia:[], pesoCorporal:[], medidas:[], lesiones:[], prs:{}},
-    limitaciones:[], zonas:[], _lite:true, _est:x.x||0,
+    limitaciones:[], zonas:[], _lite:true, _est:x.x||0, _cat:x.ct||'',
     _rt:x.rt||null, mascota:x.mc?{id:x.mc.i, nombre:x.mc.n}:undefined};
   IDX_LITE[code]=lite;
   return lite;

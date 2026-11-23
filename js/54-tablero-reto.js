@@ -26,7 +26,8 @@ function trPuntos(){ return Object.assign({}, TR_PUNTOS_DEF, (GYM.reto && GYM.re
 let trObj = '';          // objetivo de la tabla de ranking que se está viendo
 let trVerTodos = false;  // mostrar todo el ranking o solo los primeros 20
 
-const TR_OBJ_CORTO = {'GANAR MÚSCULO':'Masa muscular','PERDER PESO':'Bajar % de grasa','RECOMPOSICIÓN CORPORAL':'Recomposición'};
+const TR_OBJ_CORTO = {'GANAR MÚSCULO':'Aumento muscular','PERDER PESO':'Pérdida de masa grasa','RECOMPOSICIÓN CORPORAL':'Definición muscular'};
+let trCat='';            // categoría del ranking ('' = todas)
 function trObjetivos(){ return (GYM.reto && GYM.reto.objetivos) || ['GANAR MÚSCULO','PERDER PESO','RECOMPOSICIÓN CORPORAL']; }
 
 // Desde cuándo cuenta: inicio del reto si ya arrancó; si no, todo (vista previa)
@@ -64,7 +65,10 @@ function trResumenIndice(s){
   const r=trCalcSocio(s, trDesde(), trPuntos());
   const n1=v=>v==null?null:Math.round(v*10)/10;
   return {d:trDesde().iso, p:r.puntos, pc:r.ptsConst, pp:r.ptsProg, n:r.sesiones, so:r.semanasOk, me:r.mediciones,
-    dp:n1(r.dPeso), dq:n1(r.dPesoPct), dc:n1(r.dCint), db:n1(r.dBrazo), dg:n1(r.dGrasa), fz:n1(r.fuerzaPct)};
+    dp:n1(r.dPeso), dq:n1(r.dPesoPct), dc:n1(r.dCint), db:n1(r.dBrazo), dg:n1(r.dGrasa), fz:n1(r.fuerzaPct),
+    cp:r.constPct||0, cq:r.constPts||0, cm:r.comp||null,
+    af:(r.alertas&&r.alertas.fuera)||0, ac:(r.alertas&&r.alertas.corta)||0, ad:(r.alertas&&r.alertas.duplicada)||0,
+    as:((r.alertas&&r.alertas.saltos)||[]).slice(0,5)};
 }
 function trResumenVigente(s, desde){ return !!(s && s._lite && s._rt && s._rt.d===desde.iso); }
 
@@ -75,12 +79,14 @@ function trCalcSocio(s, desde, P){
     const x=s._rt, ses=sesValidas(s).filter(z=>(z.ts||0)>=desde.ts);
     const ult=ses.length?ses[ses.length-1].ts:null;
     const diasSin=ult!=null?Math.floor((Date.now()-ult)/86400000):(typeof diasDesde==='function'?diasDesde(s.fechaRegistro):null);
-    return {s, sesiones:x.n||0, completas:0, semanasOk:x.so||0, mediciones:x.me||0,
+    return {constPct:x.cp||0, constPts:x.cq||0, comp:x.cm||s.dias||3, alertas:{fuera:x.af||0, corta:x.ac||0, duplicada:x.ad||0, saltos:comoArray(x.as)},
+      cat: typeof retoCategoria==='function' ? retoCategoria(s) : '',
+      s, sesiones:x.n||0, completas:0, semanasOk:x.so||0, mediciones:x.me||0,
       dPeso:x.dp??null, dPesoPct:x.dq??null, dCint:x.dc??null, dBrazo:x.db??null, dGrasa:x.dg??null, grasaAct:null, fuerzaPct:x.fz??null,
       ptsConst:x.pc||0, ptsProg:x.pp||0, puntos:x.p||0,
       entreno7:ses.some(z=>z.ts>=Date.now()-7*86400000), diasSin, resumen:true};
   }
-  const ses = sesValidas(s).filter(x=>(x.ts||0)>=desde.ts);
+  const ses = typeof retoSesionesPuntuables==='function' ? retoSesionesPuntuables(s, desde.ts) : sesValidas(s).filter(x=>(x.ts||0)>=desde.ts);
   const completas = ses.filter(x=>x.estado==='completa').length;
   // Semanas con 3+ sesiones
   const porSem = {};
@@ -113,19 +119,9 @@ function trCalcSocio(s, desde, P){
   const grasaIni = grasas.length ? grasas[0].g : null, grasaAct = grasas.length ? grasas[grasas.length-1].g : null;
   const dGrasa = grasas.length>=2 ? Math.round((grasaAct-grasaIni)*10)/10 : null;
 
-  // Fuerza: por ejercicio, peso de la primera vez vs el mejor de las últimas 3 veces (con 7+ días entre ambas)
-  const porEj = {};
-  // Cada sesión guarda los pesos por ejercicio en "detalle" ({n, s, p, kg}); "ejercicios" es solo el conteo
-  ses.forEach(x=>{ const lista=Array.isArray(x.detalle)?x.detalle:(Array.isArray(x.ejercicios)?x.ejercicios:[]);
-    lista.forEach(e=>{ if(e && e.n && e.kg>0){ (porEj[e.n]=porEj[e.n]||[]).push({ts:x.ts, kg:+e.kg}); } }); });
-  const cambios = [];
-  Object.values(porEj).forEach(l=>{
-    if(l.length<2) return; l.sort((a,b)=>a.ts-b.ts);
-    const ult = l.slice(-3), mejor = Math.max(...ult.map(x=>x.kg));
-    if(l[l.length-1].ts - l[0].ts < 7*86400000 || !(l[0].kg>0)) return;
-    cambios.push(Math.max(-50, Math.min(100, (mejor-l[0].kg)/l[0].kg*100)));
-  });
-  const fuerzaPct = cambios.length ? Math.round(cambios.reduce((a,b)=>a+b,0)/cambios.length*10)/10 : null;
+  // Fuerza: base de 2 semanas, sin saltos sospechosos y con tope (js/66-reglas-reto.js)
+  let fuerzaPct=null, saltos=[];
+  if(typeof retoFuerza==='function'){ const fz=retoFuerza(ses); fuerzaPct=fz.pct; saltos=fz.saltos; }
 
   // Puntos
   const ptsConst = ses.length*P.sesion + completas*P.completa + semanasOk*P.semana + semMed.size*P.medicion;
@@ -145,7 +141,11 @@ function trCalcSocio(s, desde, P){
   const ultTs = ult ? ult.ts : null;
   const diasSin = ultTs!=null ? Math.floor((Date.now()-ultTs)/86400000) : (typeof diasDesde==='function' ? diasDesde(s.fechaRegistro) : null);
   const hace7 = Date.now()-7*86400000;
+  const cst = typeof retoConstancia==='function' ? retoConstancia(s, desde, ses) : {pct:0, pts:0, comp:s.dias||3};
+  const al = typeof retoAlertas==='function' ? retoAlertas(s, desde.ts) : {fuera:0,corta:0,duplicada:0};
   return {
+    constPct:cst.pct, constPts:cst.pts, comp:cst.comp, alertas:{fuera:al.fuera, corta:al.corta, duplicada:al.duplicada, saltos},
+    cat: typeof retoCategoria==='function' ? retoCategoria(s) : '',
     s, sesiones:ses.length, completas, semanasOk, mediciones:semMed.size,
     dPeso, dPesoPct, dCint, dBrazo, dGrasa, grasaAct, fuerzaPct,
     ptsConst, ptsProg, puntos:ptsConst+ptsProg,
@@ -195,9 +195,19 @@ function trCalcTablero(){
   };
 }
 
-function trRanking(filas, obj){
-  return filas.filter(r=>r.s.objetivo===obj)
-    .sort((a,b)=>b.puntos-a.puntos || b.sesiones-a.sesiones || String(a.s.nombre).localeCompare(String(b.s.nombre)));
+// Puntaje del reto sobre 100: constancia (40) + resultado de nutrición (40) + jueces (20). Los dos últimos llegan en la siguiente etapa.
+function trPuntajeReto(r){ return Math.round(((r.constPts||0)+(r.resPts||0)+(r.juecesPts||0))*10)/10; }
+function trRanking(filas, obj, cat){
+  return filas.filter(r=>r.s.objetivo===obj && (!cat || r.cat===cat))
+    .sort((a,b)=>trPuntajeReto(b)-trPuntajeReto(a) || b.puntos-a.puntos || b.sesiones-a.sesiones || String(a.s.nombre).localeCompare(String(b.s.nombre)));
+}
+function trAlertasTxt(r){
+  const a=r.alertas||{}, t=[];
+  if(a.fuera) t.push(a.fuera+' sesión'+(a.fuera===1?'':'es')+' fuera del gym');
+  if(a.corta) t.push(a.corta+' muy corta'+(a.corta===1?'':'s'));
+  if(a.duplicada) t.push(a.duplicada+' repetida'+(a.duplicada===1?'':'s')+' el mismo día');
+  comoArray(a.saltos).slice(0,2).forEach(x=>t.push('salto en '+x.n+': '+x.de+'→'+x.a));
+  return t.join(' · ');
 }
 
 function abrirTableroReto(obj){
@@ -222,7 +232,10 @@ function abrirTableroReto(obj){
   const DN = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
   const totObj = Math.max(1, Object.values(T.porObj).reduce((a,b)=>a+b,0));
   const ents = Object.values(T.porEnt).sort((a,b)=>b.total-a.total);
-  const rk = trRanking(T.filas, trObj);
+  const rkObj = trRanking(T.filas, trObj);
+  const catsHay = (typeof RETO_CATS_ORDEN!=='undefined'?RETO_CATS_ORDEN:[]).filter(c=>rkObj.some(r=>r.cat===c));
+  if(trCat && !catsHay.includes(trCat)) trCat='';
+  const rk = trCat ? rkObj.filter(r=>r.cat===trCat) : rkObj;
   const rkVis = trVerTodos ? rk : rk.slice(0,20);
   const iniciales = n=>String(n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 
@@ -274,16 +287,17 @@ function abrirTableroReto(obj){
         <h3 class="tr-h3" style="margin:0">Ranking del reto</h3>
         <button type="button" class="tb-btn" onclick="trExportarCSV()">⬇ Exportar ranking</button>
       </div>
-      <p class="tr-mu" style="margin:4px 0 12px">Cada objetivo compite en su propia tabla.</p>
+      <p class="tr-mu" style="margin:4px 0 12px">Cada objetivo y categoría compite en su propia tabla. Reto /100 = constancia (40) + resultado de nutrición (40) + jueces (20); los dos últimos se capturan en la siguiente etapa. Los puntos de la app son los de la mascota.</p>
       <div class="tr-tabs" role="tablist">${objs.map(o=>`<button type="button" role="tab" aria-selected="${o===trObj}" class="tr-tab${o===trObj?' on':''}" onclick="abrirTableroReto('${esc(o)}')">${esc(TR_OBJ_CORTO[o]||objNombre(o))} · ${T.porObj[o]||0}</button>`).join('')}</div>
+      ${catsHay.length?`<div class="tr-cats" role="group" aria-label="Categoría">${['',...catsHay].map(c=>`<button type="button" aria-pressed="${trCat===c}" onclick="trCat='${c}';trVerTodos=false;abrirTableroReto()">${c?esc(retoCategoriaNombre(c)):'Todas'} <i>${c?rkObj.filter(r=>r.cat===c).length:rkObj.length}</i></button>`).join('')}</div>`:''}
       ${rk.length ? `<div class="tr-scroll"><table class="tr-table tr-rk">
-        <tr><th>#</th><th>Socio</th><th>Sesiones</th><th>Cambio</th><th>Constancia</th><th>Progreso</th><th>Puntos</th></tr>
+        <tr><th>#</th><th>Socio</th><th>Constancia</th><th>Cambio</th><th>Reto <small>/100</small></th><th>Puntos app</th></tr>
         ${rkVis.map((r,i)=>`<tr class="tr-click" onclick="staffOpenSocio('${esc(r.s.code)}')">
           <td><b class="tr-pos${i<3?' top':''}">${i+1}</b></td>
-          <td><div class="tr-who">${(()=>{ const st=typeof mascotaEstado==='function'?mascotaEstado(r.s):null; return st?`<span class="tr-av tr-masc" title="${esc(st.nombre)} · ${esc(st.etapa.nm)}">${mascotaImgHTML(st.m,st.etapa.n)}</span>`:`<span class="tr-av">${esc(iniciales(r.s.nombre))}</span>`; })()}<span><b>${esc(tc(r.s.nombre))}</b><small>${esc(r.s.asignado||'—')}</small></span></div></td>
-          <td>${r.sesiones}<small class="tr-mu"> · ${r.semanasOk} sem</small></td>
+          <td><div class="tr-who">${(()=>{ const st=typeof mascotaEstado==='function'?mascotaEstado(r.s):null; return st?`<span class="tr-av tr-masc" title="${esc(st.nombre)} · ${esc(st.etapa.nm)}">${mascotaImgHTML(st.m,st.etapa.n)}</span>`:`<span class="tr-av">${esc(iniciales(r.s.nombre))}</span>`; })()}<span><b>${esc(tc(r.s.nombre))}</b><small>${esc(r.s.asignado||'—')}${r.cat&&!trCat?' · '+esc(retoCategoriaNombre(r.cat)):''}</small>${trAlertasTxt(r)?`<small class="tr-alerta">⚠ ${esc(trAlertasTxt(r))}</small>`:''}</span></div></td>
+          <td><b>${r.constPct||0}%</b><small class="tr-mu"> · ${r.sesiones} ses · ${r.comp||'—'}/sem</small></td>
           <td class="tr-cambio">${esc(trCambioTxt(r))}</td>
-          <td>${r.ptsConst}</td><td>${r.ptsProg}</td><td><b>${r.puntos.toLocaleString('es-MX')}</b></td></tr>`).join('')}
+          <td><b>${trPuntajeReto(r)}</b><small class="tr-mu"> · const. ${r.constPts||0}/40</small></td><td>${r.puntos.toLocaleString('es-MX')}</td></tr>`).join('')}
       </table></div>
       ${rk.length>20?`<button type="button" class="tb-btn" style="margin-top:10px" onclick="trVerTodos=!trVerTodos;abrirTableroReto()">${trVerTodos?'Ver solo los primeros 20':'Ver los '+rk.length}</button>`:''}`
       : `<p class="tr-mu">Todavía no hay socios con este objetivo.</p>`}

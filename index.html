@@ -490,7 +490,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="q-sub">Por semana. Determina el split de tu rutina y tu gasto calórico.</div>
       <div class="slider-wrap">
         <div class="s-val"><span id="dias-v">4</span><span class="s-unit">días / semana</span></div>
-        <input type="range" id="qr-dias" aria-label="Días de entrenamiento por semana" min="2" max="7" value="4" oninput="document.getElementById('dias-v').textContent=this.value;document.getElementById('dias-7').hidden=this.value!=='7'">
+        <input type="range" id="qr-dias" aria-label="Días de entrenamiento por semana" min="3" max="7" value="4" oninput="document.getElementById('dias-v').textContent=this.value;document.getElementById('dias-7').hidden=this.value!=='7'">
         <div class="s-labels"><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
         <p class="q-sub" id="dias-7" hidden style="margin:12px 0 0">Con 7 días, uno será de <b>recuperación activa</b> (cardio suave y movilidad): el músculo crece cuando descansa.</p>
       </div>
@@ -544,8 +544,8 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="q-sub">Ajusta recuperación, volumen y tipo de ejercicios.</div>
       <div class="slider-wrap">
         <div class="s-val"><span id="edad-v">35</span><span class="s-unit">años</span></div>
-        <input type="range" id="qr-edad" aria-label="Edad" min="16" max="90" value="35" oninput="document.getElementById('edad-v').textContent=this.value">
-        <div class="s-labels"><span>16</span><span>30</span><span>50</span><span>70</span><span>90</span></div>
+        <input type="range" id="qr-edad" aria-label="Edad" min="14" max="90" value="35" oninput="document.getElementById('edad-v').textContent=this.value">
+        <div class="s-labels"><span>14</span><span>30</span><span>50</span><span>70</span><span>90</span></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="qPrev(5)">←</div><button class="btn-next" onclick="qNext(5)">Continuar</button></div>
     </div>
@@ -811,6 +811,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="tb-btn" id="btn-ver-ent" onclick="abrirEntrenadores()" style="display:none;color:var(--n);border-color:color-mix(in srgb,var(--n) 20%,transparent)">👥 Entrenadores</div>
       <div class="tb-btn" id="btn-nuevo-ent" onclick="abrirNuevoEntrenador()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador</div>
       <div class="tb-btn" id="btn-conocimiento" onclick="abrirConocimiento()" style="color:var(--p);border-color:color-mix(in srgb,var(--p) 25%,transparent)">📚 Conocimiento</div>
+      <div class="tb-btn" id="btn-reglas" onclick="retoReglasAbrir()" style="display:none">📍 Ubicación y reglas del reto</div>
       <div class="tb-btn" id="btn-tablero" onclick="abrirTableroReto()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🏆 Tablero del reto</div>
       <div class="tb-btn" id="btn-avisos" onclick="abrirAvisos()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>Avisos</div>
       <div class="tb-btn" id="btn-reparto" onclick="abrirReparto()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)"><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg>Reparto de entrenadores</div>
@@ -938,6 +939,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <script defer src="js/63-plan-intro.js"></script>
 <script defer src="js/64-mensajes.js"></script>
 <script defer src="js/65-recorrido.js"></script>
+<script defer src="js/66-reglas-reto.js"></script>
 <script defer src="js/99-arranque.js"></script>
 
 <!-- ═══ MODAL AVISO DE PRIVACIDAD ═══ -->
