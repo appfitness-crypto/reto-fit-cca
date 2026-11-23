@@ -37,7 +37,9 @@ function rcrPasosSesion(){
     {sel:'#en-ses .en-media', t:'Cómo se hace', x:'Toca la imagen o Ver técnica: ves el movimiento, los músculos que trabajas y el error más común.'},
     {sel:'#en-ses .en-cambia', t:'¿Máquina ocupada?', x:'Cámbialo por otro ejercicio parecido, solo por hoy. Tu rutina no se modifica.'},
     {sel:'#en-ses .en-tres', t:'Lo que te toca', x:'Cuántas series, cuántas repeticiones y cuánto descansar entre cada serie.'},
-    {sel:'#en-ses .en-steps', t:'Anota tu peso y tus repeticiones', x:'Usa + y – o escribe el número. Si es tu primera vez, elige un peso con el que llegues a las repeticiones sin perder la forma.'},
+    {sel:'#en-ses .en-data', t:'Lo que te toca', x:'Cuántas rondas o minutos haces y cuánto descansas.'},
+    {sel:'#en-ses .en-esp .en-btn', t:'Calentamiento y cardio', x:'Aquí no anotas peso: haz los movimientos y toca este botón cuando termines. En los ejercicios con pesas te enseñamos a anotar tu peso.'},
+    {sel:'#en-ses .en-steps', serie:1, t:'Anota tu peso y tus repeticiones', x:'Usa + y – o escribe el número. Si es tu primera vez, elige un peso con el que llegues a las repeticiones sin perder la forma.'},
     {sel:'#en-ses .en-lista', t:'Terminé la serie', x:'Tócalo al acabar cada serie: se guarda y arranca solo el cronómetro de descanso.'},
     {sel:'#en-ses .en-next', t:'Lo que sigue', x:'Cuando acabes las series, pasa al siguiente ejercicio desde aquí.'},
     {sel:'#en-ses .en-s-top .en-btn-sm', t:'Terminar', x:'Al final toca Terminar: se guarda tu sesión y sumas puntos. Si sales con la flecha, lo que llevas no se pierde.'},
@@ -54,13 +56,30 @@ function rcrTocaSesion(){
   }
   if(typeof vistaSocioActiva==='function' && vistaSocioActiva()) return false;
   const sc=document.getElementById('s-ses'); if(!sc || !sc.classList.contains('on')) return false;
-  if(!document.querySelector('#en-ses .en-steps, #en-ses .en-tres')) return false;   // ya en el ejercicio (no en la introducción)
+  if(!document.querySelector('#en-ses .en-ex')) return false;   // ya en el ejercicio (no en la introducción)
+  if(document.querySelector('.modal.open, #av-ov, #chat-ov, .en-f.on, dialog[open]')) return false;
+  return true;
+}
+function rcrPasosSerie(){
+  return [
+    {sel:'#en-ses .en-steps', t:'Tu primer ejercicio con peso', x:'Anota el peso que usaste y tus repeticiones con + y –, o escribe el número. Si es tu primera vez, elige un peso con el que llegues a las repeticiones sin perder la forma.'},
+    {sel:'#en-ses .en-lista', t:'Terminé la serie', x:'Tócalo al acabar cada serie: se guarda y arranca solo el cronómetro de descanso. La próxima vez la app te sugiere el peso.', fin:true}
+  ];
+}
+function rcrTocaSerie(){
+  const s=rcrSocio();
+  if(!s || rcrActivo || (s.avisosVistos||{}).recorridoSerie) return false;
+  try{ if(localStorage.getItem('rcr_recorridoSerie_'+s.code)) return false; }catch(e){}
+  if(!(s.avisosVistos||{}).recorridoSes) return false;   // primero el recorrido de la sesión
+  if(typeof vistaSocioActiva==='function' && vistaSocioActiva()) return false;
+  const sc=document.getElementById('s-ses'); if(!sc || !sc.classList.contains('on')) return false;
+  if(!document.querySelector('#en-ses .en-steps')) return false;
   if(document.querySelector('.modal.open, #av-ov, #chat-ov, .en-f.on, dialog[open]')) return false;
   return true;
 }
 let rcrTimerSes=null;
-function rcrIntentarSesion(){ clearTimeout(rcrTimerSes); rcrTimerSes=setTimeout(()=>{ if(rcrTocaSesion()){ try{ localStorage.removeItem('rcr_forzarSes'); }catch(e){} rcrIniciar('recorridoSes'); } },900); }
-function rcrSesionOtraVez(){ try{ localStorage.setItem('rcr_forzarSes','1'); }catch(e){} showToast('Listo: te lo mostramos la próxima vez que inicies un entrenamiento.'); }
+function rcrIntentarSesion(){ clearTimeout(rcrTimerSes); rcrTimerSes=setTimeout(()=>{ if(rcrTocaSerie()){ rcrIniciar('recorridoSerie'); return; } if(rcrTocaSesion()){ try{ localStorage.removeItem('rcr_forzarSes'); }catch(e){} rcrIniciar('recorridoSes'); } },900); }
+function rcrSesionOtraVez(){ const so=rcrSocio(); try{ localStorage.setItem('rcr_forzarSes','1'); if(so) localStorage.removeItem('rcr_recorridoSerie_'+so.code); }catch(e){} if(so&&so.avisosVistos){ delete so.avisosVistos.recorridoSerie; } showToast('Listo: te lo mostramos la próxima vez que inicies un entrenamiento.'); }
 
 // ¿Toca mostrarlo? Primera vez, con rutina, en Inicio y sin otra ventana encima
 function rcrToca(){
@@ -78,7 +97,7 @@ function rcrIntentar(){ clearTimeout(rcrTimer); rcrTimer=setTimeout(()=>{ if(rcr
 
 function rcrIniciar(clave){
   rcrClave=clave||'recorrido';
-  rcrPasos=rcrClave==='recorridoSes'?rcrPasosSesion():rcrDefinirPasos(); rcrI=0; rcrActivo=true;
+  rcrPasos=rcrClave==='recorridoSes'?rcrPasosSesion():rcrClave==='recorridoSerie'?rcrPasosSerie():rcrDefinirPasos(); rcrI=0; rcrActivo=true;
   let ov=document.getElementById('rcr'); if(ov) ov.remove();
   ov=document.createElement('div'); ov.id='rcr'; ov.className='rcr'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-labelledby','rcr-t');
   ov.innerHTML=`<div class="rcr-hueco" id="rcr-hueco"></div>
@@ -111,6 +130,7 @@ function rcrIr(d){
 }
 function rcrMostrar(){
   const p=rcrPasos[rcrI]; if(!p) return;
+  if(p.serie && rcrElemento(p)){ const so=rcrSocio(); if(so){ so.avisosVistos=Object.assign({},so.avisosVistos,{recorridoSerie:fechaISO(new Date())}); } }
   if(p.tab && document.getElementById('s-dash').dataset.tab!==p.tab && typeof dashTab==='function') dashTab(p.tab);
   const el=rcrElemento(p);
   document.getElementById('rcr-t').textContent=p.t;
@@ -120,7 +140,7 @@ function rcrMostrar(){
   const visibles=rcrPasos.map((q,k)=>k).filter(k=>!rcrPasos[k].sel||rcrElemento(rcrPasos[k])||rcrPasos[k].tab);
   const pos=visibles.indexOf(rcrI);
   document.getElementById('rcr-pts').innerHTML=`<span class="rcr-bar"><i style="width:${Math.round((pos+1)/visibles.length*100)}%"></i></span>${pos+1} de ${visibles.length}`;
-  document.getElementById('rcr-sig').textContent=p.fin?'Empezar':rcrI===0?'Empezar recorrido':'Siguiente';
+  document.getElementById('rcr-sig').textContent=p.fin?'Empezar':(rcrI===0&&!p.sel)?'Empezar recorrido':'Siguiente';
   document.getElementById('rcr-saltar').hidden=!!p.fin;
   document.getElementById('rcr-atras').hidden=rcrI===0;
   const ov=document.getElementById('rcr'); ov.classList.toggle('centro',!el);
