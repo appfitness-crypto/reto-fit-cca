@@ -269,8 +269,12 @@ function evalStaffHTML(s){
     if(EVAL_PRUEBA[x.id]) return `<button type="button" class="sd-b" onclick="evalRegistrar('${c}','${x.id}')">${x.ok?'Cambiar':'Registrar'}</button>`;
     return x.ok?'':`<button type="button" class="sd-b" onclick="evalMarcar('${c}','${x.id}')">Marcar hecho</button>`;
   };
-  return `<div class="sd-sec">${tit} <small>${ult?'última: '+esc(fmtFecha(ult)):'según la filosofía de su entrenador'}</small></div>
-    <div class="sd-body"><ul class="ev-l">${E.items.map(x=>{ const d=evalDato(s,x.id); return `<li class="${x.ok?'ok':''}"><b>${x.ok?'✓ ':''}${esc(x.nm)}</b>${boton(x)}${d?`<span>${esc(d)}</span>`:(!x.ok&&EVAL_COMO[x.id]?`<span>${esc(EVAL_COMO[x.id])}</span>`:'')}</li>`; }).join('')}</ul>
+  let items=E.items.slice();
+  const pc=items.find(x=>x.id==='peso_cintura'), gr=items.find(x=>x.id==='grasa');
+  if(pc&&gr){ items=items.filter(x=>x.id!=='grasa'); const i=items.indexOf(pc); items[i]=Object.assign({},pc,{nm:'Peso, cintura y % de grasa',ok:pc.ok&&gr.ok}); }
+  const hechos=items.filter(x=>x.ok).length;
+  return `<div class="sd-sec">${tit} <small>${ult?'última: '+esc(fmtFecha(ult)):'con la filosofía de su entrenador'}</small></div>
+    <div class="sd-body ev-card"><div class="ev-av"><span class="ev-bar"><i style="width:${items.length?Math.round(hechos/items.length*100):0}%"></i></span><b>${hechos} de ${items.length} hechas</b></div><ul class="ev-l">${items.map(x=>{ const d=evalDato(s,x.id); const b=boton(x)||(x.ok?`<span class="ev-hecho">${ico('check')}Hecho</span>`:''); return `<li class="${x.ok?'ok':''}"><div class="ev-t"><b>${esc(x.nm)}</b>${d?`<span>${esc(d)}</span>`:(!x.ok&&EVAL_COMO[x.id]?`<span>${esc(EVAL_COMO[x.id])}</span>`:(x.id==='peso_cintura'&&!x.ok?'<span>El % de grasa sale de la cintura y la estatura.</span>':''))}</div>${b}</li>`; }).join('')}</ul>
       ${E.toca||E.inicial?`<button type="button" class="sd-pri" style="margin-top:10px" ${E.pendientes?'disabled':''} onclick="evalCerrar('${c}')">${E.pendientes?'Faltan '+E.pendientes+' por completar':'Registrar evaluación completa'}</button>`:''}</div>`;
 }
 // Pruebas en piso: el entrenador elige el resultado (y, si aplica, escribe el número)

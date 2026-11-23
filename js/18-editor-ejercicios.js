@@ -108,13 +108,14 @@ function rtRutinaHTML(s){
   return `${bloqueRecordatorioFilosofia()}
   <div class="rt" id="rt-${s.code}">
     ${casaBannerStaff(s)}
+    <details class="rt-opc"><summary>${ico('more')}<span><b>Opciones de la rutina</b><small>Métodos, rehacer, regenerar o en casa</small></span>${ico('chev')}</summary>
     <div class="rt-bar">
       <button type="button" class="sd-b" onclick="staffEnriquecer('${s.code}')" title="Agrega métodos de intensidad y opciones por área ocupada donde falten, según tu filosofía">${ico('spark')}Métodos y opciones</button>
       ${staffBotonMetodoHTML(s)}
       ${staffBotonSistemaHTML(s)}
       ${casaBarraHTML(s)}
-      ${staffRutBackup[s.code]?`<button type="button" class="sd-b" onclick="staffDeshacerBase('${s.code}')">Deshacer rutina cargada</button>`:''}
-    </div>
+      ${staffRutBackup[s.code]?`<button type="button" class="sd-b" onclick="staffDeshacerBase('${s.code}')" title="Regresa a la rutina que tenía antes">Deshacer rutina cargada</button>`:''}
+    </div></details>
     ${rtSemanaHTML(s,k)}
     ${rtVolHTML(s)}
     <div class="rt-main">

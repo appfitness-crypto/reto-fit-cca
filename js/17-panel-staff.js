@@ -296,12 +296,13 @@ function fxSemanaHTML(s,ev){
     const hecho=hechas.has(fechaISO(d));
     const st=hecho?'done':toca?(i<hoyIdx?'miss':'plan'):'rest';
     const lb={done:'entrenó',miss:'faltó',plan:'toca',rest:'descanso'}[st];
-    return `<div class="${i===hoyIdx?'hoy':''}"><i class="${st}" title="${sc(DIAS_NAMES[k])}: ${lb}">${st==='done'?ico('check'):st==='miss'?ico('close'):''}</i>${letras[i]}</div>`;
+    const clase=(s.clasesGrupales||[]).some(c=>(c.dias||[]).includes(k));
+    return `<div class="${i===hoyIdx?'hoy':''}${clase?' cl':''}"><i class="${st}" title="${sc(DIAS_NAMES[k])}: ${lb}">${st==='done'?ico('check'):st==='miss'?ico('close'):''}</i>${letras[i]}${clase?'<em>Clase</em>':''}</div>`;
   }).join('');
   const dp=ev.deltaPeso;
   return `<section class="fx-sec"><h3>Esta semana <small>${ev.estaSemana} de ${esc(s.dias)} sesiones</small></h3><div class="fx-panel">
     <div class="fx-wk">${dias}</div>
-    <div class="fx-stats"><div><b>${ev.total}</b><span>sesiones en total</span></div><div><b>${ev.adherencia}%</b><span>asistencia, 4 semanas</span></div><div><b>${dp===null?'Sin datos':(dp>0?'+':'')+dp+' kg'}</b><span>cambio de peso</span></div></div>
+    <div class="fx-stats"><div><b>${ev.total}</b><span>sesiones en total</span></div><div><b>${ev.adherencia}%</b><span>asistencia (4 sem)</span></div><div><b>${dp===null?'Sin datos':(dp>0?'+':'')+dp+' kg'}</b><span>cambio de peso</span></div></div>
   </div></section>`;
 }
 function fxDatosHTML(s,pesoNow,puedeEd){
