@@ -48,6 +48,25 @@ function chatPintarAvisos(){
   if(tab) tab.classList.toggle('chat-nuevo', !!(s && !chatEsStaff() && chatSinLeer(s.code,'s')));
   document.querySelectorAll('[data-chat-badge]').forEach(el=>{ const c=el.getAttribute('data-chat-badge'); el.hidden=!chatSinLeer(c, chatEsStaff()?'e':'s'); });
   if(chatEsStaff() && document.getElementById('staff-socio-list')) chatMarcarLista();
+  chatFabPintar();
+}
+// Burbuja flotante en Inicio: aparece cuando ya hay conversación; con punto rojo y el mensaje cuando le respondieron
+function chatFabPintar(){
+  const sd=document.getElementById('s-dash'); if(!sd) return;
+  let fab=document.getElementById('chat-fab');
+  const s=typeof activeSocio!=='undefined'?activeSocio:null;
+  const m=s&&chatMeta[s.code];
+  if(!s || chatEsStaff() || !m || !m.ts){ if(fab) fab.remove(); return; }
+  const nuevo=chatSinLeer(s.code,'s'), e=chatNombreEnt(s);
+  const quien=e?tc(e.nombre).split(' ')[0]:'El club';
+  const av=e&&typeof entAvatarHTML==='function'?entAvatarHTML(e,'ent-av chat-fab-av'):`<span class="ent-av chat-fab-av">${ico('chat')}</span>`;
+  const clave=[nuevo,m.ts,quien].join('|');
+  if(fab && fab.dataset.k===clave) return;
+  if(!fab){ fab=document.createElement('div'); fab.id='chat-fab'; fab.className='chat-fab'; sd.appendChild(fab); }
+  fab.dataset.k=clave;
+  fab.classList.toggle('nuevo',nuevo);
+  fab.innerHTML=`${nuevo&&m.d==='e'&&m.t?`<button type="button" class="chat-fab-msg" onclick="chatAbrir('${esc(s.code)}')"><b>${esc(quien)}</b><span>${esc(m.t)}</span></button>`:''}
+    <button type="button" class="chat-fab-b" onclick="chatAbrir('${esc(s.code)}')" aria-label="${nuevo?esc(quien)+' te respondió. Abrir mensajes':'Abrir mensajes con '+esc(quien)}">${av}<i class="chat-fab-ic">${ico('chat')}</i>${nuevo?'<i class="chat-fab-dot" aria-hidden="true"></i>':''}</button>`;
 }
 function chatMarcarLista(){
   document.querySelectorAll('#staff-socio-list .sl-item').forEach(it=>{
@@ -62,10 +81,13 @@ function chatMarcarLista(){
 // ── Entradas ──
 function chatNombreEnt(s){ const e=s&&s.entrenadorId&&getEntrenador(s.entrenadorId); return e&&e.nombre&&e.rol!=='coordinador'?e:null; }
 function chatFilaPerfilHTML(s){
-  if(!s || !s.entrenadorId) return '';
-  const e=chatNombreEnt(s); if(!e) return '';
-  const av=typeof entAvatarHTML==='function'?entAvatarHTML(e,'pfl-av chat-av'):'';
-  return `<button type="button" class="pfl-it" onclick="chatAbrir('${esc(s.code)}')">${av}<span class="pfl-t"><b>Mensajes con ${esc(tc(e.nombre).split(' ')[0])}</b><small>Escríbele dudas de tu rutina o tu comida</small></span><i class="chat-dot" data-chat-badge="${esc(s.code)}" ${chatSinLeer(s.code,'s')?'':'hidden'}></i>${ico('chev')}</button>`;
+  if(!s || !s.code) return '';
+  const e=chatNombreEnt(s);
+  // Sin entrenador: escribe al club y le responde el director
+  const av=e&&typeof entAvatarHTML==='function'?entAvatarHTML(e,'pfl-av chat-av'):`<span class="pfl-ic">${ico('chat')}</span>`;
+  const tit=e?'Mensajes con '+esc(tc(e.nombre).split(' ')[0]):'Mensajes con el club';
+  const sub=e?'Escríbele dudas de tu rutina o tu comida':'Te responde el director mientras te asignan entrenador';
+  return `<button type="button" class="pfl-it" onclick="chatAbrir('${esc(s.code)}')">${av}<span class="pfl-t"><b>${tit}</b><small>${sub}</small></span><i class="chat-dot" data-chat-badge="${esc(s.code)}" ${chatSinLeer(s.code,'s')?'':'hidden'}></i>${ico('chev')}</button>`;
 }
 function chatBotonFichaHTML(s){
   if(!s || !chatEsStaff()) return '';
@@ -80,9 +102,10 @@ function chatAbrir(code){
   if(!chatListo() || !navigator.onLine){ showToast('Los mensajes necesitan conexión a internet.'); return; }
   chatCerrar();
   const ent=quien==='s'?chatNombreEnt(s):null;
-  const titulo=quien==='s'?(ent?tc(ent.nombre):'Tu entrenador'):tc(s.nombre);
-  const sub=quien==='s'?'Tu entrenador':(s.entrenadorId===staffActivoEntId?'Tu atleta':'Atleta de '+(((getEntrenador(s.entrenadorId)||{}).nombre)||'nadie todavía'));
-  const av=quien==='s'?(typeof entAvatarHTML==='function'&&ent?entAvatarHTML(ent,'ent-av chat-hav'):''):`<span class="ent-av chat-hav">${esc(typeof entIniciales==='function'?entIniciales(s.nombre):'')}</span>`;
+  const titulo=quien==='s'?(ent?tc(ent.nombre):'Equipo del club'):tc(s.nombre);
+  const entS=getEntrenador(s.entrenadorId), conEnt=entS&&entS.rol!=='coordinador';
+  const sub=quien==='s'?(ent?'Tu entrenador':'Te responde el director'):(s.entrenadorId===staffActivoEntId?'Tu atleta':conEnt?'Atleta de '+entS.nombre:'Sin entrenador: le respondes tú');
+  const av=quien==='s'?(typeof entAvatarHTML==='function'&&ent?entAvatarHTML(ent,'ent-av chat-hav'):`<span class="ent-av chat-hav">${ico('chat')}</span>`):`<span class="ent-av chat-hav">${esc(typeof entIniciales==='function'?entIniciales(s.nombre):'')}</span>`;
   const ov=document.createElement('div'); ov.id='chat-ov'; ov.className='chat-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Mensajes con '+titulo);
   ov.innerHTML=`<div class="chat-hoja">
     <div class="chat-h">${av}<div class="chat-ht"><b>${esc(titulo)}</b><small>${esc(sub)}</small></div><button type="button" class="chat-x" onclick="chatCerrar()" aria-label="Cerrar">${ico('x')}</button></div>
@@ -119,7 +142,7 @@ function chatPintar(v){
   const l=document.getElementById('chat-l'); if(!l||!chatAbierto) return;
   const msgs=Object.values(v).filter(m=>m&&m.t).sort((a,b)=>(+a.ts||0)-(+b.ts||0));
   if(!msgs.length){
-    l.innerHTML=`<p class="chat-vacio">${chatAbierto.quien==='s'?'Escríbele a tu entrenador: dudas de un ejercicio, si algo te molesta o si no podrás venir.':'Aún no hay mensajes. Escríbele para darle seguimiento.'}</p>`;
+    l.innerHTML=`<p class="chat-vacio">${chatAbierto.quien==='s'?(chatNombreEnt(getSocio(chatAbierto.code))?'Escríbele a tu entrenador: dudas de un ejercicio, si algo te molesta o si no podrás venir.':'Escríbenos tus dudas de la rutina o del reto. El director te responde aquí.'):'Aún no hay mensajes. Escríbele para darle seguimiento.'}</p>`;
     return;
   }
   let dia='', h='';
@@ -169,11 +192,12 @@ async function chatEnviar(){
 (function(){
   const envolver=(fn,despues)=>{ if(typeof window[fn]!=='function') return; const o=window[fn]; window[fn]=function(){ const r=o.apply(this,arguments); try{ despues.apply(this,arguments); }catch(e){ console.warn('chat',fn,e); } return r; }; };
   envolver('refreshDash',()=>{ chatEscucharMeta(); chatPintarAvisos(); });
+  envolver('dashTab',()=>chatFabPintar());
   envolver('staffRenderList',()=>{ chatEscucharMeta(); chatMarcarLista(); });
   envolver('staffRenderContent',s=>{
     const head=document.querySelector('#staff-content .fx-head'); if(!head||!s) return;
     if(!head.querySelector('.fx-chat')) head.insertAdjacentHTML('beforeend',chatBotonFichaHTML(s));
   });
-  envolver('logoutSocio',()=>{ chatCerrar(); chatDetenerMeta(); });
+  envolver('logoutSocio',()=>{ chatCerrar(); chatDetenerMeta(); chatFabPintar(); });
   envolver('staffLogout',()=>{ chatCerrar(); chatDetenerMeta(); });
 })();

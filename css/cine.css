@@ -1494,3 +1494,24 @@ html[data-theme="dark"] .chat-env{color:#0A0E13;}
 .ee-acc-h b{font-size:var(--fs-sm);color:var(--tx);}
 .ee-acc-h span{font-size:var(--fs-xs);color:var(--mu);}
 .ee-acc small{font-size:var(--fs-xs);color:var(--mu);line-height:1.45;}
+.chat-hav .ico{width:20px;height:20px;}
+/* Burbuja de mensajes en Inicio */
+.chat-fab{display:none;}
+#s-dash[data-tab="inicio"] .chat-fab{display:flex;flex-direction:column;align-items:flex-end;gap:8px;position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 112px);z-index:60;max-width:min(300px,calc(100vw - 32px));animation:chat-fab-in .45s var(--cine-expo,ease) both;}
+.chat-fab-b{position:relative;width:60px;height:60px;padding:0;border:0;border-radius:50%;background:var(--dk2);box-shadow:0 12px 26px -10px rgba(0,0,0,.55),0 0 0 3px color-mix(in srgb,var(--lime) 70%,transparent);cursor:pointer;}
+.chat-fab-av{width:60px;height:60px;font-size:22px;}
+.chat-fab-av .ico{width:24px;height:24px;}
+.chat-fab-ic{position:absolute;left:-4px;bottom:-2px;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:var(--lime);color:#fff;box-shadow:0 0 0 2px var(--dk2);}
+html[data-theme="dark"] .chat-fab-ic{color:#0A0E13;}
+.chat-fab-ic .ico{width:14px;height:14px;}
+.chat-fab-dot{position:absolute;top:0;right:0;width:16px;height:16px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 3px var(--dk2);}
+.chat-fab.nuevo .chat-fab-b{animation:chat-fab-pulso 2.2s ease-in-out infinite;}
+.chat-fab-msg{display:flex;flex-direction:column;align-items:flex-start;gap:2px;max-width:100%;padding:10px 14px;border:0;border-radius:18px 18px 6px 18px;background:var(--dk2);color:var(--tx);text-align:left;box-shadow:0 14px 30px -14px rgba(0,0,0,.6),inset 0 0 0 1px color-mix(in srgb,var(--tx) 10%,transparent);cursor:pointer;}
+.chat-fab-msg b{font:800 13px/1.2 var(--fb);color:var(--lime);}
+html[data-theme="dark"] .chat-fab-msg b{color:var(--lime);}
+.chat-fab-msg span{font-size:14px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+@keyframes chat-fab-in{from{opacity:0;transform:translateY(14px) scale(.9);}to{opacity:1;transform:none;}}
+@keyframes chat-fab-pulso{0%,100%{transform:none;}50%{transform:scale(1.06);}}
+@media (prefers-reduced-motion:reduce){#s-dash[data-tab="inicio"] .chat-fab,.chat-fab.nuevo .chat-fab-b{animation:none;}}
+.chat-fab:not(.nuevo) .chat-fab-b,.chat-fab:not(.nuevo) .chat-fab-av{width:50px;height:50px;font-size:18px;}
+.chat-fab:not(.nuevo) .chat-fab-ic{width:22px;height:22px;}
