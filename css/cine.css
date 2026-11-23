@@ -1691,3 +1691,12 @@ html[data-theme="dark"] .rm-btn{color:#0A0E13;}
 .rm-ok .ico{width:32px;height:32px;}
 .rm-okt{text-align:center;font:800 20px/1.2 var(--fb);color:var(--tx);}
 .rm-ini>.ofi-mu{text-align:center;}
+
+/* Nutrición: los tres pasos del cálculo */
+.nt-pasos{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:0;border-top:1px solid var(--b);}
+.nt-pasos li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;border-bottom:1px solid var(--b);}
+.nt-pasos span{font-size:13.5px;color:var(--mu);font-weight:600;}
+.nt-pasos b{font:800 15px/1.2 var(--fb);color:var(--tx);text-align:right;}
+.nt-pasos small{grid-column:1/-1;font-size:12px;color:var(--mu);line-height:1.4;}
+.nt-pasos li.tot span,.nt-pasos li.tot b{color:var(--tx);}
+.nt-aviso{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--lime) 12%,transparent);font-size:13px;line-height:1.45;color:var(--tx);}

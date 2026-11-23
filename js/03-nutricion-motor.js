@@ -19,6 +19,7 @@ function cinturaValida(c,est,imc){
   const r=c/est;
   if(r<0.38 || r>0.95) return 0;
   if((imc||0)>=35 && r<0.45) return 0;
+  if((imc||0)<30 && r>0.68) return 0;   // p. ej. 126 cm de cintura con IMC 26: casi seguro un error de captura
   return c;
 }
 function composicionCorporal(s,peso){
@@ -35,6 +36,29 @@ function composicionCorporal(s,peso){
             : (imc>=30 && !muscular) ? ideal+0.4*(peso-ideal) : peso;
   return {imc:Math.round(imc*10)/10, grasa:grasa!=null?Math.round(grasa):null, grasaAlta, muscular, pesoRef:Math.round(Math.min(peso,ref)*10)/10, mujer};
 }
+// Recalibración: tendencia del peso (mínimos cuadrados) de las últimas 6 semanas.
+// Necesita 3 pesajes o más que abarquen 14 días o más, y el último de hace 14 días o menos.
+const RECAL_DIAS=42, RECAL_MIN_PESAJES=3, RECAL_MIN_DIAS=14, RECAL_TOPE=0.15, RECAL_PESO=0.5;   // reglas de diseño: revisar con nutrición
+function nutRecalibrar(s, kcalPlan, tdeeEst){
+  const hoy=Date.now(), dia=86400000;
+  const pts=[];
+  comoArray(s&&s.logs&&s.logs.pesoCorporal).forEach(p=>{ const t=new Date(String(p.fecha)+'T12:00:00').getTime(); if(+p.kg>0 && t && hoy-t<=RECAL_DIAS*dia) pts.push([t,+p.kg]); });
+  // Las mediciones oficiales (InBody) también cuentan
+  try{ const m=(typeof OFI!=='undefined'&&OFI[s.code]&&OFI[s.code].med)||{}; Object.values(m).forEach(x=>{ const t=x&&x.fecha?new Date(x.fecha+'T12:00:00').getTime():0; if(x&&+x.peso>0&&t&&hoy-t<=RECAL_DIAS*dia) pts.push([t,+x.peso]); }); }catch(e){}
+  if(pts.length<RECAL_MIN_PESAJES) return null;
+  pts.sort((a,b)=>a[0]-b[0]);
+  const t0=pts[0][0], tN=pts[pts.length-1][0];
+  if(tN-t0<RECAL_MIN_DIAS*dia || hoy-tN>14*dia) return null;
+  // pendiente en kg por semana
+  const xs=pts.map(p=>(p[0]-t0)/(7*dia)), ys=pts.map(p=>p[1]), n=xs.length, mx=xs.reduce((a,b)=>a+b,0)/n, my=ys.reduce((a,b)=>a+b,0)/n;
+  let num=0, den=0; xs.forEach((x,i)=>{ num+=(x-mx)*(ys[i]-my); den+=(x-mx)*(x-mx); });
+  if(!den) return null;
+  const pendiente=Math.round(num/den*100)/100;
+  const tdeeReal=kcalPlan - pendiente*7700/7;
+  const corr=Math.max(-RECAL_TOPE*tdeeEst, Math.min(RECAL_TOPE*tdeeEst, (tdeeReal-tdeeEst)*RECAL_PESO));
+  if(Math.abs(corr)<40) return null;   // diferencia chica: no vale la pena mover el plan
+  return {tdee:Math.round(tdeeEst+corr), corr:Math.round(corr), pendiente, semanas:Math.round((tN-t0)/(7*dia)*10)/10, pesajes:n, esperado:Math.round((kcalPlan-tdeeEst)*7/7700*100)/100};
+}
 function calcNutricion(s){
   const peso = +pesoActual(s) || 70;
   const faltan = [!(+s.edad>0)&&'edad', !(+s.estatura>0)&&'estatura', !(+pesoActual(s)>0)&&'peso'].filter(Boolean);
@@ -47,59 +71,78 @@ function calcNutricion(s){
   const esHombre = g.includes('HOMBRE')||g.includes('MASCULINO');
   const esMujer = g.includes('MUJER')||g.includes('FEMENINO');
   const comp = composicionCorporal(s,peso);
-  // Con % de grasa conocido, Katch-McArdle (usa la masa magra) es más preciso que Mifflin-St Jeor
-  const bmr = comp.grasa!=null ? Math.round(370+21.6*peso*(1-comp.grasa/100))
-    : Math.round(esHombre ? bmrH : esMujer ? bmrM : (bmrH+bmrM)/2);
+  // ── 1. Metabolismo basal (no depende del objetivo) ──
+  // Con medición oficial InBody (masa libre de grasa medida) → Cunningham: 500 + 22 × MLG.
+  // Sin ella → Mifflin-St Jeor. El % de grasa estimado con la cintura NO cambia el basal: es una estimación
+  // y un error de captura en la cintura lo movía cientos de kcal (antes se usaba Katch-McArdle con ese dato).
+  const ib = typeof nutInbody==='function' ? nutInbody(s) : null;
+  let bmr, bmrMetodo;
+  if(ib && ib.mlg>20){ bmr=Math.round(500+22*ib.mlg); bmrMetodo='Cunningham con InBody ('+ib.mlg+' kg de masa libre de grasa, '+ib.fecha+')'; }
+  else { bmr=Math.round(esHombre ? bmrH : esMujer ? bmrM : (bmrH+bmrM)/2); bmrMetodo='Mifflin-St Jeor'+(esHombre||esMujer?'':' (promedio: falta el sexo)'); }
 
   // Factor de actividad: actividad del trabajo (base) + cada día de entrenamiento.
   // Socios registrados antes de esta pregunta conservan la tabla anterior (solo días de entrenamiento).
   const factores = {2:1.375, 3:1.45, 4:1.55, 5:1.65, 6:1.725, 7:1.76};
   const act = ACTIVIDAD_TRABAJO[s.actividad];
   const factor = act ? Math.min(1.9, Math.round((act.f + 0.05*(parseInt(s.dias)||4))*1000)/1000) : (factores[s.dias] || 1.55);
-  const tdee = Math.round(bmr * factor);
+  const factorTxt = act ? act.lbl.toLowerCase()+' + '+(parseInt(s.dias)||4)+' días de entrenamiento' : (parseInt(s.dias)||4)+' días de entrenamiento';
+  // ── 2. Gasto energético total (basal × actividad), como rango de ±10 % ──
+  let tdee = Math.round(bmr * factor);
 
-  // Ajuste calórico según objetivo
-  let kcal, ajusteTxt, protKg, nota;
-  switch(s.objetivo){
-    case 'PERDER PESO':
-      kcal = Math.round(Math.max(tdee * 0.82, tdee - 500)); // déficit ~18 %, máximo 500 kcal/día
-      if(kcal < bmr) kcal = bmr;      // nunca por debajo del basal
-      ajusteTxt = tdee*0.18>500 ? 'Déficit moderado (−500 kcal del gasto total)' : 'Déficit moderado (−18% del gasto total)';
-      protKg = 2.0;
-      nota = 'Comes un poco menos de lo que gastas, sin restricción extrema. Proteína alta (2.0 g/kg) para preservar masa muscular. Sentirás más hambre: contrólala con volumen de verduras y proteína en cada comida.';
-      break;
-    case 'RECOMPOSICIÓN CORPORAL':
-      kcal = Math.round(tdee * 0.93); // ligeramente por debajo del mantenimiento
-      if(kcal < bmr) kcal = bmr;
-      ajusteTxt = 'Recomposición (−7% del gasto total)';
-      protKg = 2.2;
-      nota = 'Comes un poco por debajo de tu gasto con proteína alta (2.2 g/kg) para bajar grasa mientras construyes músculo. Tu peso cambia despacio: mide tu avance con tu cintura, tu fuerza y cómo te queda la ropa.';
-      break;
-    case 'GANAR MÚSCULO':
-      if(comp.grasaAlta){   // IMC alto por grasa: recomposición (ganar músculo y bajar grasa a la vez), sin superávit
-        kcal = Math.round(tdee * 0.95);
-        ajusteTxt = 'Recomposición (−5% del gasto total)';
+  // Ajuste calórico según objetivo (función del gasto total: se usa antes y después de recalibrar con el peso)
+  const ajustar=(tdee)=>{
+    let kcal, ajusteTxt, protKg, nota;
+    switch(s.objetivo){
+      case 'PERDER PESO':
+        kcal = Math.round(Math.max(tdee * 0.82, tdee - 500)); // déficit ~18 %, máximo 500 kcal/día
+        if(kcal < bmr) kcal = bmr;      // nunca por debajo del basal
+        ajusteTxt = tdee*0.18>500 ? 'Déficit moderado (−500 kcal del gasto total)' : 'Déficit moderado (−18% del gasto total)';
         protKg = 2.0;
-        nota = 'Con tu composición actual conviene ganar músculo mientras bajas grasa (recomposición): calorías un poco por debajo de tu gasto y proteína alta. Tu peso puede bajar despacio mientras tu fuerza sube; eso es progreso.';
+        nota = 'Comes un poco menos de lo que gastas, sin restricción extrema. Proteína alta (2.0 g/kg) para preservar masa muscular. Sentirás más hambre: contrólala con volumen de verduras y proteína en cada comida.';
         break;
-      }
-      kcal = Math.round(tdee * (comp.muscular ? 1.05 : 1.10)); // superávit ~10% (5% si ya es musculoso: gana más lento y con menos grasa)
-      ajusteTxt = comp.muscular ? 'Superávit ligero (+5% del gasto total)' : 'Superávit ligero (+10% del gasto total)';
-      protKg = 1.8;
-      nota = 'Superávit controlado para construir músculo minimizando grasa. Prioriza carbohidratos alrededor del entrenamiento (antes y después). Creatina monohidratada 3–5 g/día es el suplemento con más evidencia.';
-      break;
-    case 'FUERZA PURA':
-      kcal = Math.round(tdee * 1.05);
-      ajusteTxt = 'Superávit mínimo (+5% del gasto total)';
-      protKg = 1.8;
-      nota = 'Mantenimiento ligeramente positivo: la fuerza requiere recuperación completa. Carbohidratos suficientes para rendir en series pesadas. Duerme 7–9 horas: ahí se consolida la fuerza.';
-      break;
-    default: // RESISTENCIA
-      kcal = tdee;
-      ajusteTxt = 'Mantenimiento (gasto total)';
-      protKg = 1.6;
-      nota = 'Calorías de mantenimiento con carbohidratos como combustible principal. Hidratación antes, durante y después de sesiones largas. Repón electrolitos si sudas más de 60 min.';
-  }
+      case 'RECOMPOSICIÓN CORPORAL':
+        kcal = Math.round(tdee * 0.93); // ligeramente por debajo del mantenimiento
+        if(kcal < bmr) kcal = bmr;
+        ajusteTxt = 'Recomposición (−7% del gasto total)';
+        protKg = 2.2;
+        nota = 'Comes un poco por debajo de tu gasto con proteína alta (2.2 g/kg) para bajar grasa mientras construyes músculo. Tu peso cambia despacio: mide tu avance con tu cintura, tu fuerza y cómo te queda la ropa.';
+        break;
+      case 'GANAR MÚSCULO':
+        if(comp.grasaAlta){   // IMC alto por grasa: recomposición (ganar músculo y bajar grasa a la vez), sin superávit
+          kcal = Math.round(tdee * 0.95);
+          ajusteTxt = 'Recomposición (−5% del gasto total)';
+          protKg = 2.0;
+          nota = 'Con tu composición actual conviene ganar músculo mientras bajas grasa (recomposición): calorías un poco por debajo de tu gasto y proteína alta. Tu peso puede bajar despacio mientras tu fuerza sube; eso es progreso.';
+          break;
+        }
+        kcal = Math.round(tdee * (comp.muscular ? 1.05 : 1.10)); // superávit ~10% (5% si ya es musculoso: gana más lento y con menos grasa)
+        ajusteTxt = comp.muscular ? 'Superávit ligero (+5% del gasto total)' : 'Superávit ligero (+10% del gasto total)';
+        protKg = 1.8;
+        nota = 'Superávit controlado para construir músculo minimizando grasa. Prioriza carbohidratos alrededor del entrenamiento (antes y después). Creatina monohidratada 3–5 g/día es el suplemento con más evidencia.';
+        break;
+      case 'FUERZA PURA':
+        kcal = Math.round(tdee * 1.05);
+        ajusteTxt = 'Superávit mínimo (+5% del gasto total)';
+        protKg = 1.8;
+        nota = 'Mantenimiento ligeramente positivo: la fuerza requiere recuperación completa. Carbohidratos suficientes para rendir en series pesadas. Duerme 7–9 horas: ahí se consolida la fuerza.';
+        break;
+      default: // RESISTENCIA
+        kcal = tdee;
+        ajusteTxt = 'Mantenimiento (gasto total)';
+        protKg = 1.6;
+        nota = 'Calorías de mantenimiento con carbohidratos como combustible principal. Hidratación antes, durante y después de sesiones largas. Repón electrolitos si sudas más de 60 min.';
+    }
+    return {kcal, ajusteTxt, protKg, nota};
+  };
+  // ── 2b. Recalibración con su peso real ──
+  // Si come lo que marca su plan, su peso dice cuánto gasta de verdad: gasto ≈ kcal del plan − Δpeso(kg/sem) × 7,700 / 7.
+  // Solo se corrige la mitad de la diferencia (el peso diario es ruidoso) y como máximo ±15 % del gasto estimado.
+  const tdeeEst = tdee;
+  const ov=s.nutricion&&s.nutricion.override&&(!s.nutricion.baseObj||s.nutricion.baseObj===s.objetivo)?+s.nutricion.kcal:0;
+  const recal = nutRecalibrar(s, ov>0?ov:ajustar(tdeeEst).kcal, tdeeEst);   // lo que se supone que comió: su plan (o el ajuste del staff)
+  if(recal) tdee = recal.tdee;
+  let {kcal, ajusteTxt, protKg, nota} = ajustar(tdee);
+  if(recal) nota += ' Tu gasto se ajustó con tu peso de las últimas semanas ('+(recal.pendiente>0?'+':'')+recal.pendiente+' kg por semana).';
 
   // Seguridad: menores de 18 sin déficit, y nadie por debajo de un mínimo absoluto (salvo que su gasto total sea menor)
   const menor = (parseInt(edad)||0) > 0 && parseInt(edad) < 18;
@@ -127,7 +170,11 @@ function calcNutricion(s){
   if(pRef<peso-0.5) nota += ' Proteína y grasas calculadas sobre '+pRef+' kg (peso de referencia por tu composición corporal), no sobre tu peso total.';
   if(comp.imc>=30 && comp.grasa==null) nota += ' Agrega tu medida de cintura en tu perfil para afinar este cálculo.';
   if(faltan.length) nota += ' Falta tu '+faltan.join(' y ')+' en tu perfil: este cálculo es aproximado hasta que lo completes.';
-  return { bmr, factor, tdee, kcal, prot, protKg, grasas, carbs, agua, ajusteTxt, nota, pesoBase: peso, imc:comp.imc, grasaPct:comp.grasa, pesoRef:pRef };
+  // ── 3. Ajuste por objetivo: lo único que cambia al pasar de ganar músculo a perder grasa ──
+  const tdeeRango = [Math.round(tdee*0.9), Math.round(tdee*1.1)];
+  const ajustePct = tdee ? Math.round((kcal/tdee-1)*1000)/10 : 0;
+  const objetivoAplicado = (s.objetivo==='GANAR MÚSCULO' && comp.grasaAlta) ? 'RECOMPOSICIÓN CORPORAL' : s.objetivo;
+  return { bmr, bmrMetodo, factor, factorTxt, tdee, tdeeEst, recal, tdeeRango, ajustePct, objetivoAplicado, kcal, prot, protKg, grasas, carbs, agua, ajusteTxt, nota, pesoBase: peso, imc:comp.imc, grasaPct:comp.grasa, pesoRef:pRef, dias:parseInt(s.dias)||null };
 }
 // Reparto de kcal por número de comidas (regla de diseño de docs/NUTRICION-DEPORTIVA.md; respeta la comida fuerte de 14 a 17 h)
 const MEAL_TEMPLATES={
@@ -157,8 +204,17 @@ function nutRepartoComidas(n,kcal,pP,cP,gP){
 function nutricionFinal(s){
   const base=calcNutricion(s), o=s.nutricion;
   if(!o || !o.override) return Object.assign({},base,{manual:false});
-  return Object.assign({},base,{
-    kcal:+o.kcal||base.kcal, prot:+o.prot||base.prot, carbs:+o.carbs||base.carbs, grasas:+o.grasas||base.grasas, agua:+o.agua||base.agua,
-    manual:true
-  });
+  const n=v=>(v===0||v==='0')?0:(+v||null);   // un 0 capturado a propósito se respeta
+  // El ajuste del staff guarda contra qué se hizo (objetivo, peso, gasto). Si cambió el objetivo, ese ajuste ya no aplica;
+  // si cambió el peso o la frecuencia, se escala: kcal con el gasto total, proteína y grasa con el peso, carbohidrato el resto.
+  if(o.baseObj && o.baseObj!==s.objetivo) return Object.assign({},base,{manual:false, overrideViejo:true});
+  let kcal=n(o.kcal)??base.kcal, prot=n(o.prot)??base.prot, grasas=n(o.grasas)??base.grasas, carbs=n(o.carbs)??base.carbs, adaptado=false;
+  if(o.baseTdee && o.basePeso){
+    const fT=base.tdee/o.baseTdee, fP=base.pesoBase/o.basePeso;
+    if(Math.abs(fT-1)>0.02 || Math.abs(fP-1)>0.02){
+      kcal=Math.round(kcal*fT); prot=Math.round(prot*fP); grasas=Math.round(grasas*fP);
+      carbs=Math.max(0,Math.round((kcal-prot*4-grasas*9)/4)); adaptado=true;
+    }
+  }
+  return Object.assign({},base,{ kcal, prot, carbs, grasas, agua:n(o.agua)??base.agua, manual:true, adaptado });
 }

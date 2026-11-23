@@ -55,6 +55,20 @@ function entAsignar(code,entId){
   showToast(s.entrenadorId?'🏋️ Reasignado a '+s.asignado:'🏋️ Entrenador: sin asignar');
 }
 const nutBorrador={};   // código → requerimientos que se están ajustando en la ficha (aún sin guardar)
+// Los tres pasos del cálculo, por separado: basal → gasto total → ajuste por objetivo
+function nutDesgloseHTML(b,nut,obj){
+  const f=n=>Number(n).toLocaleString('es-MX'), sig=b.ajustePct>0?'+':'';
+  const cambio=obj && b.objetivoAplicado && b.objetivoAplicado!==obj;
+  return `<ol class="nt-pasos">
+    <li><span>1 · Metabolismo basal</span><b>${f(b.bmr)} kcal</b><small>${esc(b.bmrMetodo||'')}</small></li>
+    <li><span>2 · Gasto total</span><b>${f(b.tdee)} kcal</b><small>${f(b.bmr)} × ${b.factor} (${esc(b.factorTxt||'')}) · rango ${f(b.tdeeRango[0])}–${f(b.tdeeRango[1])}</small></li>
+    ${b.recal?`<li><span>2b · Recalibrado con su peso</span><b>${b.recal.corr>0?'+':''}${f(b.recal.corr)} kcal</b><small>Estimado ${f(b.tdeeEst)} → ${f(b.tdee)}. En ${b.recal.semanas} semanas (${b.recal.pesajes} pesajes) su peso cambió ${b.recal.pendiente>0?'+':''}${b.recal.pendiente} kg/sem; con su plan se esperaba ${b.recal.esperado>0?'+':''}${b.recal.esperado}. Supone que comió lo de su plan; se corrige la mitad de la diferencia y máximo 15 %.</small></li>`:`<li><span>2b · Recalibración con su peso</span><b>—</b><small>Se activa con 3 pesajes o más en 2 semanas o más (los suyos o los del InBody).</small></li>`}
+    <li><span>3 · Ajuste por objetivo</span><b>${sig}${b.ajustePct} %</b><small>${esc(b.ajusteTxt||'')}${cambio?' · Su objetivo es aumento muscular, pero con su % de grasa estimado se aplica recomposición (sin superávit).':''}</small></li>
+    <li class="tot"><span>Meta automática</span><b>${f(b.kcal)} kcal</b><small>${f(b.tdee)} ${b.ajustePct<0?'−':'+'} ${Math.abs(b.ajustePct)} % · proteína ${b.protKg} g/kg sobre ${b.pesoRef} kg</small></li>
+  </ol>
+  ${nut.manual?`<p class="nt-aviso">${nut.adaptado?'El ajuste del staff se adaptó solo al nuevo peso o frecuencia (se escala con el gasto total). ':''}Lo que ve el socio es el ajuste del staff: ${f(nut.kcal)} kcal.</p>`:''}
+  ${nut.overrideViejo?'<p class="nt-aviso">Cambió su objetivo: el ajuste anterior del staff ya no aplica y ve el cálculo automático. Ajústalo de nuevo si hace falta.</p>':''}`;
+}
 function bloqueNutricionStaff(s){
   const nut=nutricionFinal(s), base=calcNutricion(s), c=esc(s.code);
   const nutriEnt=s.nutriologoId?DB.entrenadores[s.nutriologoId]:null;
@@ -77,7 +91,8 @@ function bloqueNutricionStaff(s){
       <div class="nt-macs">${mac('prot','Proteína',v.prot,pP,'m-p')}${mac('carbs','Carbohidratos',v.carbs,pC,'m-c')}${mac('grasas','Grasas',v.grasas,pG,'m-g')}</div>
       ${D?`<div class="nt-chk ${cuadra?'ok':'bad'}">${ico(cuadra?'check':'warn')}<span>${cuadra?'Los macros suman '+kMac.toLocaleString('es-MX')+' kcal y cuadran con el total.':'Los macros suman '+kMac.toLocaleString('es-MX')+' kcal y el total es '+Number(v.kcal).toLocaleString('es-MX')+'. Con '+cSug+' g de carbohidratos cuadra. <button type="button" class="fx-lnk" onclick="nutValor(\''+c+'\',\'carbs\','+cSug+')">Usar '+cSug+' g</button>'}</span></div>`:''}
       <div class="fx-rows"><div><span>Agua</span><b>${D?step('agua',v.agua,0.25,'Litros de agua'):esc(v.agua)+' L al día'}</b></div>
-        <div><span>Referencia automática</span><b>${Number(base.kcal).toLocaleString('es-MX')} kcal (BMR ${base.bmr} × ${base.factor})</b></div></div>
+</div>
+      ${nutDesgloseHTML(base,nut,s.objetivo)}
       ${puede?`<div class="fx-acts" style="margin-top:12px">${D?`<button type="button" class="sd-b p" onclick="nutGuardarFicha('${c}')" ${cuadra?'':'disabled'}>Guardar requerimientos</button><button type="button" class="sd-b" onclick="nutCancelarFicha('${c}')">Cancelar</button>`
         :`<button type="button" class="sd-b p" onclick="nutEditarFicha('${c}')">Ajustar requerimientos</button>${nut.manual?`<button type="button" class="sd-b" onclick="nutRestablecer('${c}')">Volver al cálculo automático</button>`:''}`}</div>`:''}
     </div></section>
@@ -96,7 +111,10 @@ function nutGuardarFicha(code){
   if(!(kcal>=800&&kcal<=6000)){ showToast('Revisa las calorías (800 a 6000)'); return; }
   if(Math.abs(prot*4+carbs*4+grasas*9-kcal)>kcal*0.05){ showToast('Los macros no cuadran con las calorías'); return; }
   const o=s.nutricion||{};
-  s.nutricion={ override:true, kcal,prot,carbs,grasas, agua:agua||calcNutricion(s).agua, nota:o.nota||'', menu:comoArray(o.menu), por:pqStaffNombre(), fecha:fechaISO(new Date()) };
+  const b=calcNutricion(s);
+  // Contra qué se hizo el ajuste: si cambia el objetivo vuelve al automático; si cambia el peso o el gasto, se escala solo
+  s.nutricion={ override:true, kcal,prot,carbs,grasas, agua:agua||b.agua, nota:o.nota||'', menu:comoArray(o.menu), por:pqStaffNombre(), fecha:fechaISO(new Date()),
+    baseObj:s.objetivo||'', baseTdee:b.tdee, basePeso:b.pesoBase };
   if(o.plan) s.nutricion.plan=o.plan;
   pqGuardarStaff(s,['nutricion']); delete nutBorrador[code];
   staffRenderList(); nutRepintar(code);
