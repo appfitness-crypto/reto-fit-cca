@@ -5,7 +5,7 @@
    · Perfil → Tu cuenta → "Ver el recorrido de la app" lo vuelve a mostrar.
    · Se salta los pasos cuyo elemento no está en pantalla (p. ej. sin compañero o sin mensajes). ═══ */
 
-let rcrPasos=[], rcrI=0, rcrActivo=false;
+let rcrPasos=[], rcrI=0, rcrActivo=false, rcrClave='recorrido';
 
 function rcrSocio(){ return typeof activeSocio!=='undefined'?activeSocio:null; }
 function rcrDefinirPasos(){
@@ -29,6 +29,39 @@ function rcrDefinirPasos(){
   return P;
 }
 
+// Recorrido de la primera sesión de entrenamiento (pantalla del ejercicio)
+function rcrPasosSesion(){
+  return [
+    {t:'Tu primera sesión', x:'Te enseñamos en 30 segundos cómo registrar tu entrenamiento. Lo que anotes hoy sirve para sugerirte el peso la próxima vez.', ic:'dumbbell'},
+    {sel:'#en-ses .en-rail', t:'Tus ejercicios de hoy', x:'Aquí ves en cuál vas y cuáles ya terminaste. Toca cualquiera para saltar a él.'},
+    {sel:'#en-ses .en-media', t:'Cómo se hace', x:'Toca la imagen o Ver técnica: ves el movimiento, los músculos que trabajas y el error más común.'},
+    {sel:'#en-ses .en-cambia', t:'¿Máquina ocupada?', x:'Cámbialo por otro ejercicio parecido, solo por hoy. Tu rutina no se modifica.'},
+    {sel:'#en-ses .en-tres', t:'Lo que te toca', x:'Cuántas series, cuántas repeticiones y cuánto descansar entre cada serie.'},
+    {sel:'#en-ses .en-steps', t:'Anota tu peso y tus repeticiones', x:'Usa + y – o escribe el número. Si es tu primera vez, elige un peso con el que llegues a las repeticiones sin perder la forma.'},
+    {sel:'#en-ses .en-lista', t:'Terminé la serie', x:'Tócalo al acabar cada serie: se guarda y arranca solo el cronómetro de descanso.'},
+    {sel:'#en-ses .en-next', t:'Lo que sigue', x:'Cuando acabes las series, pasa al siguiente ejercicio desde aquí.'},
+    {sel:'#en-ses .en-s-top .en-btn-sm', t:'Terminar', x:'Al final toca Terminar: se guarda tu sesión y sumas puntos. Si sales con la flecha, lo que llevas no se pierde.'},
+    {t:'¡A entrenar!', x:'Si algo no te queda claro, pregúntale a tu entrenador en Mensajes.', ic:'flame', fin:true}
+  ];
+}
+function rcrTocaSesion(){
+  const s=rcrSocio();
+  if(!s || rcrActivo) return false;
+  let forzar=false; try{ forzar=localStorage.getItem('rcr_forzarSes')==='1'; }catch(e){}
+  if(!forzar){
+    if((s.avisosVistos||{}).recorridoSes) return false;
+    try{ if(localStorage.getItem('rcr_recorridoSes_'+s.code)) return false; }catch(e){}
+  }
+  if(typeof vistaSocioActiva==='function' && vistaSocioActiva()) return false;
+  const sc=document.getElementById('s-ses'); if(!sc || !sc.classList.contains('on')) return false;
+  if(!document.querySelector('#en-ses .en-steps, #en-ses .en-tres')) return false;   // ya en el ejercicio (no en la introducción)
+  if(document.querySelector('.modal.open, #av-ov, #chat-ov, .en-f.on, dialog[open]')) return false;
+  return true;
+}
+let rcrTimerSes=null;
+function rcrIntentarSesion(){ clearTimeout(rcrTimerSes); rcrTimerSes=setTimeout(()=>{ if(rcrTocaSesion()){ try{ localStorage.removeItem('rcr_forzarSes'); }catch(e){} rcrIniciar('recorridoSes'); } },900); }
+function rcrSesionOtraVez(){ try{ localStorage.setItem('rcr_forzarSes','1'); }catch(e){} showToast('Listo: te lo mostramos la próxima vez que inicies un entrenamiento.'); }
+
 // ¿Toca mostrarlo? Primera vez, con rutina, en Inicio y sin otra ventana encima
 function rcrToca(){
   const s=rcrSocio();
@@ -43,8 +76,9 @@ function rcrToca(){
 let rcrTimer=null;
 function rcrIntentar(){ clearTimeout(rcrTimer); rcrTimer=setTimeout(()=>{ if(rcrToca()) rcrIniciar(); },1400); }
 
-function rcrIniciar(){
-  rcrPasos=rcrDefinirPasos(); rcrI=0; rcrActivo=true;
+function rcrIniciar(clave){
+  rcrClave=clave||'recorrido';
+  rcrPasos=rcrClave==='recorridoSes'?rcrPasosSesion():rcrDefinirPasos(); rcrI=0; rcrActivo=true;
   let ov=document.getElementById('rcr'); if(ov) ov.remove();
   ov=document.createElement('div'); ov.id='rcr'; ov.className='rcr'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-labelledby','rcr-t');
   ov.innerHTML=`<div class="rcr-hueco" id="rcr-hueco"></div>
@@ -116,10 +150,12 @@ function rcrTerminar(){
   document.removeEventListener('keydown',rcrTecla); window.removeEventListener('resize',rcrColocar);
   const ov=document.getElementById('rcr'); if(ov){ ov.classList.remove('on'); setTimeout(()=>ov.remove(),220); }
   const s=rcrSocio(); if(!s) return;
-  try{ localStorage.setItem('rcr_visto_'+s.code,'1'); }catch(e){}
-  if(!(s.avisosVistos||{}).recorrido && !(typeof vistaSocioActiva==='function' && vistaSocioActiva())){
-    s.avisosVistos=Object.assign({},s.avisosVistos,{recorrido:fechaISO(new Date())}); dbSave(s.code);
+  const k=rcrClave;
+  try{ localStorage.setItem((k==='recorrido'?'rcr_visto_':'rcr_'+k+'_')+s.code,'1'); }catch(e){}
+  if(!(s.avisosVistos||{})[k] && !(typeof vistaSocioActiva==='function' && vistaSocioActiva())){
+    s.avisosVistos=Object.assign({},s.avisosVistos,{[k]:fechaISO(new Date())}); dbSave(s.code);
   }
+  if(k!=='recorrido') return;   // en la sesión se queda donde está
   if(typeof dashTab==='function' && document.getElementById('s-dash').dataset.tab!=='inicio') dashTab('inicio');
   window.scrollTo({top:0,behavior:'auto'});
 }
@@ -132,6 +168,7 @@ function rcrVerDeNuevo(){
 // ── Enganches ──
 (function(){
   if(typeof go==='function'){ const g=go; window.go=go=function(id){ const r=g.apply(this,arguments); if(id==='s-dash') try{ rcrIntentar(); }catch(e){} return r; }; }
+  if(typeof renderSes==='function'){ const o=renderSes; window.renderSes=renderSes=function(){ const r=o.apply(this,arguments); try{ if(rcrActivo&&rcrClave==='recorridoSes') setTimeout(rcrColocar,30); else rcrIntentarSesion(); }catch(e){} return r; }; }
   if(typeof refreshDash==='function'){ const o=refreshDash; window.refreshDash=refreshDash=function(){ const r=o.apply(this,arguments); try{ rcrIntentar(); }catch(e){} return r; }; }
   if(typeof renderPerfilTab==='function'){
     const o=renderPerfilTab;
@@ -140,7 +177,7 @@ function rcrVerDeNuevo(){
       try{
         const sec=document.getElementById('dsec-perfil'); if(!sec || sec.querySelector('.rcr-fila')) return r;
         const card=[...sec.querySelectorAll('.pf-card')].find(c=>c.querySelector('.pf-tema'))||sec.querySelector('.pf-card');
-        if(card) card.insertAdjacentHTML('afterbegin',`<button type="button" class="pf-row rcr-fila" onclick="rcrVerDeNuevo()">${it('spark','sm')}<span class="pf-row-t">Ver el recorrido de la app</span>${ico('chev')}</button>`);
+        if(card) card.insertAdjacentHTML('afterbegin',`<button type="button" class="pf-row rcr-fila" onclick="rcrVerDeNuevo()">${it('spark','sm')}<span class="pf-row-t">Ver el recorrido de la app</span>${ico('chev')}</button><button type="button" class="pf-row rcr-fila-ses" onclick="rcrSesionOtraVez()">${it('dumbbell','sm')}<span class="pf-row-t">Ver cómo registrar una sesión</span>${ico('chev')}</button>`);
       }catch(e){}
       return r;
     };
