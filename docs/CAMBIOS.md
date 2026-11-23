@@ -5,7 +5,8 @@
   - Paso 2, gasto total = basal × factor de actividad, mostrado como rango de ±10 %.
   - Paso 3, ajuste por objetivo (−18 %, −7 %, +10 %…): es lo único que cambia al cambiar el objetivo. Si "ganar músculo" se aplica como recomposición, la ficha lo dice.
   - Los ajustes del staff guardan contra qué se hicieron: si cambia el peso o la frecuencia se escalan solos (kcal con el gasto, proteína y grasa con el peso); si cambia el objetivo, se vuelve al cálculo automático y se avisa. Un 0 capturado a propósito ya no se pierde.
-- Service worker: `retofit-cca-v66`.
+  - Paso 2b, recalibración con el peso real: con 3 pesajes o más en 2 semanas o más (los del socio o los del InBody, de las últimas 6 semanas), gasto ≈ kcal del plan − tendencia del peso (kg/sem) × 7,700 / 7. Se corrige la mitad de la diferencia, máximo ±15 %, y solo si pasa de 40 kcal. Supone que comió lo de su plan (o el ajuste del staff). Constantes RECAL_* en js/03: reglas de diseño para revisar con nutrición.
+- Service worker: `retofit-cca-v67`.
 
 ---
 

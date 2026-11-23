@@ -62,6 +62,7 @@ function nutDesgloseHTML(b,nut,obj){
   return `<ol class="nt-pasos">
     <li><span>1 · Metabolismo basal</span><b>${f(b.bmr)} kcal</b><small>${esc(b.bmrMetodo||'')}</small></li>
     <li><span>2 · Gasto total</span><b>${f(b.tdee)} kcal</b><small>${f(b.bmr)} × ${b.factor} (${esc(b.factorTxt||'')}) · rango ${f(b.tdeeRango[0])}–${f(b.tdeeRango[1])}</small></li>
+    ${b.recal?`<li><span>2b · Recalibrado con su peso</span><b>${b.recal.corr>0?'+':''}${f(b.recal.corr)} kcal</b><small>Estimado ${f(b.tdeeEst)} → ${f(b.tdee)}. En ${b.recal.semanas} semanas (${b.recal.pesajes} pesajes) su peso cambió ${b.recal.pendiente>0?'+':''}${b.recal.pendiente} kg/sem; con su plan se esperaba ${b.recal.esperado>0?'+':''}${b.recal.esperado}. Supone que comió lo de su plan; se corrige la mitad de la diferencia y máximo 15 %.</small></li>`:`<li><span>2b · Recalibración con su peso</span><b>—</b><small>Se activa con 3 pesajes o más en 2 semanas o más (los suyos o los del InBody).</small></li>`}
     <li><span>3 · Ajuste por objetivo</span><b>${sig}${b.ajustePct} %</b><small>${esc(b.ajusteTxt||'')}${cambio?' · Su objetivo es aumento muscular, pero con su % de grasa estimado se aplica recomposición (sin superávit).':''}</small></li>
     <li class="tot"><span>Meta automática</span><b>${f(b.kcal)} kcal</b><small>${f(b.tdee)} ${b.ajustePct<0?'−':'+'} ${Math.abs(b.ajustePct)} % · proteína ${b.protKg} g/kg sobre ${b.pesoRef} kg</small></li>
   </ol>
