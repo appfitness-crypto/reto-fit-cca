@@ -77,10 +77,15 @@ function fbConUsuario(ms){
   return Promise.race([esp,new Promise(r=>setTimeout(()=>r(false),ms||6000))]);
 }
 let fbRolError=false;   // la última lectura del rol falló (sin conexión): no quiere decir que no sea staff
+let fbNutri=false;
+// ¿Ve a todos los socios? El director y los nutriólogos
+function fbVeTodos(){ return fbRolDB==='coordinador' || fbNutri; }
 async function fbCargarRol(user){
-  fbRolListo=false; fbRolDB=null; fbEsStaff=false; fbRolError=false;
+  fbRolListo=false; fbRolDB=null; fbEsStaff=false; fbRolError=false; fbNutri=false;
   if(user && !user.isAnonymous){
     try{ const r=await fbDB.ref('/roles/'+user.uid).once('value'); fbRolDB=r.val()||null; fbEsStaff=!!fbRolDB; }catch(e){ console.warn('Sin rol',e); fbRolError=true; }
+    // Nutriólogo: el director lo marca en /nutris; ve y mide a todos los socios (js/68-nutriologo.js)
+    if(fbRolDB==='entrenador'){ try{ const n=await fbDB.ref('/nutris/'+user.uid).once('value'); fbNutri=n.val()===true; }catch(e){ fbNutri=false; } }
   }
   fbRolListo=true;
   return fbRolDB;
@@ -244,11 +249,19 @@ function guardarLocal(){
 // Firebase NO guarda arrays ni objetos vacíos: un socio nuevo vuelve sin "sesiones", "prs", etc.
 // Esta función los restaura para que registrar una sesión nunca falle por un campo faltante.
 function comoArray(v){ return Array.isArray(v) ? v : (v && typeof v==='object' ? Object.values(v) : []); }
+const LOG_LLAVES={
+  sesiones:x=>x.ts?('t'+x.ts):(x.fecha+'|'+(x.hora||'')+'|'+(x.diaKey||'')),
+  asistencia:x=>x.fecha, pesoCorporal:x=>x.fecha, medidas:x=>x.fecha,
+  lesiones:x=>(x.protoId||'')+'|'+(x.fechaInicio||'')
+};
 function asegurarLogs(s){
   if(!s) return s;
   if(!s.logs || typeof s.logs!=='object') s.logs={};
   const L=s.logs;
   ['sesiones','pesoCorporal','asistencia','medidas','lesiones'].forEach(k=>{ L[k]=comoArray(L[k]); });
+  // Sesiones que el socio eliminó: se recuerdan para que ninguna sincronización las vuelva a traer
+  L.sesBorradas=comoArray(L.sesBorradas).filter(x=>typeof x==='string');
+  if(L.sesBorradas.length){ const b=new Set(L.sesBorradas); L.sesiones=L.sesiones.filter(x=>!x||!b.has(LOG_LLAVES.sesiones(x))); }
   if(!L.prs || typeof L.prs!=='object' || Array.isArray(L.prs)) L.prs={};
   s.limitaciones=comoArray(s.limitaciones);
   s.zonas=comoArray(s.zonas);
@@ -302,14 +315,12 @@ function camposSocio(a,b){ const k=new Set([...Object.keys(a||{}),...Object.keys
 function baseDeSocio(s){ const o={}; camposSocio(s,null).forEach(k=>{ o[k]=huella(s[k]); }); return o; }
 
 // Historial: se unen los registros de ambos lados (nada se pierde)
-const LOG_LLAVES={
-  sesiones:x=>x.ts?('t'+x.ts):(x.fecha+'|'+(x.hora||'')+'|'+(x.diaKey||'')),
-  asistencia:x=>x.fecha, pesoCorporal:x=>x.fecha, medidas:x=>x.fecha,
-  lesiones:x=>(x.protoId||'')+'|'+(x.fechaInicio||'')
-};
 function unirLogs(L,S){
   L=L||{}; S=S||{};
   const out=Object.assign({},S,L);
+  // Borradas en cualquiera de los dos lados: se unen y esas sesiones no regresan
+  const borr=[...new Set(comoArray(S.sesBorradas).concat(comoArray(L.sesBorradas)).filter(x=>typeof x==='string'))].slice(-400), bset=new Set(borr);
+  out.sesBorradas=borr;
   Object.keys(LOG_LLAVES).forEach(k=>{
     const la=comoArray(L[k]), sa=comoArray(S[k]), key=LOG_LLAVES[k], vistos=new Set(la.filter(Boolean).map(key));
     const extra=sa.filter(x=>x && !vistos.has(key(x)));
@@ -319,6 +330,7 @@ function unirLogs(L,S){
       else if(k==='sesiones') r=r.sort((a,b)=>String(a.fecha||'').localeCompare(String(b.fecha||''))||((a.ts||0)-(b.ts||0)));
       else if(k==='pesoCorporal'||k==='medidas') r=r.sort((a,b)=>String(a.fecha||'').localeCompare(String(b.fecha||'')));
     }
+    if(k==='sesiones' && bset.size) r=r.filter(x=>!x||!bset.has(key(x)));
     out[k]=r;
   });
   const pl=(L.prs&&typeof L.prs==='object')?L.prs:{}, ps=(S.prs&&typeof S.prs==='object')?S.prs:{}, prs=Object.assign({},ps);
@@ -455,10 +467,15 @@ function actualizarPillSync(){
   else if(n && fbListo){ txt='Sincronizando '+cambios+'…'; }
   else if(!n && pillHabiaPend){ cls='ok'; txt='✓ Todo sincronizado'; }
   pillHabiaPend = n>0;
-  if(!txt){ if(!el.classList.contains('ok')) el.classList.remove('on'); return; }
+  if(!txt){ if(!el.classList.contains('ok')) el.classList.remove('on','mini'); el.dataset.st=''; return; }
   clearTimeout(pillTimer);
-  el.className='sync-pill on '+cls;
+  // Si sigue igual unos segundos, se reduce a un punto para no tapar los títulos de la pantalla
+  const mismo=el.dataset.st===(cls||'sync'), mini=mismo && el.classList.contains('mini');
+  el.dataset.st=cls||'sync';
+  el.className='sync-pill on '+cls+(mini?' mini':'');
   el.innerHTML='<span class="dot"></span><span></span>'; el.lastChild.textContent=txt;
+  el.setAttribute('aria-label',txt);
+  if(!mismo){ clearTimeout(el._mini); if(cls!=='ok') el._mini=setTimeout(()=>{ if(el.classList.contains('on')&&!el.classList.contains('ok')) el.classList.add('mini'); },3000); }
   if(cls==='ok') pillTimer=setTimeout(()=>{ el.classList.remove('on'); setTimeout(()=>el.classList.remove('ok'),350); },2500);
 }
 function cargarScript(src){ return new Promise((res,rej)=>{ const sc=document.createElement('script'); sc.src=src; sc.crossOrigin='anonymous'; sc.onload=res; sc.onerror=rej; document.head.appendChild(sc); }); }

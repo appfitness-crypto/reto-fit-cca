@@ -60,7 +60,7 @@ function actualizarFbBadge(){
 // ── Menú del staff (celular): agrupa las acciones que antes ocupaban toda la barra ──
 function staffMenu(){
   const grupos=[
-    ['Reto',['btn-tablero','btn-avisos','btn-reparto','btn-patro']],
+    ['Reto',['btn-tablero','btn-reglas','btn-avisos','btn-reparto','btn-patro']],
     ['Personas',['btn-mi-codigo','btn-mi-filosofia','btn-ver-ent','btn-nuevo-ent','btn-conocimiento']],
     ['Datos y sistema',['btn-resumen','btn-apariencia','btn-lugares','btn-respaldo','btn-firebase','btn-reset']],
     ['Pruebas (antes del reto)',['btn-demo-cargar','btn-demo-borrar']],
@@ -93,7 +93,7 @@ function staffMenuIr(id){ staffMenuCerrar(); const b=document.getElementById(id)
 
 function staffGetSocios(){
   const todos=(typeof sociosParaStaff==='function'?sociosParaStaff():Object.values(DB.socios||{})).filter(Boolean);
-  if(staffRol==='coordinador' || !staffActivoEntId) return todos;
+  if(staffRol==='coordinador' || !staffActivoEntId || (typeof fbNutri!=='undefined' && fbNutri)) return todos;   // el nutriólogo ve a todos para medirlos
   // Cada entrenador o nutriólogo ve solo a quienes lo eligieron a él (entrenamiento) o se lo asignaron a él (nutrición).
   // Los socios sin asignar solo los ve el coordinador.
   return todos.filter(s=>s.entrenadorId===staffActivoEntId || s.nutriologoId===staffActivoEntId);
@@ -124,7 +124,10 @@ function staffRenderList(){
     att.innerHTML=[['r','Urgente'],['y','Atención'],['g','Al día']].map(([k,l])=>
       `<button type="button" aria-pressed="${staffSemVal===k}" onclick="staffFiltroSem('${k}')"><b>${nS(k)}</b><span><i class="sl-dot ${k}"></i>${l}</span></button>`).join('');
   }
+  staffEntPintar(todos);
   let list=todos.slice();
+  if(staffEntVal==='_sin') list=list.filter(socioSinEntrenador);
+  else if(staffEntVal) list=list.filter(s=>s.entrenadorId===staffEntVal);
   if(staffFilterVal==='sinent') list=list.filter(socioSinEntrenador);
   else if(staffFilterVal==='progresion') list=list.filter(pqNecesitaAccion);
   else if(staffFilterVal==='activo') list=list.filter(s=>{const e=est(s);return e==='activo'||e==='tolerancia';});
@@ -140,12 +143,16 @@ function staffRenderList(){
     const ini=tc(s.nombre).split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
     const me=membEstado(s), m=mot[s.code];
     const badge=me.estado==='activo'?'':`<span class="sl-st ${membBadgeCls(me)}">${membBadgeTxt(me)}</span>`;
-    return `<div class="sl-item${staffActivoId===s.code?' sel':''}${me.estado==='inactivo'?' off':''}" onclick="staffOpenSocio('${esc(s.code)}')" role="button" tabindex="0" title="${esc(tc(s.nombre))}${m.txt?': '+esc(m.txt):''}">
-      <div class="sl-ini">${esc(ini)}${m.c!=='n'?`<i class="sl-dot ${m.c}"></i>`:''}</div>
+    const elegido=staffSelModo&&staffSel.has(s.code);
+    return `<div class="sl-item${staffActivoId===s.code&&!staffSelModo?' sel':''}${me.estado==='inactivo'?' off':''}${staffSelModo?' modo-sel':''}${elegido?' elegido':''}" onclick="${staffSelModo?`staffSelToca('${esc(s.code)}')`:`staffOpenSocio('${esc(s.code)}')`}" role="${staffSelModo?'checkbox':'button'}"${staffSelModo?` aria-checked="${elegido}"`:''} tabindex="0" title="${esc(tc(s.nombre))}${m.txt?': '+esc(m.txt):''}">
+      <div class="sl-ini">${staffSelModo?`<i class="sl-check">${elegido?ico('check'):''}</i>`:''}${esc(ini)}${m.c!=='n'&&!staffSelModo?`<i class="sl-dot ${m.c}"></i>`:''}</div>
       <div class="sl-tx"><div class="sl-nm">${esc(tc(s.nombre))}</div>${m.txt?`<div class="sl-why ${m.c}">${esc(m.txt)}</div>`:''}<div class="sl-sub">${esc(sc(s.objetivo))}${esc(pqBadgeLista(s))}</div></div>
       <div class="sl-der">${badge}<span class="sl-ult">${esc(ultimaSesionTxt(s))}</span>${typeof verPerfilBtnHTML==='function'?verPerfilBtnHTML(s):''}</div>
     </div>`;
   }).join('') : `<div class="empty-msg">${q?'Ningún socio coincide con tu búsqueda.':'Aún no hay socios en esta lista.'}</div>`;
+  const bs=document.getElementById('sl-sel-btn');
+  if(bs){ bs.hidden=staffRol!=='coordinador'; bs.setAttribute('aria-pressed',String(staffSelModo)); bs.textContent=staffSelModo?'Listo':'Seleccionar'; }
+  if(typeof staffSelBarra==='function') staffSelBarra();
 }
 // ── Lista retráctil (tablet y computadora): la ficha queda a pantalla completa y la lista
 // se reduce a una franja con las iniciales. Se abre o se cierra con el botón o deslizando el dedo o el lápiz.
@@ -175,6 +182,23 @@ function staffSideAlt(){ const p=document.getElementById('s-panel'); staffSideMi
     else if(min&&dx>0) staffSideMin(false);
   },{passive:true});
 })();
+// Filtro por entrenador (director): ver los socios de cada uno, o los que no tienen
+let staffEntVal='';
+function staffEntPintar(todos){
+  const box=document.getElementById('staff-entf'), sel=document.getElementById('staff-ent-sel'); if(!box||!sel) return;
+  const ents=Object.entries(DB.entrenadores||{}).map(([k,e])=>e?Object.assign({},e,{id:e.id||k}):null).filter(e=>e&&e.rol!=='coordinador');
+  box.hidden=!(staffRol==='coordinador' && ents.length);
+  if(box.hidden){ staffEntVal=''; return; }
+  if(staffEntVal && staffEntVal!=='_sin' && !ents.some(e=>e.id===staffEntVal)) staffEntVal='';
+  const n=id=>todos.filter(s=>s.entrenadorId===id).length, nSin=todos.filter(socioSinEntrenador).length;
+  ents.sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||''),'es'));
+  sel.innerHTML=`<option value="">Todos los entrenadores (${todos.length})</option>`+
+    ents.map(e=>`<option value="${esc(e.id)}">${esc(tc(e.nombre||'Entrenador'))} (${n(e.id)})</option>`).join('')+
+    `<option value="_sin">Sin entrenador (${nSin})</option>`;
+  sel.value=staffEntVal;
+  box.classList.toggle('on',!!staffEntVal);
+}
+function staffFiltroEnt(v){ staffEntVal=v||''; staffRenderList(); }
 function staffFiltroSem(k){ staffSemVal=staffSemVal===k?null:k; staffRenderList(); }
 function staffFiltroDirecto(val){
   const btn=[...document.querySelectorAll('#staff-filters .sl-f')].find(b=>(b.getAttribute('onclick')||'').includes("'"+val+"'"));
@@ -241,6 +265,7 @@ function staffRenderContent(s){
       ${pane('rutina',rtRutinaHTML(s))}
       ${pane('nutricion',bloqueNutricionStaff(s))}
       ${pane('progresion',bloqueProgresionTab(s))}
+      ${staffRol==='coordinador'?`<button type="button" class="fx-del" onclick="confirmarEliminarSocio('${esc(s.code)}')">${ico('trash')}Eliminar socio</button>`:''}
       <div class="sd-bar fx-bar${staffDirty.has(s.code)||isPend?' on':''}" id="fx-bar">
         <span class="fx-bar-msg">${staffDirty.has(s.code)?'Cambios sin guardar':''}</span>
         ${isPend?`<button type="button" class="sd-pri ghost" onclick="staffAprobar('${s.code}')">Aprobar plan</button>`:''}

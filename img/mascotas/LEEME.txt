@@ -1,1 +1,5 @@
 Imágenes de las mascotas: <id>-<etapa>.webp (etapa 1 a 5). Ver docs/MASCOTAS-PROMPTS.md.
+
+Bordes pulidos (nov 2026): herramientas/limpiar-mascotas.py quita motas sueltas, el halo blanco/negro y el escalón
+del recorte, conserva cuerdas y cables finos, y cambia el piso blanco que dejó el recorte por una sombra suave.
+Uso: python3 herramientas/limpiar-mascotas.py <carpeta-origen> <carpeta-destino> 12   (requiere numpy, scipy y Pillow)

@@ -98,25 +98,69 @@ function staffMostrarVacio(){
 }
 function confirmarEliminarSocio(code){
   if(staffRol!=='coordinador'){ showToast('Solo el director puede eliminar socios'); return; }
-  const s=getSocio(code); if(!s) return;
-  const nSes=sesValidas(s).length;
+  const s=getSocio(code)||(typeof idxLite==='function'?idxLite(code):null); if(!s) return;
+  let nSes=0; try{ nSes=sesValidas(s).length; }catch(e){}
   uiConfirm(`¿Eliminar a ${tc(s.nombre)}?\n\nSe borrará su rutina y todo su historial (${nSes} sesión(es), pesos y récords). No se puede deshacer.\n\nSi quieres conservar una copia, cancela y usa 💾 Respaldo.`,
     ()=>uiPrompt('Para confirmar, escribe ELIMINAR','ELIMINAR',()=>confirmarEliminarSocioFinal(code),{label:'Eliminar'}),
     {label:'Continuar',danger:true});
 }
 function confirmarEliminarSocioFinal(code){
-  const s=getSocio(code); if(!s) return;
-  const copia=s;
-  delete DB.socios[code]; guardarLocal();
-  OUTBOX=OUTBOX.filter(x=>!(x.tipo==='socio' && x.code===code)); outGuardar();
+  if(!eliminarSocioDatos(code,true)) return;
   staffActivoId=null; staffRenderList(); staffMostrarVacio();
+  if(estaSinConexion() || !fbListo) showToast('🗑 Socio eliminado · se aplicará en todos los dispositivos al volver la conexión');
+}
+// Borra al socio en todos lados: expediente, índice de la lista (si no, volvía a salir), huella y mensajes.
+// Su cuenta de acceso (correo) queda en Firebase Authentication: si vuelve a entrar, empieza de cero.
+function eliminarSocioDatos(code,avisar){
+  if(staffRol!=='coordinador') return false;
+  const copia=DB.socios[code], copiaIdx=(typeof IDX!=='undefined')?IDX[code]:null;
+  if(!copia && !copiaIdx) return false;
+  delete DB.socios[code];
+  try{ if(typeof IDX!=='undefined') delete IDX[code]; delete BASE[code]; baseGuardar(); }catch(e){}
+  if(typeof staffDirty!=='undefined') staffDirty.delete(code);
+  guardarLocal();
+  OUTBOX=OUTBOX.filter(x=>!(x.code===code || x.path==='/socios/'+code || x.path.indexOf('/socios/'+code+'/')===0)); outGuardar();
   fbEncolar('/socios/'+code,'remove',null,{
-    ok:()=>showToast('🗑 Socio eliminado'),
+    ok:()=>{ if(avisar) showToast('🗑 Socio eliminado'); },
     err:e=>{
-      DB.socios[code]=copia; guardarLocal(); staffRenderList();
+      if(copia) DB.socios[code]=copia; try{ if(copiaIdx) IDX[code]=copiaIdx; }catch(_){} guardarLocal(); staffRenderList();
       console.warn('No se pudo eliminar',e);
       showToast('🔒 Firebase no permitió eliminar. Pega las reglas nuevas de firebase-rules.json y vuelve a intentar.');
     }
   });
-  if(estaSinConexion() || !fbListo) showToast('🗑 Socio eliminado · se aplicará en todos los dispositivos al volver la conexión');
+  fbEncolar('/indice/'+code,'remove');
+  fbEncolar('/huellas/'+code,'remove');
+  if(fbListo && fbDB){ fbDB.ref('/chats/'+code).remove().catch(()=>{}); fbDB.ref('/chatsMeta/'+code).remove().catch(()=>{}); }
+  return true;
+}
+
+// ── Seleccionar varios socios y eliminarlos (director): útil para limpiar cuentas de prueba ──
+let staffSelModo=false; const staffSel=new Set();
+function staffSelAlternar(on){
+  staffSelModo=on===undefined?!staffSelModo:!!on; staffSel.clear();
+  staffRenderList();
+}
+function staffSelToca(code){ if(staffSel.has(code)) staffSel.delete(code); else staffSel.add(code); staffRenderList(); }
+function staffSelBarra(){
+  let b=document.getElementById('staff-sel-bar');
+  const side=document.querySelector('.staff-side');
+  if(!staffSelModo){ if(b) b.remove(); return; }
+  if(!b && side){ b=document.createElement('div'); b.id='staff-sel-bar'; b.className='sl-selbar'; side.appendChild(b); }
+  if(!b) return;
+  const n=staffSel.size;
+  b.innerHTML=`<span>${n?n+' seleccionado'+(n===1?'':'s'):'Toca a los socios que quieres eliminar'}</span>
+    <button type="button" class="sd-b" onclick="staffSelAlternar(false)">Cancelar</button>
+    <button type="button" class="sd-pri danger" ${n?'':'disabled'} onclick="staffSelEliminar()">Eliminar${n?' ('+n+')':''}</button>`;
+}
+function staffSelEliminar(){
+  const cods=[...staffSel]; if(!cods.length) return;
+  const nombres=cods.map(c=>{ const x=getSocio(c)||(typeof idxLite==='function'?idxLite(c):null); return x?tc(x.nombre):c; });
+  uiConfirm(`¿Eliminar ${cods.length} socio${cods.length===1?'':'s'}?\n\n${nombres.slice(0,8).join(', ')}${nombres.length>8?' y '+(nombres.length-8)+' más':''}\n\nSe borra su rutina, su historial y sus mensajes. No se puede deshacer.`,
+    ()=>uiPrompt('Para confirmar, escribe ELIMINAR','ELIMINAR',()=>{
+      let n=0; cods.forEach(c=>{ if(eliminarSocioDatos(c,false)) n++; });
+      staffSelModo=false; staffSel.clear(); staffActivoId=null;
+      staffRenderList(); staffMostrarVacio();
+      showToast('🗑 '+n+' socio'+(n===1?'':'s')+' eliminado'+(n===1?'':'s'));
+    },{label:'Eliminar'}),
+    {label:'Continuar',danger:true});
 }

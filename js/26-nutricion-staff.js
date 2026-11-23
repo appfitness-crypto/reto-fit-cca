@@ -55,6 +55,20 @@ function entAsignar(code,entId){
   showToast(s.entrenadorId?'🏋️ Reasignado a '+s.asignado:'🏋️ Entrenador: sin asignar');
 }
 const nutBorrador={};   // código → requerimientos que se están ajustando en la ficha (aún sin guardar)
+// Los tres pasos del cálculo, por separado: basal → gasto total → ajuste por objetivo
+function nutDesgloseHTML(b,nut,obj){
+  const f=n=>Number(n).toLocaleString('es-MX'), sig=b.ajustePct>0?'+':'';
+  const cambio=obj && b.objetivoAplicado && b.objetivoAplicado!==obj;
+  return `<ol class="nt-pasos">
+    <li><span>1 · Metabolismo basal</span><b>${f(b.bmr)} kcal</b><small>${esc(b.bmrMetodo||'')}</small></li>
+    <li><span>2 · Gasto total</span><b>${f(b.tdee)} kcal</b><small>${f(b.bmr)} × ${b.factor} (${esc(b.factorTxt||'')}) · rango ${f(b.tdeeRango[0])}–${f(b.tdeeRango[1])}</small></li>
+    ${b.recal?`<li><span>2b · Recalibrado con su peso</span><b>${b.recal.corr>0?'+':''}${f(b.recal.corr)} kcal</b><small>Estimado ${f(b.tdeeEst)} → ${f(b.tdee)}. En ${b.recal.semanas} semanas (${b.recal.pesajes} pesajes) su peso cambió ${b.recal.pendiente>0?'+':''}${b.recal.pendiente} kg/sem; con su plan se esperaba ${b.recal.esperado>0?'+':''}${b.recal.esperado}. Supone que comió lo de su plan; se corrige la mitad de la diferencia y máximo 15 %.</small></li>`:`<li><span>2b · Recalibración con su peso</span><b>—</b><small>Se activa con 3 pesajes o más en 2 semanas o más (los suyos o los del InBody).</small></li>`}
+    <li><span>3 · Ajuste por objetivo</span><b>${sig}${b.ajustePct} %</b><small>${esc(b.ajusteTxt||'')}${cambio?' · Su objetivo es aumento muscular, pero con su % de grasa estimado se aplica recomposición (sin superávit).':''}</small></li>
+    <li class="tot"><span>Meta automática</span><b>${f(b.kcal)} kcal</b><small>${f(b.tdee)} ${b.ajustePct<0?'−':'+'} ${Math.abs(b.ajustePct)} % · proteína ${b.protKg} g/kg sobre ${b.pesoRef} kg</small></li>
+  </ol>
+  ${nut.manual?`<p class="nt-aviso">${nut.adaptado?'El ajuste del staff se adaptó solo al nuevo peso o frecuencia (se escala con el gasto total). ':''}Lo que ve el socio es el ajuste del staff: ${f(nut.kcal)} kcal.</p>`:''}
+  ${nut.overrideViejo?'<p class="nt-aviso">Cambió su objetivo: el ajuste anterior del staff ya no aplica y ve el cálculo automático. Ajústalo de nuevo si hace falta.</p>':''}`;
+}
 function bloqueNutricionStaff(s){
   const nut=nutricionFinal(s), base=calcNutricion(s), c=esc(s.code);
   const nutriEnt=s.nutriologoId?DB.entrenadores[s.nutriologoId]:null;
@@ -77,7 +91,8 @@ function bloqueNutricionStaff(s){
       <div class="nt-macs">${mac('prot','Proteína',v.prot,pP,'m-p')}${mac('carbs','Carbohidratos',v.carbs,pC,'m-c')}${mac('grasas','Grasas',v.grasas,pG,'m-g')}</div>
       ${D?`<div class="nt-chk ${cuadra?'ok':'bad'}">${ico(cuadra?'check':'warn')}<span>${cuadra?'Los macros suman '+kMac.toLocaleString('es-MX')+' kcal y cuadran con el total.':'Los macros suman '+kMac.toLocaleString('es-MX')+' kcal y el total es '+Number(v.kcal).toLocaleString('es-MX')+'. Con '+cSug+' g de carbohidratos cuadra. <button type="button" class="fx-lnk" onclick="nutValor(\''+c+'\',\'carbs\','+cSug+')">Usar '+cSug+' g</button>'}</span></div>`:''}
       <div class="fx-rows"><div><span>Agua</span><b>${D?step('agua',v.agua,0.25,'Litros de agua'):esc(v.agua)+' L al día'}</b></div>
-        <div><span>Referencia automática</span><b>${Number(base.kcal).toLocaleString('es-MX')} kcal (BMR ${base.bmr} × ${base.factor})</b></div></div>
+</div>
+      ${nutDesgloseHTML(base,nut,s.objetivo)}
       ${puede?`<div class="fx-acts" style="margin-top:12px">${D?`<button type="button" class="sd-b p" onclick="nutGuardarFicha('${c}')" ${cuadra?'':'disabled'}>Guardar requerimientos</button><button type="button" class="sd-b" onclick="nutCancelarFicha('${c}')">Cancelar</button>`
         :`<button type="button" class="sd-b p" onclick="nutEditarFicha('${c}')">Ajustar requerimientos</button>${nut.manual?`<button type="button" class="sd-b" onclick="nutRestablecer('${c}')">Volver al cálculo automático</button>`:''}`}</div>`:''}
     </div></section>
@@ -96,7 +111,10 @@ function nutGuardarFicha(code){
   if(!(kcal>=800&&kcal<=6000)){ showToast('Revisa las calorías (800 a 6000)'); return; }
   if(Math.abs(prot*4+carbs*4+grasas*9-kcal)>kcal*0.05){ showToast('Los macros no cuadran con las calorías'); return; }
   const o=s.nutricion||{};
-  s.nutricion={ override:true, kcal,prot,carbs,grasas, agua:agua||calcNutricion(s).agua, nota:o.nota||'', menu:comoArray(o.menu), por:pqStaffNombre(), fecha:fechaISO(new Date()) };
+  const b=calcNutricion(s);
+  // Contra qué se hizo el ajuste: si cambia el objetivo vuelve al automático; si cambia el peso o el gasto, se escala solo
+  s.nutricion={ override:true, kcal,prot,carbs,grasas, agua:agua||b.agua, nota:o.nota||'', menu:comoArray(o.menu), por:pqStaffNombre(), fecha:fechaISO(new Date()),
+    baseObj:s.objetivo||'', baseTdee:b.tdee, basePeso:b.pesoBase };
   if(o.plan) s.nutricion.plan=o.plan;
   pqGuardarStaff(s,['nutricion']); delete nutBorrador[code];
   staffRenderList(); nutRepintar(code);
@@ -169,6 +187,15 @@ function nutRestablecer(code){
   },{label:'Restablecer',danger:true});
 }
 
+// Lista de socios filtrada por un entrenador (desde su tarjeta)
+function entVerSocios(id){ staffEntVal=id; if(typeof staffVolverLista==='function') staffVolverLista(); staffRenderList(); }
+// Con qué entra el entrenador (lo ve solo el director para decírselo)
+function entAccesoHTML(t){
+  const acc=t.acceso||'';
+  const txt=acc?(acc.includes('@')?'Entra con el correo <b>'+esc(acc)+'</b>':'Entra con el usuario <b>'+esc(acc)+'</b>')
+    :(t.uid?'Entra con el usuario que le diste al darlo de alta':'Aún no tiene acceso: ponle contraseña en Editar');
+  return `<div class="ent-acc">🔑 ${txt} · en la portada, “Soy entrenador del reto”</div>`;
+}
 function abrirEntrenadores(){
   if(staffRol!=='coordinador'){ showToast('Solo el director puede ver esta sección'); return; }
   staffActivoId=null; staffRenderList();
@@ -180,7 +207,7 @@ function abrirEntrenadores(){
     const activos=socios.filter(s=>s.status==='activo').length, pend=socios.filter(s=>s.status==='pendiente').length;
     const tieneFilo=t.filosofia && t.filosofia.tagline;
     return `<div style="border:1px solid var(--b);border-radius:12px;padding:16px;background:var(--gl);display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px">
-      <div style="flex:0 0 auto">${tieneFilo?svgRadarFilosofia(t.filosofia,54):(typeof entAvatarHTML==='function'?entAvatarHTML(t,'ent-av ent-av-l'):'')}</div>
+      <div style="flex:0 0 auto">${t.foto||!tieneFilo?(typeof entAvatarHTML==='function'?entAvatarHTML(t,'ent-av ent-av-l'):''):svgRadarFilosofia(t.filosofia,54)}</div>
       <div style="flex:1;min-width:220px">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="font-family:var(--fd);font-size:var(--fs-xl)">${esc(t.nombre)}</div>
@@ -189,9 +216,11 @@ function abrirEntrenadores(){
         <div style="font-size:var(--fs-xs);margin:5px 0;${tieneFilo?'color:var(--v);font-style:italic':'color:var(--mu)'}">${tieneFilo?'"'+esc(t.filosofia.tagline)+'"':'Sin filosofía definida todavía'}</div>
         <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">${(t.especialidades||[]).map(s=>`<span style="font-size:var(--fs-2xs);text-transform:uppercase;letter-spacing:.03em;background:var(--in-bg2);border:1px solid var(--b);color:var(--mu);padding:2px 7px;border-radius:20px">${esc(s)}</span>`).join('')||'<span style="font-size:var(--fs-2xs);color:var(--mu)">Sin especialidades registradas</span>'}</div>
         ${esCoord?'':`<div style="font-size:var(--fs-2xs);color:var(--mu);font-family:var(--fb)">${socios.length} socio${socios.length===1?'':'s'} asignado${socios.length===1?'':'s'} · ${activos} activos · ${pend} pendientes</div>`}
+        ${esCoord?'':entAccesoHTML(t)}
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button onclick="abrirEditarEntrenador('${esc(t.id)}')" style="padding:7px 12px;border:1px solid var(--b);border-radius:7px;background:none;color:var(--tx);font-size:var(--fs-2xs);cursor:pointer">✎ Editar</button>
+        ${esCoord||!socios.length?'':`<button onclick="entVerSocios('${esc(t.id)}')" style="padding:7px 12px;border:1px solid var(--b);border-radius:7px;background:none;color:var(--tx);font-size:var(--fs-2xs);cursor:pointer">👥 Ver sus socios</button>`}
         ${esCoord?'':`<button onclick="abrirMiFilosofia('${esc(t.id)}')" style="padding:7px 12px;border:1px solid color-mix(in srgb,var(--p) 35%,transparent);border-radius:7px;background:none;color:var(--p);font-size:var(--fs-2xs);cursor:pointer">🧬 ${tieneFilo?'Editar':'Llenar'} filosofía</button>`}
         ${esCoord?'':`<button onclick="confirmarEliminarEntrenador('${esc(t.id)}')" class="ent-del">Eliminar</button>`}
       </div>
@@ -201,7 +230,7 @@ function abrirEntrenadores(){
     <div style="padding:22px;max-width:820px">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
         <h2 style="font-family:var(--fd);font-size:var(--fs-5xl);margin:0">Entrenadores</h2>
-        <button class="tb-btn" onclick="abrirNuevoEntrenador()" style="padding:9px 14px;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador</button>
+        <button class="tb-btn" onclick="abrirNuevoEntrenador()" style="padding:9px 14px;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador o nutriólogo</button>
       </div>
       <p style="font-size:var(--fs-xs);color:var(--mu);margin:4px 0 18px">${lista.length} entrenador${lista.length===1?'':'es'}${coords.length?' · '+coords.length+' director'+(coords.length===1?'':'es'):''}</p>
       ${lista.length?lista.map(t=>tarjeta(t,false)).join(''):'<p style="font-size:var(--fs-xs);color:var(--mu)">Aún no hay entrenadores dados de alta.</p>'}
@@ -217,6 +246,9 @@ function abrirEditarEntrenador(id){
   document.getElementById('ee-id').value=id;
   document.getElementById('ee-nombre').value=t.nombre||'';
   document.getElementById('ee-pass').value='';
+  document.getElementById('ee-usuario').value='';
+  document.getElementById('ee-acc-actual').textContent=t.acceso?('Hoy entra con: '+t.acceso):(t.uid?'Tiene acceso (usuario sin registrar en la app)':'Aún no tiene acceso');
+  document.getElementById('ee-acc-nota').textContent=t.uid?'Déjalos vacíos para no cambiar nada. Si los llenas, se le crea un acceso nuevo con todo lo suyo (socios, código y filosofía) y el anterior deja de servir.':'Escribe un usuario o correo y una contraseña para que pueda entrar.';
   document.getElementById('ee-func-ent').classList.toggle('ck', entHace(t,'entrenamiento'));
   document.getElementById('ee-func-nut').classList.toggle('ck', entHace(t,'nutricion'));
   const cont=document.getElementById('ee-especialidades');
@@ -227,8 +259,27 @@ function abrirEditarEntrenador(id){
   const otras=actuales.filter(e=>!clavesLista.includes(normEsp(e))); // especialidades propias que no están en la lista fija (no se pierden)
   cont.innerHTML=todas.map(nm=>`<div class="chk ${actualesKeys.has(normEsp(nm))?'ck':''}" onclick="this.classList.toggle('ck')">${esc(nm)}</div>`).join('');
   document.getElementById('ee-otras').value=otras.join(', ');
+  eeFotoDraft=undefined; eeFotoPintar();
   document.getElementById('modal-editar-ent').classList.add('open');
 }
+// Foto del entrenador: se prepara aquí y se guarda con "Guardar cambios" (undefined = sin cambios, '' = quitarla)
+let eeFotoDraft;
+function eeFotoActual(){
+  if(eeFotoDraft!==undefined) return eeFotoDraft;
+  const t=DB.entrenadores[document.getElementById('ee-id').value]; return (t&&t.foto)||'';
+}
+function eeFotoPintar(){
+  const id=document.getElementById('ee-id').value, t=DB.entrenadores[id]||{};
+  const foto=eeFotoActual();
+  document.getElementById('ee-foto-prev').innerHTML=entAvatarHTML({nombre:document.getElementById('ee-nombre').value||t.nombre, foto},'ent-av ee-av');
+  document.getElementById('ee-foto-quitar').hidden=!foto;
+}
+async function eeFotoElegir(inp){
+  const f=inp.files&&inp.files[0]; inp.value=''; if(!f) return;
+  try{ eeFotoDraft=await aparComprimir(f,320); eeFotoPintar(); showToast('Foto lista. Toca Guardar cambios.'); }
+  catch(er){ showToast('No se pudo usar esa imagen: '+(er&&er.message||'')); }
+}
+function eeFotoQuitar(){ eeFotoDraft=''; eeFotoPintar(); }
 function cerrarModalEditarEnt(){ document.getElementById('modal-editar-ent').classList.remove('open'); }
 async function guardarEdicionEntrenador(){
   if(staffRol!=='coordinador'){ showToast('Solo el director puede editar entrenadores'); return; }
@@ -240,23 +291,63 @@ async function guardarEdicionEntrenador(){
   if(!funciones.length){ showToast('Elige al menos una función: entrenamiento o nutrición'); return; }
   t.nombre=nombre; t.funciones=funciones;
   const pass=document.getElementById('ee-pass').value.trim();
-  if(pass){
-    if(t.uid){ showToast('ℹ️ La contraseña de un acceso existente se cambia en Firebase → Authentication'); }
-    else if(pass.length<6){ showToast('La contraseña debe tener al menos 6 caracteres'); return; }
-    else{
-      try{ t.uid=await fbCrearAccesoStaff(id,pass,'entrenador'); delete t.pass; showToast('🔐 Acceso seguro creado para '+nombre); }
-      catch(e){ showToast('❌ '+msgErrorAcceso(e)); return; }
-    }
+  const crudo=document.getElementById('ee-usuario').value.trim().toLowerCase();
+  const usuario=crudo.includes('@')?(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(crudo)?crudo:''):crudo.replace(/[^a-z0-9_]/g,'');
+  let nuevoId=null;
+  if(crudo||pass){
+    if(!usuario){ showToast('Escribe un usuario (letras y números) o un correo válido'); return; }
+    if(pass.length<6){ showToast('La contraseña debe tener al menos 6 caracteres'); return; }
+    if(!navigator.onLine||!fbListo){ showToast('Necesitas conexión para cambiar el acceso'); return; }
+    const btn=document.querySelector('#modal-editar-ent .btn-main'); if(btn) btn.disabled=true;
+    try{
+      if(t.uid){ nuevoId=await entCambiarAcceso(id,usuario,pass); }
+      else { t.uid=await fbCrearAccesoStaff(usuario,pass,'entrenador'); t.acceso=usuario; delete t.pass; }
+    }catch(e){ showToast('❌ '+msgErrorAcceso(e)); if(btn) btn.disabled=false; return; }
+    if(btn) btn.disabled=false;
   }
+  const msg=usuario?'✓ Listo: ahora entra con '+(usuario.includes('@')?'el correo ':'el usuario ')+usuario:'';
+  entEdicionTerminar(nuevoId||id,nombre,msg);
+}
+function entEdicionTerminar(id,nombre,msg){
+  const t=DB.entrenadores[id]; if(!t) return;
   const marcadas=[...document.querySelectorAll('#ee-especialidades .chk.ck')].map(e=>e.textContent.trim());
   const otras=limpiarTexto(document.getElementById('ee-otras').value).split(',').map(x=>x.trim()).filter(Boolean);
   t.especialidades=[...marcadas,...otras];
+  if(eeFotoDraft!==undefined){ if(eeFotoDraft) t.foto=eeFotoDraft; else delete t.foto; eeFotoDraft=undefined; }
   // Reflejar el nombre en los socios que ya lo tenían asignado
   sociosDeEntrenador(id).forEach(s=>{ s.asignado=nombre; dbSaveStaff(s.code); });
   dbSaveEntrenador(id);
   cerrarModalEditarEnt();
   abrirEntrenadores();
-  showToast('✓ Entrenador actualizado');
+  showToast(msg||'✓ Entrenador actualizado');
+}
+// Acceso nuevo para un entrenador que ya tenía cuenta: Firebase no deja cambiar la contraseña de otra persona
+// desde la app, así que se crea otra cuenta y se le pasa todo lo suyo (perfil, código, socios y avisos de grupo).
+async function entCambiarAcceso(viejoId,usuario,pass){
+  const t=DB.entrenadores[viejoId]; if(!t) throw new Error('No se encontró al entrenador');
+  const nuevo=await fbCrearAccesoStaff(usuario,pass,'entrenador');
+  const ent=Object.assign({},t,{id:nuevo, uid:nuevo, acceso:usuario}); delete ent.pass;
+  // 1) Perfil con la llave nueva (antes que nada, para que el código y los socios apunten a algo que existe)
+  await fbDB.ref('/entrenadores/'+nuevo).set(limpio(ent));
+  DB.entrenadores[nuevo]=ent;
+  // 2) Su código de entrenador pasa a la cuenta nueva (las reglas piden borrarlo y volverlo a crear)
+  if(t.codigo){ try{ await fbDB.ref('/codigos/'+t.codigo).remove(); await fbDB.ref('/codigos/'+t.codigo).set(nuevo); }catch(e){ console.warn('codigo',e); } }
+  // 3) Sus socios (entrenamiento y nutrición)
+  Object.values(DB.socios||{}).forEach(s=>{
+    if(!s) return; let cambio=false;
+    if(s.entrenadorId===viejoId){ s.entrenadorId=nuevo; cambio=true; }
+    if(s.nutriologoId===viejoId){ s.nutriologoId=nuevo; cambio=true; }
+    if(cambio) dbSaveStaff(s.code);
+  });
+  // 4) Avisos de grupo
+  try{ const sn=await fbDB.ref('/avisosGrupo/'+viejoId).once('value'); if(sn.exists()){ await fbDB.ref('/avisosGrupo/'+nuevo).set(sn.val()); await fbDB.ref('/avisosGrupo/'+viejoId).remove(); } }catch(e){ console.warn('avisos',e); }
+  // 5) La cuenta anterior deja de ser entrenador y se quita su perfil viejo
+  if(t.uid){ try{ await fbDB.ref('/roles/'+t.uid).remove(); }catch(e){} }
+  delete DB.entrenadores[viejoId]; guardarLocal();
+  OUTBOX=OUTBOX.filter(x=>x.path!=='/entrenadores/'+viejoId); outGuardar();
+  fbEncolar('/entrenadores/'+viejoId,'remove',null);
+  if(typeof staffEntVal!=='undefined' && staffEntVal===viejoId) staffEntVal=nuevo;
+  return nuevo;
 }
 function confirmarEliminarEntrenador(id){
   if(staffRol!=='coordinador'){ showToast('Solo el director puede eliminar entrenadores'); return; }

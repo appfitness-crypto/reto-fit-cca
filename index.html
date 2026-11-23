@@ -125,6 +125,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
     <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 0 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.4-1.3-1.7-1.3-3 0-1 .8-1.8 1.8-1.8h2.2a3.5 3.5 0 0 0 3.5-3.5c0-3.9-3.6-7-8-7z"/><circle cx="7.8" cy="11.5" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></symbol>
     <symbol id="i-run" viewBox="0 0 24 24"><circle cx="14.5" cy="4.5" r="2"/><path d="M8 21l2.5-5.5 3 2.5V22M7 11.5 9.5 8h4.5l2.5 3.5 3 1M14 8l-2 5.5"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8.5a2 2 0 0 1 2-2h2.2l1.5-2h5.6l1.5 2h2.2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4.5 5.5h15a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1H10l-4.5 3.5V17h-1a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1z"/></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 12A7.5 7.5 0 0 1 6 16.6M4.5 12A7.5 7.5 0 0 1 18 7.4M18 3.5v4h-4M6 20.5v-4h4"/></symbol>
     <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4.5 19.5 5.5 15 15.5 5a2.1 2.1 0 0 1 3 3l-10 10zM13.5 7l3 3"/></symbol>
@@ -189,7 +190,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
   <div class="wc-hero">
     <div class="wc-cam">
       <div class="wc-pic" id="wc-hero-pic"></div>
-      <p class="wc-num" id="wc-num" aria-hidden="true">12</p>
+      <p class="wc-num dos" id="wc-num" aria-hidden="true"><span>1</span><span>2</span></p>
       <img class="wc-cut" id="wc-cut" src="img/hero/bienvenida-recorte.webp" alt="" decoding="async" onerror="this.remove()">
     </div>
     <div class="wc-ov"></div>
@@ -217,7 +218,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
     </div>
     <div class="wc-staff">
       <!-- Reto Fit CCA: los entrenadores no se registran solos; el director los da de alta (Menú → Entrenadores) -->
-      <button type="button" class="staff-link" onclick="go('s-login')">Soy entrenador del reto: entrar con mi cuenta <svg class="ico" aria-hidden="true" style="width:14px;height:14px"><use href="#i-arrow"/></svg></button>
+      <button type="button" class="staff-link" onclick="abrirAccesoEntrenador()">Soy entrenador del reto: entrar con mi cuenta <svg class="ico" aria-hidden="true" style="width:14px;height:14px"><use href="#i-arrow"/></svg></button>
     </div>
     <button type="button" class="wc-mas" hidden onclick="document.getElementById('pat-portada').scrollIntoView({behavior:'smooth',block:'start'})">Patrocinan el reto<svg class="ico" aria-hidden="true"><use href="#i-chev"/></svg></button>
   </div>
@@ -229,7 +230,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
   <!-- Acceso "Regresa al reto" (propuesta A, docs/maquetas/inicio-acceso): continúa la portada; el formulario sale de abajo -->
   <div class="lg-esc" aria-hidden="true">
     <img class="lg-ph" src="img/hero/bienvenida.webp" alt="" decoding="async">
-    <p class="lg-num">12</p>
+    <p class="lg-num dos" id="lg-num"><span>1</span><span>2</span></p>
     <img class="lg-ph lg-cut" src="img/hero/bienvenida-recorte.webp" alt="" decoding="async" onerror="this.remove()">
     <div class="lg-ov"></div>
   </div>
@@ -238,14 +239,14 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
     <button type="button" class="lg-volver" onclick="go('s-inicio')"><svg class="ico" aria-hidden="true"><use href="#i-chevl"/></svg>Inicio</button>
   </div>
   <form class="lg-hoja" onsubmit="event.preventDefault();doEntrar()" novalidate>
-    <h1 class="lg-t">Regresa<br>al <span>reto</span></h1>
-    <p class="lg-s">Tu rutina, tus pesos y tu mascota te están esperando. Entrenadores también entran aquí.</p>
-    <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg><input type="email" id="in-correo" placeholder="correo" autocomplete="email" inputmode="email" autocapitalize="off"><span>Tu correo</span></label>
+    <h1 class="lg-t" id="in-title">Regresa<br>al <span>reto</span></h1>
+    <p class="lg-s" id="in-sub">Tu rutina, tus pesos y tu mascota te están esperando. Entrenadores también entran aquí.</p>
+    <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg><input type="email" id="in-correo" placeholder="correo" autocomplete="email" inputmode="email" autocapitalize="off"><span id="in-correo-l">Tu correo</span></label>
     <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg><input type="password" id="in-pass" placeholder="contraseña" autocomplete="current-password"><span>Contraseña</span>
       <button type="button" class="lg-ver" aria-label="Ver contraseña" aria-pressed="false" onclick="const i=document.getElementById('in-pass'),v=i.type==='password';i.type=v?'text':'password';this.setAttribute('aria-pressed',v);this.setAttribute('aria-label',v?'Ocultar contraseña':'Ver contraseña')"><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg></button></label>
     <div class="login-err" id="in-err" role="alert"></div>
     <button type="submit" class="lg-go" id="in-btn"><span class="lg-d"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>Entrar</button>
-    <div class="lg-links"><button type="button" onclick="recuperarPass()">Olvidé mi contraseña</button><button type="button" onclick="abrirRegistro('cliente')">Soy nuevo</button></div>
+    <div class="lg-links"><button type="button" onclick="recuperarPass()">Olvidé mi contraseña</button><button type="button" class="lg-solo-socio" onclick="abrirRegistro('cliente')">Soy nuevo</button><button type="button" class="lg-solo-ent" onclick="go('s-login')">¿Eres socio? Entra aquí</button></div>
   </form>
 </div>
 
@@ -490,7 +491,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="q-sub">Por semana. Determina el split de tu rutina y tu gasto calórico.</div>
       <div class="slider-wrap">
         <div class="s-val"><span id="dias-v">4</span><span class="s-unit">días / semana</span></div>
-        <input type="range" id="qr-dias" aria-label="Días de entrenamiento por semana" min="2" max="7" value="4" oninput="document.getElementById('dias-v').textContent=this.value;document.getElementById('dias-7').hidden=this.value!=='7'">
+        <input type="range" id="qr-dias" aria-label="Días de entrenamiento por semana" min="3" max="7" value="4" oninput="document.getElementById('dias-v').textContent=this.value;document.getElementById('dias-7').hidden=this.value!=='7'">
         <div class="s-labels"><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
         <p class="q-sub" id="dias-7" hidden style="margin:12px 0 0">Con 7 días, uno será de <b>recuperación activa</b> (cardio suave y movilidad): el músculo crece cuando descansa.</p>
       </div>
@@ -544,8 +545,8 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="q-sub">Ajusta recuperación, volumen y tipo de ejercicios.</div>
       <div class="slider-wrap">
         <div class="s-val"><span id="edad-v">35</span><span class="s-unit">años</span></div>
-        <input type="range" id="qr-edad" aria-label="Edad" min="16" max="90" value="35" oninput="document.getElementById('edad-v').textContent=this.value">
-        <div class="s-labels"><span>16</span><span>30</span><span>50</span><span>70</span><span>90</span></div>
+        <input type="range" id="qr-edad" aria-label="Edad" min="14" max="90" value="35" oninput="document.getElementById('edad-v').textContent=this.value">
+        <div class="s-labels"><span>14</span><span>30</span><span>50</span><span>70</span><span>90</span></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="qPrev(5)">←</div><button class="btn-next" onclick="qNext(5)">Continuar</button></div>
     </div>
@@ -771,29 +772,29 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 </div>
 
 <!-- ═══ REGISTRO (cliente o entrenador) ═══ -->
-<div class="sc" id="s-registro">
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px;">
-    <div class="login-card" style="max-width:400px;">
-      <button type="button" class="btn-bk reg-volver" onclick="go('s-inicio')" aria-label="Volver al inicio"><svg class="ico" aria-hidden="true"><use href="#i-chevl"/></svg></button>
-      <div class="lc-title" id="reg-title">Crea tu cuenta</div>
-      <div class="lc-sub" id="reg-sub"></div>
-      <div style="margin-bottom:10px;">
-        <label for="reg-nombre" style="display:block;font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--mu);margin-bottom:5px;">NOMBRE</label>
-        <input type="text" class="ti" id="reg-nombre" aria-label="Nombre" placeholder="Nombre y apellido" maxlength="60" autocomplete="name">
-      </div>
-      <div style="margin-bottom:10px;">
-        <label for="reg-correo" style="display:block;font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--mu);margin-bottom:5px;">CORREO</label>
-        <input type="email" class="ti" id="reg-correo" aria-label="Correo" placeholder="tu@correo.com" autocomplete="email" inputmode="email">
-      </div>
-      <div style="margin-bottom:16px;">
-        <label for="reg-pass" style="display:block;font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--mu);margin-bottom:5px;">CONTRASEÑA (MÍN. 6)</label>
-        <input type="password" class="ti" id="reg-pass" aria-label="Contraseña, mínimo 6 caracteres" placeholder="••••••" autocomplete="new-password" onkeydown="if(event.key==='Enter')crearCuenta()">
-      </div>
-      <button class="btn-main" id="reg-btn" style="background:var(--grad)" onclick="crearCuenta()">Crear cuenta</button>
-      <div class="login-err" id="reg-err"></div>
-      <button type="button" class="btn-back-link" onclick="go('s-login')">¿Ya tienes cuenta? <span>Entra</span></button>
-    </div>
+<!-- Mismo formato que "Regresa al reto" (css/cine.css, bloque ACCESO): la foto con el 12 arriba y el formulario abajo -->
+<div class="sc lg-sc" id="s-registro">
+  <div class="lg-esc" aria-hidden="true">
+    <img class="lg-ph" src="img/hero/bienvenida.webp" alt="" decoding="async">
+    <p class="lg-num dos" id="reg-num"><span>1</span><span>2</span></p>
+    <img class="lg-ph lg-cut" src="img/hero/bienvenida-recorte.webp" alt="" decoding="async" onerror="this.remove()">
+    <div class="lg-ov"></div>
   </div>
+  <div class="lg-top">
+    <img src="icons/icon-192.png" alt="Reto Fit CCA" width="42" height="42">
+    <button type="button" class="lg-volver" onclick="go('s-inicio')"><svg class="ico" aria-hidden="true"><use href="#i-chevl"/></svg>Inicio</button>
+  </div>
+  <form class="lg-hoja" onsubmit="event.preventDefault();crearCuenta()" novalidate>
+    <h1 class="lg-t" id="reg-title">Empieza<br>tu <span>reto</span></h1>
+    <p class="lg-s" id="reg-sub">Crea tu cuenta, responde tu evaluación y la app arma tu plan.</p>
+    <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg><input type="text" id="reg-nombre" placeholder="nombre" maxlength="60" autocomplete="name" autocapitalize="words"><span>Nombre y apellido</span></label>
+    <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg><input type="email" id="reg-correo" placeholder="correo" autocomplete="email" inputmode="email" autocapitalize="off"><span>Tu correo</span></label>
+    <label class="lg-f"><svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg><input type="password" id="reg-pass" placeholder="contraseña" autocomplete="new-password"><span>Contraseña (mínimo 6)</span>
+      <button type="button" class="lg-ver" aria-label="Ver contraseña" aria-pressed="false" onclick="const i=document.getElementById('reg-pass'),v=i.type==='password';i.type=v?'text':'password';this.setAttribute('aria-pressed',v);this.setAttribute('aria-label',v?'Ocultar contraseña':'Ver contraseña')"><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg></button></label>
+    <div class="login-err" id="reg-err" role="alert"></div>
+    <button type="submit" class="lg-go" id="reg-btn"><span class="lg-d"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span><span id="reg-btn-t">Crear cuenta y empezar</span></button>
+    <div class="lg-links lg-links-c"><button type="button" onclick="go('s-login')">¿Ya tienes cuenta? <b>Entra</b></button></div>
+  </form>
 </div>
 
 <!-- ═══ PANEL STAFF ═══ -->
@@ -809,8 +810,9 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="tb-btn" id="btn-mi-codigo" onclick="mostrarMiCodigo()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🔑 Mi código</div>
       <div class="tb-btn" id="btn-mi-filosofia" onclick="abrirMiFilosofia()" style="display:none;color:var(--p);border-color:color-mix(in srgb,var(--p) 25%,transparent)">🧬 Mi filosofía</div>
       <div class="tb-btn" id="btn-ver-ent" onclick="abrirEntrenadores()" style="display:none;color:var(--n);border-color:color-mix(in srgb,var(--n) 20%,transparent)">👥 Entrenadores</div>
-      <div class="tb-btn" id="btn-nuevo-ent" onclick="abrirNuevoEntrenador()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador</div>
+      <div class="tb-btn" id="btn-nuevo-ent" onclick="abrirNuevoEntrenador()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador o nutriólogo</div>
       <div class="tb-btn" id="btn-conocimiento" onclick="abrirConocimiento()" style="color:var(--p);border-color:color-mix(in srgb,var(--p) 25%,transparent)">📚 Conocimiento</div>
+      <div class="tb-btn" id="btn-reglas" onclick="retoReglasAbrir()" style="display:none">📍 Ubicación y reglas del reto</div>
       <div class="tb-btn" id="btn-tablero" onclick="abrirTableroReto()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🏆 Tablero del reto</div>
       <div class="tb-btn" id="btn-avisos" onclick="abrirAvisos()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>Avisos</div>
       <div class="tb-btn" id="btn-reparto" onclick="abrirReparto()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)"><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg>Reparto de entrenadores</div>
@@ -838,6 +840,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="sl-head">
         <div class="sl-top">
           <div class="sl-title">Socios <span id="sl-count"></span></div>
+          <button type="button" class="sl-selbtn" id="sl-sel-btn" hidden aria-pressed="false" onclick="staffSelAlternar()">Seleccionar</button>
           <button type="button" class="sl-toggle" id="sl-toggle" onclick="staffSideAlt()" aria-label="Ocultar la lista de socios" aria-expanded="true"><svg class="ico" aria-hidden="true"><use href="#i-chevl"/></svg></button>
         </div>
         <label class="sl-search"><span aria-hidden="true">&#128269;</span>
@@ -845,6 +848,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
         </label>
         <div class="sl-att" id="staff-att" role="group" aria-label="Filtrar por atención"></div>
         <div class="sl-sem-help"><span><i class="sl-dot r"></i>Más de 7 días sin entrenar o reportó dolor</span><span><i class="sl-dot y"></i>Faltan sesiones o se estancó</span></div>
+        <label class="sl-ent" id="staff-entf" hidden><span>Entrenador</span><select id="staff-ent-sel" onchange="staffFiltroEnt(this.value)" aria-label="Filtrar socios por entrenador"></select></label>
         <div class="sl-filters" id="staff-filters">
           <button type="button" class="sl-f ac" onclick="staffFilterStatus(this,'todos')">Todos <i id="slc-todos"></i></button>
           <button type="button" class="sl-f" id="slf-sinent" style="display:none" onclick="staffFilterStatus(this,'sinent')">Sin entrenador <i id="slc-sinent"></i></button>
@@ -934,6 +938,11 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <script defer src="js/61-reparto.js"></script>
 <script defer src="js/62-perfil-credencial.js"></script>
 <script defer src="js/63-plan-intro.js"></script>
+<script defer src="js/64-mensajes.js"></script>
+<script defer src="js/65-recorrido.js"></script>
+<script defer src="js/66-reglas-reto.js"></script>
+<script defer src="js/67-mediciones-oficiales.js"></script>
+<script defer src="js/68-nutriologo.js"></script>
 <script defer src="js/99-arranque.js"></script>
 
 <!-- ═══ MODAL AVISO DE PRIVACIDAD ═══ -->
@@ -990,8 +999,19 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
     </div>
     <input type="hidden" id="ee-id">
     <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="ee-foto">
+        <label class="ee-foto-av" title="Subir foto"><span id="ee-foto-prev"></span><input type="file" accept="image/*" hidden onchange="eeFotoElegir(this)"><span class="vh">Subir foto del entrenador</span></label>
+        <div class="ee-foto-tx"><b>Foto del entrenador</b><span>Sus atletas la ven en su perfil para recordar con quién entrenan.</span>
+          <div class="ee-foto-bts"><label class="ee-foto-b">Subir foto<input type="file" accept="image/*" hidden onchange="eeFotoElegir(this)"></label><button type="button" class="ee-foto-b q" id="ee-foto-quitar" onclick="eeFotoQuitar()">Quitar</button></div>
+        </div>
+      </div>
       <input type="text" class="ti" id="ee-nombre" aria-label="Nombre completo" placeholder="Nombre completo">
-      <input type="text" class="ti" id="ee-pass" aria-label="Nueva contraseña de acceso" placeholder="Contraseña de acceso (mín. 6) — vacío = sin cambios">
+      <div class="ee-acc">
+        <div class="ee-acc-h"><b>Acceso para entrar</b><span id="ee-acc-actual"></span></div>
+        <input type="text" class="ti" id="ee-usuario" aria-label="Nuevo usuario o correo para entrar" placeholder="Nuevo usuario o correo" autocapitalize="off" autocomplete="off" inputmode="email">
+        <input type="text" class="ti" id="ee-pass" aria-label="Nueva contraseña de acceso" placeholder="Nueva contraseña (mín. 6)" autocomplete="new-password">
+        <small id="ee-acc-nota">Déjalos vacíos para no cambiar nada.</small>
+      </div>
       <div class="q-sub" style="margin:2px 0 4px">¿Qué da? (elige al menos una)</div>
       <div class="chk-grid" style="grid-template-columns:1fr 1fr">
         <div class="chk" id="ee-func-ent" onclick="this.classList.toggle('ck')">🏋️ Entrenamiento</div>
@@ -1001,7 +1021,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="chk-grid" id="ee-especialidades" style="max-height:160px;overflow-y:auto"></div>
       <input type="text" class="ti" id="ee-otras" aria-label="Otras especialidades" placeholder="Otras especialidades, separadas por coma">
     </div>
-    <div style="font-size:var(--fs-xs);color:var(--mu);margin-top:10px;line-height:1.5">El usuario (para iniciar sesión) no se puede cambiar aquí. Su filosofía se edita desde su propia sesión, en 🧬 MI FILOSOFÍA.</div>
+    <div style="font-size:var(--fs-xs);color:var(--mu);margin-top:10px;line-height:1.5">Su filosofía se edita desde su propia sesión, en 🧬 MI FILOSOFÍA. El entrenador también puede cambiar su foto desde su panel de Avisos.</div>
     <button class="btn-main" style="margin-top:14px" onclick="guardarEdicionEntrenador()">Guardar cambios</button>
   </div>
 </div>
@@ -1010,15 +1030,15 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <div class="modal" id="modal-nuevo-ent" onclick="if(event.target===this)cerrarModalNuevoEnt()">
   <div class="mbox" style="max-width:420px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div style="font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--v)">DAR DE ALTA ENTRENADOR</div>
+      <div style="font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--v)">DAR DE ALTA ENTRENADOR O NUTRIÓLOGO</div>
       <div class="av3d-cerrar" style="border-color:var(--b);color:var(--mu)" onclick="cerrarModalNuevoEnt()">✕</div>
     </div>
-    <div class="q-sub" style="margin-bottom:14px">Crea su acceso. Al iniciar sesión por primera vez, le pediremos su propia filosofía de entrenamiento — así sus rutinas no se sentirán genéricas.</div>
+    <div class="q-sub" style="margin-bottom:14px">Crea su acceso. <b>Entrenamiento:</b> arma rutinas con su filosofía y ve a sus atletas. <b>Nutrición:</b> ve a todos los socios, registra sus mediciones (con foto de la hoja InBody) y ajusta su nutrición. Si hace las dos, marca las dos.</div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <input type="text" class="ti" id="ne-nombre" aria-label="Nombre completo" placeholder="Nombre completo (ej. Ana López)">
-      <input type="text" class="ti" id="ne-usuario" aria-label="Usuario" placeholder="Usuario (ej. entrenador4)">
+      <input type="text" class="ti" id="ne-usuario" aria-label="Correo o usuario para entrar" placeholder="Correo o usuario (ej. fer@correo.com o fernando)" autocapitalize="off" autocomplete="off" inputmode="email">
       <input type="text" class="ti" id="ne-pass" aria-label="Contraseña" placeholder="Contraseña">
-      <div class="q-sub" style="margin:2px 0 4px">¿Qué va a dar de alta? (elige al menos una)</div>
+      <div class="q-sub" style="margin:2px 0 4px">¿Qué hace? (elige al menos una)</div>
       <div class="chk-grid" style="grid-template-columns:1fr 1fr">
         <div class="chk ck" id="ne-func-ent" onclick="this.classList.toggle('ck')">🏋️ Entrenamiento</div>
         <div class="chk" id="ne-func-nut" onclick="this.classList.toggle('ck')">🥗 Nutrición</div>

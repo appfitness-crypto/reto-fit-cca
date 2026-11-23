@@ -1500,7 +1500,7 @@ function refreshDash(){
 
   // Inicio "cine" (css/cine.css, js/59-cine.js): el entrenamiento de hoy en letra gigante detrás del socio de la foto
   const ent=s.entrenadorId?getEntrenador(s.entrenadorId):null;
-  const coach=ent&&ent.nombre&&ent.rol!=='coordinador'?`<p class="ci-coach"><i aria-hidden="true">${esc(iniciales(ent.nombre).slice(0,1))}</i><span>Plan de <b>${esc(tc(ent.nombre).split(' ')[0])}</b>, tu entrenador</span></p>`:'';
+  const coach=ent&&ent.nombre&&ent.rol!=='coordinador'?`<p class="ci-coach"><i aria-hidden="true"${ent.foto?' class="foto"':''}>${ent.foto?`<img src="${esc(ent.foto)}" alt="" decoding="async">`:esc(iniciales(ent.nombre).slice(0,1))}</i><span>Plan de <b>${esc(tc(ent.nombre).split(' ')[0])}</b>, tu entrenador</span></p>`:'';
   const hoyTxt=`${sc(DIAS_NAMES[HOY_KEY])} ${new Date().getDate()}`;
   const slots=Array.from({length:meta},(_,i)=>`<i class="${i<ev.estaSemana?'ok':(i===ev.estaSemana&&!esDescanso&&!hechoHoy?'hoy':'')}" style="--i:${i}"></i>`).join('');
   // Inicio (propuesta B elegida por el club, docs/maquetas/inicio-acceso): el aviso es una franja dentro de la foto,
@@ -1616,6 +1616,18 @@ function editarCintura(){
     s.cintura=c; dbSave(s.code); showToast('Cintura guardada: tu plan de nutrición ya la considera'); renderPerfilTab();
   });
 }
+// Peso de hoy desde Perfil (queda en el historial de Progreso → Cuerpo)
+function editarPeso(){
+  const s=activeSocio; if(!s) return;
+  uiEntrada('Tu peso de hoy en kilos. De preferencia en la mañana, antes de desayunar.','Ej. '+(pesoActual(s)||75),'Guardar',v=>{
+    const kg=Math.round(parseFloat(String(v).replace(',','.'))*10)/10;
+    if(!(kg>=30&&kg<=250)){ showToast('Escribe un peso entre 30 y 250 kg'); return; }
+    asegurarLogs(s); const hoy=fechaISO(new Date());
+    const ex=s.logs.pesoCorporal.find(p=>p.fecha===hoy); if(ex) ex.kg=kg; else s.logs.pesoCorporal.push({fecha:hoy,kg});
+    if(!(+s.peso)) s.peso=kg;
+    dbSave(s.code); showToast('✓ Peso guardado: '+kg+' kg'); renderPerfilTab();
+  });
+}
 function editarActividad(){
   const s=activeSocio; if(!s) return;
   uiOpciones('¿Cómo es tu trabajo o tu día fuera del gym? Con esto se calculan mejor tus calorías.',
@@ -1640,7 +1652,7 @@ function renderPerfilTab(){
   const datos=[
     {k:'Objetivo',v:sc(s.objetivo),ancho:1},
     {k:'Nivel',v:sc(s.nivel)},{k:'Frecuencia',v:s.dias+' días/sem'},
-    {k:'Peso actual',v:pesoActual(s)+' kg'},{k:'Estatura',v:s.estatura+' cm'},
+    {k:'Peso actual',v:pesoActual(s)+' kg',ed:'editarPeso()'},{k:'Estatura',v:s.estatura+' cm'},
     {k:'Edad',v:s.edad+' años'},
     {k:'Cintura',v:s.cintura?s.cintura+' cm':'Agregar',ed:'editarCintura()',vacio:!s.cintura},
     {k:'Fuera del gym',v:act?act.lbl:'Indícalo',ed:'editarActividad()',vacio:!act,ancho:1},
