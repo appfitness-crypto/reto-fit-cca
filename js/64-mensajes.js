@@ -62,10 +62,13 @@ function chatMarcarLista(){
 // ── Entradas ──
 function chatNombreEnt(s){ const e=s&&s.entrenadorId&&getEntrenador(s.entrenadorId); return e&&e.nombre&&e.rol!=='coordinador'?e:null; }
 function chatFilaPerfilHTML(s){
-  if(!s || !s.entrenadorId) return '';
-  const e=chatNombreEnt(s); if(!e) return '';
-  const av=typeof entAvatarHTML==='function'?entAvatarHTML(e,'pfl-av chat-av'):'';
-  return `<button type="button" class="pfl-it" onclick="chatAbrir('${esc(s.code)}')">${av}<span class="pfl-t"><b>Mensajes con ${esc(tc(e.nombre).split(' ')[0])}</b><small>Escríbele dudas de tu rutina o tu comida</small></span><i class="chat-dot" data-chat-badge="${esc(s.code)}" ${chatSinLeer(s.code,'s')?'':'hidden'}></i>${ico('chev')}</button>`;
+  if(!s || !s.code) return '';
+  const e=chatNombreEnt(s);
+  // Sin entrenador: escribe al club y le responde el director
+  const av=e&&typeof entAvatarHTML==='function'?entAvatarHTML(e,'pfl-av chat-av'):`<span class="pfl-ic">${ico('chat')}</span>`;
+  const tit=e?'Mensajes con '+esc(tc(e.nombre).split(' ')[0]):'Mensajes con el club';
+  const sub=e?'Escríbele dudas de tu rutina o tu comida':'Te responde el director mientras te asignan entrenador';
+  return `<button type="button" class="pfl-it" onclick="chatAbrir('${esc(s.code)}')">${av}<span class="pfl-t"><b>${tit}</b><small>${sub}</small></span><i class="chat-dot" data-chat-badge="${esc(s.code)}" ${chatSinLeer(s.code,'s')?'':'hidden'}></i>${ico('chev')}</button>`;
 }
 function chatBotonFichaHTML(s){
   if(!s || !chatEsStaff()) return '';
@@ -80,9 +83,10 @@ function chatAbrir(code){
   if(!chatListo() || !navigator.onLine){ showToast('Los mensajes necesitan conexión a internet.'); return; }
   chatCerrar();
   const ent=quien==='s'?chatNombreEnt(s):null;
-  const titulo=quien==='s'?(ent?tc(ent.nombre):'Tu entrenador'):tc(s.nombre);
-  const sub=quien==='s'?'Tu entrenador':(s.entrenadorId===staffActivoEntId?'Tu atleta':'Atleta de '+(((getEntrenador(s.entrenadorId)||{}).nombre)||'nadie todavía'));
-  const av=quien==='s'?(typeof entAvatarHTML==='function'&&ent?entAvatarHTML(ent,'ent-av chat-hav'):''):`<span class="ent-av chat-hav">${esc(typeof entIniciales==='function'?entIniciales(s.nombre):'')}</span>`;
+  const titulo=quien==='s'?(ent?tc(ent.nombre):'Equipo del club'):tc(s.nombre);
+  const entS=getEntrenador(s.entrenadorId), conEnt=entS&&entS.rol!=='coordinador';
+  const sub=quien==='s'?(ent?'Tu entrenador':'Te responde el director'):(s.entrenadorId===staffActivoEntId?'Tu atleta':conEnt?'Atleta de '+entS.nombre:'Sin entrenador: le respondes tú');
+  const av=quien==='s'?(typeof entAvatarHTML==='function'&&ent?entAvatarHTML(ent,'ent-av chat-hav'):`<span class="ent-av chat-hav">${ico('chat')}</span>`):`<span class="ent-av chat-hav">${esc(typeof entIniciales==='function'?entIniciales(s.nombre):'')}</span>`;
   const ov=document.createElement('div'); ov.id='chat-ov'; ov.className='chat-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Mensajes con '+titulo);
   ov.innerHTML=`<div class="chat-hoja">
     <div class="chat-h">${av}<div class="chat-ht"><b>${esc(titulo)}</b><small>${esc(sub)}</small></div><button type="button" class="chat-x" onclick="chatCerrar()" aria-label="Cerrar">${ico('x')}</button></div>
@@ -119,7 +123,7 @@ function chatPintar(v){
   const l=document.getElementById('chat-l'); if(!l||!chatAbierto) return;
   const msgs=Object.values(v).filter(m=>m&&m.t).sort((a,b)=>(+a.ts||0)-(+b.ts||0));
   if(!msgs.length){
-    l.innerHTML=`<p class="chat-vacio">${chatAbierto.quien==='s'?'Escríbele a tu entrenador: dudas de un ejercicio, si algo te molesta o si no podrás venir.':'Aún no hay mensajes. Escríbele para darle seguimiento.'}</p>`;
+    l.innerHTML=`<p class="chat-vacio">${chatAbierto.quien==='s'?(chatNombreEnt(getSocio(chatAbierto.code))?'Escríbele a tu entrenador: dudas de un ejercicio, si algo te molesta o si no podrás venir.':'Escríbenos tus dudas de la rutina o del reto. El director te responde aquí.'):'Aún no hay mensajes. Escríbele para darle seguimiento.'}</p>`;
     return;
   }
   let dia='', h='';

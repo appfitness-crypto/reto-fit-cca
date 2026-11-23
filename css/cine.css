@@ -1494,3 +1494,4 @@ html[data-theme="dark"] .chat-env{color:#0A0E13;}
 .ee-acc-h b{font-size:var(--fs-sm);color:var(--tx);}
 .ee-acc-h span{font-size:var(--fs-xs);color:var(--mu);}
 .ee-acc small{font-size:var(--fs-xs);color:var(--mu);line-height:1.45;}
+.chat-hav .ico{width:20px;height:20px;}
