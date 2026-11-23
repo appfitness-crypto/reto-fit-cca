@@ -131,7 +131,7 @@ function idxEscucharStaff(){
 }
 // El director ve todo; cada entrenador solo lo de sus clientes (las reglas de Firebase solo permiten esa consulta)
 let idxRef=null;
-function idxRefStaff(){ return fbRolDB==='coordinador' ? fbDB.ref('/indice') : fbDB.ref('/indice').orderByChild('e').equalTo(fbUid); }
+function idxRefStaff(){ return (typeof fbVeTodos==='function'?fbVeTodos():fbRolDB==='coordinador') ? fbDB.ref('/indice') : fbDB.ref('/indice').orderByChild('e').equalTo(fbUid); }
 function sociosRefStaff(){ return fbRolDB==='coordinador' ? fbDB.ref('/socios') : fbDB.ref('/socios').orderByChild('entrenadorId').equalTo(fbUid); }
 function idxDetener(){
   try{ if(idxEscuchando && idxRef) idxRef.off('value'); }catch(e){}

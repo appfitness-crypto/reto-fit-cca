@@ -125,6 +125,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
     <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 0 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.4-1.3-1.7-1.3-3 0-1 .8-1.8 1.8-1.8h2.2a3.5 3.5 0 0 0 3.5-3.5c0-3.9-3.6-7-8-7z"/><circle cx="7.8" cy="11.5" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></symbol>
     <symbol id="i-run" viewBox="0 0 24 24"><circle cx="14.5" cy="4.5" r="2"/><path d="M8 21l2.5-5.5 3 2.5V22M7 11.5 9.5 8h4.5l2.5 3.5 3 1M14 8l-2 5.5"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8.5a2 2 0 0 1 2-2h2.2l1.5-2h5.6l1.5 2h2.2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4.5 5.5h15a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1H10l-4.5 3.5V17h-1a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1z"/></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 12A7.5 7.5 0 0 1 6 16.6M4.5 12A7.5 7.5 0 0 1 18 7.4M18 3.5v4h-4M6 20.5v-4h4"/></symbol>
     <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4.5 19.5 5.5 15 15.5 5a2.1 2.1 0 0 1 3 3l-10 10zM13.5 7l3 3"/></symbol>
@@ -809,7 +810,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <div class="tb-btn" id="btn-mi-codigo" onclick="mostrarMiCodigo()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🔑 Mi código</div>
       <div class="tb-btn" id="btn-mi-filosofia" onclick="abrirMiFilosofia()" style="display:none;color:var(--p);border-color:color-mix(in srgb,var(--p) 25%,transparent)">🧬 Mi filosofía</div>
       <div class="tb-btn" id="btn-ver-ent" onclick="abrirEntrenadores()" style="display:none;color:var(--n);border-color:color-mix(in srgb,var(--n) 20%,transparent)">👥 Entrenadores</div>
-      <div class="tb-btn" id="btn-nuevo-ent" onclick="abrirNuevoEntrenador()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador</div>
+      <div class="tb-btn" id="btn-nuevo-ent" onclick="abrirNuevoEntrenador()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador o nutriólogo</div>
       <div class="tb-btn" id="btn-conocimiento" onclick="abrirConocimiento()" style="color:var(--p);border-color:color-mix(in srgb,var(--p) 25%,transparent)">📚 Conocimiento</div>
       <div class="tb-btn" id="btn-reglas" onclick="retoReglasAbrir()" style="display:none">📍 Ubicación y reglas del reto</div>
       <div class="tb-btn" id="btn-tablero" onclick="abrirTableroReto()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🏆 Tablero del reto</div>
@@ -941,6 +942,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <script defer src="js/65-recorrido.js"></script>
 <script defer src="js/66-reglas-reto.js"></script>
 <script defer src="js/67-mediciones-oficiales.js"></script>
+<script defer src="js/68-nutriologo.js"></script>
 <script defer src="js/99-arranque.js"></script>
 
 <!-- ═══ MODAL AVISO DE PRIVACIDAD ═══ -->
@@ -1028,15 +1030,15 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <div class="modal" id="modal-nuevo-ent" onclick="if(event.target===this)cerrarModalNuevoEnt()">
   <div class="mbox" style="max-width:420px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div style="font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--v)">DAR DE ALTA ENTRENADOR</div>
+      <div style="font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--v)">DAR DE ALTA ENTRENADOR O NUTRIÓLOGO</div>
       <div class="av3d-cerrar" style="border-color:var(--b);color:var(--mu)" onclick="cerrarModalNuevoEnt()">✕</div>
     </div>
-    <div class="q-sub" style="margin-bottom:14px">Crea su acceso. Al iniciar sesión por primera vez, le pediremos su propia filosofía de entrenamiento — así sus rutinas no se sentirán genéricas.</div>
+    <div class="q-sub" style="margin-bottom:14px">Crea su acceso. <b>Entrenamiento:</b> arma rutinas con su filosofía y ve a sus atletas. <b>Nutrición:</b> ve a todos los socios, registra sus mediciones (con foto de la hoja InBody) y ajusta su nutrición. Si hace las dos, marca las dos.</div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <input type="text" class="ti" id="ne-nombre" aria-label="Nombre completo" placeholder="Nombre completo (ej. Ana López)">
       <input type="text" class="ti" id="ne-usuario" aria-label="Correo o usuario para entrar" placeholder="Correo o usuario (ej. fer@correo.com o fernando)" autocapitalize="off" autocomplete="off" inputmode="email">
       <input type="text" class="ti" id="ne-pass" aria-label="Contraseña" placeholder="Contraseña">
-      <div class="q-sub" style="margin:2px 0 4px">¿Qué va a dar de alta? (elige al menos una)</div>
+      <div class="q-sub" style="margin:2px 0 4px">¿Qué hace? (elige al menos una)</div>
       <div class="chk-grid" style="grid-template-columns:1fr 1fr">
         <div class="chk ck" id="ne-func-ent" onclick="this.classList.toggle('ck')">🏋️ Entrenamiento</div>
         <div class="chk" id="ne-func-nut" onclick="this.classList.toggle('ck')">🥗 Nutrición</div>
