@@ -35,5 +35,11 @@
       "purpose": "maskable"
     }
   ],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://appfitness-crypto.github.io/reto-fit-cca/manifest.json"
+    }
+  ]
 }
