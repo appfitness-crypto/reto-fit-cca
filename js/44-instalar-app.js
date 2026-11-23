@@ -12,19 +12,35 @@ window.addEventListener('beforeinstallprompt',e=>{
   instRefrescar();
 });
 window.addEventListener('appinstalled',()=>{
-  INST_AVISO=null;
+  INST_AVISO=null; instMarcar();
   try{ showToast('Listo: la app quedó en tu pantalla de inicio'); }catch(_){}
   instRefrescar();
 });
 
-function instInstalada(){
+// Ya instalada: abierta desde el ícono, o instalada antes en este equipo (aunque ahora se abra en el navegador).
+// El navegador y la app instalada comparten el almacenamiento, así que la marca se ve desde los dos.
+const INST_HECHA='fsp-inst-hecha';
+function instMarcar(){ try{ localStorage.setItem(INST_HECHA,'1'); }catch(_){} }
+function instEnApp(){
   try{ return matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches || navigator.standalone===true; }
   catch(_){ return false; }
 }
+function instInstalada(){
+  if(instEnApp()){ instMarcar(); return true; }
+  try{ return localStorage.getItem(INST_HECHA)==='1'; }catch(_){ return false; }
+}
+// Android (Chrome): pregunta si la app web ya está instalada aunque se haya instalado desde otro lado
+(function(){
+  if(instEnApp()){ instMarcar(); return; }
+  try{
+    if(navigator.getInstalledRelatedApps) navigator.getInstalledRelatedApps().then(l=>{ if(l&&l.length){ instMarcar(); instRefrescar(); } }).catch(()=>{});
+  }catch(_){}
+})();
 function instPlataforma(){
   const ua=navigator.userAgent||'';
   const ios=/iPhone|iPad|iPod/i.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
-  const android=/Android/i.test(ua);
+  // Las tablets (p. ej. Samsung) a veces piden la versión de escritorio y no dicen "Android": Linux con pantalla táctil
+  const android=/Android/i.test(ua) || (!ios && /Linux/i.test(ua) && !/CrOS/i.test(ua) && navigator.maxTouchPoints>1);
   const dentroDe=/Instagram/i.test(ua)?'Instagram':/FBAN|FBAV|FB_IAB/i.test(ua)?'Facebook':/WhatsApp/i.test(ua)?'WhatsApp':/TikTok|musical_ly/i.test(ua)?'TikTok':/Line\//i.test(ua)?'Line':(android&&/; wv\)/.test(ua))?'otra app':'';
   let nav='otro';
   if(ios) nav=/CriOS/i.test(ua)?'chrome':/FxiOS/i.test(ua)?'firefox':/EdgiOS/i.test(ua)?'edge':'safari';
@@ -41,15 +57,22 @@ function instPosponer(){ try{ localStorage.setItem(INST_POSP,String(Date.now()))
 function instTarjetaHTML(){
   if(!instDisponible() || instPospuesta()) return '';
   const p=instPlataforma(), directo=!!INST_AVISO && !p.ios;
+  const msg=directo?'Instala la app y ábrela desde tu pantalla de inicio, como cualquier otra.'
+    : p.ios?'Agrégala a la pantalla de inicio de tu iPhone desde Safari para entrar más rápido.'
+    : p.android?'Instálala desde el menú de tu navegador y ábrela con su ícono.'
+    : 'Instálala en tu equipo para entrar más rápido.';
+  const btn=directo?'Instalar':p.ios?'Cómo agregarla':'Cómo instalarla';
   return `<div class="pg-home soft inst-card">
     <div class="inst-ic">${ico('download')}</div>
     <div class="inst-tx"><div class="pg-home-k">Tenla a un toque</div>
-      <div class="inst-m">${directo?'Instala la app y ábrela desde tu pantalla de inicio, como cualquier otra.':'Agrega la app a tu pantalla de inicio para entrar más rápido.'}</div>
+      <div class="inst-m">${msg}</div>
       <div class="inst-acts">
-        <button type="button" class="sd-pri" onclick="instAbrir()">${directo?'Instalar':'Cómo agregarla'}</button>
+        <button type="button" class="sd-pri" onclick="instAbrir()">${btn}</button>
         <button type="button" class="btn-back-link" onclick="instPosponer()">Ahora no</button>
+        ${p.android&&!directo?'<button type="button" class="btn-back-link" onclick="instYaLaTengo()">Ya la tengo</button>':''}
       </div></div></div>`;
 }
+function instYaLaTengo(){ instMarcar(); showToast('Listo, ya no te lo mostramos.'); instRefrescar(); }
 function instFilaPerfilHTML(){
   if(!instDisponible()) return '';
   return `<button type="button" class="pf-row" onclick="instAbrir()">${it('download','sm')}<span>Instalar la app en mi celular</span>${ico('chev')}</button>`;
@@ -95,7 +118,7 @@ function instPasos(){
       ['Toca el menú <b>⋮</b>',''],
       ['Toca <b>Instalar</b> o <b>Agregar a la pantalla de inicio</b>',''],
       ['Confirma con <b>Agregar</b>','El ícono del gimnasio aparece en tu pantalla de inicio.']]};
-    return {t:'Agrégala a tu celular', n:'Desde el menú de tu navegador, en 3 pasos.', pasos:[
+    return {t:'Instálala en tu celular', n:'Desde el menú de tu navegador, en 3 pasos. Si ya la instalaste, ábrela desde su ícono.', pasos:[
       ['Toca el menú <b>⋮</b>','Arriba a la derecha.'],
       ['Toca <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>',''],
       ['Toca <b>Instalar</b>','El ícono del gimnasio aparece en tu pantalla de inicio.']]};
