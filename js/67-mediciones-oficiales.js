@@ -50,6 +50,12 @@ function ofiEscuchar(){
   }, e=>{ console.warn('oficial',e&&e.code); ofiClave=''; });
 }
 function ofiDe(code){ return OFI[code]||{}; }
+// Última medición InBody con masa libre de grasa (para el metabolismo basal: js/03-nutricion-motor.js)
+function nutInbody(s){
+  const m=(s&&OFI[s.code]&&OFI[s.code].med)||{}, t=m.fin||m.mid||m.ini; if(!t || !(+t.peso>0)) return null;
+  const mg=+t.mg>0?+t.mg:(+t.pgc>0?+t.peso*+t.pgc/100:null); if(mg==null) return null;
+  return {mlg:Math.round((+t.peso-mg)*10)/10, peso:+t.peso, fecha:t.fecha?fmtFecha(t.fecha):''};
+}
 
 // ── Resultado y jueces ──
 function ofiNivel(s){ const n=String(s&&s.nivel||'').toUpperCase(); return /AVAN/.test(n)?'AVANZADO':/INTER/.test(n)?'INTERMEDIO':'PRINCIPIANTE'; }

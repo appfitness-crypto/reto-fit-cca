@@ -19,6 +19,7 @@ function cinturaValida(c,est,imc){
   const r=c/est;
   if(r<0.38 || r>0.95) return 0;
   if((imc||0)>=35 && r<0.45) return 0;
+  if((imc||0)<30 && r>0.68) return 0;   // p. ej. 126 cm de cintura con IMC 26: casi seguro un error de captura
   return c;
 }
 function composicionCorporal(s,peso){
@@ -47,16 +48,24 @@ function calcNutricion(s){
   const esHombre = g.includes('HOMBRE')||g.includes('MASCULINO');
   const esMujer = g.includes('MUJER')||g.includes('FEMENINO');
   const comp = composicionCorporal(s,peso);
-  // Con % de grasa conocido, Katch-McArdle (usa la masa magra) es más preciso que Mifflin-St Jeor
-  const bmr = comp.grasa!=null ? Math.round(370+21.6*peso*(1-comp.grasa/100))
-    : Math.round(esHombre ? bmrH : esMujer ? bmrM : (bmrH+bmrM)/2);
+  // ── 1. Metabolismo basal (no depende del objetivo) ──
+  // Con medición oficial InBody (masa libre de grasa medida) → Cunningham: 500 + 22 × MLG.
+  // Sin ella → Mifflin-St Jeor. El % de grasa estimado con la cintura NO cambia el basal: es una estimación
+  // y un error de captura en la cintura lo movía cientos de kcal (antes se usaba Katch-McArdle con ese dato).
+  const ib = typeof nutInbody==='function' ? nutInbody(s) : null;
+  let bmr, bmrMetodo;
+  if(ib && ib.mlg>20){ bmr=Math.round(500+22*ib.mlg); bmrMetodo='Cunningham con InBody ('+ib.mlg+' kg de masa libre de grasa, '+ib.fecha+')'; }
+  else { bmr=Math.round(esHombre ? bmrH : esMujer ? bmrM : (bmrH+bmrM)/2); bmrMetodo='Mifflin-St Jeor'+(esHombre||esMujer?'':' (promedio: falta el sexo)'); }
 
   // Factor de actividad: actividad del trabajo (base) + cada día de entrenamiento.
   // Socios registrados antes de esta pregunta conservan la tabla anterior (solo días de entrenamiento).
   const factores = {2:1.375, 3:1.45, 4:1.55, 5:1.65, 6:1.725, 7:1.76};
   const act = ACTIVIDAD_TRABAJO[s.actividad];
   const factor = act ? Math.min(1.9, Math.round((act.f + 0.05*(parseInt(s.dias)||4))*1000)/1000) : (factores[s.dias] || 1.55);
+  const factorTxt = act ? act.lbl.toLowerCase()+' + '+(parseInt(s.dias)||4)+' días de entrenamiento' : (parseInt(s.dias)||4)+' días de entrenamiento';
+  // ── 2. Gasto energético total (basal × actividad), como rango de ±10 % ──
   const tdee = Math.round(bmr * factor);
+  const tdeeRango = [Math.round(tdee*0.9), Math.round(tdee*1.1)];
 
   // Ajuste calórico según objetivo
   let kcal, ajusteTxt, protKg, nota;
@@ -127,7 +136,10 @@ function calcNutricion(s){
   if(pRef<peso-0.5) nota += ' Proteína y grasas calculadas sobre '+pRef+' kg (peso de referencia por tu composición corporal), no sobre tu peso total.';
   if(comp.imc>=30 && comp.grasa==null) nota += ' Agrega tu medida de cintura en tu perfil para afinar este cálculo.';
   if(faltan.length) nota += ' Falta tu '+faltan.join(' y ')+' en tu perfil: este cálculo es aproximado hasta que lo completes.';
-  return { bmr, factor, tdee, kcal, prot, protKg, grasas, carbs, agua, ajusteTxt, nota, pesoBase: peso, imc:comp.imc, grasaPct:comp.grasa, pesoRef:pRef };
+  // ── 3. Ajuste por objetivo: lo único que cambia al pasar de ganar músculo a perder grasa ──
+  const ajustePct = tdee ? Math.round((kcal/tdee-1)*1000)/10 : 0;
+  const objetivoAplicado = (s.objetivo==='GANAR MÚSCULO' && comp.grasaAlta) ? 'RECOMPOSICIÓN CORPORAL' : s.objetivo;
+  return { bmr, bmrMetodo, factor, factorTxt, tdee, tdeeRango, ajustePct, objetivoAplicado, kcal, prot, protKg, grasas, carbs, agua, ajusteTxt, nota, pesoBase: peso, imc:comp.imc, grasaPct:comp.grasa, pesoRef:pRef, dias:parseInt(s.dias)||null };
 }
 // Reparto de kcal por número de comidas (regla de diseño de docs/NUTRICION-DEPORTIVA.md; respeta la comida fuerte de 14 a 17 h)
 const MEAL_TEMPLATES={
@@ -157,8 +169,17 @@ function nutRepartoComidas(n,kcal,pP,cP,gP){
 function nutricionFinal(s){
   const base=calcNutricion(s), o=s.nutricion;
   if(!o || !o.override) return Object.assign({},base,{manual:false});
-  return Object.assign({},base,{
-    kcal:+o.kcal||base.kcal, prot:+o.prot||base.prot, carbs:+o.carbs||base.carbs, grasas:+o.grasas||base.grasas, agua:+o.agua||base.agua,
-    manual:true
-  });
+  const n=v=>(v===0||v==='0')?0:(+v||null);   // un 0 capturado a propósito se respeta
+  // El ajuste del staff guarda contra qué se hizo (objetivo, peso, gasto). Si cambió el objetivo, ese ajuste ya no aplica;
+  // si cambió el peso o la frecuencia, se escala: kcal con el gasto total, proteína y grasa con el peso, carbohidrato el resto.
+  if(o.baseObj && o.baseObj!==s.objetivo) return Object.assign({},base,{manual:false, overrideViejo:true});
+  let kcal=n(o.kcal)??base.kcal, prot=n(o.prot)??base.prot, grasas=n(o.grasas)??base.grasas, carbs=n(o.carbs)??base.carbs, adaptado=false;
+  if(o.baseTdee && o.basePeso){
+    const fT=base.tdee/o.baseTdee, fP=base.pesoBase/o.basePeso;
+    if(Math.abs(fT-1)>0.02 || Math.abs(fP-1)>0.02){
+      kcal=Math.round(kcal*fT); prot=Math.round(prot*fP); grasas=Math.round(grasas*fP);
+      carbs=Math.max(0,Math.round((kcal-prot*4-grasas*9)/4)); adaptado=true;
+    }
+  }
+  return Object.assign({},base,{ kcal, prot, carbs, grasas, agua:n(o.agua)??base.agua, manual:true, adaptado });
 }

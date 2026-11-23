@@ -1,3 +1,14 @@
+# Cambios — Requerimientos: basal, gasto total y ajuste por objetivo por separado
+- **Antes:** la ficha decía "2,032 kcal (BMR 1380 × 1.55)", pero 1380 × 1.55 = 2,139; faltaba el −5 % que se aplicó porque el objetivo de ganar músculo se cambió solo a recomposición. Además el basal usaba Katch-McArdle con el % de grasa estimado por la cintura: una cintura mal capturada (p. ej. 126 cm con IMC 26) lo bajaba de 1,620 a 1,380 kcal.
+- **Ahora (js/03, js/26, js/67):**
+  - Paso 1, metabolismo basal: Cunningham (500 + 22 × masa libre de grasa) si hay medición oficial InBody; si no, Mifflin-St Jeor. La cintura ya no cambia el basal. Cinturas poco creíbles (cintura/estatura > 0.68 con IMC < 30) se ignoran.
+  - Paso 2, gasto total = basal × factor de actividad, mostrado como rango de ±10 %.
+  - Paso 3, ajuste por objetivo (−18 %, −7 %, +10 %…): es lo único que cambia al cambiar el objetivo. Si "ganar músculo" se aplica como recomposición, la ficha lo dice.
+  - Los ajustes del staff guardan contra qué se hicieron: si cambia el peso o la frecuencia se escalan solos (kcal con el gasto, proteína y grasa con el peso); si cambia el objetivo, se vuelve al cálculo automático y se avisa. Un 0 capturado a propósito ya no se pierde.
+- Service worker: `retofit-cca-v66`.
+
+---
+
 # Cambios — Mi cuerpo: controles fuera de la imagen y mira en el punto elegido
 - **Antes:** los botones Frente / Espalda / Izq. / Der., Anatomía / Avance y el zoom flotaban encima del cuerpo y tapaban la cabeza y los pies.
 - **Ahora (js/13, css):** las vistas van en una barra arriba de la imagen, junto al botón de pantalla completa. Anatomía / Avance y el zoom (− + y cuerpo completo) van en una barra abajo, y la escala de Avance debajo de ellas. La imagen queda libre.
