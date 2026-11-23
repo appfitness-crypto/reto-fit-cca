@@ -1560,3 +1560,23 @@ html[data-theme="dark"] .rcr-sig{color:#0A0E13;}
 .rcr-pts{flex-direction:column;align-items:flex-start;gap:5px;font:700 12px/1 var(--fb);color:var(--mu);}
 .rcr-bar{display:block;width:64px;height:5px;border-radius:99px;background:color-mix(in srgb,var(--tx) 14%,transparent);overflow:hidden;}
 .rcr-bar i{display:block;height:100%;border-radius:inherit;background:var(--lime);transition:width .3s ease;}
+
+/* Director: seleccionar y eliminar socios */
+.sl-selbtn{margin-left:auto;margin-right:8px;min-height:36px;padding:0 14px;border:1px solid var(--b);border-radius:99px;background:var(--gl);color:var(--tx);font:700 var(--fs-sm)/1 var(--fb);cursor:pointer;}
+.sl-selbtn[hidden]{display:none;}
+.sl-selbtn[aria-pressed="true"]{background:var(--lime);border-color:var(--lime);color:#fff;}
+html[data-theme="dark"] .sl-selbtn[aria-pressed="true"]{color:#0A0E13;}
+.sl-item.modo-sel .sl-ver{display:none;}
+.sl-item .sl-ini{position:relative;}
+.sl-check{position:absolute;inset:0;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--dk2) 70%,transparent);box-shadow:inset 0 0 0 2px var(--b2,var(--b));color:#fff;font-style:normal;}
+.sl-item.elegido .sl-check{background:#E5484D;box-shadow:none;}
+.sl-check .ico{width:20px;height:20px;}
+.sl-item.elegido{background:color-mix(in srgb,#E5484D 10%,transparent);}
+.sl-selbar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));border-radius:18px 18px 0 0;background:var(--dk2);box-shadow:0 -10px 24px -14px rgba(0,0,0,.5);}
+.sl-selbar span{flex:1;min-width:0;font-size:var(--fs-sm);font-weight:700;color:var(--tx);}
+.sl-selbar .sd-b,.sl-selbar .sd-pri{min-height:40px;padding:0 14px;}
+.sl-selbar .sd-pri:disabled{opacity:.45;}
+.fx-del{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;margin:22px 0 90px;min-height:44px;padding:0 16px;border:1px solid color-mix(in srgb,#E5484D 45%,transparent);border-radius:99px;background:none;color:#E5484D;font:700 var(--fs-sm)/1 var(--fb);cursor:pointer;}
+.fx-del .ico{width:17px;height:17px;}
+.sl-selbar .sd-b,.sl-selbar .sd-pri{flex:none;width:auto;white-space:nowrap;margin:0;}
+.sl-selbar span{font-size:13px;line-height:1.25;}
