@@ -123,7 +123,8 @@
         "$m": {
           ".write": "auth != null && (auth.uid === $socio || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && root.child('socios').child($socio).child('entrenadorId').val() === auth.uid)) && !data.exists()",
           ".validate": "newData.hasChildren(['d','t','ts']) && newData.child('t').isString() && newData.child('t').val().length > 0 && newData.child('t').val().length <= 1000 && newData.child('ts').isNumber() && (newData.child('d').val() === 's' ? auth.uid === $socio : (newData.child('d').val() === 'e' && auth.uid !== $socio))"
-        }
+        },
+        ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador' && !newData.exists()"
       }
     },
     "chatsMeta": {

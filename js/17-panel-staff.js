@@ -143,12 +143,16 @@ function staffRenderList(){
     const ini=tc(s.nombre).split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
     const me=membEstado(s), m=mot[s.code];
     const badge=me.estado==='activo'?'':`<span class="sl-st ${membBadgeCls(me)}">${membBadgeTxt(me)}</span>`;
-    return `<div class="sl-item${staffActivoId===s.code?' sel':''}${me.estado==='inactivo'?' off':''}" onclick="staffOpenSocio('${esc(s.code)}')" role="button" tabindex="0" title="${esc(tc(s.nombre))}${m.txt?': '+esc(m.txt):''}">
-      <div class="sl-ini">${esc(ini)}${m.c!=='n'?`<i class="sl-dot ${m.c}"></i>`:''}</div>
+    const elegido=staffSelModo&&staffSel.has(s.code);
+    return `<div class="sl-item${staffActivoId===s.code&&!staffSelModo?' sel':''}${me.estado==='inactivo'?' off':''}${staffSelModo?' modo-sel':''}${elegido?' elegido':''}" onclick="${staffSelModo?`staffSelToca('${esc(s.code)}')`:`staffOpenSocio('${esc(s.code)}')`}" role="${staffSelModo?'checkbox':'button'}"${staffSelModo?` aria-checked="${elegido}"`:''} tabindex="0" title="${esc(tc(s.nombre))}${m.txt?': '+esc(m.txt):''}">
+      <div class="sl-ini">${staffSelModo?`<i class="sl-check">${elegido?ico('check'):''}</i>`:''}${esc(ini)}${m.c!=='n'&&!staffSelModo?`<i class="sl-dot ${m.c}"></i>`:''}</div>
       <div class="sl-tx"><div class="sl-nm">${esc(tc(s.nombre))}</div>${m.txt?`<div class="sl-why ${m.c}">${esc(m.txt)}</div>`:''}<div class="sl-sub">${esc(sc(s.objetivo))}${esc(pqBadgeLista(s))}</div></div>
       <div class="sl-der">${badge}<span class="sl-ult">${esc(ultimaSesionTxt(s))}</span>${typeof verPerfilBtnHTML==='function'?verPerfilBtnHTML(s):''}</div>
     </div>`;
   }).join('') : `<div class="empty-msg">${q?'Ningún socio coincide con tu búsqueda.':'Aún no hay socios en esta lista.'}</div>`;
+  const bs=document.getElementById('sl-sel-btn');
+  if(bs){ bs.hidden=staffRol!=='coordinador'; bs.setAttribute('aria-pressed',String(staffSelModo)); bs.textContent=staffSelModo?'Listo':'Seleccionar'; }
+  if(typeof staffSelBarra==='function') staffSelBarra();
 }
 // ── Lista retráctil (tablet y computadora): la ficha queda a pantalla completa y la lista
 // se reduce a una franja con las iniciales. Se abre o se cierra con el botón o deslizando el dedo o el lápiz.
@@ -261,6 +265,7 @@ function staffRenderContent(s){
       ${pane('rutina',rtRutinaHTML(s))}
       ${pane('nutricion',bloqueNutricionStaff(s))}
       ${pane('progresion',bloqueProgresionTab(s))}
+      ${staffRol==='coordinador'?`<button type="button" class="fx-del" onclick="confirmarEliminarSocio('${esc(s.code)}')">${ico('trash')}Eliminar socio</button>`:''}
       <div class="sd-bar fx-bar${staffDirty.has(s.code)||isPend?' on':''}" id="fx-bar">
         <span class="fx-bar-msg">${staffDirty.has(s.code)?'Cambios sin guardar':''}</span>
         ${isPend?`<button type="button" class="sd-pri ghost" onclick="staffAprobar('${s.code}')">Aprobar plan</button>`:''}
