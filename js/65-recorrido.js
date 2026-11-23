@@ -113,6 +113,7 @@ function rcrIniciar(clave){
   document.body.appendChild(ov);
   document.addEventListener('keydown',rcrTecla);
   window.addEventListener('resize',rcrColocar);
+  document.addEventListener('scroll',rcrAlMover,true);
   requestAnimationFrame(()=>{ ov.classList.add('on'); rcrMostrar(); });
 }
 function rcrTecla(e){ if(e.key==='Escape') rcrTerminar(); else if(e.key==='ArrowRight') rcrIr(1); else if(e.key==='ArrowLeft') rcrIr(-1); }
@@ -148,10 +149,14 @@ function rcrMostrar(){
     const r=el.getBoundingClientRect();
     if(r.top<70 || r.bottom>window.innerHeight-260) el.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
   }
-  clearTimeout(rcrMostrar._t); rcrMostrar._t=setTimeout(rcrColocar, el?320:0);
+  // Se vuelve a acomodar mientras la pantalla se desliza hacia el elemento (y al final, por si acaso)
+  clearTimeout(rcrMostrar._t); clearTimeout(rcrMostrar._t2);
+  rcrMostrar._t=setTimeout(rcrColocar, el?350:0); rcrMostrar._t2=setTimeout(rcrColocar, el?800:0);
   rcrColocar();
   setTimeout(()=>{ const b=document.getElementById('rcr-sig'); if(b) b.focus({preventScroll:true}); },60);
 }
+let rcrRaf=0;
+function rcrAlMover(){ if(rcrRaf) return; rcrRaf=requestAnimationFrame(()=>{ rcrRaf=0; rcrColocar(); }); }
 // Coloca el hueco sobre el elemento y la tarjeta arriba o abajo de él
 function rcrColocar(){
   const p=rcrPasos[rcrI], h=document.getElementById('rcr-hueco'), c=document.getElementById('rcr-card'); if(!p||!h||!c) return;
@@ -163,11 +168,12 @@ function rcrColocar(){
   let left=Math.max(16,Math.min(W-cw-16,r.left+r.width/2-cw/2));
   let top=(r.top-m-ch-14>=16 && (r.top>H/2 || r.bottom+m+ch+14>H-16)) ? r.top-m-ch-14 : r.bottom+m+14;
   if(top+ch>H-16) top=Math.max(16,H-ch-16);
+  top=Math.max(16,top);   // nunca fuera de la pantalla
   c.style.cssText=`left:${left}px;top:${top}px;width:${cw}px;`;
 }
 function rcrTerminar(){
   rcrActivo=false;
-  document.removeEventListener('keydown',rcrTecla); window.removeEventListener('resize',rcrColocar);
+  document.removeEventListener('keydown',rcrTecla); window.removeEventListener('resize',rcrColocar); document.removeEventListener('scroll',rcrAlMover,true);
   const ov=document.getElementById('rcr'); if(ov){ ov.classList.remove('on'); setTimeout(()=>ov.remove(),220); }
   const s=rcrSocio(); if(!s) return;
   const k=rcrClave;
