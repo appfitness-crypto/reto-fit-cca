@@ -137,6 +137,13 @@
         ".write": "auth != null && (auth.uid === $socio || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && root.child('socios').child($socio).child('entrenadorId').val() === auth.uid))",
         ".validate": "newData.hasChildren(['e'])"
       }
+    },
+    "oficial": {
+      ".read": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || root.child('roles').child(auth.uid).val() === 'entrenador')",
+      "$socio": {
+        ".read": "auth != null && (auth.uid === $socio || root.child('roles').child(auth.uid).val() === 'coordinador' || root.child('roles').child(auth.uid).val() === 'entrenador')",
+        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || root.child('roles').child(auth.uid).val() === 'entrenador')"
+      }
     }
   }
 }
