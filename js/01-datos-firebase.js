@@ -77,10 +77,15 @@ function fbConUsuario(ms){
   return Promise.race([esp,new Promise(r=>setTimeout(()=>r(false),ms||6000))]);
 }
 let fbRolError=false;   // la última lectura del rol falló (sin conexión): no quiere decir que no sea staff
+let fbNutri=false;
+// ¿Ve a todos los socios? El director y los nutriólogos
+function fbVeTodos(){ return fbRolDB==='coordinador' || fbNutri; }
 async function fbCargarRol(user){
-  fbRolListo=false; fbRolDB=null; fbEsStaff=false; fbRolError=false;
+  fbRolListo=false; fbRolDB=null; fbEsStaff=false; fbRolError=false; fbNutri=false;
   if(user && !user.isAnonymous){
     try{ const r=await fbDB.ref('/roles/'+user.uid).once('value'); fbRolDB=r.val()||null; fbEsStaff=!!fbRolDB; }catch(e){ console.warn('Sin rol',e); fbRolError=true; }
+    // Nutriólogo: el director lo marca en /nutris; ve y mide a todos los socios (js/68-nutriologo.js)
+    if(fbRolDB==='entrenador'){ try{ const n=await fbDB.ref('/nutris/'+user.uid).once('value'); fbNutri=n.val()===true; }catch(e){ fbNutri=false; } }
   }
   fbRolListo=true;
   return fbRolDB;

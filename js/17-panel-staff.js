@@ -93,7 +93,7 @@ function staffMenuIr(id){ staffMenuCerrar(); const b=document.getElementById(id)
 
 function staffGetSocios(){
   const todos=(typeof sociosParaStaff==='function'?sociosParaStaff():Object.values(DB.socios||{})).filter(Boolean);
-  if(staffRol==='coordinador' || !staffActivoEntId) return todos;
+  if(staffRol==='coordinador' || !staffActivoEntId || (typeof fbNutri!=='undefined' && fbNutri)) return todos;   // el nutriólogo ve a todos para medirlos
   // Cada entrenador o nutriólogo ve solo a quienes lo eligieron a él (entrenamiento) o se lo asignaron a él (nutrición).
   // Los socios sin asignar solo los ve el coordinador.
   return todos.filter(s=>s.entrenadorId===staffActivoEntId || s.nutriologoId===staffActivoEntId);

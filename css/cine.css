@@ -1651,3 +1651,43 @@ html[data-theme="dark"] .ofi-tomas button[aria-selected="true"]{color:#0A0E13;}
 .ofi-sm-r{display:grid;grid-template-columns:90px auto;gap:2px 10px;padding:8px 0;border-top:1px solid var(--b);font-size:13.5px;color:var(--tx);}
 .ofi-sm-r span:last-child{grid-column:1/-1;color:var(--mu);}
 .ofi-sm-r.off{color:var(--mu);}
+
+/* ═══ Nutriólogo: Registrar medidas (js/68-nutriologo.js) ═══ */
+.rm-btn{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;align-items:center;width:100%;margin-top:10px;padding:12px 16px;border:0;border-radius:18px;background:var(--lime);color:#fff;text-align:left;cursor:pointer;box-shadow:0 10px 22px -12px color-mix(in srgb,var(--lime) 80%,transparent);}
+html[data-theme="dark"] .rm-btn{color:#0A0E13;}
+.rm-btn .ico{grid-row:1/3;width:26px;height:26px;}
+.rm-btn span{font:800 16px/1.1 var(--fb);}
+.rm-btn small{font:600 12.5px/1.2 var(--fb);opacity:.85;}
+.rm-ini{display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:6px 0;}
+.rm-cam{display:flex;flex-direction:column;align-items:center;gap:6px;padding:26px 16px;border:2px dashed color-mix(in srgb,var(--lime) 60%,transparent);border-radius:22px;background:color-mix(in srgb,var(--lime) 8%,transparent);color:var(--tx);text-align:center;cursor:pointer;}
+.rm-cam .ico{width:40px;height:40px;color:var(--lime);}
+.rm-cam b{font:800 17px/1.2 var(--fb);}
+.rm-cam span{font-size:13px;color:var(--mu);}
+.rm-alt{min-height:46px;display:flex;align-items:center;justify-content:center;border:1px solid var(--b);border-radius:99px;background:none;color:var(--tx);font:700 14.5px/1 var(--fb);cursor:pointer;}
+.rm-lee{display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px 10px;text-align:center;}
+.rm-lee b{font:800 17px/1.2 var(--fb);color:var(--tx);}
+.rm-lee span{font-size:13px;color:var(--mu);max-width:32ch;}
+.rm-spin{width:44px;height:44px;border-radius:50%;border:4px solid color-mix(in srgb,var(--lime) 25%,transparent);border-top-color:var(--lime);animation:rm-gira .9s linear infinite;}
+@keyframes rm-gira{to{transform:rotate(360deg);}}
+@media (prefers-reduced-motion:reduce){.rm-spin{animation:none;}}
+.rm-bar{width:200px;height:6px;margin-top:6px;border-radius:99px;background:color-mix(in srgb,var(--tx) 10%,transparent);overflow:hidden;}
+.rm-bar i{display:block;width:0;height:100%;background:var(--lime);transition:width .2s ease;}
+.rm-foto{margin-bottom:10px;font-size:13.5px;color:var(--mu);}
+.rm-foto summary{cursor:pointer;padding:6px 0;}
+.rm-foto img{width:100%;border-radius:12px;margin-top:6px;}
+.rm-sec{margin-bottom:14px;}
+.rm-sec h3{margin:0 0 8px;font:800 15px/1.2 var(--fb);color:var(--tx);}
+.rm-sec h3 small{font-weight:600;color:var(--mu);font-size:12px;}
+.rm-quien{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;padding:12px 14px;border-radius:16px;background:color-mix(in srgb,var(--lime) 14%,transparent);}
+.rm-quien b{font:800 16px/1.2 var(--fb);color:var(--tx);}
+.rm-quien small{grid-column:1;font-size:12.5px;color:var(--mu);}
+.rm-quien .rm-alt{grid-column:2;grid-row:1/3;min-height:38px;padding:0 14px;}
+.rm-cands{display:flex;flex-direction:column;gap:6px;margin:6px 0;}
+.rm-cands button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 14px;border:1px solid var(--b);border-radius:14px;background:var(--gl);color:var(--tx);text-align:left;cursor:pointer;}
+.rm-cands b{font:700 15px/1.2 var(--fb);}
+.rm-cands small{font-size:12px;color:var(--mu);}
+.rm-f label.falta input{border-color:#E5484D;background:color-mix(in srgb,#E5484D 6%,transparent);}
+.rm-ok{width:64px;height:64px;margin:10px auto 0;display:grid;place-items:center;border-radius:50%;background:var(--lime);color:#fff;}
+.rm-ok .ico{width:32px;height:32px;}
+.rm-okt{text-align:center;font:800 20px/1.2 var(--fb);color:var(--tx);}
+.rm-ini>.ofi-mu{text-align:center;}

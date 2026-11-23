@@ -8,13 +8,13 @@
       }
     },
     "socios": {
-      ".read": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && query.orderByChild === 'entrenadorId' && query.equalTo === auth.uid))",
+      ".read": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && query.orderByChild === 'entrenadorId' && query.equalTo === auth.uid) || root.child('nutris').child(auth.uid).val() === true)",
       ".indexOn": [
         "entrenadorId"
       ],
       "$uid": {
-        ".read": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && data.child('entrenadorId').val() === auth.uid))",
-        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $uid && auth.provider !== 'anonymous') || (root.child('roles').child(auth.uid).val() === 'entrenador' && data.child('entrenadorId').val() === auth.uid && newData.exists() && newData.child('entrenadorId').val() === auth.uid))",
+        ".read": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && data.child('entrenadorId').val() === auth.uid) || root.child('nutris').child(auth.uid).val() === true)",
+        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $uid && auth.provider !== 'anonymous') || (root.child('roles').child(auth.uid).val() === 'entrenador' && data.child('entrenadorId').val() === auth.uid && newData.exists() && newData.child('entrenadorId').val() === auth.uid) || (root.child('nutris').child(auth.uid).val() === true && newData.exists() && newData.child('entrenadorId').val() === data.child('entrenadorId').val()))",
         ".validate": "newData.hasChildren(['nombre','objetivo']) && newData.child('code').val() === $uid && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && auth.uid !== $uid) || (data.exists() ? (newData.child('status').val() === data.child('status').val() && newData.child('membresia/vence').val() === data.child('membresia/vence').val() && newData.child('membresia/ancla').val() === data.child('membresia/ancla').val() && newData.child('membresia/suspendido').val() === data.child('membresia/suspendido').val()) : (newData.child('status').val() === 'activo' && !newData.child('membresia').exists())))",
         "entrenadorId": {
           ".validate": "newData.isString() && (newData.val() === '' || newData.val() === data.val() || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(newData.val()).val() === 'entrenador' && newData.parent().child('codigoEnt').isString() && root.child('codigos').child(newData.parent().child('codigoEnt').val()).val() === newData.val()))"
@@ -22,13 +22,13 @@
       }
     },
     "indice": {
-      ".read": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && query.orderByChild === 'e' && query.equalTo === auth.uid))",
+      ".read": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && query.orderByChild === 'e' && query.equalTo === auth.uid) || root.child('nutris').child(auth.uid).val() === true)",
       ".indexOn": [
         "e"
       ],
       "$uid": {
-        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $uid && auth.provider !== 'anonymous') || (root.child('roles').child(auth.uid).val() === 'entrenador' && root.child('socios').child($uid).child('entrenadorId').val() === auth.uid))",
-        ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.child('e').val() === root.child('socios').child($uid).child('entrenadorId').val()"
+        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (auth.uid === $uid && auth.provider !== 'anonymous') || (root.child('roles').child(auth.uid).val() === 'entrenador' && root.child('socios').child($uid).child('entrenadorId').val() === auth.uid) || root.child('nutris').child(auth.uid).val() === true)",
+        ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.child('e').val() === root.child('socios').child($uid).child('entrenadorId').val() || root.child('nutris').child(auth.uid).val() === true"
       }
     },
     "entrenadores": {
@@ -83,7 +83,7 @@
         "k"
       ],
       "$uid": {
-        ".write": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && root.child('socios').child($uid).child('entrenadorId').val() === auth.uid))",
+        ".write": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).val() === 'entrenador' && root.child('socios').child($uid).child('entrenadorId').val() === auth.uid) || root.child('nutris').child(auth.uid).val() === true)",
         ".validate": "!newData.exists() || (newData.child('k').isString() && newData.child('h').isString() && newData.child('h').val().length <= 600)"
       }
     },
@@ -143,6 +143,13 @@
       "$socio": {
         ".read": "auth != null && (auth.uid === $socio || root.child('roles').child(auth.uid).val() === 'coordinador' || root.child('roles').child(auth.uid).val() === 'entrenador')",
         ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || root.child('roles').child(auth.uid).val() === 'entrenador')"
+      }
+    },
+    "nutris": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador')",
+        ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'",
+        ".validate": "newData.isBoolean()"
       }
     }
   }

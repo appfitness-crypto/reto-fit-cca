@@ -212,7 +212,7 @@ function abrirEntrenadores(){
     <div style="padding:22px;max-width:820px">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
         <h2 style="font-family:var(--fd);font-size:var(--fs-5xl);margin:0">Entrenadores</h2>
-        <button class="tb-btn" onclick="abrirNuevoEntrenador()" style="padding:9px 14px;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador</button>
+        <button class="tb-btn" onclick="abrirNuevoEntrenador()" style="padding:9px 14px;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador o nutriólogo</button>
       </div>
       <p style="font-size:var(--fs-xs);color:var(--mu);margin:4px 0 18px">${lista.length} entrenador${lista.length===1?'':'es'}${coords.length?' · '+coords.length+' director'+(coords.length===1?'':'es'):''}</p>
       ${lista.length?lista.map(t=>tarjeta(t,false)).join(''):'<p style="font-size:var(--fs-xs);color:var(--mu)">Aún no hay entrenadores dados de alta.</p>'}
