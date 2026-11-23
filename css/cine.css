@@ -1753,4 +1753,25 @@ html[data-theme="dark"] .ev-card .ev-l li>.sd-b{background:var(--cine-acc);color
 html[data-theme="dark"] .ev-hecho{color:#7EE0A8;}
 .ev-hecho .ico{width:15px;height:15px;stroke-width:3;}
 /* Tema Claro y Salvia: las secciones de la ficha sobre vidrio */
-html:is([data-theme="light"],[data-theme="light2"]) #staff-content .sd-body,html:is([data-theme="light"],[data-theme="light2"]) #staff-content .fx-panel{background:var(--cl-glass,var(--gl));-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--cl-glass-sh,var(--shadow));}
+html:is([data-theme="light"],[data-theme="light2"]) #staff-content .ev-card,html:is([data-theme="light"],[data-theme="light2"]) #staff-content .fx-panel{background:var(--cl-glass,var(--gl));-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:var(--cl-glass-sh,var(--shadow));}
+
+/* Ficha: aire y sin encimados */
+.rt-opc .rt-bar .sd-b{height:auto!important;flex:none!important;white-space:normal;}
+.rt-opc .rt-bar{gap:8px;}
+#staff-content .ev-card,.fx-grid #staff-content .ev-card{margin:0 16px;padding:14px 16px 16px!important;border-radius:22px;background:var(--q-glass,var(--gl));box-shadow:inset 0 0 0 1px var(--q-edge,var(--b)),var(--q-sh,var(--shadow));}
+.fx-grid .ev-card{margin:0!important;}
+.ev-av{margin:0 0 10px;}
+.ev-card .ev-l{margin:0;gap:0;}
+.ev-card .ev-l li{padding:12px 0;}
+.ev-card .ev-l li .ev-t{min-width:0;}
+.ev-card>.sd-pri{display:block;width:100%;height:auto!important;min-height:54px;margin-top:12px!important;padding:10px 16px;font-size:17px;line-height:1.2;}
+.ev-card>.sd-pri:disabled{opacity:.55;box-shadow:none;}
+.fx-asig .sd-body,.fx-asig>div{background:none!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;padding-left:0!important;padding-right:0!important;}
+.fx-asig{padding-top:4px;border-top:1px solid color-mix(in srgb,var(--tx) 8%,transparent);}
+.fx-asig[open]>summary{margin-bottom:8px;}
+.fx-asig select{width:100%;}
+/* Barra de arriba del panel más opaca: lo que se desplaza por debajo ya no se ve encimado */
+#s-panel .staff-topbar{background:color-mix(in srgb,var(--dk,#E6EEEB) 96%,transparent);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:0 8px 18px -14px rgba(0,0,0,.35);}
+html[data-theme="dark"] #s-panel .staff-topbar{background:rgba(10,14,19,.96);}
+/* Las pestañas de la ficha usan la clase .tb (la misma de la barra de arriba, que es fija): se quedan en su lugar */
+.fx-tabs .tb{position:static!important;top:auto!important;z-index:auto!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}
