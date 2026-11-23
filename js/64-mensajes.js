@@ -48,6 +48,25 @@ function chatPintarAvisos(){
   if(tab) tab.classList.toggle('chat-nuevo', !!(s && !chatEsStaff() && chatSinLeer(s.code,'s')));
   document.querySelectorAll('[data-chat-badge]').forEach(el=>{ const c=el.getAttribute('data-chat-badge'); el.hidden=!chatSinLeer(c, chatEsStaff()?'e':'s'); });
   if(chatEsStaff() && document.getElementById('staff-socio-list')) chatMarcarLista();
+  chatFabPintar();
+}
+// Burbuja flotante en Inicio: aparece cuando ya hay conversación; con punto rojo y el mensaje cuando le respondieron
+function chatFabPintar(){
+  const sd=document.getElementById('s-dash'); if(!sd) return;
+  let fab=document.getElementById('chat-fab');
+  const s=typeof activeSocio!=='undefined'?activeSocio:null;
+  const m=s&&chatMeta[s.code];
+  if(!s || chatEsStaff() || !m || !m.ts){ if(fab) fab.remove(); return; }
+  const nuevo=chatSinLeer(s.code,'s'), e=chatNombreEnt(s);
+  const quien=e?tc(e.nombre).split(' ')[0]:'El club';
+  const av=e&&typeof entAvatarHTML==='function'?entAvatarHTML(e,'ent-av chat-fab-av'):`<span class="ent-av chat-fab-av">${ico('chat')}</span>`;
+  const clave=[nuevo,m.ts,quien].join('|');
+  if(fab && fab.dataset.k===clave) return;
+  if(!fab){ fab=document.createElement('div'); fab.id='chat-fab'; fab.className='chat-fab'; sd.appendChild(fab); }
+  fab.dataset.k=clave;
+  fab.classList.toggle('nuevo',nuevo);
+  fab.innerHTML=`${nuevo&&m.d==='e'&&m.t?`<button type="button" class="chat-fab-msg" onclick="chatAbrir('${esc(s.code)}')"><b>${esc(quien)}</b><span>${esc(m.t)}</span></button>`:''}
+    <button type="button" class="chat-fab-b" onclick="chatAbrir('${esc(s.code)}')" aria-label="${nuevo?esc(quien)+' te respondió. Abrir mensajes':'Abrir mensajes con '+esc(quien)}">${av}<i class="chat-fab-ic">${ico('chat')}</i>${nuevo?'<i class="chat-fab-dot" aria-hidden="true"></i>':''}</button>`;
 }
 function chatMarcarLista(){
   document.querySelectorAll('#staff-socio-list .sl-item').forEach(it=>{
@@ -173,11 +192,12 @@ async function chatEnviar(){
 (function(){
   const envolver=(fn,despues)=>{ if(typeof window[fn]!=='function') return; const o=window[fn]; window[fn]=function(){ const r=o.apply(this,arguments); try{ despues.apply(this,arguments); }catch(e){ console.warn('chat',fn,e); } return r; }; };
   envolver('refreshDash',()=>{ chatEscucharMeta(); chatPintarAvisos(); });
+  envolver('dashTab',()=>chatFabPintar());
   envolver('staffRenderList',()=>{ chatEscucharMeta(); chatMarcarLista(); });
   envolver('staffRenderContent',s=>{
     const head=document.querySelector('#staff-content .fx-head'); if(!head||!s) return;
     if(!head.querySelector('.fx-chat')) head.insertAdjacentHTML('beforeend',chatBotonFichaHTML(s));
   });
-  envolver('logoutSocio',()=>{ chatCerrar(); chatDetenerMeta(); });
+  envolver('logoutSocio',()=>{ chatCerrar(); chatDetenerMeta(); chatFabPintar(); });
   envolver('staffLogout',()=>{ chatCerrar(); chatDetenerMeta(); });
 })();
