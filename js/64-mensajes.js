@@ -58,6 +58,9 @@ function chatFabPintar(){
   const m=s&&chatMeta[s.code];
   if(!s || chatEsStaff() || !m || !m.ts){ if(fab) fab.remove(); return; }
   const nuevo=chatSinLeer(s.code,'s'), e=chatNombreEnt(s);
+  // Oculta por el socio: vuelve sola cuando su entrenador le escribe algo nuevo
+  const pref=chatFabPref();
+  if(pref.oculto && !(nuevo && +m.ts>+pref.oculto)){ if(fab) fab.remove(); return; }
   const quien=e?tc(e.nombre).split(' ')[0]:'El club';
   const av=e&&typeof entAvatarHTML==='function'?entAvatarHTML(e,'ent-av chat-fab-av'):`<span class="ent-av chat-fab-av">${ico('chat')}</span>`;
   const clave=[nuevo,m.ts,quien].join('|');
@@ -66,8 +69,73 @@ function chatFabPintar(){
   fab.dataset.k=clave;
   fab.classList.toggle('nuevo',nuevo);
   fab.innerHTML=`${nuevo&&m.d==='e'&&m.t?`<button type="button" class="chat-fab-msg" onclick="chatAbrir('${esc(s.code)}')"><b>${esc(quien)}</b><span>${esc(m.t)}</span></button>`:''}
-    <button type="button" class="chat-fab-b" onclick="chatAbrir('${esc(s.code)}')" aria-label="${nuevo?esc(quien)+' te respondió. Abrir mensajes':'Abrir mensajes con '+esc(quien)}">${av}<i class="chat-fab-ic">${ico('chat')}</i>${nuevo?'<i class="chat-fab-dot" aria-hidden="true"></i>':''}</button>`;
+    <button type="button" class="chat-fab-b" onclick="if(!chatFabArrastro)chatAbrir('${esc(s.code)}')" aria-label="${nuevo?esc(quien)+' te respondió. Abrir mensajes':'Abrir mensajes con '+esc(quien)}. Mantén y arrastra para moverla o llévala a la X para ocultarla.">${av}<i class="chat-fab-ic">${ico('chat')}</i>${nuevo?'<i class="chat-fab-dot" aria-hidden="true"></i>':''}</button>`;
+  chatFabColocar(fab);
+  chatFabArrastre(fab);
 }
+// ── Burbuja movible: el socio la arrastra a donde quiera (se recuerda) o a la X para ocultarla ──
+const CHAT_FAB_LS='chat_fab_v1';
+let chatFabArrastro=false;
+function chatFabPref(){ try{ return JSON.parse(localStorage.getItem(CHAT_FAB_LS))||{}; }catch(e){ return {}; } }
+function chatFabGuardar(p){ try{ localStorage.setItem(CHAT_FAB_LS,JSON.stringify(Object.assign(chatFabPref(),p))); }catch(e){} }
+function chatFabColocar(fab){
+  const p=chatFabPref();
+  fab.classList.toggle('izq',p.lado==='izq');
+  if(p.y==null){ fab.style.top=fab.style.left=fab.style.right=fab.style.bottom=''; return; }
+  const h=window.innerHeight, y=Math.max(80,Math.min(h-190,p.y*h));   // y = arriba del botón
+  const b=fab.querySelector('.chat-fab-b'), extra=b?Math.max(0,fab.offsetHeight-b.offsetHeight):0;   // el globo va encima
+  fab.style.bottom='auto'; fab.style.top=Math.max(8,y-extra)+'px';
+  if(p.lado==='izq'){ fab.style.left='16px'; fab.style.right='auto'; } else { fab.style.right='16px'; fab.style.left='auto'; }
+}
+function chatFabArrastre(fab){
+  const b=fab.querySelector('.chat-fab-b'); if(!b || b.dataset.arr) return; b.dataset.arr='1';
+  let ini=null, x0=0, y0=0, moviendo=false;
+  const zona=()=>{ let z=document.getElementById('chat-fab-x'); if(!z){ z=document.createElement('div'); z.id='chat-fab-x'; z.className='chat-fab-x'; z.innerHTML=ico('x')+'<span>Ocultar</span>'; document.body.appendChild(z); } return z; };
+  const sobreX=(cx,cy)=>{ const z=document.getElementById('chat-fab-x'); if(!z) return false; const r=z.getBoundingClientRect(); return Math.hypot(cx-(r.left+r.width/2),cy-(r.top+r.height/2))<70; };
+  b.addEventListener('pointerdown',ev=>{
+    if(ev.button>0) return;
+    ev.preventDefault();   // sin selección de texto ni arrastre nativo (cancelaba el movimiento)
+    const r=fab.getBoundingClientRect(); ini={x:ev.clientX,y:ev.clientY,l:r.left,t:r.top}; moviendo=false; chatFabArrastro=false;
+    try{ b.setPointerCapture(ev.pointerId); }catch(e){}
+  });
+  b.addEventListener('pointermove',ev=>{
+    if(!ini) return;
+    const dx=ev.clientX-ini.x, dy=ev.clientY-ini.y;
+    if(!moviendo && Math.hypot(dx,dy)<8) return;
+    if(!moviendo){
+      moviendo=true; chatFabArrastro=true; fab.classList.add('arrastrando'); zona().classList.add('on');
+      const r=b.getBoundingClientRect(); ini.l=r.left; ini.t=r.top;   // sin el globo, la caja es solo el botón
+    }
+    const bw=b.offsetWidth, bh=b.offsetHeight;
+    x0=Math.max(4,Math.min(window.innerWidth-bw-4,ini.l+dx));
+    y0=Math.max(8,Math.min(window.innerHeight-bh-8,ini.t+dy));
+    fab.style.left=x0+'px'; fab.style.top=y0+'px'; fab.style.right='auto'; fab.style.bottom='auto';
+    const bb=b.getBoundingClientRect(), z=document.getElementById('chat-fab-x');
+    if(z) z.classList.toggle('cerca',sobreX(bb.left+bb.width/2,bb.top+bb.height/2));
+  });
+  const fin=ev=>{
+    if(!ini) return; ini=null;
+    const z=document.getElementById('chat-fab-x');
+    if(!moviendo){ if(z) z.remove(); return; }
+    const bb=b.getBoundingClientRect(), cx=bb.left+bb.width/2, cy=bb.top+bb.height/2;
+    fab.classList.remove('arrastrando');
+    if(z && sobreX(cx,cy)){
+      z.remove();
+      const s=typeof activeSocio!=='undefined'?activeSocio:null, m=s&&chatMeta[s.code];
+      chatFabGuardar({oculto:(m&&+m.ts)||Date.now()});
+      fab.classList.add('saliendo'); setTimeout(()=>chatFabPintar(),220);
+      showToast('Burbuja oculta. Tus mensajes siguen en Perfil y vuelve cuando te escriban.');
+    } else {
+      if(z) z.remove();
+      chatFabGuardar({lado:cx<window.innerWidth/2?'izq':'der', y:bb.top/window.innerHeight});
+      fab.classList.add('acomodando'); chatFabColocar(fab); setTimeout(()=>fab.classList.remove('acomodando'),300);
+    }
+    setTimeout(()=>{ chatFabArrastro=false; },60);
+  };
+  b.addEventListener('pointerup',fin); b.addEventListener('pointercancel',fin);
+  b.addEventListener('dragstart',ev=>ev.preventDefault());
+}
+window.addEventListener('resize',()=>{ const f=document.getElementById('chat-fab'); if(f) chatFabColocar(f); });
 function chatMarcarLista(){
   document.querySelectorAll('#staff-socio-list .sl-item').forEach(it=>{
     const m=(it.getAttribute('onclick')||'').match(/staffOpenSocio\('([^']+)'\)/); if(!m) return;
