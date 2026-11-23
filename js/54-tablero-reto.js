@@ -282,12 +282,17 @@ function abrirTableroReto(obj){
       </table></div>
     </div>` : ''}
 
+    ${typeof ofiDe==='function'?(()=>{ const tot=T.filas.length, n=k=>T.filas.filter(r=>(ofiDe(r.s.code).med||{})[k]).length, falt=T.filas.filter(r=>!(ofiDe(r.s.code).med||{}).ini);
+      return `<div class="tr-card"><h3 class="tr-h3">Mediciones oficiales (nutrición)</h3>
+        <div class="tr-grid tr-g4">${kpi('Inicial',n('ini')+'<small>/'+tot+'</small>','')}${kpi('Intermedia',n('mid')+'<small>/'+tot+'</small>','')}${kpi('Final',n('fin')+'<small>/'+tot+'</small>','')}${kpi('Sin medir',falt.length,'faltan la inicial',falt.length?'tr-bad':'')}</div>
+        ${falt.length?`<p class="tr-mu" style="margin-top:10px">Faltan: ${falt.slice(0,30).map(r=>`<button type="button" class="tr-lnk" onclick="ofiAbrir('${esc(r.s.code)}')">${esc(tc(r.s.nombre))}</button>`).join(', ')}${falt.length>30?' y '+(falt.length-30)+' más':''}</p>`:''}</div>`; })():''}
+
     <div class="tr-card">
       <div class="tr-rk-head">
         <h3 class="tr-h3" style="margin:0">Ranking del reto</h3>
         <button type="button" class="tb-btn" onclick="trExportarCSV()">⬇ Exportar ranking</button>
       </div>
-      <p class="tr-mu" style="margin:4px 0 12px">Cada objetivo y categoría compite en su propia tabla. Reto /100 = constancia (40) + resultado de nutrición (40) + jueces (20); los dos últimos se capturan en la siguiente etapa. Los puntos de la app son los de la mascota.</p>
+      <p class="tr-mu" style="margin:4px 0 12px">Cada objetivo y categoría compite en su propia tabla. Reto /100 = constancia (40) + resultado de nutrición (40, con sus mediciones oficiales) + jueces (20). Los puntos de la app son los de la mascota.</p>
       <div class="tr-tabs" role="tablist">${objs.map(o=>`<button type="button" role="tab" aria-selected="${o===trObj}" class="tr-tab${o===trObj?' on':''}" onclick="abrirTableroReto('${esc(o)}')">${esc(TR_OBJ_CORTO[o]||objNombre(o))} · ${T.porObj[o]||0}</button>`).join('')}</div>
       ${catsHay.length?`<div class="tr-cats" role="group" aria-label="Categoría">${['',...catsHay].map(c=>`<button type="button" aria-pressed="${trCat===c}" onclick="trCat='${c}';trVerTodos=false;abrirTableroReto()">${c?esc(retoCategoriaNombre(c)):'Todas'} <i>${c?rkObj.filter(r=>r.cat===c).length:rkObj.length}</i></button>`).join('')}</div>`:''}
       ${rk.length ? `<div class="tr-scroll"><table class="tr-table tr-rk">
@@ -297,7 +302,7 @@ function abrirTableroReto(obj){
           <td><div class="tr-who">${(()=>{ const st=typeof mascotaEstado==='function'?mascotaEstado(r.s):null; return st?`<span class="tr-av tr-masc" title="${esc(st.nombre)} · ${esc(st.etapa.nm)}">${mascotaImgHTML(st.m,st.etapa.n)}</span>`:`<span class="tr-av">${esc(iniciales(r.s.nombre))}</span>`; })()}<span><b>${esc(tc(r.s.nombre))}</b><small>${esc(r.s.asignado||'—')}${r.cat&&!trCat?' · '+esc(retoCategoriaNombre(r.cat)):''}</small>${trAlertasTxt(r)?`<small class="tr-alerta">⚠ ${esc(trAlertasTxt(r))}</small>`:''}</span></div></td>
           <td><b>${r.constPct||0}%</b><small class="tr-mu"> · ${r.sesiones} ses · ${r.comp||'—'}/sem</small></td>
           <td class="tr-cambio">${esc(trCambioTxt(r))}</td>
-          <td><b>${trPuntajeReto(r)}</b><small class="tr-mu"> · const. ${r.constPts||0}/40</small></td><td>${r.puntos.toLocaleString('es-MX')}</td></tr>`).join('')}
+          <td><b>${trPuntajeReto(r)}</b><small class="tr-mu"> · const. ${r.constPts||0} · res. ${r.resPts||0} · jueces ${r.juecesPts||0}</small></td><td>${r.puntos.toLocaleString('es-MX')}</td></tr>`).join('')}
       </table></div>
       ${rk.length>20?`<button type="button" class="tb-btn" style="margin-top:10px" onclick="trVerTodos=!trVerTodos;abrirTableroReto()">${trVerTodos?'Ver solo los primeros 20':'Ver los '+rk.length}</button>`:''}`
       : `<p class="tr-mu">Todavía no hay socios con este objetivo.</p>`}
