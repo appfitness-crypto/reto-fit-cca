@@ -252,7 +252,8 @@ const MENU_PLATILLOS=[
 const MENU_FOTOS=new Set(['c-huevo-naranja','c-jicama','c-licuado','c-manzana','c-panela','c-platano-yogur','c-tostada-atun','c-yogur-fresa','d-avena','d-chilaquiles','d-enfrijoladas','d-huevo-mex','d-molletes','d-tacos-huevo','d-tofu-mex','d-yogur','m-bistec','m-calabacitas','m-caldo','m-lentejas','m-pasta-atun','m-pollo-verde','m-tacos-pollo','m-tinga','m-tofu-verde','m-veracruzana','n-empapelado','n-ensalada-pollo','n-quesadillas','n-tacos-pechuga','n-tostadas-atun',
   'd-omelette-espinaca','d-hotcakes-avena','d-rancheros','d-pan-aguacate','d-machaca','d-sincronizadas','d-licuado-verde','d-papaya-amaranto','d-requeson-tostadas','d-yogur-moras',
   'c-pepino-requeson','c-palomitas','c-melon-nuez','c-pan-cacahuate','c-garbanzos','c-mango-cacahuate','c-guayaba-panela','c-uvas-pistache',
-  'm-tacos-pescado','m-arroz-pollo','m-albondigas','m-fajitas','m-camarones','m-salmon-camote','m-picadillo','m-chile-relleno','m-pozole','m-enchiladas-verdes','m-bistec-papas','m-garbanzo-espinaca','m-quinoa-tofu','m-pavo-tacos','m-habas','m-pollo-chayote']);
+  'm-tacos-pescado','m-arroz-pollo','m-albondigas','m-fajitas','m-camarones','m-salmon-camote','m-picadillo','m-chile-relleno','m-pozole','m-enchiladas-verdes','m-bistec-papas','m-garbanzo-espinaca','m-quinoa-tofu','m-pavo-tacos','m-habas','m-pollo-chayote',
+  'n-ceviche','n-omelette-champi','n-tacos-lechuga','n-sandwich-pavo','n-crema-calabaza','n-camote-requeson']);
 const MENU_FOTO_IGUAL={};
 function menuFotoId(id){ return MENU_FOTOS.has(id)?id:MENU_FOTO_IGUAL[id]||''; }
 function menuFotoSrc(id){ return 'img/menu/'+id+'.webp'; }
