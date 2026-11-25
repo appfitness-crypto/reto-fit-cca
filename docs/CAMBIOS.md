@@ -1,3 +1,21 @@
+# Cambios — Plan de alimentación del nutriólogo (dietocálculo → porciones → distribuye → entrega)
+- **Antes:** el nutriólogo solo podía mover kcal y macros a mano y armar un menú de un día con platillos. Todo lo demás era automático.
+- **Ahora (js/70-plan-nutriologo.js, css/plan-nutri.css):** de entrada sigue siendo automático, igual que las rutinas. En la ficha del socio, pestaña Nutrición, el botón **Plan de alimentación** abre un asistente de 4 pasos con todo ya calculado para que el nutriólogo cambie solo lo que necesite:
+  1. **Dietocálculo:** datos de la ficha o del InBody (peso y masa libre de grasa), fórmula (automática, Mifflin, Harris-Benedict, FAO/OMS, Valencia, Cunningham, Katch-McArdle o kcal directas), factor de actividad, ajuste por objetivo, kcal del plan y macros por g/kg o por %. El carbohidrato es el resto, así siempre cuadra. Avisos de seguridad (menores, por debajo del basal, proteína o grasa fuera de rango) que no bloquean.
+  2. **Porciones:** equivalentes SMAE por grupo con semáforo contra la meta (kcal ±5 %, proteína ±10 %, grasa y carbohidrato ±15 %) y botón Autogenerar.
+  3. **Distribuye:** reparto de porciones por tiempo de comida con contador asignadas/total, platillo por comida escalado a sus porciones, **intercambio de ingredientes** (1 equivalente por 1, se guarda como variante del plan) y **planeación semanal** (lunes a domingo, automática o a mano). El socio ve cada día su menú de ese día.
+  4. **Entrega:** recomendaciones generales y por comida, agua, guardar y asignar, **PDF**, **lista de súper** de 7 días y **guardar como plantilla** (se aplica a otro socio con sus propios datos).
+- **Herramientas del nutriólogo** (Menú → Nutrición: filosofía y recetas):
+  - **Mi filosofía:** fórmula preferida, comidas al día, % de grasa, y ajuste de kcal y proteína por objetivo. Con ella se calcula de entrada el plan automático de sus socios (js/03 envuelto). El director define la del gimnasio. Las reglas de seguridad no cambian.
+  - **Recetas propias** con ingredientes de la biblioteca, tiempos de comida, preparación y foto. Aparecen en el buscador de platillos de todos los planes y se escalan a cada socio.
+  - **Plantillas** guardadas desde el paso 4.
+- "Editar menú" de la ficha ahora abre el asistente en el paso 3.
+- **Firebase:** nuevas rutas `/nutri/recetas`, `/nutri/fotos` y `/nutri/plantillas` en `firebase-rules.json` (hay que publicar las reglas). La filosofía vive en `/entrenadores/<id>/nutFilo` y `/config/nutFilo`.
+- Pendiente de verificar: coeficientes de la fórmula de Valencia (marcada en la app).
+- Service worker: `retofit-cca-v70`.
+
+---
+
 # Cambios — Requerimientos: basal, gasto total y ajuste por objetivo por separado
 - **Antes:** la ficha decía "2,032 kcal (BMR 1380 × 1.55)", pero 1380 × 1.55 = 2,139; faltaba el −5 % que se aplicó porque el objetivo de ganar músculo se cambió solo a recomposición. Además el basal usaba Katch-McArdle con el % de grasa estimado por la cintura: una cintura mal capturada (p. ej. 126 cm con IMC 26) lo bajaba de 1,620 a 1,380 kcal.
 - **Ahora (js/03, js/26, js/67):**

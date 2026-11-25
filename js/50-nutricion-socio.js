@@ -58,7 +58,7 @@ function nutTabHTML(s){
     <dl class="nx-mac"><div><dt><i class="m-p"></i>Proteína</dt><dd>${nut.prot} g</dd></div><div><dt><i class="m-c"></i>Carbohidratos</dt><dd>${nut.carbs} g</dd></div><div><dt><i class="m-g"></i>Grasas</dt><dd>${nut.grasas} g</dd></div></dl>`}
     <div class="nx-agua">${ico('drop')}<span>Agua: <b>${esc(nut.agua)} L</b> al día, más 0.5 L por sesión</span></div>
   </section>
-  ${nut.manual&&o.nota?`<div class="nx-coach">${ico('star')}<p><b>Tu ${plan?'entrenador':'nutriólogo'}:</b> ${esc(o.nota)}</p></div>`:''}`;
+  ${nut.manual&&o.nota?`<div class="nx-coach">${ico('star')}<p><b>Tu ${plan&&plan.tipo!=='nutri'?'entrenador':'nutriólogo'}:</b> ${esc(o.nota)}</p></div>`:''}`;
 
   let dia;
   if(edad>0&&edad<12){
