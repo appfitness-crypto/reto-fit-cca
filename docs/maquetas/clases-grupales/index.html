@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0A0E13">
+<title>Reto Fit CCA · Clases grupales del cuestionario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Paso "Clases grupales" del cuestionario, tema oscuro (el de las capturas): fondo #0A0E13, lima #C8F23A.
+   Se parte en dos pantallas cortas: 1) qué clases y qué días, 2) tu semana, donde solo se decide lo que hace falta. */
+:root{--fd:'Kanit','Figtree',system-ui,sans-serif;--fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --bg:#0A0E13;--card:#141B23;--card2:#1A232D;--ln:rgba(255,255,255,.08);--ln2:rgba(255,255,255,.14);
+  --tx:#EEF2F5;--mu:#93A0AC;--mu2:#66737F;--lime:#C8F23A;--lime-d:rgba(200,242,58,.12);
+  --ok:#5BD98A;--ok-d:rgba(91,217,138,.13);--mod:#F5B651;--mod-d:rgba(245,182,81,.13);--cmp:#A9B4BF;--cmp-d:rgba(169,180,191,.12);
+  --expo:cubic-bezier(.16,1,.3,1)}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#05080B}
+body{margin:0;font-family:var(--fb);font-size:15px;line-height:1.45;color:var(--tx);background:radial-gradient(90% 50% at 50% 0,#13202A,#05080B 70%);min-height:100vh;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--lime);outline-offset:2px;border-radius:12px}
+img{display:block}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pg{max-width:1400px;margin:0 auto;padding:44px 32px 96px}
+.pg-h{max-width:900px;margin:0 auto 40px}
+.pg-h h1{font:italic 800 clamp(34px,4.6vw,58px)/.92 var(--fd);text-transform:uppercase;margin:0 0 14px;text-wrap:balance}
+.pg-h h1 em{font-style:inherit;color:var(--lime)}
+.pg-h p{margin:0 0 10px;max-width:68ch;color:var(--mu);font-size:16.5px}
+.pg-h p b{color:var(--tx)}
+.rail{display:grid;grid-template-columns:repeat(3,410px);gap:56px 28px;justify-content:center}
+@media (max-width:1320px){.rail{grid-template-columns:repeat(2,410px)}}
+@media (max-width:899px){.rail{grid-template-columns:410px}}
+.shot{display:flex;flex-direction:column;align-items:center}
+.shot h2{width:390px;margin:0 0 4px;font:italic 800 23px/1 var(--fd);text-transform:uppercase}
+.shot h2 span{color:var(--lime)}
+.shot .q{width:390px;margin:0 0 16px;color:var(--mu);font-size:14.5px}
+.notes{width:390px;margin:22px 0 0;padding:0;list-style:none;display:grid;gap:9px;counter-reset:n}
+.notes li{display:grid;grid-template-columns:24px 1fr;gap:10px;font-size:14px;color:var(--mu);counter-increment:n}
+.notes li::before{content:counter(n);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--lime);color:#0A0E13;font:800 12px/1 var(--fb)}
+.notes b{color:var(--tx)}
+.phone{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;isolation:isolate;background:var(--bg);
+  box-shadow:0 0 0 10px #0F151B,0 0 0 11px #2A3540,0 46px 80px -34px rgba(0,0,0,.8);transform:translateZ(0)}
+.phone.antes{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#000}
+.phone.antes img{width:100%;height:100%;object-fit:cover;object-position:top}
+.phone .tag{position:absolute;top:58px;right:14px;z-index:80;padding:6px 12px;border-radius:99px;background:#fff;color:#0A0E13;font:800 12px/1 var(--fb)}
+.scr{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:52px 16px 130px}
+.scr::-webkit-scrollbar{display:none}
+.sb{position:absolute;top:0;left:0;right:0;height:46px;z-index:70;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 40px;font:600 16px/1 var(--fb);pointer-events:none;background:linear-gradient(var(--bg) 70%,transparent)}
+.sb svg{height:13px;width:auto}
+.mark{position:absolute;z-index:60;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--lime);color:#0A0E13;font:800 12px/1 var(--fb);box-shadow:0 0 0 3px var(--bg),0 6px 12px -4px rgba(0,0,0,.6);pointer-events:none}
+
+/* encabezado del cuestionario */
+.top{display:flex;align-items:center;gap:10px;height:44px}
+.ib{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--card);box-shadow:inset 0 0 0 1px var(--ln2)}
+.top .st{flex:1;font:700 12.5px/1 var(--fb);color:var(--mu)}
+.top .st b{color:var(--lime)}
+.top .cx{font:600 14px/1 var(--fb);color:var(--mu);padding:12px 4px}
+.prog{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin:10px 0 22px}
+.prog i{height:4px;border-radius:2px;background:var(--ln2)}
+.prog i.h{background:var(--tx)}
+.prog i.a{background:var(--lime)}
+.ttl{font:italic 800 34px/.95 var(--fd);text-transform:uppercase;margin:0 0 8px;letter-spacing:-.01em}
+.sub{margin:0 0 18px;color:var(--mu);font-size:14.5px;line-height:1.45}
+.sub b{color:var(--tx)}
+
+/* Sí / No */
+.seg{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:16px;background:var(--card);box-shadow:inset 0 0 0 1px var(--ln);margin-bottom:22px}
+.seg button{height:44px;border-radius:12px;font:700 15px/1 var(--fb);color:var(--mu)}
+.seg button.on{background:var(--lime);color:#0A0E13}
+
+/* grupos de clases */
+.grp{margin:0 0 16px}
+.grp-h{display:flex;align-items:baseline;gap:8px;margin:0 2px 8px}
+.grp-h b{font:800 13px/1 var(--fb);letter-spacing:.06em;text-transform:uppercase}
+.grp-h small{font-size:12.5px;color:var(--mu)}
+.k-c .grp-h b{color:var(--ok)} .k-m .grp-h b{color:var(--mod)} .k-x .grp-h b{color:var(--cmp)}
+.lst{border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--ln);overflow:hidden}
+.cl{border-top:1px solid var(--ln)}
+.cl:first-child{border-top:0}
+.cl-h{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:8px 14px;text-align:left}
+.cl-h .nm{flex:1;font:650 15.5px/1.2 var(--fb)}
+.box{width:24px;height:24px;border-radius:7px;box-shadow:inset 0 0 0 2px var(--mu2);display:grid;place-items:center;flex:none}
+.cl.on .box{background:var(--lime);box-shadow:none;color:#0A0E13}
+.cl.on .box .ico{width:16px;height:16px;stroke-width:3}
+.cl-h .ds{font:700 12.5px/1 var(--fb);color:var(--lime)}
+.cl.on{background:var(--card2)}
+.dias{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;padding:2px 14px 6px 50px}
+.d{position:relative;height:38px;border-radius:11px;background:rgba(255,255,255,.05);font:700 12.5px/1 var(--fb);color:var(--mu)}
+.d.on{background:var(--lime);color:#0A0E13}
+.d.full{opacity:.35;text-decoration:line-through}
+.d::after{content:"";position:absolute;left:50%;bottom:-7px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:transparent}
+.d.g::after{background:var(--mu2)}
+.d.on.g::after{background:var(--lime)}
+.leyenda{display:flex;align-items:center;gap:6px;padding:8px 14px 12px 50px;font-size:12px;color:var(--mu)}
+.leyenda i{width:5px;height:5px;border-radius:50%;background:var(--mu2)}
+.mas{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:44px;border-top:1px solid var(--ln);font:700 13.5px/1 var(--fb);color:var(--mu)}
+.mas .ico{width:16px;height:16px}
+
+/* barra fija de abajo */
+.foot{position:absolute;left:0;right:0;bottom:0;z-index:65;padding:30px 16px 30px;background:linear-gradient(rgba(10,14,19,0),var(--bg) 30px)}
+.foot .res{display:flex;align-items:center;gap:8px;margin:0 4px 10px;font-size:13px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.foot .res b{color:var(--tx)}
+.foot .row{display:grid;grid-template-columns:56px 1fr;gap:10px}
+.foot .prev{height:56px;border-radius:18px;display:grid;place-items:center;background:var(--card);box-shadow:inset 0 0 0 1px var(--ln2)}
+.foot .go{height:56px;border-radius:18px;background:var(--lime);color:#0A0E13;font:800 16px/1 var(--fb)}
+.foot .go.off{background:var(--card2);color:var(--mu2)}
+
+/* tu semana: tira de 7 días */
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:0 0 14px}
+.wd{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0 9px;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--ln)}
+.wd small{font:700 11.5px/1 var(--fb);color:var(--mu)}
+.wd .w-i{height:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.wd .ico{width:17px;height:17px}
+.wd.gym .w-i{color:var(--lime)}
+.wd.cls .w-i{color:var(--cmp)}
+.wd.both .w-i{color:var(--lime)}
+.wd.pend{box-shadow:inset 0 0 0 2px var(--lime);background:var(--lime-d)}
+.wd.pend .w-i b{font:800 18px/1 var(--fd);color:var(--lime)}
+.wd.off{opacity:.45}
+.wd.off .w-i{font:700 12px/1 var(--fb);color:var(--mu2)}
+.ley2{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 2px 18px;font-size:12px;color:var(--mu)}
+.ley2 span{display:flex;align-items:center;gap:5px}
+.ley2 .ico{width:14px;height:14px}
+.ley2 .g{color:var(--lime)} .ley2 .c{color:var(--cmp)}
+.cnt{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:var(--ok-d);color:var(--ok);font:600 14px/1.3 var(--fb);margin-bottom:18px}
+.cnt b{color:var(--tx)}
+.cnt .bar{flex:none;display:flex;gap:3px}
+.cnt .bar i{width:7px;height:16px;border-radius:2px;background:var(--ok)}
+.cnt .bar i.e{background:rgba(91,217,138,.25)}
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 8px}
+.sec b{font:800 13px/1 var(--fb);letter-spacing:.06em;text-transform:uppercase;color:var(--mu)}
+.sec small{font-size:12.5px;color:var(--lime);font-weight:700}
+.dec{padding:14px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--ln);margin-bottom:10px}
+.dec.pend{box-shadow:inset 0 0 0 2px var(--lime)}
+.dec-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.dec-h .dn{font:italic 800 19px/1 var(--fd);text-transform:uppercase}
+.dec-h .cn{font-size:13.5px;color:var(--mu)}
+.sw{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px;border-radius:14px;background:rgba(255,255,255,.04)}
+.sw button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:60px;border-radius:11px;font:700 13.5px/1.1 var(--fb);color:var(--mu)}
+.sw button small{font:500 11.5px/1.2 var(--fb);color:var(--mu2)}
+.sw button.on{background:var(--lime);color:#0A0E13}
+.sw button.on small{color:rgba(10,14,19,.7)}
+.dec .av{display:flex;gap:8px;margin:10px 2px 0;font-size:12.5px;line-height:1.35;color:var(--mod)}
+.dec .av .ico{width:16px;height:16px;margin-top:1px}
+.dec .av.mal{color:#FF7A7A}
+.fij{border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--ln);overflow:hidden}
+.fr{display:flex;align-items:center;gap:12px;min-height:50px;padding:8px 14px;border-top:1px solid var(--ln);font-size:14px}
+.fr:first-child{border-top:0}
+.fr .ic{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--lime-d);color:var(--lime);flex:none}
+.fr .ic.c{background:var(--cmp-d);color:var(--cmp)}
+.fr .ic .ico{width:17px;height:17px}
+.fr b{font-weight:700}
+.fr small{display:block;color:var(--mu);font-size:12.5px}
+.fr .dd{margin-left:auto;font:700 12.5px/1 var(--fb);color:var(--mu)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="gym" viewBox="0 0 24 24"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></symbol>
+  <symbol id="cls" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.6" fill="currentColor"/><path d="M12 8v6m0 0-3.5 6M12 14l3.5 6M6.5 10.5 12 9l5.5 1.5"/></symbol>
+  <symbol id="ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="warn" viewBox="0 0 24 24"><path d="M12 4 2.8 20h18.4L12 4Z"/><path d="M12 10v4.5M12 17.2v.3"/></symbol>
+  <symbol id="down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="bat" viewBox="0 0 26 13"><rect x=".5" y=".5" width="22" height="12" rx="3.5" fill="none" stroke="currentColor"/><rect x="2" y="2" width="15" height="9" rx="2" fill="currentColor"/><rect x="23.5" y="4" width="2" height="5" rx="1" fill="currentColor"/></symbol>
+</svg>
+
+<main class="pg">
+  <header class="pg-h">
+    <h1>Clases grupales: <em>dos pantallas cortas</em></h1>
+    <p>Hoy el paso es una sola pantalla larga: 11 tarjetas altas, cada una repite su etiqueta y su explicación, y abajo vuelve a aparecer cada día con dos tarjetas grandes. Hay que hacer mucho scroll y no se ve la semana completa.</p>
+    <p>La propuesta lo parte en <b>1) Tus clases</b> (cuáles y qué días) y <b>2) Tu semana</b> (la semana de un vistazo y solo las decisiones que faltan). La lógica es la misma: máximo 2 clases por día, mínimo 2 días con gym y los mismos avisos.</p>
+  </header>
+
+  <div class="rail">
+    <!-- ANTES -->
+    <section class="shot">
+      <h2>Hoy</h2>
+      <p class="q">Tus capturas: clases y semana en la misma pantalla.</p>
+      <div class="phone antes"><span class="tag">Hoy</span>
+        <img src="img/antes-1.jpg" alt="Lista actual de clases con etiquetas"><img src="img/antes-2.jpg" alt="Sección Tu semana actual">
+      </div>
+      <ul class="notes">
+        <li><span>El título ocupa media pantalla y queda <b>pegado a la barra de avance</b>.</span></li>
+        <li><span>Cada clase repite <b>etiqueta y explicación</b>; con 11 clases son muchas pantallas.</span></li>
+        <li><span>"Tu semana" muestra un <b>bloque por día</b>, aunque solo 2 días piden decidir algo.</span></li>
+      </ul>
+    </section>
+
+    <!-- PASO 1 -->
+    <section class="shot">
+      <h2>1 · <span>Tus clases</span></h2>
+      <p class="q">Agrupadas por cómo van con tu objetivo. Los días aparecen al marcar.</p>
+      <div class="phone">
+        <div class="sb"><span>3:12</span><svg viewBox="0 0 26 13" fill="#EEF2F5"><use href="#bat"/></svg></div>
+        <div class="scr">
+          <div class="top"><button class="ib" aria-label="Atrás"><svg class="ico"><use href="#back"/></svg></button><span class="st">Paso 5 de 11 · <b>Clases grupales</b></span><button class="cx">Cancelar</button></div>
+          <div class="prog"><i class="h"></i><i class="h"></i><i class="h"></i><i class="h"></i><i class="a"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <h1 class="ttl">¿Tomas clases<br>grupales?</h1>
+          <p class="sub">Así tu rutina de gym no repite el músculo que ya trabajaste en clase.</p>
+          <div class="seg" role="radiogroup"><button class="on" role="radio" aria-checked="true">Sí</button><button role="radio" aria-checked="false">No</button></div>
+
+          <div class="grp k-c">
+            <div class="grp-h"><b>Te convienen</b><small>Mucho gasto: suman a bajar grasa</small></div>
+            <div class="lst">
+              <div class="cl on"><button class="cl-h"><span class="box"><svg class="ico"><use href="#ok"/></svg></span><span class="nm">Entrenamiento funcional</span><span class="ds">Lun · Jue</span></button>
+                <div class="dias"><button class="d on g">Lun</button><button class="d g">Mar</button><button class="d g">Mié</button><button class="d on g">Jue</button><button class="d g">Vie</button><button class="d g">Sáb</button><button class="d">Dom</button></div>
+                <div class="leyenda"><i></i>Días que elegiste para el gym</div>
+              </div>
+              <div class="cl"><button class="cl-h"><span class="box"></span><span class="nm">Body Combat</span></button></div>
+              <div class="cl"><button class="cl-h"><span class="box"></span><span class="nm">Spinning</span></button></div>
+              <div class="cl"><button class="cl-h"><span class="box"></span><span class="nm">RPM</span></button></div>
+              <div class="cl"><button class="cl-h"><span class="box"></span><span class="nm">Bootcamp</span></button></div>
+            </div>
+          </div>
+          <div class="grp k-m">
+            <div class="grp-h"><b>Con moderación</b><small>Suman, pero no sustituyen tu fuerza</small></div>
+            <div class="lst">
+              <div class="cl"><button class="cl-h"><span class="box"></span><span class="nm">Body Pump</span></button></div>
+              <div class="cl"><button class="cl-h"><span class="box"></span><span class="nm">TRX</span></button></div>
+              <div class="cl"><button class="cl-h"><span class="box"></span><span class="nm">Fit Mom</span></button></div>
+            </div>
+          </div>
+          <div class="grp k-x">
+            <div class="grp-h"><b>Complemento</b><small>Movilidad: no cuenta como entreno fuerte</small></div>
+            <div class="lst">
+              <div class="cl on"><button class="cl-h"><span class="box"><svg class="ico"><use href="#ok"/></svg></span><span class="nm">Yoga</span><span class="ds">Dom</span></button></div>
+              <div class="cl"><button class="cl-h"><span class="box"></span><span class="nm">Body Balance</span></button></div>
+              <div class="cl"><button class="cl-h"><span class="box"></span><span class="nm">Acondicionamiento (adulto mayor)</span></button></div>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <div class="res"><svg class="ico" style="width:16px;height:16px;color:var(--lime)"><use href="#cls"/></svg><span><b>2 clases</b> · Funcional (Lun, Jue) y Yoga (Dom)</span></div>
+          <div class="row"><button class="prev" aria-label="Atrás"><svg class="ico"><use href="#back"/></svg></button><button class="go">Ver mi semana</button></div>
+        </div>
+        <span class="mark" style="top:150px;right:22px">1</span>
+        <span class="mark" style="top:384px;left:8px">2</span>
+        <span class="mark" style="top:448px;left:30px">3</span>
+        <span class="mark" style="top:728px;right:12px">4</span>
+      </div>
+      <ul class="notes">
+        <li><span>Título más corto y con aire; arriba dice <b>"Paso 5 de 11"</b>.</span></li>
+        <li><span>Las clases van en <b>3 grupos</b>: la explicación se dice una vez por grupo y cada clase es un renglón.</span></li>
+        <li><span>Al marcar una clase se abren sus días; el <b>puntito</b> marca los días que ya elegiste para el gym, así ves dónde se cruzan.</span></li>
+        <li><span>Abajo, fijo, el <b>resumen</b> de lo que marcaste y el botón para seguir.</span></li>
+      </ul>
+    </section>
+
+    <!-- PASO 2 -->
+    <section class="shot">
+      <h2>2 · <span>Tu semana</span></h2>
+      <p class="q">Toda la semana de un vistazo; solo decides los días donde se cruzan clase y gym.</p>
+      <div class="phone">
+        <div class="sb"><span>3:12</span><svg viewBox="0 0 26 13" fill="#EEF2F5"><use href="#bat"/></svg></div>
+        <div class="scr">
+          <div class="top"><button class="ib" aria-label="Atrás"><svg class="ico"><use href="#back"/></svg></button><span class="st">Paso 5 de 11 · <b>Tu semana</b></span><button class="cx">Cancelar</button></div>
+          <div class="prog"><i class="h"></i><i class="h"></i><i class="h"></i><i class="h"></i><i class="a"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <h1 class="ttl">Tu semana</h1>
+          <p class="sub">Los días con clase y gym, dinos qué harás. <b>Solo la clase</b> = ese día no hay rutina de gym.</p>
+
+          <div class="wk">
+            <div class="wd both"><small>Lun</small><span class="w-i"><svg class="ico"><use href="#cls"/></svg><svg class="ico"><use href="#gym"/></svg></span></div>
+            <div class="wd gym"><small>Mar</small><span class="w-i"><svg class="ico"><use href="#gym"/></svg></span></div>
+            <div class="wd gym"><small>Mié</small><span class="w-i"><svg class="ico"><use href="#gym"/></svg></span></div>
+            <div class="wd pend"><small>Jue</small><span class="w-i"><b>?</b></span></div>
+            <div class="wd gym"><small>Vie</small><span class="w-i"><svg class="ico"><use href="#gym"/></svg></span></div>
+            <div class="wd gym"><small>Sáb</small><span class="w-i"><svg class="ico"><use href="#gym"/></svg></span></div>
+            <div class="wd cls"><small>Dom</small><span class="w-i"><svg class="ico"><use href="#cls"/></svg></span></div>
+          </div>
+          <div class="ley2"><span class="g"><svg class="ico"><use href="#gym"/></svg>Gym</span><span class="c"><svg class="ico"><use href="#cls"/></svg>Clase</span><span style="color:var(--lime)"><b>?</b>&nbsp;Falta elegir</span></div>
+
+          <div class="cnt" role="status"><span class="bar"><i></i><i></i><i></i><i></i><i></i><i class="e"></i></span><span><b>5 días con gym</b> · mínimo 2</span></div>
+
+          <div class="sec"><b>Elige qué harás</b><small>1 de 2 listo</small></div>
+          <div class="dec">
+            <div class="dec-h"><span class="dn">Lunes</span><span class="cn">Funcional</span></div>
+            <div class="sw" role="radiogroup">
+              <button class="on" role="radio" aria-checked="true">Clase + gym<small>Rutina corta</small></button>
+              <button role="radio" aria-checked="false">Solo la clase<small>Sin rutina de gym</small></button>
+            </div>
+            <p class="av"><svg class="ico"><use href="#warn"/></svg><span>Tu rutina será corta y no repite los músculos de la clase.</span></p>
+          </div>
+          <div class="dec pend">
+            <div class="dec-h"><span class="dn">Jueves</span><span class="cn">Funcional</span></div>
+            <div class="sw" role="radiogroup">
+              <button role="radio" aria-checked="false">Clase + gym<small>Rutina corta</small></button>
+              <button role="radio" aria-checked="false">Solo la clase<small>Sin rutina de gym</small></button>
+            </div>
+          </div>
+
+          <div class="sec" style="margin-top:18px"><b>Ya quedó</b></div>
+          <div class="fij">
+            <div class="fr"><span class="ic"><svg class="ico"><use href="#gym"/></svg></span><span><b>Gimnasio</b><small>Tu rutina completa</small></span><span class="dd">Mar · Mié · Vie · Sáb</span></div>
+            <div class="fr"><span class="ic c"><svg class="ico"><use href="#cls"/></svg></span><span><b>Solo Yoga</b><small>No elegiste este día para el gym</small></span><span class="dd">Dom</span></div>
+          </div>
+        </div>
+        <div class="foot">
+          <div class="res"><svg class="ico" style="width:16px;height:16px;color:var(--lime)"><use href="#warn"/></svg><span>Falta elegir el <b>jueves</b></span></div>
+          <div class="row"><button class="prev" aria-label="Atrás"><svg class="ico"><use href="#back"/></svg></button><button class="go off" aria-disabled="true">Continuar</button></div>
+        </div>
+        <span class="mark" style="top:270px;left:6px">1</span>
+        <span class="mark" style="top:388px;left:6px">2</span>
+        <span class="mark" style="top:452px;left:6px">3</span>
+        <span class="mark" style="top:728px;right:12px">4</span>
+      </div>
+      <ul class="notes">
+        <li><span>La <b>semana en 7 casillas</b>: gym, clase, ambas o "?" donde falta decidir.</span></li>
+        <li><span>El conteo de días con gym como <b>barra</b>: se ve al instante si llegas al mínimo.</span></li>
+        <li><span>Solo aparecen los días que <b>piden decisión</b>, con un selector compacto y su aviso.</span></li>
+        <li><span>Los días ya resueltos se juntan en <b>dos renglones</b>; el botón dice qué falta.</span></li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>
