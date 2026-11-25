@@ -195,3 +195,21 @@ function demoEnSuApp(){
     };
   }
 })();
+
+// Al recargar, el staff ve la ficha ligera del índice: lleva la marca de prueba y la fecha de su reto,
+// para que sus puntos y su mascota no regresen a "antes del reto" (etapa inicial).
+(function(){
+  if(typeof idxDeSocio==='function'){
+    const o=idxDeSocio;
+    window.idxDeSocio=idxDeSocio=function(s){ const r=o.apply(this,arguments); if(r&&s&&s.demo){ r.dm=demoRetoInicio(s); r.dz=1; } return r; };
+  }
+  if(typeof idxLite==='function'){
+    const o=idxLite;
+    window.idxLite=idxLite=function(code){
+      const l=o.apply(this,arguments); if(!l) return l;
+      const x=(typeof IDX!=='undefined'&&IDX[code])||{};
+      if(x.dz||String(code).indexOf(DEMO_PREFIJO)===0){ l.demo=true; l.retoDemoInicio=x.dm||(x.rt&&x.rt.d&&x.rt.d!=='0000-00-00'?x.rt.d:null)||l.fechaRegistro; }
+      return l;
+    };
+  }
+})();

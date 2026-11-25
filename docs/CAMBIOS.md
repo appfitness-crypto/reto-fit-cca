@@ -1,3 +1,16 @@
+# Cambios — Marcado de clases, actividad medida, mascotas del tablero y ver la app desde el ranking
+- **Marcado de clases (js/73):** los días con clase en su plan, el Inicio del socio muestra "Hoy te toca clase" con **Sí fui / No fui** por cada clase (y la de ayer si no la marcó; se puede cambiar). Solo las clases de su plan. Se guarda en `s.logs.clases`. Solo cuentan para calorías, no para puntos del reto.
+- **Actividad medida:**
+  - Semanas 1 a 4 se usa el estimado fijo (+0.05 por día de entrenamiento).
+  - Desde la semana 5, con al menos 3 registros de cada día de la semana, el gasto de cada día es el promedio de sus últimos 3–4 de ese día: rutina de gym (MET 4) + cardio registrado (MET 7) + cada clase marcada con su MET, según su peso.
+  - Factor = base del trabajo + gasto promedio por día / basal, sin bajar más de 15 % del estimado (por si olvidó marcar). Constantes `AM_*`, reglas de diseño.
+  - Se ve en Requerimientos (paso **2a · Actividad medida**, con el gasto por día de la semana) y en el **Dietocálculo** del plan del nutriólogo ("Actividad real" y botón "Usar el factor medido"). La recalibración con el peso (2b) sigue funcionando encima.
+- **Mascotas del tablero (corrección):** al recargar, el staff ve la ficha ligera del índice, que no traía la marca de socio de prueba ni la fecha de su reto, así que se calculaban "antes del reto" (etapa inicial y 0 puntos). El índice ahora guarda `dz`/`dm` y la ficha ligera los usa (js/56). Para índices viejos se toma la fecha del resumen.
+- **Ranking:** tocar la mascota o el nombre del socio abre su app como la ve él (Ver su perfil). El resto de la fila sigue abriendo su ficha.
+- Service worker: `retofit-cca-v83`.
+
+---
+
 # Cambios — Clases grupales sin confusiones y "rehacer el cuestionario"
 - **Paso de clases del cuestionario (js/72, css/cuestionario.css):**
   - Cada clase lleva una etiqueta según el objetivo del socio (Te conviene / Con moderación / Complemento) y una línea de por qué.
