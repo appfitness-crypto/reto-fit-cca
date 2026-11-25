@@ -19,7 +19,8 @@ function derivarDiasEntrenamiento(){
   const base=(qAnswers.diasSemana&&qAnswers.diasSemana.length)?qAnswers.diasSemana:DIAS_ORDER.slice(0,qAnswers.dias||4);
   const infoClasePorDia={};
   (qAnswers.clasesGrupales||[]).forEach(c=>{
-    (c.dias||[]).forEach(d=>{ infoClasePorDia[d]={clase:c.clase, entrenaMismoDia:!!c.entrenaMismoDia}; });
+    (c.dias||[]).forEach(d=>{ const p=infoClasePorDia[d];   // con 2 clases el mismo día se guardan las dos
+      infoClasePorDia[d]=p?{clase:p.clase+' + '+c.clase, entrenaMismoDia:p.entrenaMismoDia||!!c.entrenaMismoDia}:{clase:c.clase, entrenaMismoDia:!!c.entrenaMismoDia}; });
   });
   const puro=[], conClase=[], soloClase=[];
   DIAS_ORDER.filter(d=>base.includes(d)).forEach(d=>{

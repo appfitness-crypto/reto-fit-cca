@@ -1,3 +1,20 @@
+# Cambios — Clases grupales sin confusiones y "rehacer el cuestionario"
+- **Paso de clases del cuestionario (js/72, css/cuestionario.css):**
+  - Cada clase lleva una etiqueta según el objetivo del socio (Te conviene / Con moderación / Complemento) y una línea de por qué.
+  - Máximo 2 clases el mismo día: el tercer día se bloquea con aviso.
+  - "Tu semana": por cada día con clase que eligió para el gym hay que escoger, sin nada marcado de antemano, entre **Clase + entreno** ("Harás Body Pump y también tu rutina de gym") o **Solo la clase** ("ese día no entrenas en el gym").
+  - Mínimo 2 días con gimnasio (`GYM.reto.minDiasGym`); sin eso no se puede continuar, porque el reto se mide con las sesiones de gym.
+  - Avisos de combinaciones: dos clases de pierna el mismo día, dos intensas seguidas, dos clases más gym.
+- **Error corregido:** con 2 o más clases el mismo día solo se guardaba una (js/01 y js/31 ahora juntan los nombres). Una clase con días con entreno y días sin él se guarda en dos entradas, así lo demás de la app lo lee igual.
+- **Rehacer el cuestionario:**
+  - En la ficha del socio (Datos) se detectan planes que no funcionan (sin días de gym, más de 2 clases en un día) y hay un botón "Pedir que rehaga su cuestionario", con mensaje editable (director y su entrenador).
+  - El socio ve "Ajustemos tu plan" la próxima vez que entra. El cuestionario se abre con sus respuestas y no vuelve a repartir entrenador.
+  - Al confirmar se **reescribe el mismo socio**: cambian perfil y rutina; se conservan cuenta, sesiones, pesos (se agrega el de hoy), mediciones, puntos, mascota, mensualidad, nutrición y entrenador. Respuestas anteriores en `cuestionarios`, rutina anterior en `rutinaAnterior`.
+  - La ficha muestra el estado: aviso enviado / rehizo su cuestionario.
+- Service worker: `retofit-cca-v82`.
+
+---
+
 # Cambios — Los socios de prueba ya están dentro del reto
 - **js/56-demo-reto.js:** los 15 socios de prueba viven el reto como si hubiera arrancado para ellos hace 8 semanas (`retoDemoInicio`). Solo ellos: la fecha real del reto (`GYM.reto.inicio`) no cambia para nadie más.
   - Suman puntos, crecen sus mascotas (de Cría a Leyenda según su constancia) y aparecen en el tablero con posiciones por objetivo.

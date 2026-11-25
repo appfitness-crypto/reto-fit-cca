@@ -24,7 +24,7 @@ function casaZonasPrioridad(s){
 // ── Cruce de días × clases grupales usando los datos del socio (igual que en el registro) ──
 function casaDerivarDias(s,base){
   const info={};
-  (s.clasesGrupales||[]).forEach(c=>(c.dias||[]).forEach(d=>{ info[d]={clase:c.clase,entrenaMismoDia:!!c.entrenaMismoDia}; }));
+  (s.clasesGrupales||[]).forEach(c=>(c.dias||[]).forEach(d=>{ const p=info[d]; info[d]=p?{clase:p.clase+' + '+c.clase,entrenaMismoDia:p.entrenaMismoDia||!!c.entrenaMismoDia}:{clase:c.clase,entrenaMismoDia:!!c.entrenaMismoDia}; }));
   const puro=[],conClase=[],soloClase=[];
   DIAS_ORDER.filter(d=>base.includes(d)).forEach(d=>{
     const i=info[d];
