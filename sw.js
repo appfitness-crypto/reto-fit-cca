@@ -8,7 +8,7 @@
    → Los datos de Firebase NUNCA pasan por aquí (van directo).
    → Al desplegar cambios, sube CACHE_VERSION.
    ════════════════════════════════════════════════════════ */
-const CACHE_VERSION = 'retofit-cca-v69';
+const CACHE_VERSION = 'retofit-cca-v74';
 const PRECACHE_LOCAL = [
   './',
   './index.html',
@@ -18,6 +18,7 @@ const PRECACHE_LOCAL = [
   './css/cine.css',
   './css/cuestionario.css',
   './css/escritorio.css',
+  './css/plan-nutri.css',
   './js/config.js',
   './js/00-conocimiento.js',
   './js/01-datos-firebase.js',
@@ -81,6 +82,7 @@ const PRECACHE_LOCAL = [
   './js/67-mediciones-oficiales.js',
   './js/68-nutriologo.js',
   './js/69-ficha-orden.js',
+  './js/70-plan-nutriologo.js',
   './img/qr/app.png',
   './js/22-resumen-coordinacion.js',
   './js/23-conocimiento-staff.js',
@@ -143,12 +145,12 @@ const PRECACHE_LOCAL = [
   './img/cuerpo/mujer-frente.webp',
   './img/cuerpo/mujer-espalda.webp',
   './img/cuerpo/mujer-lado.webp',
+  './vendor/jspdf/jspdf.umd.min.js',
 ];
 const PRECACHE_CDN = [
   'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
   'https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap',
 ];
 // Solo estos dominios externos se guardan (librerías y tipografías). Firebase Database queda fuera.

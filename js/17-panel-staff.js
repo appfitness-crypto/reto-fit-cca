@@ -61,7 +61,7 @@ function actualizarFbBadge(){
 function staffMenu(){
   const grupos=[
     ['Reto',['btn-tablero','btn-reglas','btn-avisos','btn-reparto','btn-patro']],
-    ['Personas',['btn-mi-codigo','btn-mi-filosofia','btn-ver-ent','btn-nuevo-ent','btn-conocimiento']],
+    ['Personas',['btn-mi-codigo','btn-mi-filosofia','btn-nutri','btn-ver-ent','btn-nuevo-ent','btn-conocimiento']],
     ['Datos y sistema',['btn-resumen','btn-apariencia','btn-lugares','btn-respaldo','btn-firebase','btn-reset']],
     ['Pruebas (antes del reto)',['btn-demo-cargar','btn-demo-borrar']],
     ['Cuenta',['btn-eliminar-cuenta','btn-logout']]

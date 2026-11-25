@@ -40,6 +40,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <link rel="stylesheet" href="css/cine.css">
 <link rel="stylesheet" href="css/cuestionario.css">
 <link rel="stylesheet" href="css/escritorio.css">
+<link rel="stylesheet" href="css/plan-nutri.css">
 <!-- Red de seguridad: si la página abrió sin estilos o sin código (señal que se cortó a media actualización), se recarga una vez -->
 <script>window.addEventListener("load",function(){var ok=!!getComputedStyle(document.documentElement).getPropertyValue("--lime").trim()&&typeof showToast==="function";try{if(ok){sessionStorage.removeItem("recargaApp");}else if(!sessionStorage.getItem("recargaApp")){sessionStorage.setItem("recargaApp","1");location.reload();}}catch(e){}});</script>
 </head>
@@ -809,6 +810,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
       <button type="button" class="tb-btn" id="btn-staff-menu" onclick="staffMenu()" aria-label="Abrir menú"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>Menú</button>
       <div class="tb-btn" id="btn-mi-codigo" onclick="mostrarMiCodigo()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">🔑 Mi código</div>
       <div class="tb-btn" id="btn-mi-filosofia" onclick="abrirMiFilosofia()" style="display:none;color:var(--p);border-color:color-mix(in srgb,var(--p) 25%,transparent)">🧬 Mi filosofía</div>
+      <div class="tb-btn" id="btn-nutri" onclick="abrirNutricionStaff()" style="display:none;color:var(--n);border-color:color-mix(in srgb,var(--n) 25%,transparent)">🥗 Nutrición: filosofía y recetas</div>
       <div class="tb-btn" id="btn-ver-ent" onclick="abrirEntrenadores()" style="display:none;color:var(--n);border-color:color-mix(in srgb,var(--n) 20%,transparent)">👥 Entrenadores</div>
       <div class="tb-btn" id="btn-nuevo-ent" onclick="abrirNuevoEntrenador()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador o nutriólogo</div>
       <div class="tb-btn" id="btn-conocimiento" onclick="abrirConocimiento()" style="color:var(--p);border-color:color-mix(in srgb,var(--p) 25%,transparent)">📚 Conocimiento</div>
@@ -944,6 +946,7 @@ S.removeItem=function(x){return this===L?r.call(this,k(x)):r.call(this,x);};
 <script defer src="js/67-mediciones-oficiales.js"></script>
 <script defer src="js/68-nutriologo.js"></script>
 <script defer src="js/69-ficha-orden.js"></script>
+<script defer src="js/70-plan-nutriologo.js"></script>
 <script defer src="js/99-arranque.js"></script>
 
 <!-- ═══ MODAL AVISO DE PRIVACIDAD ═══ -->

@@ -1,3 +1,63 @@
+# Cambios — Revisión visual de nutrición (staff y socio, temas Claro, Salvia y Oscuro)
+- Revisadas con capturas en celular (390 px) y escritorio (1280 px), en los tres temas: ficha del socio (pestaña Nutrición), los 4 pasos del plan, buscador de platillos, cambio por equivalentes, vista "Así lo verá el socio", filosofía y recetas, y la pestaña Nutrición del socio.
+- **Vidrio:** tarjetas del asistente, resumen fijo de arriba, pie con botones, columna fija de las tablas y pasos usan los tokens de vidrio de la app (`--gx-glass`, `--gx-glass2`, `--gx-modal`, `--gx-line`, `--gx-hi`) en lugar de bloques blancos sólidos.
+- **Campos:** las recomendaciones por comida, la general y el nombre de plantilla tienen el mismo estilo que los demás campos (antes salían cuadrados y grises en oscuro).
+- **Celular:** botones del pie en un renglón ("Siguiente", "Guardar"); nombres cortos de grupos SMAE en las tablas ("AOA muy bajo en grasa"); sin la línea de macros por equivalente; textos de botones más cortos ("Ajustar a la meta", "Platillos automáticos", "Semana automática", "Igual al día tipo"); "Editar plan" a lo ancho en la ficha; la vista previa ocupa el ancho real (sin marco de teléfono) y los días se deslizan en una fila.
+- **Ficha del staff:** la tarjeta "Plan de alimentación" con el margen de las demás secciones; se quitó el enlace duplicado "Editar menú" (la tarjeta ya abre el plan); enlaces de acción con 44 px de alto.
+- Service worker: `retofit-cca-v74`.
+
+---
+
+# Cambios — Plan del nutriólogo: todo conectado por equivalentes
+- **Antes:** subir una taza en un platillo no cambiaba la tabla de reparto ni las porciones del día; cambiar una porción reescalaba el platillo aproximando calorías, no equivalente por equivalente.
+- **Ahora (js/70):** un solo motor de equivalentes, donde lo que hay en el plato manda.
+  - Cada comida tiene sus equivalentes por subgrupo SMAE. El platillo se ajusta exactamente a ellos; lo que el platillo no trae (p. ej. fruta en unos huevos) entra como **complemento**, que se cambia por cualquier equivalente o se sube y baja.
+  - Las porciones del día son siempre la suma de las comidas. Cualquier cambio (en la tabla de porciones, en la tabla de reparto, en los ingredientes de un platillo, en un complemento, al cambiar un platillo o un ingrediente) se refleja en todo lo demás.
+  - **Mantener el total del día** (activado de entrada): si sube o baja un grupo en una comida, las demás comidas compensan ese mismo grupo. Apagado, el cambio suma o resta al día.
+  - La lista "Cambiar por otro equivalente" funciona para ingredientes y complementos, con la misma cantidad de equivalentes y kcal y macros de cada opción.
+  - El plan automático parte de los platillos escalados a la meta de cada comida (como el menú automático), así que no hay complementos hasta que el nutriólogo agrega un grupo. "Ajustar comidas a la meta" reescala los platillos elegidos.
+  - Se guardan como variante "platillo + complementos" para que el socio, el PDF y la vista previa los vean; al reabrir el plan se separan de nuevo.
+- Service worker: `retofit-cca-v73`.
+
+---
+
+# Cambios — El carbohidrato sigue al entrenamiento del día (opcional)
+- **Qué hace (js/70):** si se activa, el carbohidrato del día sube el día pesado y baja el de descanso; la proteína y la grasa no cambian. El total de la semana queda casi igual.
+- **Tipo de día:** sale de la rutina del socio (`s.rutina.lun…dom`). Pesado = pierna, glúteo o cuerpo completo, o carga ≥ 25 % arriba del promedio de su semana (`cargaDia` de js/51; `PN_DIA_PESADO`, regla de diseño). Ligero ≤ 85 %. Sin ejercicios = descanso.
+- **Dónde se activa:** en la filosofía del nutriólogo o del gimnasio ("Ajustar al entrenamiento del día", apagado de entrada; +15 % pesado y −15 % descanso por defecto, configurable). Cada plan del asistente tiene su propio interruptor en Distribuye → Planeación semanal, con una fila "Entrenamiento" que muestra el tipo de cada día y el ajuste.
+- **Lo que ve el socio:** solo en su pestaña Nutrición. El día pesado aparece el recordatorio "Recuerda: hoy es día pesado (pierna)…". En descanso, una nota de que lleva un poco menos de carbohidrato. Su meta del día y las porciones de cereal y fruta de cada platillo se ajustan. La ficha del staff y el asistente siguen mostrando la meta base.
+- La vista "Así lo verá el socio" y el PDF muestran el tipo de cada día y el ajuste.
+- Service worker: `retofit-cca-v72`.
+
+---
+
+# Cambios — Vista "Así lo verá el socio", base de platillos ampliada y PDF sin internet
+- **Vista previa (js/70):** en el paso 4 del plan, "Así lo verá el socio" muestra su pestaña Nutrición dentro de un marco de celular, con los mismos componentes de su app (js/50), día por día de la semana, con notas por comida y la recomendación general. No guarda nada.
+- **Base de alimentos (js/48):** de 37 a 73 ingredientes y de 31 a 71 platillos. Nuevos: pan integral, papa, camote, elote, quinoa, amaranto, palomitas, maíz pozolero, garbanzo, haba, pavo, camarón, requesón, salmón, yogur natural, 9 frutas, 9 verduras, nuez, pistache, crema de cacahuate. Platillos mexicanos nuevos de desayuno, colación, comida y cena (sin cerdo), que también usa el menú automático. Las porciones nuevas van marcadas `est:1` (pendientes de revisión del nutriólogo). Los platillos nuevos todavía no tienen foto (`img/menu/<id>.webp`).
+- **PDF sin internet:** jsPDF 2.5.1 ahora vive en `vendor/jspdf` (antes se bajaba de cdnjs). Aplica al PDF de rutinas y al del plan de alimentación.
+- El asistente de nutrición no usa IA ni consulta servicios externos: todo sale de la base de la app.
+- Service worker: `retofit-cca-v71`.
+
+---
+
+# Cambios — Plan de alimentación del nutriólogo (dietocálculo → porciones → distribuye → entrega)
+- **Antes:** el nutriólogo solo podía mover kcal y macros a mano y armar un menú de un día con platillos. Todo lo demás era automático.
+- **Ahora (js/70-plan-nutriologo.js, css/plan-nutri.css):** de entrada sigue siendo automático, igual que las rutinas. En la ficha del socio, pestaña Nutrición, el botón **Plan de alimentación** abre un asistente de 4 pasos con todo ya calculado para que el nutriólogo cambie solo lo que necesite:
+  1. **Dietocálculo:** datos de la ficha o del InBody (peso y masa libre de grasa), fórmula (automática, Mifflin, Harris-Benedict, FAO/OMS, Valencia, Cunningham, Katch-McArdle o kcal directas), factor de actividad, ajuste por objetivo, kcal del plan y macros por g/kg o por %. El carbohidrato es el resto, así siempre cuadra. Avisos de seguridad (menores, por debajo del basal, proteína o grasa fuera de rango) que no bloquean.
+  2. **Porciones:** equivalentes SMAE por grupo con semáforo contra la meta (kcal ±5 %, proteína ±10 %, grasa y carbohidrato ±15 %) y botón Autogenerar.
+  3. **Distribuye:** reparto de porciones por tiempo de comida con contador asignadas/total, platillo por comida escalado a sus porciones, **intercambio de ingredientes** (1 equivalente por 1, se guarda como variante del plan) y **planeación semanal** (lunes a domingo, automática o a mano). El socio ve cada día su menú de ese día.
+  4. **Entrega:** recomendaciones generales y por comida, agua, guardar y asignar, **PDF**, **lista de súper** de 7 días y **guardar como plantilla** (se aplica a otro socio con sus propios datos).
+- **Herramientas del nutriólogo** (Menú → Nutrición: filosofía y recetas):
+  - **Mi filosofía:** fórmula preferida, comidas al día, % de grasa, y ajuste de kcal y proteína por objetivo. Con ella se calcula de entrada el plan automático de sus socios (js/03 envuelto). El director define la del gimnasio. Las reglas de seguridad no cambian.
+  - **Recetas propias** con ingredientes de la biblioteca, tiempos de comida, preparación y foto. Aparecen en el buscador de platillos de todos los planes y se escalan a cada socio.
+  - **Plantillas** guardadas desde el paso 4.
+- "Editar menú" de la ficha ahora abre el asistente en el paso 3.
+- **Firebase:** nuevas rutas `/nutri/recetas`, `/nutri/fotos` y `/nutri/plantillas` en `firebase-rules.json` (hay que publicar las reglas). La filosofía vive en `/entrenadores/<id>/nutFilo` y `/config/nutFilo`.
+- Pendiente de verificar: coeficientes de la fórmula de Valencia (marcada en la app).
+- Service worker: `retofit-cca-v70`.
+
+---
+
 # Cambios — Requerimientos: basal, gasto total y ajuste por objetivo por separado
 - **Antes:** la ficha decía "2,032 kcal (BMR 1380 × 1.55)", pero 1380 × 1.55 = 2,139; faltaba el −5 % que se aplicó porque el objetivo de ganar músculo se cambió solo a recomposición. Además el basal usaba Katch-McArdle con el % de grasa estimado por la cintura: una cintura mal capturada (p. ej. 126 cm con IMC 26) lo bajaba de 1,620 a 1,380 kcal.
 - **Ahora (js/03, js/26, js/67):**

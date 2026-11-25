@@ -11,7 +11,7 @@ function cargarJsPDF(){
   if(_jsPDFPromise) return _jsPDFPromise;
   _jsPDFPromise = new Promise((res,rej)=>{
     const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'; s.crossOrigin='anonymous';
+    s.src='vendor/jspdf/jspdf.umd.min.js';   // copia local (antes cdnjs): funciona sin internet
     s.onload=()=>res();
     s.onerror=()=>{ _jsPDFPromise=null; rej(new Error('jspdf load')); };
     document.head.appendChild(s);

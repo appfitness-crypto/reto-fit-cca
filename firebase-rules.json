@@ -151,6 +151,28 @@
         ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'",
         ".validate": "newData.isBoolean()"
       }
+    },
+    "nutri": {
+      "recetas": {
+        ".read": "auth != null",
+        "$id": {
+          ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || root.child('nutris').child(auth.uid).val() === true)",
+          ".validate": "!newData.exists() || (newData.hasChildren(['n','c']) && newData.child('n').isString() && newData.child('n').val().length <= 120)"
+        }
+      },
+      "fotos": {
+        "$id": {
+          ".read": "auth != null",
+          ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || root.child('nutris').child(auth.uid).val() === true)",
+          ".validate": "newData.isString() && newData.val().length < 200000"
+        }
+      },
+      "plantillas": {
+        ".read": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || root.child('nutris').child(auth.uid).val() === true)",
+        "$id": {
+          ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || root.child('nutris').child(auth.uid).val() === true)"
+        }
+      }
     }
   }
 }
