@@ -1,3 +1,13 @@
+# Cambios — Revisión visual de nutrición (staff y socio, temas Claro, Salvia y Oscuro)
+- Revisadas con capturas en celular (390 px) y escritorio (1280 px), en los tres temas: ficha del socio (pestaña Nutrición), los 4 pasos del plan, buscador de platillos, cambio por equivalentes, vista "Así lo verá el socio", filosofía y recetas, y la pestaña Nutrición del socio.
+- **Vidrio:** tarjetas del asistente, resumen fijo de arriba, pie con botones, columna fija de las tablas y pasos usan los tokens de vidrio de la app (`--gx-glass`, `--gx-glass2`, `--gx-modal`, `--gx-line`, `--gx-hi`) en lugar de bloques blancos sólidos.
+- **Campos:** las recomendaciones por comida, la general y el nombre de plantilla tienen el mismo estilo que los demás campos (antes salían cuadrados y grises en oscuro).
+- **Celular:** botones del pie en un renglón ("Siguiente", "Guardar"); nombres cortos de grupos SMAE en las tablas ("AOA muy bajo en grasa"); sin la línea de macros por equivalente; textos de botones más cortos ("Ajustar a la meta", "Platillos automáticos", "Semana automática", "Igual al día tipo"); "Editar plan" a lo ancho en la ficha; la vista previa ocupa el ancho real (sin marco de teléfono) y los días se deslizan en una fila.
+- **Ficha del staff:** la tarjeta "Plan de alimentación" con el margen de las demás secciones; se quitó el enlace duplicado "Editar menú" (la tarjeta ya abre el plan); enlaces de acción con 44 px de alto.
+- Service worker: `retofit-cca-v74`.
+
+---
+
 # Cambios — Plan del nutriólogo: todo conectado por equivalentes
 - **Antes:** subir una taza en un platillo no cambiaba la tabla de reparto ni las porciones del día; cambiar una porción reescalaba el platillo aproximando calorías, no equivalente por equivalente.
 - **Ahora (js/70):** un solo motor de equivalentes, donde lo que hay en el plato manda.

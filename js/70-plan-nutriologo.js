@@ -38,6 +38,9 @@ const PN_GRUPOS=[
   ['AOAMB','Origen animal muy bajo en grasa'],['AOAB','Origen animal bajo en grasa'],['AOAM','Origen animal moderado en grasa'],
   ['LECD','Leche descremada'],['GRA','Grasas sin proteína'],['GRAP','Grasas con proteína'],
 ];
+// Nombre corto para pantallas angostas (abreviaturas del SMAE)
+const PN_GRUPO_CORTO={VER:'Verduras',FRU:'Frutas',CER:'Cereales',LEG:'Leguminosas',AOAMB:'AOA muy bajo en grasa',AOAB:'AOA bajo en grasa',AOAM:'AOA moderado en grasa',LECD:'Leche descremada',GRA:'Grasas',GRAP:'Grasas con proteína'};
+function pnGrupoLbl(g,lb){ return `<span class="pn-gl">${esc(lb)}</span><span class="pn-gc">${esc(PN_GRUPO_CORTO[g]||lb)}</span>`; }
 // Familias para intercambiar ingredientes (1 equivalente ↔ 1 equivalente)
 const PN_FAMILIA={VER:'VER',FRU:'FRU',CER:'CER',LEG:'LEG',AOAMB:'AOA',AOAB:'AOA',AOAM:'AOA',LECD:'LEC',GRA:'GRA',GRAP:'GRA'};
 // Tolerancias de la skill (regla de diseño): kcal ±5 %, proteína ±10 %, grasa y carbohidrato ±15 %
@@ -491,8 +494,8 @@ function pnRender(){
     <div class="pn-paso">${cuerpo}</div>
     <div class="pn-f">
       ${PN.paso>1?`<button type="button" class="sd-b" onclick="pnPaso(${PN.paso-1})">${ico('chevl')}Anterior</button>`:'<span></span>'}
-      ${PN.paso<4?`<button type="button" class="sd-pri" onclick="pnPaso(${PN.paso+1})">Siguiente: ${esc(PN_PASOS[PN.paso][1])}</button>`
-        :`<button type="button" class="sd-pri" onclick="pnGuardar()">${ico('check')}Guardar y asignar</button>`}
+      ${PN.paso<4?`<button type="button" class="sd-pri" onclick="pnPaso(${PN.paso+1})">Siguiente<span class="pn-sig">: ${esc(PN_PASOS[PN.paso][1])}</span></button>`
+        :`<button type="button" class="sd-pri" onclick="pnGuardar()">${ico('check')}Guardar<span class="pn-sig"> y asignar</span></button>`}
     </div>`;
 }
 function pnSet(campo,v){ if(!PN) return; PN[campo]=v; PN.cambios=true; pnRender(); }
@@ -578,7 +581,7 @@ function pnCalc(k,v){
 // ── Paso 2: Porciones ──
 function pnPaso2(s,M,tp){
   const fila=([g,lb])=>{ const b=SMAE_EQ[g], n=+PN.porc[g]||0, st=PN_RANGO[g][2];
-    return `<tr class="${n?'':'cero'}"><th>${esc(lb)}<small>${b.k} kcal · HC ${b.c} · P ${b.p} · L ${b.l}</small></th>
+    return `<tr class="${n?'':'cero'}"><th>${pnGrupoLbl(g,lb)}<small>${b.k} kcal · HC ${b.c} · P ${b.p} · L ${b.l}</small></th>
       <td><div class="ma-st pn-st"><button type="button" onclick="pnPorc('${g}',${-st})" aria-label="Menos ${esc(lb)}" ${n<=0?'disabled':''}>−</button><b>${menuFrac(n)||0}</b><button type="button" onclick="pnPorc('${g}',${st})" aria-label="Más ${esc(lb)}">+</button></div></td>
       <td>${pnNum(b.c*n)}</td><td>${pnNum(b.p*n)}</td><td>${pnNum(b.l*n)}</td><td><b>${pnNum(b.k*n)}</b></td></tr>`; };
   const celda=(v,meta,tol,u)=>{ const e=pnEstado(v,meta,tol), d=v-meta;
@@ -621,13 +624,13 @@ function pnDiaHTML(){
   const head=C.map((m,i)=>`<th><input class="pn-cn" value="${esc(m.nombre)}" aria-label="Nombre de la comida ${i+1}" onchange="pnComida(${i},'nombre',this.value)"><input type="time" class="pn-ch" value="${esc(m.hora)}" aria-label="Hora de ${esc(m.nombre)}" onchange="pnComida(${i},'hora',this.value)"></th>`).join('');
   const filas=grupos.map(([g,lb])=>{
     const tot=+PN.porc[g]||0;
-    return `<tr><th><span>${esc(lb)}</span><em class="ok">${menuFrac(tot)||0} en el día</em></th>${C.map((m,i)=>{ const v=+(m.eq||{})[g]||0;
+    return `<tr><th><span>${pnGrupoLbl(g,lb)}</span><em class="ok">${menuFrac(tot)||0} en el día</em></th>${C.map((m,i)=>{ const v=+(m.eq||{})[g]||0;
       return `<td class="${v?'':'cero'}"><div class="pn-cel"><button type="button" onclick="pnEq(${i},'${g}',-0.5)" aria-label="Menos ${esc(lb)} en ${esc(m.nombre)}" ${v<=0?'disabled':''}>−</button><b>${v?menuFrac(v):'·'}</b><button type="button" onclick="pnEq(${i},'${g}',0.5)" aria-label="Más ${esc(lb)} en ${esc(m.nombre)}">+</button></div></td>`; }).join('')}</tr>`;
   }).join('');
   const pie=C.map(m=>{ const t=pnAporte(m.eq); return `<td><b>${pnNum(t.k)} kcal</b><small>HC ${pnNum(t.c)} · P ${pnNum(t.p)} · L ${pnNum(t.l)}</small></td>`; }).join('');
   return `<div class="ma-g"><div class="rt-gl">Comidas al día</div><div class="ch-row">${[3,4,5,6].map(n=>`<button type="button" class="ch${n===C.length?' on':''}" aria-pressed="${n===C.length}" onclick="pnSetN(${n})">${n}</button>`).join('')}</div></div>
-    <div class="ma-tools"><button type="button" class="sd-b" onclick="pnRepartirTodo()">${ico('target')}Ajustar comidas a la meta</button>
-      <button type="button" class="sd-b" onclick="pnAutoTodo()">${ico('spark')}Elegir platillos automático</button></div>
+    <div class="ma-tools"><button type="button" class="sd-b" onclick="pnRepartirTodo()">${ico('target')}Ajustar a la meta</button>
+      <button type="button" class="sd-b" onclick="pnAutoTodo()">${ico('spark')}Platillos automáticos</button></div>
     <label class="pn-sw-row pn-comp"><input type="checkbox" ${PN.compensar?'checked':''} onchange="PN.compensar=this.checked;pnRender()"><span><b>Mantener el total del día.</b> Si subes o bajas porciones en una comida (en la tabla o en el platillo), las demás comidas compensan ese mismo grupo. Apágalo para sumar sin quitar.</span></label>
     <div class="pn-tabla-w"><table class="pn-dist"><thead><tr><th>Grupo · total del día</th>${head}</tr></thead><tbody>${filas}</tbody><tfoot><tr><th>Por comida</th>${pie}</tr></tfoot></table></div>
     <h3 class="pn-h">Platillo de cada comida</h3>
@@ -732,8 +735,8 @@ function pnSemanaHTML(){
     ${A.on?`<div class="pn-aj-in"><label><span>Pesado</span><div class="pn-in"><input inputmode="numeric" value="${A.pesado}" onchange="pnAjusteDia('pesado',this.value)"><span>% más HC</span></div></label>
       <label><span>Descanso</span><div class="pn-in"><input inputmode="numeric" value="${A.descanso}" onchange="pnAjusteDia('descanso',this.value)"><span>% menos HC</span></div></label></div>`:''}</section>`;
   return ajuste+`<p class="pn-nota">Cada día usa el platillo del día tipo. Toca una celda para poner otro platillo ese día: las porciones se ajustan a la misma meta de la comida.</p>
-    <div class="ma-tools"><button type="button" class="sd-b" onclick="pnSemanaAuto()">${ico('spark')}Planeación semanal automática</button>
-      ${conDias?`<button type="button" class="sd-b" onclick="pnSemanaLimpiar()">${ico('refresh')}Todos los días igual al día tipo</button>`:''}</div>
+    <div class="ma-tools"><button type="button" class="sd-b" onclick="pnSemanaAuto()">${ico('spark')}Semana automática</button>
+      ${conDias?`<button type="button" class="sd-b" onclick="pnSemanaLimpiar()">${ico('refresh')}Igual al día tipo</button>`:''}</div>
     <div class="pn-tabla-w"><table class="pn-semana"><thead><tr><th>Tiempo de comida</th>${PN_DIAS.map(([,lb])=>`<th>${lb}</th>`).join('')}</tr>
       <tr class="pn-ent"><th>Entrenamiento</th>${tipos.map(t=>`<th>${chip(t)}</th>`).join('')}</tr></thead><tbody>${filas}</tbody></table></div>`;
 }
@@ -1167,7 +1170,9 @@ function nrEscuchar(){
   if(typeof bloqueNutricionStaff==='function'){
     const o=bloqueNutricionStaff;
     window.bloqueNutricionStaff=bloqueNutricionStaff=function(s){
-      const h=o.apply(this,arguments); if(!s||!nutPuedeEditar(s)) return h;
+      let h=o.apply(this,arguments); if(!s||!nutPuedeEditar(s)) return h;
+      // el acceso al plan ya está en la tarjeta de arriba: sin el enlace duplicado "Editar menú"
+      h=h.replace(/<button type="button" class="fx-lnk" onclick="maAbrir\('[^']*'\)">[\s\S]*?<\/button>/,'');
       const plan=s.nutricion&&s.nutricion.plan, hecho=plan&&plan.tipo==='nutri';
       return `<section class="pn-cta"><div><b>Plan de alimentación</b><span>${hecho?'Ajustado por '+esc(plan.por||'nutrición')+(plan.fecha?' · '+esc(fmtFecha(plan.fecha)):''):'Ahora ve el plan automático. Ábrelo para ajustar dietocálculo, porciones, comidas y semana.'}</span></div>
         <button type="button" class="sd-pri" onclick="pnAbrir('${esc(s.code)}')">${ico('leaf')}${hecho?'Editar plan':'Abrir plan'}</button></section>`+h;
