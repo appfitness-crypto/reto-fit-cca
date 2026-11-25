@@ -275,3 +275,33 @@
 .rc-ta:focus{outline:none;border-color:var(--v2);}
 .rc-socio .m-title{font-size:var(--fs-3xl);}
 .rc-msg{margin:10px 0 0;padding:14px 16px;border-radius:14px;background:color-mix(in srgb,var(--g) 12%,var(--gl));font-size:var(--fs-base);line-height:1.5;color:var(--tx);}
+
+/* Tablero: la mascota y el nombre abren la app del socio */
+.tr-ver{border:0;padding:0;cursor:pointer;font:inherit;}
+.tr-ver.tr-masc{background:none;}
+.tr-ver:hover{box-shadow:0 0 0 2px var(--v2);}
+.tr-nom{display:block;border:0;background:none;padding:0;margin:0;font:inherit;font-weight:700;color:var(--tx);text-align:left;cursor:pointer;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--tx) 30%,transparent);text-underline-offset:3px;}
+.tr-nom:hover{text-decoration-color:currentColor;}
+.tr-ver:focus-visible,.tr-nom:focus-visible{outline:2px solid var(--v2);outline-offset:2px;}
+
+/* Casilla de la clase de hoy dentro de "Esta semana" (js/73) */
+.am-hoy{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;}
+.am-chk{display:inline-flex;align-items:center;gap:10px;min-height:40px;padding:4px 6px 4px 12px;border-radius:12px;border:0;background:color-mix(in srgb,var(--tx) 6%,transparent);color:var(--tx);font:500 13.5px/1.2 var(--fb);cursor:pointer;}
+.am-t b{font-weight:700;}
+.am-box{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--tx) 35%,transparent);background:transparent;}
+.am-chk.on .am-box{background:var(--cine-acc,var(--v2));box-shadow:none;color:#fff;}
+html[data-theme="dark"] .am-chk.on .am-box{color:#0A0E13;}
+.am-box .ico{width:16px;height:16px;}
+.am-chk:focus-visible{outline:2px solid var(--v2);outline-offset:2px;}
+
+/* Actividad medida: Requerimientos (2a) y Dietocálculo */
+.am-res p{margin:0 0 8px;font-size:var(--fs-sm);line-height:1.45;color:var(--tx);}
+.am-res.c p{font-size:var(--fs-xs);color:var(--mu);} .am-res b{color:var(--tx);}
+.am-sem{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin:6px 0 8px;}
+.am-sem div{display:grid;gap:1px;padding:6px 4px;border-radius:10px;background:var(--in-bg2);text-align:center;font-variant-numeric:tabular-nums;}
+.am-sem div.pend{opacity:.55;}
+.am-sem b{font-size:var(--fs-2xs);color:var(--mu);} .am-sem span{font-weight:700;font-size:var(--fs-sm);color:var(--tx);}
+.am-sem small{font-size:10px;color:var(--mu);line-height:1.2;overflow:hidden;text-overflow:ellipsis;}
+.am-nota{font-size:var(--fs-2xs)!important;color:var(--mu)!important;}
+.am-usar{display:inline-flex;width:auto;min-height:44px;margin:4px 0 0;}
+.am-li small{display:block;}
