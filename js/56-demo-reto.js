@@ -4,7 +4,15 @@
    · "Cargar 15 socios de prueba": 5 por objetivo, con sesiones (pesos por ejercicio), peso corporal y medidas
      de las últimas 5 semanas, repartidos entre los entrenadores que existan. Se guardan en Firebase como
      cualquier socio, con código "demo-NN", la marca demo:true y "(PRUEBA)" en el nombre.
-   · "Borrar socios de prueba": borra solo los expedientes demo-NN (y su índice). Los socios reales no se tocan. ═══ */
+   · "Borrar socios de prueba": borra solo los expedientes demo-NN (y su índice). Los socios reales no se tocan.
+   · Los socios de prueba viven el reto como si ya hubiera arrancado para ellos (retoDemoInicio, hace 8 semanas):
+     suman puntos, crecen sus mascotas, aparecen en el tablero con posiciones y algunos traen sesiones que no
+     cuentan (cortas, fuera del gym, repetidas) y un salto de peso sospechoso, para ver los candados.
+     La fecha real del reto (GYM.reto.inicio) no cambia para nadie más. ═══ */
+
+const DEMO_DIAS=56;            // 8 semanas de historia
+// Trampas de ejemplo por socio (índice en DEMO_SOCIOS): corta, fuera del gym, repetida el mismo día, salto de peso
+const DEMO_TRAMPAS={1:['corta','dup'], 6:['dup'], 7:['salto'], 12:['corta','fuera','dup']};
 
 const DEMO_PREFIJO='demo-';
 const DEMO_SOCIOS=[
@@ -36,34 +44,44 @@ function demoSocio(i, ents, plantilla){
   const [nom,gen,obj,pf]=DEMO_SOCIOS[i];
   const rnd=demoAzar(i*131+17), code=DEMO_PREFIJO+String(i+1).padStart(2,'0');
   const dia=86400000, hoy=new Date(); hoy.setHours(0,0,0,0);
-  const inicio=hoy.getTime()-35*dia, mujer=gen==='MUJER';
+  const inicio=hoy.getTime()-DEMO_DIAS*dia, mujer=gen==='MUJER';
   const peso0=Math.round((mujer?58:74)+rnd()*22), est=mujer?160+Math.round(rnd()*10):170+Math.round(rnd()*12);
   const ent=ents.length?ents[i%ents.length]:null;
   const ejs=DEMO_EJ[gen];
   // Sesiones: 4 días por semana según su constancia; los que "dejaron de venir" paran unos días antes de hoy
-  const ses=[], ultimoDia=35-(pf.deja||0);
+  const ses=[], ultimoDia=DEMO_DIAS-(pf.deja||0);
   for(let d=1; d<=ultimoDia; d++){
     const dow=new Date(inicio+d*dia).getDay();
     if(dow===0 || dow===6) continue;
     if(rnd()>pf.c*0.85) continue;
-    const ts=inicio+d*dia+ (17+Math.floor(rnd()*4))*3600000, f=d/35;
+    const ts=inicio+d*dia+ (17+Math.floor(rnd()*4))*3600000, f=d/DEMO_DIAS;
     const del=ejs.slice(0,4+Math.floor(rnd()*2)).map(([n,kg0])=>{
       const kg=Math.round(kg0*(1+f*0.22*pf.m)*2)/2; return {n, s:4, p:4, kg};
     });
     const completa=rnd()<0.75;
     ses.push({fecha:fechaISO(new Date(ts)), ts, diaKey:['dom','lun','mar','mie','jue','vie','sab'][dow], tipo:'Fuerza', ejercicios:del.length,
       ejPlan:del.length, sh:completa?del.length*4:del.length*3, sp:del.length*4, estado:completa?'completa':'parcial',
-      volumen:del.reduce((a,e)=>a+e.kg*4*10,0), tut:0, cardioMin:0, hora:new Date(ts).toTimeString().slice(0,5), cambios:[], detalle:del});
+      volumen:del.reduce((a,e)=>a+e.kg*4*10,0), tut:0, cardioMin:0, hora:new Date(ts).toTimeString().slice(0,5), cambios:[], detalle:del,
+      min:45+Math.floor(rnd()*30), geo:'gym'});
   }
+  // Candados: sesiones que no suman y un salto de peso sospechoso (solo en algunos socios)
+  (DEMO_TRAMPAS[i]||[]).forEach((t,k)=>{
+    const base=ses[ses.length-2-k*3]; if(!base) return;
+    if(t==='corta') base.min=12;
+    else if(t==='fuera') base.geo='fuera';
+    else if(t==='dup') ses.push(Object.assign({},base,{ts:base.ts+2*3600000, hora:'21:00', detalle:base.detalle.map(e=>Object.assign({},e))}));
+    else if(t==='salto'){ const u=ses[ses.length-1]; if(u&&u.detalle[0]) u.detalle=u.detalle.map((e,j)=>j?e:Object.assign({},e,{kg:Math.round(e.kg*1.45)})); }
+  });
+  ses.sort((a,b)=>a.ts-b.ts);
   // Peso y medidas semanales (la semana 0 es el registro: no suma puntos de medición)
   const dPeso= obj==='PERDER PESO'? -5.5*pf.m : obj==='GANAR MÚSCULO'? 2.4*pf.m : -1.6*pf.m;
   const dCint= obj==='GANAR MÚSCULO'? 0.4 : -6*pf.m;
   const pesos=[], medidas=[];
   const cin0=mujer?84+Math.round(rnd()*8):92+Math.round(rnd()*8), cue=mujer?32+Math.round(rnd()*2):38+Math.round(rnd()*2);
   const cad0=mujer?102+Math.round(rnd()*6):100+Math.round(rnd()*6), bra0=mujer?28+Math.round(rnd()*3):33+Math.round(rnd()*3);
-  for(let w=0; w<=5; w++){
+  for(let w=0; w<=DEMO_DIAS/7; w++){
     if(w>0 && rnd()>pf.c) continue;               // no todos miden cada semana
-    const f=w/5, fecha=fechaISO(new Date(inicio+(w*7+(w?1:0))*dia));
+    const f=w/(DEMO_DIAS/7), fecha=fechaISO(new Date(inicio+(w*7+(w?1:0))*dia));
     pesos.push({fecha, kg:Math.round((peso0+dPeso*f)*10)/10});
     medidas.push({fecha, cintura:Math.round((cin0+dCint*f)*10)/10, cuello:cue, cadera:Math.round((cad0+(obj==='GANAR MÚSCULO'?0:-2*pf.m)*f)*10)/10,
       brazo:Math.round((bra0+(obj==='PERDER PESO'?0:1.6*pf.m)*f)*10)/10});
@@ -75,6 +93,7 @@ function demoSocio(i, ents, plantilla){
     peso:peso0, estatura:est, dias:4, cintura:cin0, status:'activo',
     asignado:ent?ent.nombre:'Plan de la app', entrenadorId:ent?ent.id:'', codigoEnt:ent&&ent.codigo||'',
     fechaRegistro:fechaISO(new Date(inicio)),
+    retoDemoInicio:fechaISO(inicioSemana(new Date(inicio+dia))),   // su reto arrancó ese lunes
     mascota:(typeof MASCOTAS!=='undefined')?{id:MASCOTAS[i%MASCOTAS.length].id, nombre:MASCOTAS[i%MASCOTAS.length].nm, fecha:fechaISO(new Date(inicio))}:undefined,
     logs:{sesiones:ses, pesoCorporal:pesos, medidas, prs:{}, asistencia:[], lesiones:[]}
   });
@@ -130,3 +149,49 @@ function demoRetoBorrar(){
     if(typeof abrirTableroReto==='function') abrirTableroReto();
   });
 }
+
+
+// ═════════════ Los socios de prueba ya están dentro del reto ═════════════
+// Para ellos (y solo para ellos) el reto arrancó en s.retoDemoInicio. Mientras se calcula algo de un socio de prueba,
+// retoEstado() responde con esa fecha; para todos los demás sigue la fecha real de js/config.js.
+let RETO_DEMO_INI=null;
+function demoRetoInicio(s){ return (s&&s.demo&&(s.retoDemoInicio||s.fechaRegistro))||null; }
+function demoCon(s,fn){ const ini=demoRetoInicio(s); if(!ini) return fn(); const prev=RETO_DEMO_INI; RETO_DEMO_INI=ini; try{ return fn(); } finally{ RETO_DEMO_INI=prev; } }
+function demoEnSuApp(){
+  // La app del socio de prueba abierta (desde "Ver su perfil" o con su cuenta), no el panel del staff
+  const a=typeof activeSocio!=='undefined'&&activeSocio, p=document.getElementById('s-panel');
+  return a&&a.demo&&!(p&&p.classList.contains('on'))?demoRetoInicio(a):null;
+}
+(function(){
+  if(typeof retoEstado==='function'){
+    const o=retoEstado;
+    window.retoEstado=retoEstado=function(hoy){
+      const ini=RETO_DEMO_INI||demoEnSuApp(); if(!ini||!GYM.reto) return o.apply(this,arguments);
+      const R=GYM.reto; GYM.reto=Object.assign({},R,{inicio:ini});
+      try{ return o.apply(this,arguments); } finally{ GYM.reto=R; }
+    };
+  }
+  if(typeof trCalcSocio==='function'){
+    const o=trCalcSocio;
+    window.trCalcSocio=trCalcSocio=function(s,desde,P){ if(!demoRetoInicio(s)) return o.apply(this,arguments); return demoCon(s,()=>o(s,trDesde(),P)); };
+  }
+  ['trResumenIndice','socioPuntos'].forEach(fn=>{
+    if(typeof window[fn]!=='function') return; const o=window[fn];
+    window[fn]=function(s){ const a=arguments; return demoCon(s,()=>o.apply(this,a)); };
+  });
+  // Tablero: aviso de que los socios de prueba ya están dentro del reto
+  if(typeof abrirTableroReto==='function'){
+    const o=abrirTableroReto;
+    window.abrirTableroReto=abrirTableroReto=function(){
+      const r=o.apply(this,arguments);
+      try{
+        const d=(typeof staffGetSocios==='function'?staffGetSocios():[]).find(x=>x&&x.demo);
+        const p=document.querySelector('#staff-content .tr-p');
+        if(d&&p){ const e=demoCon(d,()=>retoEstado()); if(e&&e.estado==='en curso'){ const n=document.createElement('p'); n.className='tr-p tr-demo';
+          n.textContent='Socios de prueba: para ellos el reto ya va en la semana '+e.semana+' (día '+e.dia+'), para ver posiciones, puntos, mascotas y candados. Los socios reales no se mueven.';
+          p.insertAdjacentElement('afterend',n); } }
+      }catch(_){}
+      return r;
+    };
+  }
+})();

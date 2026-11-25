@@ -1,3 +1,15 @@
+# Cambios — Los socios de prueba ya están dentro del reto
+- **js/56-demo-reto.js:** los 15 socios de prueba viven el reto como si hubiera arrancado para ellos hace 8 semanas (`retoDemoInicio`). Solo ellos: la fecha real del reto (`GYM.reto.inicio`) no cambia para nadie más.
+  - Suman puntos, crecen sus mascotas (de Cría a Leyenda según su constancia) y aparecen en el tablero con posiciones por objetivo.
+  - En su app (Ver su perfil) se ve "Semana 9 de 12", la fase, sus puntos y su mascota.
+  - Algunos traen candados para probar las reglas: sesiones muy cortas, repetidas el mismo día y un salto de peso sospechoso. Las sesiones "fuera del gym" solo se marcan si la geocerca está activa.
+  - Ahora traen 8 semanas de historia (antes 5).
+- El tablero avisa en qué semana van los socios de prueba.
+- Para verlo: Menú → Borrar socios de prueba y luego Cargar 15 socios de prueba (los que ya estaban no traen la fecha nueva).
+- Service worker: `retofit-cca-v81`.
+
+---
+
 # Cambios — Permisos de la ficha según lo que da cada persona del staff
 - **js/71-permisos-staff.js:** lo que se marca en "¿Qué da?" (Entrenamiento, Nutrición o las dos) decide qué puede cambiar cada quien en la ficha del socio.
   - **Solo entrenamiento:** edita la rutina de sus socios; la pestaña Nutrición la ve en solo lectura.
