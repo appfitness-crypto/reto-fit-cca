@@ -1,3 +1,14 @@
+# Cambios — Permisos de la ficha según lo que da cada persona del staff
+- **js/71-permisos-staff.js:** lo que se marca en "¿Qué da?" (Entrenamiento, Nutrición o las dos) decide qué puede cambiar cada quien en la ficha del socio.
+  - **Solo entrenamiento:** edita la rutina de sus socios; la pestaña Nutrición la ve en solo lectura.
+  - **Solo nutrición:** edita la nutrición (de socios sin nutriólogo asignado o asignados a él); la pestaña Rutina la ve en solo lectura (sin opciones, arrastrar, agregar ni editar ejercicios).
+  - **Las dos:** edita ambas. El director edita todo.
+- Las pestañas en solo lectura muestran un aviso con candado. Las acciones que cambian la rutina o la nutrición también se bloquean en código, no solo se ocultan los botones.
+- Antes un nutriólogo podía editar la rutina de cualquier socio que veía, y la nutrición solo la editaba si estaba asignado.
+- Service worker: `retofit-cca-v80`.
+
+---
+
 # Cambios — Fotos de los 40 platillos nuevos (desayunos, colaciones, comidas y cenas)
 - `img/menu/`: omelette de espinaca, hot cakes de avena, huevos rancheros, pan con aguacate, machaca, sincronizadas, licuado verde, papaya con amaranto, tostadas de requesón y yogur con moras (800 × 500, webp). Hechas en ChatGPT con `docs/PLATILLOS-PROMPTS.md` y subidas desde el checklist de fotos.
 - Colaciones: pepino con requesón, palomitas, melón con nuez, pan con crema de cacahuate, garbanzos, mango con cacahuates, guayaba con panela, uvas con pistaches.

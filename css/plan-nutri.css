@@ -250,3 +250,10 @@
 .nxc-op.on{border-color:var(--v2);box-shadow:0 0 0 2px color-mix(in srgb,var(--v2) 30%,transparent);}
 .nxc-op.orig{border-style:dashed;}
 .nxc-op:focus-visible{outline:2px solid var(--v2);outline-offset:2px;}
+
+/* Permisos por función (js/71): pestaña en solo lectura */
+.perm-ro{display:flex;gap:10px;align-items:flex-start;margin:4px 16px 12px;padding:12px 14px;border-radius:14px;border:1px solid var(--gx-line);background:linear-gradient(160deg,var(--gx-glass2),var(--gx-glass));font-size:var(--fs-sm);line-height:1.45;color:var(--tx);}
+.perm-ro .ico{width:17px;height:17px;flex:0 0 auto;margin-top:1px;color:var(--mu);}
+.rt-ro .rt-opc,.rt-ro .rt-grip,.rt-ro .rt-add,.rt-ro .rt-hint,.rt-ro .rt-menu-w,.rt-ro .rt-rest .sd-b{display:none!important;}
+.rt-ro .rt-tipo{pointer-events:none;border-color:transparent;background:transparent;}
+.rt-ro .rt-rb{cursor:default;}
