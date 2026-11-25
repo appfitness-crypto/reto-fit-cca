@@ -1,3 +1,17 @@
+# Cambios — El socio cambia un ingrediente por su equivalente
+- **Qué hace (js/70):** en la pestaña Nutrición del socio, al abrir una comida, cada ingrediente es un botón. Al tocarlo ("4 tortillas de maíz") sale la lista de alimentos equivalentes y el socio elige uno.
+- **Solo equivalentes:**
+  - misma cantidad de equivalentes del mismo subgrupo SMAE (1 por 1);
+  - si hay pocas opciones, se suman las de la misma familia (p. ej. origen animal);
+  - se respetan sus filtros (vegetariano, sin lácteos, sin gluten);
+  - se descartan porciones irreales con el tope por comida de cada alimento (no "10 tazas de palomitas").
+- No cambia porciones ni metas, solo el alimento. Las kcal y macros de la comida se recalculan con el alimento nuevo.
+- El cambio vale para ese día (`s.nutCambios = {f, c}`). El ingrediente cambiado se marca y la lista ofrece "Como venía en tu menú" para regresarlo.
+- Funciona igual con el menú automático y con el plan del nutriólogo.
+- Service worker: `retofit-cca-v75`.
+
+---
+
 # Cambios — Revisión visual de nutrición (staff y socio, temas Claro, Salvia y Oscuro)
 - Revisadas con capturas en celular (390 px) y escritorio (1280 px), en los tres temas: ficha del socio (pestaña Nutrición), los 4 pasos del plan, buscador de platillos, cambio por equivalentes, vista "Así lo verá el socio", filosofía y recetas, y la pestaña Nutrición del socio.
 - **Vidrio:** tarjetas del asistente, resumen fijo de arriba, pie con botones, columna fija de las tablas y pasos usan los tokens de vidrio de la app (`--gx-glass`, `--gx-glass2`, `--gx-modal`, `--gx-line`, `--gx-hi`) en lugar de bloques blancos sólidos.
