@@ -1,7 +1,8 @@
-# Cambios — Fotos de los 10 desayunos nuevos
+# Cambios — Fotos de desayunos (10) y colaciones (8) nuevos
 - `img/menu/`: omelette de espinaca, hot cakes de avena, huevos rancheros, pan con aguacate, machaca, sincronizadas, licuado verde, papaya con amaranto, tostadas de requesón y yogur con moras (800 × 500, webp). Hechas en ChatGPT con `docs/PLATILLOS-PROMPTS.md` y subidas desde el checklist de fotos.
-- Registradas en `MENU_FOTOS` (js/48). Quedan 30 platillos sin foto (colaciones, comidas y cenas nuevas).
-- Service worker: `retofit-cca-v76`.
+- Colaciones: pepino con requesón, palomitas, melón con nuez, pan con crema de cacahuate, garbanzos, mango con cacahuates, guayaba con panela, uvas con pistaches.
+- Registradas en `MENU_FOTOS` (js/48). Quedan 22 platillos sin foto (comidas y cenas nuevas).
+- Service worker: `retofit-cca-v77`.
 
 ---
 
