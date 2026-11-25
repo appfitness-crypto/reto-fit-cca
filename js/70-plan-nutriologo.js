@@ -174,6 +174,56 @@ function pnRepartir(porc,comidas){
 // Meta de una comida a partir de sus equivalentes (para escalar platillos con menuEscalar)
 function pnMetaComida(eq){ const t=pnAporte(eq); return {k:Math.max(60,t.k),p:t.p,l:t.l,c:t.c}; }
 
+// ═════════════ Motor de equivalentes: lo que hay en el plato manda ═════════════
+// Cada comida tiene sus equivalentes por subgrupo SMAE (m.eq). El platillo se ajusta exactamente a ellos y lo que el
+// platillo no tiene (p. ej. fruta en unos huevos) va como complemento (m.extra), cambiable por otro equivalente.
+// Las porciones del día son siempre la suma de las comidas: todo queda conectado.
+const PN_EXTRA_DEF={VER:'ensalada',FRU:'papaya',CER:'tortilla',LEG:'frijol',AOAMB:'pollo',AOAB:'res',AOAM:'panela',LECD:'leche',GRA:'aceite',GRAP:'almendra'};
+function pnPasoAlim(f){ const a=MENU_ALIM[f]; if(!a||a.u==='libre') return 0; return a.u==='n'&&(a.por||1)<2?1:0.5; }
+function pnRed(v,st){ return st?Math.max(0,Math.round(v/st)*st):0; }
+function pnR2(x){ return Math.round((+x||0)*100)/100; }
+function pnEqReal(m){
+  const o={}, add=(f,q)=>{ const a=MENU_ALIM[f]; if(!a||a.g==='LIB'||!(q>0)) return; o[a.g]=pnR2((o[a.g]||0)+q); };
+  const p=m.id&&maPlat(m.id); if(p) p.c.forEach(([f],i)=>add(f,+(m.q||[])[i]||0));
+  comoArray(m.extra).forEach(x=>add(x.f,+x.q||0));
+  return o;
+}
+function pnAjustarAEq(m,eq){
+  eq=Object.assign({},eq||m.eq||{});
+  const p=m.id&&maPlat(m.id), prev={};
+  comoArray(m.extra).forEach(x=>{ const a=MENU_ALIM[x.f]; if(a) prev[a.g]=x.f; });
+  const q=p?p.c.map(()=>0):[], extra=[];
+  Object.keys(eq).forEach(g=>{
+    const v=+eq[g]||0; if(v<=0||!SMAE_EQ[g]||g==='LIB') return;
+    const idx=p?p.c.map((c,i)=>MENU_ALIM[c[0]]&&MENU_ALIM[c[0]].g===g?i:-1).filter(i=>i>=0):[];
+    if(idx.length){
+      const base=idx.map(i=>Math.max(0.5,+p.c[i][1]||0)), sb=base.reduce((a,b)=>a+b,0);
+      idx.forEach((i,k)=>{ q[i]=pnRed(v*base[k]/sb,pnPasoAlim(p.c[i][0])); });
+      // lo que falte o sobre por redondeo va al alimento con paso más fino
+      const fino=idx.slice().sort((a,b)=>pnPasoAlim(p.c[a][0])-pnPasoAlim(p.c[b][0]))[0];
+      const dif=v-idx.reduce((a,i)=>a+q[i],0); if(Math.abs(dif)>=0.25) q[fino]=Math.max(0,pnRed(q[fino]+dif,pnPasoAlim(p.c[fino][0])));
+    } else {
+      const f=prev[g]||PN_EXTRA_DEF[g]; if(f&&MENU_ALIM[f]){ const st=pnPasoAlim(f); extra.push({f, q:pnRed(v,st)||st}); }
+    }
+  });
+  m.q=q.map(pnR2); m.extra=extra.filter(x=>x.q>0); m.eq=pnEqReal(m);
+}
+function pnSyncPorc(){ const o={}; PN.comidas.forEach(m=>Object.keys(m.eq||{}).forEach(g=>{ o[g]=pnR2((o[g]||0)+m.eq[g]); })); PN.porc=o; }
+// Al sumar (d>0) o quitar (d<0) equivalentes de un grupo en una comida, las demás compensan para mantener el día
+function pnCompensar(i,g,d){
+  if(!PN.compensar||Math.abs(d)<0.25) return;
+  let rest=Math.abs(d);
+  const otros=PN.comidas.map((m,j)=>j).filter(j=>j!==i&&(+(PN.comidas[j].eq||{})[g]||0)>0)
+    .sort((a,b)=>(+PN.comidas[b].eq[g]||0)-(+PN.comidas[a].eq[g]||0));
+  for(const j of otros){
+    if(rest<0.25) break; const m=PN.comidas[j], antes=+m.eq[g]||0;
+    const mov=d>0?Math.min(antes,pnRed(rest,0.5)||0.5):pnRed(rest,0.5)||0.5;
+    pnAjustarAEq(m,Object.assign({},m.eq,{[g]:Math.max(0,antes+(d>0?-mov:mov))}));
+    rest-=Math.abs((+m.eq[g]||0)-antes);
+  }
+}
+function pnTrasCambio(){ pnSyncPorc(); PN.porcManual=true; PN.cambios=true; }
+
 // ═════════════ Recetas propias y variantes ═════════════
 function nrComoPlatillo(id,r){
   return {id:'r-'+id, n:r.n||'Receta', t:comoArray(r.t).length?comoArray(r.t):['com'], prep:r.prep||'', propia:true, autor:r.autor||'', foto:!!r.foto,
@@ -189,7 +239,7 @@ function pnRegistrarVariantes(s){
   Object.keys(v).forEach(id=>pnRegistrarVar(id,v[id]));
 }
 function pnRegistrarVar(id,x){
-  if(!x) return; const p={id, n:x.n||'Platillo', t:comoArray(x.t), prep:x.prep||'', variante:true, base:x.base||'',
+  if(!x) return; const p={id, n:x.n||'Platillo', t:[], tOrig:comoArray(x.t), prep:x.prep||'', variante:true, base:x.base||'',
     c:comoArray(x.c).filter(c=>Array.isArray(c)&&MENU_ALIM[c[0]]).map(c=>[c[0],+c[1]||0,+c[2]||0,+c[3]||0].concat(c[4]?[+c[4]]:[]))};
   const i=MENU_PLATILLOS.findIndex(q=>q.id===id); if(i>=0) MENU_PLATILLOS[i]=p; else MENU_PLATILLOS.push(p);
 }
@@ -326,45 +376,76 @@ function pnInit(s){
     ajuste:k0.ajuste!=null?+k0.ajuste:base.ajustePct, kcal:nut.kcal, kcalManual:k0.kcalManual!=null?!!k0.kcalManual:!!nut.manual, modo:k0.modo||'gkg',
     pk:Math.round(nut.prot/peso*100)/100||1.8, gk:Math.round(nut.grasas/peso*100)/100||0.8,
     pp:nut.kcal?Math.round(nut.prot*4/nut.kcal*100):25, gp:nut.kcal?Math.round(nut.grasas*9/nut.kcal*100):25};
-  const previas=comoArray(plan.comidas).map(m=>({nombre:m.nombre||'Comida', hora:m.hora||'', eq:Object.assign({},m.eq||{}), id:m.id||null, q:comoArray(m.q).map(Number), nota:m.nota||''}));
+  const previas=comoArray(plan.comidas).map(m=>({nombre:m.nombre||'Comida', hora:m.hora||'', eq:Object.assign({},m.eq||{}), id:m.id||null, q:comoArray(m.q).map(Number), extra:[], nota:m.nota||''}));
   const n=previas.length||(F&&F.comidas)||([3,4,5,6].includes(+s.comidasPorDia)?+s.comidasPorDia:4);
   PN={code:s.code, paso:1, sub:'dia', C, porc:null, porcManual:!!plan.porciones, distManual:previas.some(m=>Object.keys(m.eq).length),
     comidas:previas.length?previas:pnComidasVacias(n), semana:JSON.parse(JSON.stringify(plan.semana||{})), var:JSON.parse(JSON.stringify(plan.var||{})),
-    recs:o.nota||'', agua:nut.agua, pref:Object.assign({},s.nutPrefs||{}), cambios:false,
+    recs:o.nota||'', agua:nut.agua, pref:Object.assign({},s.nutPrefs||{}), cambios:false, compensar:true,
     ajusteDia:Object.assign({on:false,pesado:15,descanso:15},(F&&F.cargaDia)||{},plan.ajusteDia||{})};
   const M=pnMetas(C,base);
   PN.porc=plan.porciones?Object.assign({},plan.porciones):pnAutoPorciones(M);
-  if(!PN.distManual) pnAplicarReparto(false);
-  if(PN.comidas.some(m=>!m.id)) pnAutoPlatillos(true);
+  if(previas.length&&previas.some(m=>m.id)){ PN.comidas.forEach(pnSepararExtras); PN.comidas.forEach(m=>{ m.eq=pnEqReal(m); }); pnSyncPorc(); PN.porcManual=true; }   // plan guardado: lo que hay en el plato
+  else { PN.porcManual=false; pnAutoDia(false); }
+  PN_DIAS.forEach(([d])=>{ const a=PN.semana[d]; if(a) PN.semana[d]=comoArray(a).map(x=>{ if(!x) return null; const o=Object.assign({extra:[]},x,{q:comoArray(x.q).map(Number)}); pnSepararExtras(o); return o; }); });
+}
+// Un platillo guardado con complementos (variante "platillo + …") se vuelve a separar al abrir el plan
+function pnSepararExtras(m){
+  const v=m&&m.id&&maPlat(m.id); if(!v||!v.variante||!v.base||!/ \+ /.test(v.n)) return;
+  const b=maPlat(v.base); if(!b||v.c.length<=b.c.length||!b.c.every((c,i)=>v.c[i]&&v.c[i][0]===c[0])) return;
+  const q=comoArray(m.q).map(Number);
+  m.id=b.id; m.q=q.slice(0,b.c.length); m.extra=v.c.slice(b.c.length).map((c,k)=>({f:c[0], q:+q[b.c.length+k]||+c[1]||0})).filter(x=>x.q>0);
 }
 function pnSocio(){ return PN&&getSocio(PN.code); }
 function pnBase(){ const s=pnSocio(); return s?calcNutricion(s):null; }
 function pnM(){ return pnMetas(PN.C,pnBase()); }
-function pnAplicarReparto(reescalar){
+function pnAplicarReparto(){
   const r=pnRepartir(PN.porc,PN.comidas);
-  PN.comidas.forEach((m,i)=>{ m.eq=r[i]; if(reescalar!==false&&m.id) pnReescalar(i); });
+  PN.comidas.forEach((m,i)=>pnAjustarAEq(m,r[i]));
+  pnSyncPorc();
 }
-function pnReescalar(i){
-  const m=PN.comidas[i], p=m&&m.id&&maPlat(m.id); if(!p) return;
-  const r=menuEscalar(p,pnMetaComida(m.eq),false); if(r) m.q=r.q.slice();
+// Plan automático: platillos escalados a la meta de cada comida (reparto y pre/post de js/48), con ajuste del día a ±5 %.
+// keep = conserva los platillos ya elegidos y solo reescala; las comidas vacías reciben platillo.
+function pnAutoDia(keep){
+  const s=pnSocio(), M=pnM(), n=PN.comidas.length, nut={kcal:M.kcal,prot:M.prot,carbs:M.carbs,grasas:M.grasas};
+  if(!keep||PN.comidas.some(m=>!m.id)){
+    const d=generarMenuDia(Object.assign({},s,{menuAlt:null,nutPrefs:PN.pref}),nut,n);
+    PN.comidas.forEach((m,i)=>{ const c=d.comidas[i]; if(c&&c.r&&(!keep||!m.id)){ m.id=c.r.platillo.id; m.q=c.r.q.slice(); m.extra=[]; } });
+  }
+  const metas=menuMetasComidas(s,nut,n), meta=i=>(metas[i]||metas[metas.length-1]);
+  const escalar=(i,T)=>{ const m=PN.comidas[i], p=m.id&&maPlat(m.id); if(!p) return; const r=menuEscalar(p,T,meta(i).rol==='pre'); if(r){ m.q=r.q.slice(); m.extra=[]; } };
+  if(keep) PN.comidas.forEach((m,i)=>escalar(i,meta(i).T));
+  for(let it=0; it<n; it++){
+    const tots=PN.comidas.map(pnComidaTot), t=tots.reduce((a,x)=>({k:a.k+x.k,p:a.p+x.p,c:a.c+x.c,l:a.l+x.l}),{k:0,p:0,c:0,l:0}), dk=M.kcal-t.k;
+    if(Math.abs(dk)/M.kcal<=MENU_TOL_DIA) break;
+    const i=tots.map((x,j)=>[x.k,j]).sort((a,b)=>b[0]-a[0])[it%n][1], x=tots[i];
+    escalar(i,{k:Math.max(80,x.k+dk), p:Math.max(0,x.p+(M.prot-t.p)), c:Math.max(0,x.c+(M.carbs-t.c)), l:Math.max(0,x.l+(M.grasas-t.l))});
+  }
+  PN.comidas.forEach(m=>{ m.eq=pnEqReal(m); }); pnSyncPorc();
 }
-function pnComidaTot(m){ const r=m.id&&maCalc(m.id,m.q); return r||{k:0,p:0,l:0,c:0}; }
+function pnReescalar(i){ const m=PN.comidas[i]; if(m) pnAjustarAEq(m,m.eq); }
+function pnComidaTot(m){
+  const t={k:0,p:0,l:0,c:0}, add=(f,q)=>{ if(!(q>0)||!MENU_ALIM[f]) return; const r=menuMacros(f,q); t.k+=r.k; t.p+=r.p; t.l+=r.l; t.c+=r.c; };
+  const p=m.id&&maPlat(m.id); if(p) p.c.forEach(([f],i)=>add(f,+(m.q||[])[i]||0));
+  comoArray(m.extra).forEach(x=>add(x.f,+x.q)); return t;
+}
 // Elige platillos para las comidas (vacías o todas) según la meta de equivalentes de cada una
 function pnAutoPlatillos(soloVacias){
-  const usados=new Set(soloVacias?PN.comidas.map(m=>m.id).filter(Boolean):[]), prots={};
+  const usados=new Set(soloVacias?PN.comidas.map(m=>m.id).filter(Boolean):[]);
   PN.comidas.forEach((m,i)=>{
     if(soloVacias&&m.id) return;
     const r=pnMejores(i,usados,1)[0];
-    if(r){ m.id=r.platillo.id; m.q=r.q.slice(); usados.add(m.id); const pr=menuProteinaPrincipal(r); if(pr) prots[pr]=(prots[pr]||0)+1; }
+    if(r){ m.id=r.platillo.id; m.extra=[]; pnAjustarAEq(m,m.eq); usados.add(m.id); }
   });
+  pnSyncPorc();
 }
 // Platillos ordenados por qué tan bien llegan a la meta de una comida
 function pnMejores(i,excluir,cuantos,todos){
-  const m=PN.comidas[i], T=pnMetaComida(m.eq), tiempo=menuTiempo(m.nombre);
+  const m=PN.comidas[i], T=pnMetaComida(m.eq), tiempo=menuTiempo(m.nombre), gs=Object.keys(m.eq||{}).filter(g=>(+m.eq[g]||0)>=1);
   return MENU_PLATILLOS.filter(p=>!p.variante&&(todos||p.t.includes(tiempo))&&!(excluir&&excluir.has(p.id))&&menuPlatilloApto(p,PN.pref,false))
-    .map(p=>menuEscalar(p,T,false)).filter(Boolean).sort((a,b)=>a.err-b.err).slice(0,cuantos||999);
+    .map(p=>{ const r=menuEscalar(p,T,false); if(!r) return null; const tiene=new Set(p.c.map(c=>MENU_ALIM[c[0]].g));
+      r.err+=gs.filter(g=>!tiene.has(g)).length*0.25; return r; })   // prefiere platillos que ya traen los grupos de la comida
+    .filter(Boolean).sort((a,b)=>a.err-b.err).slice(0,cuantos||999);
 }
-
 // ═════════════ Asistente: abrir, pintar ═════════════
 function pnAbrir(code){
   const s=getSocio(code); if(!s) return;
@@ -391,10 +472,7 @@ function pnAuxCerrar(){ const m=document.getElementById('modal-pn-aux'); if(m) m
 function pnAux(html){ pnAsegurarModales(); const b=document.querySelector('#modal-pn-aux .pn-aux'); if(b) b.classList.remove('pn-aux-prev'); document.getElementById('pnx-cuerpo').innerHTML=html; document.getElementById('modal-pn-aux').classList.add('open'); }
 function pnPaso(n){ if(!PN) return; PN.paso=n; pnPrepararPaso(); pnRender(); const b=document.querySelector('#modal-pn .pn-box'); if(b) b.scrollTop=0; }
 // Al pasar de paso, lo que no se ha tocado a mano se recalcula con las metas nuevas
-function pnPrepararPaso(){
-  const M=pnM();
-  if(PN.paso>=2&&!PN.porcManual){ PN.porc=pnAutoPorciones(M); if(!PN.distManual) pnAplicarReparto(); }
-}
+function pnPrepararPaso(){ if(PN.paso>=2&&!PN.porcManual) pnAutoDia(true); }
 const PN_PASOS=[[1,'Dietocálculo'],[2,'Porciones'],[3,'Distribuye'],[4,'Entrega']];
 function pnRender(){
   if(!PN) return; const s=pnSocio(); if(!s) return;
@@ -516,19 +594,23 @@ function pnPaso2(s,M,tp){
     <p class="pn-nota">Equivalentes del Sistema Mexicano de Alimentos Equivalentes (kcal oficiales, sin recalcular con 4/4/9). Tolerancias: kcal ±5 %, proteína ±10 %, grasa y carbohidrato ±15 %.</p>`;
 }
 function pnPorc(g,d){
-  if(!PN) return; const [mn,mx]=PN_RANGO[g];
-  PN.porc[g]=Math.max(0,Math.min(mx*2,Math.round(((+PN.porc[g]||0)+d)*100)/100)); if(mn&&PN.porc[g]<0) PN.porc[g]=0;
-  PN.porcManual=true; PN.cambios=true;
-  if(!PN.distManual) pnAplicarReparto(); else pnAjustarGrupo(g);
-  pnRender();
+  if(!PN) return; const total=+PN.porc[g]||0, nuevo=Math.max(0,pnR2(total+d));
+  if(!total){
+    const tiene=j=>{ const p=maPlat(PN.comidas[j].id); return p&&p.c.some(c=>MENU_ALIM[c[0]].g===g)?1:0; };
+    const j=PN.comidas.map((m,k)=>k).sort((a,b)=>tiene(b)-tiene(a)||pnComidaTot(PN.comidas[b]).k-pnComidaTot(PN.comidas[a]).k)[0];
+    if(j!=null&&nuevo>0) pnAjustarAEq(PN.comidas[j],Object.assign({},PN.comidas[j].eq,{[g]:nuevo}));
+  }
+  else {
+    // el cambio del día se reparte en las comidas que ya tienen ese grupo, empezando por la que más tiene
+    let rest=Math.abs(d); const orden=PN.comidas.map((m,j)=>j).filter(j=>(+(PN.comidas[j].eq||{})[g]||0)>0).sort((a,b)=>(+PN.comidas[b].eq[g])-(+PN.comidas[a].eq[g]));
+    for(const j of orden){ if(rest<0.25) break; const m=PN.comidas[j], antes=+m.eq[g]||0, mov=d>0?rest:Math.min(antes,rest);
+      pnAjustarAEq(m,Object.assign({},m.eq,{[g]:Math.max(0,antes+(d>0?mov:-mov))})); rest-=Math.abs((+m.eq[g]||0)-antes); }
+  }
+  pnTrasCambio(); pnRender();
 }
 // Si el reparto ya se tocó a mano, el cambio de un grupo se reparte solo en ese grupo
-function pnAjustarGrupo(g){
-  const r=pnRepartir({[g]:PN.porc[g]},PN.comidas);
-  PN.comidas.forEach((m,i)=>{ m.eq=Object.assign({},m.eq); if(r[i][g]) m.eq[g]=r[i][g]; else delete m.eq[g]; pnReescalar(i); });
-}
-function pnAutoPorc(){ if(!PN) return; PN.porc=pnAutoPorciones(pnM()); PN.porcManual=false; PN.cambios=true; if(!PN.distManual) pnAplicarReparto(); else Object.keys(PN.porc).forEach(pnAjustarGrupo); pnRender(); showToast('Porciones calculadas para llegar a la meta'); }
-
+function pnAjustarGrupo(g){ pnPorc(g,0); }
+function pnAutoPorc(){ if(!PN) return; pnAutoDia(true); PN.porcManual=false; PN.distManual=false; PN.cambios=true; pnRender(); showToast('Porciones recalculadas: cada platillo se ajustó a la meta de su comida'); }
 // ── Paso 3: Distribuye (día tipo y semana) ──
 function pnPaso3(s,M){
   const tabs=`<div class="pn-sub"><button type="button" class="${PN.sub==='dia'?'on':''}" onclick="pnSet('sub','dia')">Día tipo</button><button type="button" class="${PN.sub==='semana'?'on':''}" onclick="pnSet('sub','semana')">Planeación semanal</button></div>`;
@@ -538,37 +620,41 @@ function pnDiaHTML(){
   const C=PN.comidas, grupos=PN_GRUPOS.filter(([g])=>(+PN.porc[g]||0)>0||C.some(m=>m.eq&&m.eq[g]));
   const head=C.map((m,i)=>`<th><input class="pn-cn" value="${esc(m.nombre)}" aria-label="Nombre de la comida ${i+1}" onchange="pnComida(${i},'nombre',this.value)"><input type="time" class="pn-ch" value="${esc(m.hora)}" aria-label="Hora de ${esc(m.nombre)}" onchange="pnComida(${i},'hora',this.value)"></th>`).join('');
   const filas=grupos.map(([g,lb])=>{
-    const tot=+PN.porc[g]||0, asig=C.reduce((a,m)=>a+(+(m.eq||{})[g]||0),0), ok=Math.abs(asig-tot)<0.01;
-    return `<tr><th><span>${esc(lb)}</span><em class="${ok?'ok':asig>tot?'mas':'menos'}">${menuFrac(asig)||0}/${menuFrac(tot)||0}</em></th>${C.map((m,i)=>{ const v=+(m.eq||{})[g]||0;
+    const tot=+PN.porc[g]||0;
+    return `<tr><th><span>${esc(lb)}</span><em class="ok">${menuFrac(tot)||0} en el día</em></th>${C.map((m,i)=>{ const v=+(m.eq||{})[g]||0;
       return `<td class="${v?'':'cero'}"><div class="pn-cel"><button type="button" onclick="pnEq(${i},'${g}',-0.5)" aria-label="Menos ${esc(lb)} en ${esc(m.nombre)}" ${v<=0?'disabled':''}>−</button><b>${v?menuFrac(v):'·'}</b><button type="button" onclick="pnEq(${i},'${g}',0.5)" aria-label="Más ${esc(lb)} en ${esc(m.nombre)}">+</button></div></td>`; }).join('')}</tr>`;
   }).join('');
   const pie=C.map(m=>{ const t=pnAporte(m.eq); return `<td><b>${pnNum(t.k)} kcal</b><small>HC ${pnNum(t.c)} · P ${pnNum(t.p)} · L ${pnNum(t.l)}</small></td>`; }).join('');
   return `<div class="ma-g"><div class="rt-gl">Comidas al día</div><div class="ch-row">${[3,4,5,6].map(n=>`<button type="button" class="ch${n===C.length?' on':''}" aria-pressed="${n===C.length}" onclick="pnSetN(${n})">${n}</button>`).join('')}</div></div>
-    <div class="ma-tools"><button type="button" class="sd-b" onclick="pnRepartirTodo()">${ico('shuffle')}Repartir porciones automático</button>
+    <div class="ma-tools"><button type="button" class="sd-b" onclick="pnRepartirTodo()">${ico('target')}Ajustar comidas a la meta</button>
       <button type="button" class="sd-b" onclick="pnAutoTodo()">${ico('spark')}Elegir platillos automático</button></div>
-    <div class="pn-tabla-w"><table class="pn-dist"><thead><tr><th>Grupo · asignadas</th>${head}</tr></thead><tbody>${filas}</tbody><tfoot><tr><th>Por comida</th>${pie}</tr></tfoot></table></div>
+    <label class="pn-sw-row pn-comp"><input type="checkbox" ${PN.compensar?'checked':''} onchange="PN.compensar=this.checked;pnRender()"><span><b>Mantener el total del día.</b> Si subes o bajas porciones en una comida (en la tabla o en el platillo), las demás comidas compensan ese mismo grupo. Apágalo para sumar sin quitar.</span></label>
+    <div class="pn-tabla-w"><table class="pn-dist"><thead><tr><th>Grupo · total del día</th>${head}</tr></thead><tbody>${filas}</tbody><tfoot><tr><th>Por comida</th>${pie}</tr></tfoot></table></div>
     <h3 class="pn-h">Platillo de cada comida</h3>
     <div class="ma-lista">${C.map((m,i)=>pnCardComida(m,i)).join('')}</div>
+    <p class="pn-nota">Todo está conectado: el platillo se ajusta a las porciones de su comida, lo que el platillo no trae entra como complemento, y cualquier cambio actualiza la tabla de arriba y las porciones del día. Para agregar un grupo a una comida, súmalo en la tabla.</p>
     <button type="button" class="ma-lnk" onclick="nrEditor()">${ico('plus')}Crear receta propia</button>`;
 }
 function pnCardComida(m,i){
-  const p=m.id&&maPlat(m.id), T=pnMetaComida(m.eq), r=p?pnComidaTot(m):null;
-  if(!p) return `<article class="ma-c vacia"><div class="ma-c-h"><b class="pn-cnom">${esc(m.hora||'')} · ${esc(m.nombre)}</b><span class="ma-meta">Meta ~${pnNum(T.k)} kcal</span></div>
+  const p=m.id&&maPlat(m.id), r=pnComidaTot(m), ex=comoArray(m.extra);
+  const filaEx=(x,k)=>`<li class="pn-ex"><span><em>Complemento</em> ${esc(menuPorcion(x.f,x.q))}</span>
+      <div class="ma-st"><button type="button" class="pn-sw" onclick="pnSwapAbrir(${i},'x${k}')" aria-label="Cambiar por otro equivalente" title="Cambiar por otro equivalente">${ico('shuffle')}</button><button type="button" onclick="pnExtra(${i},${k},-1)" aria-label="Menos">−</button><button type="button" onclick="pnExtra(${i},${k},1)" aria-label="Más">+</button></div></li>`;
+  if(!p) return `<article class="ma-c vacia"><div class="ma-c-h"><b class="pn-cnom">${esc(m.hora||'')} · ${esc(m.nombre)}</b><span class="ma-meta">${pnNum(r.k)} kcal por equivalentes</span></div>
+    ${ex.length?`<ul class="ma-ing">${ex.map(filaEx).join('')}</ul>`:''}
     <button type="button" class="ma-elegir" onclick="pnqAbrir(${i})">${ico('plus')}Elegir platillo</button></article>`;
-  const fid=menuFotoId(p.id), e=pnEstado(r.k,T.k,0.15), dv=T.k?Math.round((r.k-T.k)/T.k*100):0;
-  const ing=p.c.map(([f,,min,max,paso],ci)=>{
+  const fid=menuFotoId(p.id);
+  const ing=p.c.map(([f],ci)=>{
     const a=MENU_ALIM[f], q=+m.q[ci]||0; if(a.u==='libre') return `<li class="libre"><span>${esc(a.s)}</span></li>`;
-    const st=paso||1, tope=maTope(f,max);
     return `<li class="${q?'':'cero'}"><span>${esc(q?menuPorcion(f,q):maSin(f))}</span>
-      <div class="ma-st"><button type="button" class="pn-sw" onclick="pnSwapAbrir(${i},${ci})" aria-label="Intercambiar ${esc(a.s)}" title="Intercambiar">${ico('shuffle')}</button><button type="button" onclick="pnIng(${i},${ci},-1)" aria-label="Menos ${esc(a.s)}" ${q<=0?'disabled':''}>−</button><button type="button" onclick="pnIng(${i},${ci},1)" aria-label="Más ${esc(a.s)}" ${q+st>tope+1e-9?'disabled':''}>+</button></div></li>`;
+      <div class="ma-st"><button type="button" class="pn-sw" onclick="pnSwapAbrir(${i},${ci})" aria-label="Cambiar ${esc(a.s)} por otro equivalente" title="Cambiar por otro equivalente">${ico('shuffle')}</button><button type="button" onclick="pnIng(${i},${ci},-1)" aria-label="Menos ${esc(a.s)}" ${q<=0?'disabled':''}>−</button><button type="button" onclick="pnIng(${i},${ci},1)" aria-label="Más ${esc(a.s)}">+</button></div></li>`;
   }).join('');
   return `<article class="ma-c">
-    <div class="ma-c-h"><b class="pn-cnom">${esc(m.hora||'')} · ${esc(m.nombre)}</b><span class="ma-meta">Meta por porciones ~${pnNum(T.k)} kcal · P ${pnNum(T.p)} g${p.variante?' · <b>variante</b>':p.propia?' · <b>receta propia</b>':''}</span></div>
+    <div class="ma-c-h"><b class="pn-cnom">${esc(m.hora||'')} · ${esc(m.nombre)}</b><span class="ma-meta">${esc(menuEquivTxt({comps:Object.keys(m.eq||{}).map(g=>({f:Object.keys(MENU_ALIM).find(k=>MENU_ALIM[k].g===g&&!MENU_ALIM[k].lb),q:m.eq[g]})).filter(x=>x.f)}))}${p.variante?' · <b>variante</b>':p.propia?' · <b>receta propia</b>':''}</span></div>
     <div class="ma-c-p">${fid?`<img src="${menuFotoSrc(fid)}" alt="" width="96" height="60" loading="lazy">`:`<span class="ma-ph">${ico('food')}</span>`}
-      <div class="ma-c-n"><b>${esc(p.n)}</b><small class="${e==='ok'?'':'w'}">${pnNum(r.k)} kcal (${dv>=0?'+':''}${dv}%) · P ${pnNum(r.p)} · C ${pnNum(r.c)} · G ${pnNum(r.l)}</small></div>
+      <div class="ma-c-n"><b>${esc(p.n)}</b><small>${pnNum(r.k)} kcal · P ${pnNum(r.p)} · C ${pnNum(r.c)} · G ${pnNum(r.l)}</small></div>
       <button type="button" class="ma-chg" onclick="pnqAbrir(${i})">Cambiar</button></div>
-    <ul class="ma-ing">${ing}</ul>
-    <div class="ma-c-a"><button type="button" class="ma-lnk" onclick="pnAjustarComida(${i})">${ico('target')}Ajustar a sus porciones</button><button type="button" class="ma-lnk dng" onclick="pnQuitarPlat(${i})">${ico('trash')}Quitar</button></div>
+    <ul class="ma-ing">${ing}${ex.map(filaEx).join('')}</ul>
+    <div class="ma-c-a"><button type="button" class="ma-lnk dng" onclick="pnQuitarPlat(${i})">${ico('trash')}Quitar platillo</button></div>
   </article>`;
 }
 function pnComida(i,k,v){ const m=PN&&PN.comidas[i]; if(!m) return; m[k]=k==='hora'?String(v||''):limpiarTexto(v); PN.cambios=true; if(k!=='nota') pnRender(); }
@@ -576,44 +662,60 @@ function pnSetN(n){
   if(!PN||n===PN.comidas.length) return;
   const nuevas=pnComidasVacias(n), usadas=new Set();
   nuevas.forEach(c=>{ const j=PN.comidas.findIndex((m,ix)=>!usadas.has(ix)&&m.nombre===c.nombre); if(j>=0){ usadas.add(j); Object.assign(c,PN.comidas[j]); } });
-  PN.comidas=nuevas; PN.semana={}; PN.distManual=false; pnAplicarReparto(); pnAutoPlatillos(true); PN.cambios=true; pnRender();
+  PN.comidas=nuevas; PN.semana={}; PN.distManual=false; pnAutoDia(true); PN.cambios=true; pnRender();
 }
 function pnEq(i,g,d){
-  const m=PN&&PN.comidas[i]; if(!m) return; m.eq=Object.assign({},m.eq);
-  const v=Math.max(0,Math.round(((+m.eq[g]||0)+d)*100)/100); if(v) m.eq[g]=v; else delete m.eq[g];
-  PN.distManual=true; PN.cambios=true; pnReescalar(i); pnRender();
+  const m=PN&&PN.comidas[i]; if(!m) return; const antes=+(m.eq||{})[g]||0;
+  for(let k=1;k<=3;k++){ pnAjustarAEq(m,Object.assign({},m.eq,{[g]:Math.max(0,antes+d*k)})); if(Math.abs((+m.eq[g]||0)-antes)>=0.25) break; }
+  pnCompensar(i,g,(+m.eq[g]||0)-antes);
+  PN.distManual=true; pnTrasCambio(); pnRender();
 }
-function pnRepartirTodo(){ if(!PN) return; PN.distManual=false; pnAplicarReparto(); PN.cambios=true; pnRender(); showToast('Porciones repartidas por tiempo de comida'); }
+function pnRepartirTodo(){ if(!PN) return; pnAutoDia(true); PN.porcManual=false; PN.distManual=false; PN.cambios=true; pnRender(); showToast('Comidas ajustadas a la meta del día'); }
 function pnAutoTodo(){ if(!PN) return; pnAutoPlatillos(false); PN.cambios=true; pnRender(); showToast('Platillos elegidos para cada comida'); }
 function pnIng(i,ci,d){
   const m=PN&&PN.comidas[i], p=m&&maPlat(m.id); if(!p) return;
-  const [f,,,max,paso]=p.c[ci], st=paso||1;
-  m.q[ci]=Math.max(0,Math.min(maTope(f,max),Math.round(((+m.q[ci]||0)+d*st)*100)/100)); PN.cambios=true; pnRender();
+  const f=p.c[ci][0], g=MENU_ALIM[f].g, st=pnPasoAlim(f)||1, antes=+(m.eq||{})[g]||0;
+  m.q[ci]=Math.max(0,pnR2((+m.q[ci]||0)+d*st)); m.eq=pnEqReal(m);
+  pnCompensar(i,g,(+m.eq[g]||0)-antes);
+  PN.distManual=true; pnTrasCambio(); pnRender();
 }
-function pnAjustarComida(i){ pnReescalar(i); PN.cambios=true; pnRender(); }
-function pnQuitarPlat(i){ const m=PN&&PN.comidas[i]; if(!m) return; m.id=null; m.q=[]; PN.cambios=true; pnRender(); }
-
+function pnExtra(i,k,d){
+  const m=PN&&PN.comidas[i], x=m&&comoArray(m.extra)[k]; if(!x) return;
+  const g=MENU_ALIM[x.f].g, st=pnPasoAlim(x.f)||1, antes=+(m.eq||{})[g]||0;
+  x.q=Math.max(0,pnR2(x.q+d*st)); m.extra=comoArray(m.extra).filter(e=>e.q>0); m.eq=pnEqReal(m);
+  pnCompensar(i,g,(+m.eq[g]||0)-antes);
+  PN.distManual=true; pnTrasCambio(); pnRender();
+}
+function pnAjustarComida(i){ pnReescalar(i); pnTrasCambio(); pnRender(); }
+function pnQuitarPlat(i){ const m=PN&&PN.comidas[i]; if(!m) return; m.id=null; m.q=[]; m.extra=[]; pnAjustarAEq(m,m.eq); pnTrasCambio(); pnRender(); }
 // Intercambiar un ingrediente por otro de la misma familia (crea una variante del platillo solo para este plan)
 function pnSwapAbrir(i,ci){
-  const m=PN.comidas[i], p=maPlat(m.id); if(!p) return;
-  const f=p.c[ci][0], fam=PN_FAMILIA[MENU_ALIM[f].g];
-  const alts=Object.keys(MENU_ALIM).filter(k=>k!==f&&PN_FAMILIA[MENU_ALIM[k].g]===fam&&!p.c.some(c=>c[0]===k));
-  pnAux(`<div class="m-title" id="pnx-titulo" style="font-size:var(--fs-2xl)">Intercambiar ${esc(MENU_ALIM[f].s.replace(/^de /,''))}</div>
-    <p class="pn-nota">Mismo grupo de equivalentes: 1 por 1. El cambio se guarda como variante solo en el plan de este socio.</p>
+  const m=PN.comidas[i]; if(!m) return; const esEx=String(ci)[0]==='x';
+  const p=maPlat(m.id), x=esEx?comoArray(m.extra)[+String(ci).slice(1)]:null;
+  const f=esEx?(x&&x.f):(p&&p.c[ci][0]); if(!f) return;
+  const q=esEx?x.q:(+m.q[ci]||1), fam=PN_FAMILIA[MENU_ALIM[f].g];
+  const usados=new Set((p?p.c.map(c=>c[0]):[]).concat(comoArray(m.extra).map(e=>e.f)));
+  const alts=Object.keys(MENU_ALIM).filter(k=>k!==f&&MENU_ALIM[k].u!=='libre'&&PN_FAMILIA[MENU_ALIM[k].g]===fam&&!usados.has(k))
+    .sort((a,b)=>(MENU_ALIM[a].g===MENU_ALIM[f].g?0:1)-(MENU_ALIM[b].g===MENU_ALIM[f].g?0:1));
+  const nombre=g=>(PN_GRUPOS.find(x=>x[0]===g)||[,''])[1];
+  pnAux(`<div class="m-title" id="pnx-titulo" style="font-size:var(--fs-2xl)">Cambiar ${esc(menuPorcion(f,q))}</div>
+    <p class="pn-nota">Equivalentes del mismo grupo: ${menuFrac(q)} equivalente${q>1?'s':''} por ${menuFrac(q)}. ${esEx?'':'El cambio se guarda como variante del platillo solo en el plan de este socio.'}</p>
     <div class="pn-alts">${alts.map(k=>{ const a=MENU_ALIM[k], b=a.m||SMAE_EQ[a.g];
-      return `<button type="button" onclick="pnSwap(${i},${ci},'${k}')"><b>${esc(menuPorcion(k,+m.q[ci]||1))}</b><small>${pnNum(b.k*(+m.q[ci]||1))} kcal · P ${pnNum(b.p*(+m.q[ci]||1))} g</small></button>`; }).join('')||'<p class="pn-nota">No hay otro alimento de este grupo en la biblioteca.</p>'}</div>`);
+      return `<button type="button" onclick="pnSwap(${i},'${ci}','${k}')"><b>${esc(menuPorcion(k,q))}</b><small>${pnNum(b.k*q)} kcal · P ${pnNum(b.p*q)} g · C ${pnNum(b.c*q)} g · G ${pnNum(b.l*q)} g · ${esc(nombre(a.g))}</small></button>`; }).join('')||'<p class="pn-nota">No hay otro alimento de este grupo en la biblioteca.</p>'}</div>`);
 }
 function pnSwap(i,ci,nuevo){
-  const m=PN.comidas[i], p=maPlat(m.id); if(!p) return;
-  const viejo=p.c[ci][0], a=MENU_ALIM[nuevo], tope=a.tope||6;
-  const c=p.c.map((x,k)=>k===ci?[nuevo,x[1],x[2],Math.min(Math.max(x[3],x[1]),tope)].concat(x[4]?[x[4]]:[]):x.slice());
-  const corto=x=>String(MENU_ALIM[x].pl||MENU_ALIM[x].s).replace(/^de /,'').split(/[,(]/)[0].trim();
-  const baseId=p.variante?p.base:p.id;
-  const vid='v-'+pnId(), x={n:(p.variante?p.n.replace(/ \(.*\)$/,''):p.n)+' ('+corto(nuevo)+' en lugar de '+corto(viejo)+')', t:p.t.slice(), c, prep:p.prep||'', base:baseId};
-  PN.var[vid]=x; pnRegistrarVar(vid,x);
-  m.id=vid; PN.cambios=true; pnAuxCerrar(); pnRender(); showToast('Ingrediente intercambiado');
+  const m=PN.comidas[i]; if(!m) return; ci=String(ci);
+  if(ci[0]==='x'){ const x=comoArray(m.extra)[+ci.slice(1)]; if(!x) return; const st=pnPasoAlim(nuevo)||1; x.f=nuevo; x.q=pnRed(x.q,st)||st; }
+  else {
+    const p=maPlat(m.id); if(!p) return; const k=+ci, viejo=p.c[k][0];
+    const c=p.c.map((x,j)=>j===k?[nuevo,x[1],x[2],Math.max(x[3],x[1])].concat(x[4]?[x[4]]:[]):x.slice());
+    const corto=x=>String(MENU_ALIM[x].pl||MENU_ALIM[x].s).replace(/^de /,'').split(/[,(]/)[0].trim();
+    const vid='v-'+pnId(), v={n:(p.variante?p.n.replace(/ \(.*\)$/,''):p.n)+' ('+corto(nuevo)+' en lugar de '+corto(viejo)+')', t:(p.tOrig||p.t).slice(), c, prep:p.prep||'', base:p.variante?p.base:p.id};
+    PN.var[vid]=v; pnRegistrarVar(vid,v); m.id=vid;
+    const st=pnPasoAlim(nuevo)||1; m.q[k]=pnRed(+m.q[k]||0,st)||(m.q[k]>0?st:0);
+  }
+  m.eq=pnEqReal(m); pnTrasCambio(); pnAuxCerrar(); pnRender(); showToast('Cambiado por su equivalente');
 }
-
 // Semana: cada celda usa el platillo del día tipo, salvo que se elija otro para ese día
 function pnSemanaHTML(){
   const C=PN.comidas;
@@ -635,6 +737,7 @@ function pnSemanaHTML(){
     <div class="pn-tabla-w"><table class="pn-semana"><thead><tr><th>Tiempo de comida</th>${PN_DIAS.map(([,lb])=>`<th>${lb}</th>`).join('')}</tr>
       <tr class="pn-ent"><th>Entrenamiento</th>${tipos.map(t=>`<th>${chip(t)}</th>`).join('')}</tr></thead><tbody>${filas}</tbody></table></div>`;
 }
+function pnFitDia(i,id){ const m=PN.comidas[i], t={id, q:[], extra:[], eq:{}}; pnAjustarAEq(t,m.eq); return {id, q:t.q, extra:t.extra}; }
 function pnSemanaAuto(){
   if(!PN) return;
   const sem={}; PN_DIAS.forEach(([d])=>{ sem[d]=PN.comidas.map(()=>null); });
@@ -642,7 +745,7 @@ function pnSemanaAuto(){
     const lista=pnMejores(i,null,12).filter(r=>{ const T=pnMetaComida(m.eq); return Math.abs(r.k-T.k)/T.k<=0.15&&r.p>=T.p*0.85; });
     const pool=lista.length?lista:pnMejores(i,null,4);
     const sinBase=pool.filter(r=>r.platillo.id!==m.id);
-    PN_DIAS.forEach(([d],k)=>{ if(k===0||!sinBase.length) return; const r=sinBase[(k-1)%sinBase.length]; sem[d][i]={id:r.platillo.id,q:r.q.slice()}; });
+    PN_DIAS.forEach(([d],k)=>{ if(k===0||!sinBase.length) return; const r=sinBase[(k-1)%sinBase.length]; sem[d][i]=pnFitDia(i,r.platillo.id); });
   });
   // sin repetir platillo dentro del mismo día
   PN_DIAS.forEach(([d])=>{ const vistos=new Set(); sem[d].forEach((x,i)=>{ const id=x?x.id:PN.comidas[i].id; if(vistos.has(id)) sem[d][i]=null; vistos.add(id); }); });
@@ -685,11 +788,9 @@ function pnqElegir(id){
   if(PNQ.dia){
     const arr=(PN.semana[PNQ.dia]||PN.comidas.map(()=>null)).slice(); while(arr.length<PN.comidas.length) arr.push(null);
     if(!id) arr[PNQ.i]=null;
-    else { const p=maPlat(id), r=p&&menuEscalar(p,pnMetaComida(m.eq),false); arr[PNQ.i]={id, q:r?r.q.slice():p.c.map(x=>x[1])}; }
+    else arr[PNQ.i]=pnFitDia(PNQ.i,id);
     PN.semana[PNQ.dia]=arr;
-  } else {
-    const p=maPlat(id), r=p&&menuEscalar(p,pnMetaComida(m.eq),false); m.id=id; m.q=r?r.q.slice():p.c.map(x=>x[1]);
-  }
+  } else { m.id=id; m.extra=comoArray(m.extra); pnAjustarAEq(m,m.eq); pnSyncPorc(); }
   PN.cambios=true; pnqCerrar(); pnRender();
 }
 
@@ -733,9 +834,10 @@ function pnPrevia(dia){
   const d=dia||PN_PREV_DIA||PN_DIA_JS[new Date().getDay()]; PN_PREV_DIA=d;
   const edad=+s.edad||0, menor=edad>0&&edad<18;
   const tipo=pnTipoDia(s,d), fd=pnFactorDia(PN.ajusteDia.on?PN.ajusteDia:null,tipo.t);
-  const items=PN.comidas.map((m,i)=>{ const x=(PN.semana[d]||[])[i], id=x?x.id:m.id, p=id&&maPlat(id); if(!p) return null;
-      let q=x?x.q:m.q; if(fd&&m.eq){ const r=menuEscalar(p,pnMetaComida(pnEqDia(m.eq,fd)),false); if(r) q=r.q; }
-      const r=maCalc(id,q); return {nombre:m.nombre, hora:m.hora, p, k:r.k, P:r.p, C:r.c, G:r.l, nota:m.nota||'', rol:'', comps:p.c.map(([f],ci)=>({f,q:+q[ci]||0})).filter(c=>c.q>0||MENU_ALIM[c.f].u==='libre')}; })
+  const items=PN.comidas.map((m,i)=>{ const x=(PN.semana[d]||[])[i], t={id:x?x.id:m.id, q:(x?x.q:m.q).slice(), extra:comoArray(x?x.extra:m.extra).map(e=>Object.assign({},e)), eq:{}};
+      if(fd&&m.eq) pnAjustarAEq(t,pnEqDia(m.eq,fd));
+      const vr={}, r=pnConExtras(t.id,t.q,t.extra,vr,m.nombre); if(!r) return null; const p=maPlat(r.id), q=r.q;
+      const mc=maCalc(r.id,q); return {nombre:m.nombre, hora:m.hora, p, k:mc.k, P:mc.p, C:mc.c, G:mc.l, nota:m.nota||'', rol:'', comps:p.c.map(([f],ci)=>({f,q:+q[ci]||0})).filter(c=>c.q>0||MENU_ALIM[c.f].u==='libre')}; })
     .filter(Boolean).sort((a,b)=>(nxMin(a.hora)??9999)-(nxMin(b.hora)??9999));
   const dc=Math.round(M.carbs*fd); if(dc){ M.carbs+=dc; M.kcal+=dc*4; }
   const suma=items.reduce((a,m)=>a+m.k,0), dev=M.kcal?(suma-M.kcal)/M.kcal:0, ok=Math.abs(dev)<=MENU_TOL_DIA;
@@ -764,14 +866,27 @@ function pnPrevia(dia){
 function pnRecAgregar(k){ if(!PN) return; const r=PN_RECS[k]; if(PN.recs.includes(r)) return; PN.recs=(PN.recs?PN.recs.trim()+' ':'')+r; PN.cambios=true; pnRender(); }
 
 // Datos del plan tal como se guardan en el socio
+function pnConExtras(id,q,extra,vr,nombreComida){
+  const ex=comoArray(extra).filter(x=>x.q>0&&MENU_ALIM[x.f]); const p=id&&maPlat(id);
+  if(!ex.length) return p?{id,q:comoArray(q).map(pnR2)}:null;
+  const corto=x=>String(MENU_ALIM[x].pl||MENU_ALIM[x].s).replace(/^de /,'').split(/[,(]/)[0].trim();
+  const c=(p?p.c.map((x,i)=>[x[0],+q[i]||0,+q[i]||0,+q[i]||0]):[]).concat(ex.map(x=>[x.f,x.q,x.q,x.q]));
+  const vid='v-'+pnId(), v={n:p?p.n+' + '+ex.map(x=>corto(x.f)).join(' y '):(nombreComida||'Comida')+' por equivalentes', t:p?(p.tOrig||p.t).slice():['des','col','com','cen'], c, prep:p?p.prep||'':'Elige y prepara estos alimentos a tu gusto, en las porciones indicadas.', base:p?p.id:''};
+  vr[vid]=v; pnRegistrarVar(vid,v);
+  return {id:vid, q:c.map(x=>pnR2(x[1]))};
+}
 function pnPlanDatos(){
-  const s=pnSocio(), M=pnM(), C=PN.C;
-  const comidas=PN.comidas.filter(m=>m.id).map(m=>({nombre:limpiarTexto(m.nombre)||'Comida', hora:m.hora||'', id:m.id, q:m.q.map(x=>Math.round(+x*100)/100), nota:limpiarTexto(m.nota||''), eq:m.eq||{}}));
-  // índice de comidas guardadas → la semana se guarda alineada a ellas
-  const idx=PN.comidas.map((m,i)=>m.id?i:-1).filter(i=>i>=0);
-  const semana={}; PN_DIAS.forEach(([d])=>{ const a=PN.semana[d]; if(!a) return; const v=idx.map(i=>a[i]?{id:a[i].id,q:a[i].q.map(x=>Math.round(+x*100)/100)}:0); if(v.some(Boolean)) semana[d]=v; });
+  const s=pnSocio(), M=pnM(), C=PN.C, vr={};
+  const idx=[], comidas=[];
+  PN.comidas.forEach((m,i)=>{ const r=pnConExtras(m.id,m.q,m.extra,vr,m.nombre); if(!r) return; idx.push(i);
+    comidas.push({nombre:limpiarTexto(m.nombre)||'Comida', hora:m.hora||'', id:r.id, q:r.q, nota:limpiarTexto(m.nota||''), eq:m.eq||{}}); });
+  const semana={}; PN_DIAS.forEach(([d])=>{ const a=PN.semana[d]; if(!a) return;
+    const v=idx.map(i=>{ const x=a[i]; if(!x) return 0; const r=pnConExtras(x.id,x.q,x.extra,vr,PN.comidas[i].nombre); return r||0; });
+    if(v.some(Boolean)) semana[d]=v; });
   const usadas=new Set(comidas.map(m=>m.id)); Object.values(semana).forEach(a=>a.forEach(x=>{ if(x) usadas.add(x.id); }));
-  const vr={}; Object.keys(PN.var).forEach(k=>{ if(usadas.has(k)) vr[k]=PN.var[k]; });
+  Object.keys(PN.var).forEach(k=>{ if(usadas.has(k)) vr[k]=PN.var[k]; });
+  // las variantes con complementos se apoyan en variantes de intercambio: guárdalas también
+  Object.values(vr).forEach(v=>{ if(v.base&&PN.var[v.base]) vr[v.base]=PN.var[v.base]; });
   return {s, M, C, comidas, semana, var:vr};
 }
 function pnGuardar(){
@@ -802,8 +917,9 @@ function pnVolverAuto(){
 
 // ── Lista de súper de la semana ──
 function pnSuperLista(){
-  const tot={}, add=(id,q)=>{ const p=maPlat(id); if(!p) return; p.c.forEach(([f],ci)=>{ const v=+q[ci]||0; if(!v||MENU_ALIM[f].u==='libre') return; tot[f]=(tot[f]||0)+v; }); };
-  PN_DIAS.forEach(([d])=>{ PN.comidas.forEach((m,i)=>{ const x=(PN.semana[d]||[])[i]; if(x) add(x.id,x.q); else if(m.id) add(m.id,m.q); }); });
+  const tot={}, add=(f,q)=>{ if(!(q>0)||!MENU_ALIM[f]||MENU_ALIM[f].u==='libre') return; tot[f]=(tot[f]||0)+q; };
+  const addC=(id,q,extra)=>{ const p=id&&maPlat(id); if(p) p.c.forEach(([f],ci)=>add(f,+(q||[])[ci]||0)); comoArray(extra).forEach(x=>add(x.f,+x.q)); };
+  PN_DIAS.forEach(([d])=>{ PN.comidas.forEach((m,i)=>{ const x=(PN.semana[d]||[])[i]; if(x) addC(x.id,x.q,x.extra); else addC(m.id,m.q,m.extra); }); });
   const fam={VER:'Verduras',FRU:'Frutas',CER:'Cereales y tortillas',LEG:'Leguminosas',AOA:'Carnes, huevo y queso',LEC:'Lácteos',GRA:'Grasas y semillas'};
   const grupos={}; Object.keys(tot).forEach(f=>{ const k=PN_FAMILIA[MENU_ALIM[f].g]||'GRA'; (grupos[k]=grupos[k]||[]).push(menuPorcion(f,tot[f])); });
   return Object.keys(fam).filter(k=>grupos[k]).map(k=>({t:fam[k], items:grupos[k]}));
@@ -881,10 +997,12 @@ function pnUsarPlantilla(id){
   if(C.formula!=='auto'&&C.formula!=='kcal'&&!pnGEB(C.formula,C.datos,pnBase())) C.formula='auto';
   PN.porc=Object.assign({},t.porciones||{}); PN.porcManual=true;
   Object.keys(t.var||{}).forEach(v=>{ PN.var[v]=t.var[v]; pnRegistrarVar(v,t.var[v]); });
-  PN.comidas=comoArray(t.comidas).map(m=>({nombre:m.nombre, hora:m.hora||'', eq:Object.assign({},m.eq||{}), id:m.id||null, q:comoArray(m.q).map(Number), nota:m.nota||''}));
+  PN.comidas=comoArray(t.comidas).map(m=>({nombre:m.nombre, hora:m.hora||'', eq:Object.assign({},m.eq||{}), id:m.id||null, q:comoArray(m.q).map(Number), extra:[], nota:m.nota||''}));
   if(!PN.comidas.length) PN.comidas=pnComidasVacias(4);
-  PN.distManual=PN.comidas.some(m=>Object.keys(m.eq).length); if(!PN.distManual) pnAplicarReparto();
-  PN.comidas.forEach((m,i)=>{ if(m.id&&maPlat(m.id)) pnReescalar(i); else { m.id=null; m.q=[]; } });
+  PN.distManual=PN.comidas.some(m=>Object.keys(m.eq).length);
+  PN.comidas.forEach(m=>{ if(!(m.id&&maPlat(m.id))){ m.id=null; m.q=[]; } });
+  if(PN.distManual) PN.comidas.forEach(m=>pnAjustarAEq(m,m.eq)); else pnAplicarReparto();
+  pnSyncPorc();
   PN.semana=JSON.parse(JSON.stringify(t.semana||{})); PN.recs=t.recs||PN.recs; PN.cambios=true;
   pnRender(); showToast('Plantilla aplicada con los datos de este socio. Revisa el semáforo de porciones');
 }
@@ -1066,7 +1184,7 @@ function nrEscuchar(){
       // Día pesado o de descanso: las porciones de cereal y fruta de cada comida siguen al entrenamiento
       const C=PN_DIA_CTX&&PN_DIA_CTX.code===s.code?PN_DIA_CTX:null;
       if(C&&C.f) comidas=comidas.map(m=>{ const pl=maPlat(m.id); if(!pl||!m.eq||!Object.keys(m.eq).length) return m;
-        const r=menuEscalar(pl,pnMetaComida(pnEqDia(m.eq,C.f)),false); return r?Object.assign({},m,{q:r.q.slice()}):m; });
+        const t={id:m.id, q:comoArray(m.q).slice(), extra:[], eq:{}}; pnAjustarAEq(t,pnEqDia(m.eq,C.f)); return Object.assign({},m,{q:t.q}); });
       if(!a&&!(C&&C.f)) return p;
       return Object.assign({},p,{comidas});
     };

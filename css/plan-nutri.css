@@ -183,3 +183,8 @@
 .pn-td em{font-style:normal;font-weight:600;color:var(--mu);}
 .pn-td.pesado{background:color-mix(in srgb,var(--g) 18%,transparent);} .pn-td.pesado em{color:var(--g);}
 .pn-td.descanso{background:var(--in-bg2);color:var(--mu);}
+
+/* Motor de equivalentes: complementos y "mantener el total del día" */
+.ma-ing li.pn-ex{border-left-color:color-mix(in srgb,var(--g) 55%,transparent);}
+.ma-ing li.pn-ex em{display:inline-block;margin-right:6px;padding:1px 7px;border-radius:999px;background:color-mix(in srgb,var(--g) 15%,transparent);color:var(--g);font-style:normal;font-size:var(--fs-2xs);font-weight:800;}
+.pn-comp{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:var(--in-bg2);border:1px solid var(--b);}

@@ -1,3 +1,16 @@
+# Cambios — Plan del nutriólogo: todo conectado por equivalentes
+- **Antes:** subir una taza en un platillo no cambiaba la tabla de reparto ni las porciones del día; cambiar una porción reescalaba el platillo aproximando calorías, no equivalente por equivalente.
+- **Ahora (js/70):** un solo motor de equivalentes, donde lo que hay en el plato manda.
+  - Cada comida tiene sus equivalentes por subgrupo SMAE. El platillo se ajusta exactamente a ellos; lo que el platillo no trae (p. ej. fruta en unos huevos) entra como **complemento**, que se cambia por cualquier equivalente o se sube y baja.
+  - Las porciones del día son siempre la suma de las comidas. Cualquier cambio (en la tabla de porciones, en la tabla de reparto, en los ingredientes de un platillo, en un complemento, al cambiar un platillo o un ingrediente) se refleja en todo lo demás.
+  - **Mantener el total del día** (activado de entrada): si sube o baja un grupo en una comida, las demás comidas compensan ese mismo grupo. Apagado, el cambio suma o resta al día.
+  - La lista "Cambiar por otro equivalente" funciona para ingredientes y complementos, con la misma cantidad de equivalentes y kcal y macros de cada opción.
+  - El plan automático parte de los platillos escalados a la meta de cada comida (como el menú automático), así que no hay complementos hasta que el nutriólogo agrega un grupo. "Ajustar comidas a la meta" reescala los platillos elegidos.
+  - Se guardan como variante "platillo + complementos" para que el socio, el PDF y la vista previa los vean; al reabrir el plan se separan de nuevo.
+- Service worker: `retofit-cca-v73`.
+
+---
+
 # Cambios — El carbohidrato sigue al entrenamiento del día (opcional)
 - **Qué hace (js/70):** si se activa, el carbohidrato del día sube el día pesado y baja el de descanso; la proteína y la grasa no cambian. El total de la semana queda casi igual.
 - **Tipo de día:** sale de la rutina del socio (`s.rutina.lun…dom`). Pesado = pierna, glúteo o cuerpo completo, o carga ≥ 25 % arriba del promedio de su semana (`cargaDia` de js/51; `PN_DIA_PESADO`, regla de diseño). Ligero ≤ 85 %. Sin ejercicios = descanso.
