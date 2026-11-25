@@ -1,3 +1,13 @@
+# Cambios — Fotos de los 40 platillos nuevos (desayunos, colaciones, comidas y cenas)
+- `img/menu/`: omelette de espinaca, hot cakes de avena, huevos rancheros, pan con aguacate, machaca, sincronizadas, licuado verde, papaya con amaranto, tostadas de requesón y yogur con moras (800 × 500, webp). Hechas en ChatGPT con `docs/PLATILLOS-PROMPTS.md` y subidas desde el checklist de fotos.
+- Colaciones: pepino con requesón, palomitas, melón con nuez, pan con crema de cacahuate, garbanzos, mango con cacahuates, guayaba con panela, uvas con pistaches.
+- Comidas: tacos de pescado, arroz con pollo, albóndigas, fajitas, camarones al ajillo, salmón con camote, picadillo, chiles rellenos, pozole, enchiladas verdes, bistec con papas, garbanzo con espinaca, bowl de quinoa, tacos de pavo, sopa de habas, pollo con chayote.
+- Cenas: ceviche, omelette de champiñones, tacos de lechuga, sándwich de pavo, crema de calabacita, camote con requesón.
+- Registradas en `MENU_FOTOS` (js/48). Los 71 platillos de la base ya tienen foto.
+- Service worker: `retofit-cca-v79`.
+
+---
+
 # Cambios — El socio cambia un ingrediente por su equivalente
 - **Qué hace (js/70):** en la pestaña Nutrición del socio, al abrir una comida, cada ingrediente es un botón. Al tocarlo ("4 tortillas de maíz") sale la lista de alimentos equivalentes y el socio elige uno.
 - **Solo equivalentes:**
