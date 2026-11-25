@@ -101,7 +101,7 @@ details.q summary:focus-visible{outline:2px solid var(--fair);outline-offset:2px
       <div><span style="font-size:14px;color:#C9D8F0;font-weight:600">Sexo</span><div class="seg" id="sexo"><button type="button" data-v="m">Mujer</button><button type="button" data-v="h">Hombre</button></div></div>
       <div class="two"><label>Edad<input id="edad" type="number" inputmode="numeric" min="12" max="90"></label><label>Peso (kg)<input id="peso" type="number" inputmode="decimal" min="35" max="200" step="0.5"></label></div>
       <div class="two"><label>Estatura (cm)<input id="est" type="number" inputmode="numeric" min="130" max="215"></label><label>Días de entreno<input id="dias" type="number" inputmode="numeric" min="2" max="7"></label></div>
-      <label>Su día fuera del gym<select id="trab"><option value="1.2">Sentado (oficina, escuela)</option><option value="1.375">De pie o caminando</option><option value="1.55">Trabajo físico</option></select></label>
+      <label>Su día fuera del gym<select id="trab"><option value="1.2">Poco movimiento</option><option value="1.375">Me muevo bastante</option><option value="1.55">Muy activo</option></select></label>
       <label>Objetivo<select id="obj"><option value="PERDER PESO">Pérdida de masa grasa</option><option value="RECOMPOSICIÓN CORPORAL">Definición / recomposición</option><option value="GANAR MÚSCULO">Aumento muscular</option></select></label>
       <label>Comidas al día<select id="nc"><option>3</option><option selected>4</option><option>5</option><option>6</option></select></label>
     </form>
@@ -149,9 +149,9 @@ Hombre: 10 × peso + 6.25 × estatura − 5 × edad + 5</div>
     <div class="box"><h3>Cómo arma el factor la app</h3>
       <div class="f">factor = base del día + 0.05 × días de entreno   (tope 1.9)</div>
       <div class="scroll"><table class="stack"><thead><tr><th>Su día fuera del gym</th><th class="num">Base</th><th class="num">Con 4 días</th><th class="num">Con 5 días</th></tr></thead><tbody>
-        <tr><td>Sentado (oficina, escuela)</td><td class="num">1.2</td><td class="num">1.40</td><td class="num">1.45</td></tr>
-        <tr><td>De pie o caminando</td><td class="num">1.375</td><td class="num">1.575</td><td class="num">1.625</td></tr>
-        <tr><td>Trabajo físico</td><td class="num">1.55</td><td class="num">1.75</td><td class="num">1.80</td></tr></tbody></table></div>
+        <tr><td>Poco movimiento</td><td class="num">1.2</td><td class="num">1.40</td><td class="num">1.45</td></tr>
+        <tr><td>Me muevo bastante</td><td class="num">1.375</td><td class="num">1.575</td><td class="num">1.625</td></tr>
+        <tr><td>Muy activo</td><td class="num">1.55</td><td class="num">1.75</td><td class="num">1.80</td></tr></tbody></table></div>
       <div class="di"><b>Ejemplo</b>1,182 × 1.45 = <b>1,714 kcal</b>. La app lo muestra como rango de ±10 %: 1,543 a 1,885.</div></div>
     <div class="box"><h3>Desde la semana 5: actividad medida</h3>
       <p>Con 3 registros o más de cada día de la semana, la app cambia el +0.05 por lo que el socio realmente hizo: sus rutinas registradas y las clases que palomeó.</p>
