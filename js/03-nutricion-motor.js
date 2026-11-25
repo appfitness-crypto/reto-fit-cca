@@ -7,9 +7,9 @@
 // ═════════════════════════════════════════
 // Actividad del día fuera del gym (pregunta del cuestionario). Factor base sin contar el entrenamiento.
 const ACTIVIDAD_TRABAJO={
-  sentado:{lbl:'Sentado la mayor parte del día', sub:'Oficina, escuela, manejar', f:1.2},
-  depie:{lbl:'De pie o caminando', sub:'Comercio, docencia, mesero, enfermería', f:1.375},
-  fisico:{lbl:'Trabajo físico', sub:'Cargar, construcción, campo, almacén', f:1.55},
+  sentado:{lbl:'Poco movimiento', sub:'Escritorio, juntas o auto la mayor parte del día', f:1.2},
+  depie:{lbl:'Me muevo bastante', sub:'De pie o caminando buena parte del día: recorridos de obra, construcción, negocio', f:1.375},
+  fisico:{lbl:'Muy activo', sub:'Esfuerzo físico casi todo el día: cargar, campo, caballos', f:1.55},
 };
 // Composición corporal estimada: IMC y, si hay cintura, % de grasa con la fórmula RFM (Relative Fat Mass):
 // RFM = 64 − 20 × estatura / cintura (+12 en mujeres). Con eso se distingue un IMC alto por músculo de uno por grasa.
