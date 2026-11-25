@@ -1,3 +1,12 @@
+# Cambios — Vista "Así lo verá el socio", base de platillos ampliada y PDF sin internet
+- **Vista previa (js/70):** en el paso 4 del plan, "Así lo verá el socio" muestra su pestaña Nutrición dentro de un marco de celular, con los mismos componentes de su app (js/50), día por día de la semana, con notas por comida y la recomendación general. No guarda nada.
+- **Base de alimentos (js/48):** de 37 a 73 ingredientes y de 31 a 71 platillos. Nuevos: pan integral, papa, camote, elote, quinoa, amaranto, palomitas, maíz pozolero, garbanzo, haba, pavo, camarón, requesón, salmón, yogur natural, 9 frutas, 9 verduras, nuez, pistache, crema de cacahuate. Platillos mexicanos nuevos de desayuno, colación, comida y cena (sin cerdo), que también usa el menú automático. Las porciones nuevas van marcadas `est:1` (pendientes de revisión del nutriólogo). Los platillos nuevos todavía no tienen foto (`img/menu/<id>.webp`).
+- **PDF sin internet:** jsPDF 2.5.1 ahora vive en `vendor/jspdf` (antes se bajaba de cdnjs). Aplica al PDF de rutinas y al del plan de alimentación.
+- El asistente de nutrición no usa IA ni consulta servicios externos: todo sale de la base de la app.
+- Service worker: `retofit-cca-v71`.
+
+---
+
 # Cambios — Plan de alimentación del nutriólogo (dietocálculo → porciones → distribuye → entrega)
 - **Antes:** el nutriólogo solo podía mover kcal y macros a mano y armar un menú de un día con platillos. Todo lo demás era automático.
 - **Ahora (js/70-plan-nutriologo.js, css/plan-nutri.css):** de entrada sigue siendo automático, igual que las rutinas. En la ficha del socio, pestaña Nutrición, el botón **Plan de alimentación** abre un asistente de 4 pasos con todo ya calculado para que el nutriólogo cambie solo lo que necesite:

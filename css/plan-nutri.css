@@ -158,3 +158,13 @@
 
 .pn-pasos button:focus-visible,.pn-cel button:focus-visible,.pn-sem-c:focus-visible,.pn-sub button:focus-visible,.pn-alts button:focus-visible{outline:2px solid var(--v2);outline-offset:2px;}
 @media (max-width:560px){ .pn-calc{grid-template-columns:minmax(0,1fr) minmax(0,.7fr);} .pn-sum b{font-size:var(--fs-xl);} .pn-sum>div:first-child span{white-space:normal;} }
+
+/* Vista previa "Así lo verá el socio": la pestaña Nutrición dentro de un marco de celular */
+.pn-aux.pn-aux-prev{max-width:480px;}
+.pn-prev-dias{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px;}
+.pn-tel{margin:0 auto;max-width:400px;border-radius:34px;padding:10px;background:#0E1116;box-shadow:0 18px 50px -20px rgba(0,0,0,.6);}
+.pn-tel-in{border-radius:26px;background:var(--dk);padding:16px 12px;display:grid;gap:12px;max-height:68vh;overflow-y:auto;}
+.pn-tel .nx-m{position:relative;}
+.pn-tel .nx-m-h{padding-right:58px;}
+.pn-tel .nx-chev{display:none;}
+.pn-tel button{pointer-events:none;}

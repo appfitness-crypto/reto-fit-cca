@@ -329,7 +329,7 @@ function pnAsegurarModales(){
   while(w.firstChild) document.body.appendChild(w.firstChild);
 }
 function pnAuxCerrar(){ const m=document.getElementById('modal-pn-aux'); if(m) m.classList.remove('open'); }
-function pnAux(html){ pnAsegurarModales(); document.getElementById('pnx-cuerpo').innerHTML=html; document.getElementById('modal-pn-aux').classList.add('open'); }
+function pnAux(html){ pnAsegurarModales(); const b=document.querySelector('#modal-pn-aux .pn-aux'); if(b) b.classList.remove('pn-aux-prev'); document.getElementById('pnx-cuerpo').innerHTML=html; document.getElementById('modal-pn-aux').classList.add('open'); }
 function pnPaso(n){ if(!PN) return; PN.paso=n; pnPrepararPaso(); pnRender(); const b=document.querySelector('#modal-pn .pn-box'); if(b) b.scrollTop=0; }
 // Al pasar de paso, lo que no se ha tocado a mano se recalcula con las metas nuevas
 function pnPrepararPaso(){
@@ -650,6 +650,7 @@ function pnPaso4(s,M,tm){
         ${sinPlat?`<li class="warn">${ico('warn')}<span>${sinPlat} comida${sinPlat>1?'s':''} sin platillo: no se mostrará${sinPlat>1?'n':''} al socio.</span></li>`:''}
       </ul>
       <div class="pn-acc">
+        <button type="button" class="sd-b" onclick="pnPrevia()">${ico('eye')}Así lo verá el socio</button>
         <button type="button" class="sd-b" onclick="pnPDF()">${ico('download')}Descargar PDF</button>
         <button type="button" class="sd-b" onclick="pnSuper()">${ico('clipboard')}Lista de súper</button>
         <button type="button" class="sd-b" onclick="pnPlantillaGuardar()">${ico('save')}Guardar como plantilla</button>
@@ -657,6 +658,37 @@ function pnPaso4(s,M,tm){
       </div>
     </section>
     <p class="f-nota">Sugerencia educativa con equivalentes del SMAE. Revisa alergias, medicamentos y condiciones médicas del socio antes de asignar.</p>`;
+}
+// ── Vista previa: el menú tal como lo verá el socio en su app (mismos componentes de js/50), día por día ──
+let PN_PREV_DIA='';
+function pnPrevia(dia){
+  if(!PN) return; const s=pnSocio(), M=pnM();
+  const d=dia||PN_PREV_DIA||PN_DIA_JS[new Date().getDay()]; PN_PREV_DIA=d;
+  const edad=+s.edad||0, menor=edad>0&&edad<18;
+  const items=PN.comidas.map((m,i)=>{ const x=(PN.semana[d]||[])[i], id=x?x.id:m.id, q=x?x.q:m.q, p=id&&maPlat(id); if(!p) return null;
+      const r=maCalc(id,q); return {nombre:m.nombre, hora:m.hora, p, k:r.k, P:r.p, C:r.c, G:r.l, nota:m.nota||'', rol:'', comps:p.c.map(([f],ci)=>({f,q:+q[ci]||0})).filter(c=>c.q>0||MENU_ALIM[c.f].u==='libre')}; })
+    .filter(Boolean).sort((a,b)=>(nxMin(a.hora)??9999)-(nxMin(b.hora)??9999));
+  const suma=items.reduce((a,m)=>a+m.k,0), dev=M.kcal?(suma-M.kcal)/M.kcal:0, ok=Math.abs(dev)<=MENU_TOL_DIA;
+  const tot=(M.prot*4+M.carbs*4+M.grasas*9)||1, pP=M.prot*4/tot*100, pC=M.carbs*4/tot*100, pG=Math.max(0,100-pP-pC);
+  const lista=items.map((m,i)=>nxFilaHTML(m,i,true,false,menor,false)).join('');
+  pnAux(`<div class="m-title" id="pnx-titulo" style="font-size:var(--fs-2xl)">Así lo verá ${esc(tc(String(s.nombre||'el socio').split(' ')[0]))}</div>
+    <p class="pn-nota">Vista previa de su pestaña Nutrición. Cada día de la semana muestra los platillos que planeaste para ese día. Todavía no se guarda nada.</p>
+    <div class="pn-prev-dias">${PN_DIAS.map(([k,lb])=>`<button type="button" class="ch${k===d?' on':''}" onclick="pnPrevia('${k}')">${lb}</button>`).join('')}</div>
+    <div class="pn-tel"><div class="pn-tel-in">
+      <section class="nx-dia"><div class="nx-dia-h"><div><h2>Tu día</h2><p>Armado por ${esc(pqStaffNombre())}</p></div></div>
+        <ol class="nx-lista">${lista||'<li class="nx-vacio">Sin platillos para este día.</li>'}</ol>
+        ${menor?`<p class="nx-tot">${ico('info')}<span>Eres menor de edad: tu menú cubre lo que gastas, sin dietas para bajar de peso.</span></p>`
+          :`<p class="nx-tot ${ok?'ok':'warn'}">${ico(ok?'check':'warn')}<span>Tu menú suma <b>${nxNum(suma)} kcal</b>${ok?', dentro de tu meta.':' ('+(dev>0?'+':'')+Math.round(dev*100)+'% de tu meta).'}</span></p>`}
+      </section>
+      <section class="nx-sum">
+        <div class="nx-sum-top"><div>${menor?'<span class="nx-k sm">Tu energía del día</span>':`<span class="nx-k">${nxNum(M.kcal)}</span><span class="nx-u">kcal al día · ajustado por ${esc(pqStaffNombre())}</span>`}</div><span class="nx-obj">${esc(sc(s.objetivo||''))}</span></div>
+        ${menor?'':`<div class="nx-bar" aria-hidden="true"><i class="m-p" style="flex:${pP}"></i><i class="m-c" style="flex:${pC}"></i><i class="m-g" style="flex:${pG}"></i></div>
+        <dl class="nx-mac"><div><dt><i class="m-p"></i>Proteína</dt><dd>${M.prot} g</dd></div><div><dt><i class="m-c"></i>Carbohidratos</dt><dd>${M.carbs} g</dd></div><div><dt><i class="m-g"></i>Grasas</dt><dd>${M.grasas} g</dd></div></dl>`}
+        <div class="nx-agua">${ico('drop')}<span>Agua: <b>${esc(PN.agua)} L</b> al día, más 0.5 L por sesión</span></div>
+      </section>
+      ${PN.recs?`<div class="nx-coach">${ico('star')}<p><b>Tu nutriólogo:</b> ${esc(PN.recs)}</p></div>`:''}
+    </div></div>`);
+  const box=document.querySelector('#modal-pn-aux .pn-aux'); if(box) box.classList.add('pn-aux-prev');
 }
 function pnRecAgregar(k){ if(!PN) return; const r=PN_RECS[k]; if(PN.recs.includes(r)) return; PN.recs=(PN.recs?PN.recs.trim()+' ':'')+r; PN.cambios=true; pnRender(); }
 
@@ -792,7 +824,7 @@ function nrEditor(id){
   if(r&&!nrPuedeEditar(r)){ showToast('Solo quien la creó o el director pueden editarla'); return; }
   NRE={id:id||'', n:r?r.n:'', t:r?comoArray(r.t).slice():['com'], c:r?comoArray(r.c).map(x=>x.slice()):[], prep:r?r.prep||'':'', foto:id?NFOTO[id]:'', fotoCambio:false};
   if(id&&NFOTO[id]===undefined) nrBajarFoto(id);
-  pnAsegurarModales(); nrRender(); document.getElementById('modal-pn-aux').classList.add('open');
+  pnAsegurarModales(); const bx=document.querySelector('#modal-pn-aux .pn-aux'); if(bx) bx.classList.remove('pn-aux-prev'); nrRender(); document.getElementById('modal-pn-aux').classList.add('open');
 }
 function nrPaso(f){ const a=MENU_ALIM[f]; return (a.g==='LEG'||a.g==='LECD'||a.u==='taza')?0.5:1; }
 function nrRango(f,q){ if(MENU_ALIM[f].u==='libre') return [0,0,0]; const st=nrPaso(f); return [q, q>=2*st?Math.max(st,Math.round(q/2/st)*st):q, Math.max(q,Math.round(q*2/st)*st)]; }
