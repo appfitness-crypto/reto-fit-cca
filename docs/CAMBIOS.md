@@ -1,3 +1,10 @@
+# Cambios — Fotos de los 10 desayunos nuevos
+- `img/menu/`: omelette de espinaca, hot cakes de avena, huevos rancheros, pan con aguacate, machaca, sincronizadas, licuado verde, papaya con amaranto, tostadas de requesón y yogur con moras (800 × 500, webp). Hechas en ChatGPT con `docs/PLATILLOS-PROMPTS.md` y subidas desde el checklist de fotos.
+- Registradas en `MENU_FOTOS` (js/48). Quedan 30 platillos sin foto (colaciones, comidas y cenas nuevas).
+- Service worker: `retofit-cca-v76`.
+
+---
+
 # Cambios — El socio cambia un ingrediente por su equivalente
 - **Qué hace (js/70):** en la pestaña Nutrición del socio, al abrir una comida, cada ingrediente es un botón. Al tocarlo ("4 tortillas de maíz") sale la lista de alimentos equivalentes y el socio elige uno.
 - **Solo equivalentes:**
