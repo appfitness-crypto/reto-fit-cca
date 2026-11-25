@@ -1144,6 +1144,77 @@ function nrFiloGuardar(reset){
 }
 function nrPlantillaBorrar(id){ uiConfirm('¿Borrar esta plantilla?',()=>{ delete NPL[id]; fbEncolar('/nutri/plantillas/'+id,'remove'); nrGuardarLocal(); nrPanelRender(); },{label:'Borrar',danger:true}); }
 
+// ═════════════ App del socio: cambiar un ingrediente por su equivalente ═════════════
+// En su menú, el socio toca un ingrediente ("2 tostadas horneadas") y elige otro alimento del mismo grupo SMAE
+// con la misma cantidad de equivalentes (1 por 1). No cambia porciones ni metas: solo el alimento.
+// El cambio vale para ese día (s.nutCambios = {f:'AAAA-MM-DD', c:{'comida|platillo|alimento': nuevo}}).
+let NXC=null;   // {i, ci} ingrediente que se está cambiando
+function nxcHoy(s){ const h=fechaISO(new Date()), c=s&&s.nutCambios; return c&&c.f===h?(c.c||{}):{}; }
+function nxcClave(m,f){ return String(m.nombre)+'|'+String(m.p&&m.p.id||'')+'|'+f; }
+// Alternativas: mismo subgrupo SMAE; si hay pocas, se suma la familia (p. ej. origen animal). Respeta sus filtros.
+function nxcOpciones(s,f,q){
+  const a=MENU_ALIM[f]; if(!a||a.u==='libre') return [];
+  const pref=s.nutPrefs||{}, ok=k=>{ const b=MENU_ALIM[k]; return !(pref.veg&&(b.carne||b.pescado))&&!(pref.sinLac&&b.lacteo)&&!(pref.sinGlu&&b.gluten); };
+  let al=Object.keys(MENU_ALIM).filter(k=>k!==f&&MENU_ALIM[k].g===a.g&&ok(k));
+  if(al.length<3) al=al.concat(Object.keys(MENU_ALIM).filter(k=>k!==f&&MENU_ALIM[k].g!==a.g&&PN_FAMILIA[MENU_ALIM[k].g]===PN_FAMILIA[a.g]&&MENU_ALIM[k].u!=='libre'&&ok(k)));
+  // sin porciones irreales: se respeta el tope por comida de cada alimento (p. ej. no 10 tazas de palomitas)
+  return al.map(k=>{ const st=pnPasoAlim(k)||1; return {f:k, q:pnRed(q,st)||st}; }).filter(o=>!MENU_ALIM[o.f].tope||o.q<=MENU_ALIM[o.f].tope);
+}
+(function(){
+  if(typeof nxComidas==='function'){
+    const o=nxComidas;
+    window.nxComidas=nxComidas=function(s,nut){
+      const d=o.apply(this,arguments), cam=nxcHoy(s);
+      d.items=d.items.map(m=>{
+        if(!m||!m.p||!m.comps) return m;
+        let cambio=false;
+        const comps=m.comps.map(x=>{ const n=cam[nxcClave(m,x.f)]; if(n&&MENU_ALIM[n]){ cambio=true; const st=pnPasoAlim(n)||1; return {f:n, q:pnR2(pnRed(x.q,st)||st), orig:x.f, qo:x.q}; } return Object.assign({orig:x.f, qo:x.q},x); });
+        if(!cambio) return Object.assign({},m,{comps});
+        const t={k:0,p:0,c:0,l:0}; comps.forEach(x=>{ if(!(x.q>0)||MENU_ALIM[x.f].u==='libre') return; const r=menuMacros(x.f,x.q); t.k+=r.k; t.p+=r.p; t.c+=r.c; t.l+=r.l; });
+        return Object.assign({},m,{comps, k:t.k, P:t.p, C:t.c, G:t.l, cambiado:true});
+      });
+      return d;
+    };
+  }
+  if(typeof nxFilaHTML==='function'){
+    const o=nxFilaHTML;
+    window.nxFilaHTML=nxFilaHTML=function(m,i,op){
+      let h=o.apply(this,arguments); if(!op||!m||!m.comps) return h;
+      const lista=`<ul class="nx-ing nx-ing-c">${m.comps.map((x,ci)=>{ const a=MENU_ALIM[x.f], txt=esc(menuPorcion(x.f,x.q));
+        if(!a||a.u==='libre') return `<li>${txt}</li>`;
+        return `<li><button type="button" class="nx-ing-b${x.orig&&x.orig!==x.f?' cambiado':''}" onclick="nxcAbrir(${i},${ci})" aria-label="Cambiar ${txt} por un equivalente"><span>${txt}</span>${ico('shuffle')}</button></li>`; }).join('')}</ul>
+        <p class="nx-ing-tip">${ico('shuffle')}Toca un ingrediente para cambiarlo por otro equivalente.</p>`;
+      return h.replace(/<ul class="nx-ing">[\s\S]*?<\/ul>/,lista);
+    };
+  }
+})();
+function nxcItems(){ const s=activeSocio; if(!s) return []; const nut=nutricionFinal(s); return nxComidas(s,nut).items; }
+function nxcAbrir(i,ci){
+  const s=activeSocio, m=nxcItems()[i], x=m&&m.comps[ci]; if(!s||!x) return;
+  NXC={i,ci};
+  const base=x.orig||x.f, qb=x.qo!=null?x.qo:x.q, ops=nxcOpciones(s,base,qb), cambiado=x.orig&&x.orig!==x.f;
+  const fila=(o,act)=>{ const a=MENU_ALIM[o.f], b=a.m||SMAE_EQ[a.g], k=b.k*o.q, p=b.p*o.q;
+    return `<button type="button" class="nxc-op${act?' on':''}" onclick="nxcElegir('${o.f}')"><b>${esc(menuPorcion(o.f,o.q))}</b><small>${pnNum(k)} kcal · ${pnNum(p)} g de proteína</small>${act?ico('check'):''}</button>`; };
+  let w=document.getElementById('nxc-hoja'); if(!w){ w=document.createElement('div'); w.id='nxc-hoja'; document.body.appendChild(w); }
+  w.innerHTML=`<div class="modal open" onclick="if(event.target===this)nxcCerrar()"><div class="mbox nxc-box" role="dialog" aria-modal="true" aria-labelledby="nxc-t">
+    <div class="mx" onclick="nxcCerrar()" aria-label="Cerrar">✕</div>
+    <div class="m-tag">${esc(m.nombre)} · ${esc(m.p.n)}</div>
+    <div class="m-title" id="nxc-t" style="font-size:var(--fs-2xl)">Cambiar ${esc(menuPorcion(x.f,x.q))}</div>
+    <p class="nxc-nota">Estas opciones son equivalentes: la misma cantidad del mismo grupo de alimentos, así tu plan no cambia. El cambio vale para hoy.</p>
+    <div class="nxc-lista">${cambiado?`<button type="button" class="nxc-op orig" onclick="nxcElegir('')"><b>${esc(menuPorcion(base,qb))}</b><small>Como venía en tu menú</small>${ico('refresh')}</button>`:''}
+      ${ops.map(o=>fila(o,o.f===x.f)).join('')||'<p class="nxc-nota">No hay otro alimento equivalente con tus filtros.</p>'}</div>
+  </div></div>`;
+}
+function nxcCerrar(){ const w=document.getElementById('nxc-hoja'); if(w) w.innerHTML=''; NXC=null; }
+function nxcElegir(nuevo){
+  const s=activeSocio; if(!s||!NXC) return; const m=nxcItems()[NXC.i], x=m&&m.comps[NXC.ci]; if(!x) return;
+  const hoy=fechaISO(new Date()), c=(s.nutCambios&&s.nutCambios.f===hoy)?Object.assign({},s.nutCambios.c):{};
+  const k=nxcClave(m,x.orig||x.f); if(nuevo&&nuevo!==(x.orig||x.f)) c[k]=nuevo; else delete c[k];
+  s.nutCambios={f:hoy, c}; dbSave(s.code);
+  const y=window.scrollY; nxcCerrar(); renderNutricionTab(); window.scrollTo(0,y);
+  showToast(nuevo?'Listo: cambiado por su equivalente':'Regresó a como venía en tu menú');
+}
+
 // ═════════════ Carga y caché local ═════════════
 function nrGuardarLocal(){ try{ localStorage.setItem('nutri_recetas',JSON.stringify(NR)); localStorage.setItem('nutri_plantillas',JSON.stringify(NPL)); }catch(e){} }
 (function(){ try{ NR=JSON.parse(localStorage.getItem('nutri_recetas'))||{}; NPL=JSON.parse(localStorage.getItem('nutri_plantillas'))||{}; }catch(e){ NR={}; NPL={}; } nrSincronizar(); })();
