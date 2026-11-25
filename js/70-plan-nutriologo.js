@@ -48,7 +48,7 @@ const PN_RECS=['Toma agua natural durante el día; lleva tu botella al gym.','Co
   'Puedes cambiar un alimento por otro del mismo grupo (1 equivalente por 1).','Mide las porciones con taza y cucharas las primeras semanas.',
   'Si comes fuera, elige asados y pide la salsa aparte.','Duerme 7 a 9 horas: también es parte del plan.'];
 // Filosofía de nutrición por defecto (lo que hoy hace js/03). Proteína en g/kg del peso de referencia.
-const PN_FILO_DEF={formula:'auto', comidas:4, grasaPct:25,
+const PN_FILO_DEF={formula:'auto', comidas:4, grasaPct:25, cargaDia:{on:false, pesado:15, descanso:15},
   ajuste:{'PERDER PESO':-18,'RECOMPOSICIÓN CORPORAL':-7,'GANAR MÚSCULO':10,'FUERZA PURA':5,'RESISTENCIA':0},
   protKg:{'PERDER PESO':2.0,'RECOMPOSICIÓN CORPORAL':2.2,'GANAR MÚSCULO':1.8,'FUERZA PURA':1.8,'RESISTENCIA':1.6}};
 const PN_OBJETIVOS=[['PERDER PESO','Perder grasa'],['RECOMPOSICIÓN CORPORAL','Recomposición'],['GANAR MÚSCULO','Ganar músculo'],['FUERZA PURA','Fuerza'],['RESISTENCIA','Resistencia']];
@@ -227,6 +227,7 @@ function pnFiloDe(s){
   const f=(e&&e.nutFilo)||cfg; if(!f) return null;
   return {formula:f.formula||'auto', comidas:+f.comidas||4, grasaPct:+f.grasaPct||PN_FILO_DEF.grasaPct,
     ajuste:Object.assign({},PN_FILO_DEF.ajuste,f.ajuste||{}), protKg:Object.assign({},PN_FILO_DEF.protKg,f.protKg||{}),
+    cargaDia:Object.assign({},PN_FILO_DEF.cargaDia,f.cargaDia||{}),
     autor:e&&e.nutFilo?e.nombre:'nutrición del gimnasio'};
 }
 // Envuelve el motor (js/03): si el socio tiene filosofía, se recalcula con ella respetando las mismas reglas de seguridad
@@ -256,6 +257,63 @@ function pnFiloDe(s){
   };
 })();
 
+// ═════════════ Carga del día: el carbohidrato sigue al entrenamiento ═════════════
+// Tipo de día según la rutina del socio (s.rutina.lun…dom): descanso, ligero, medio o pesado.
+// Pesado = pierna o cuerpo completo, o carga ≥ 25 % arriba del promedio de su semana (regla de diseño, PN_DIA_PESADO).
+const PN_DIA_PESADO=1.25, PN_DIA_LIGERO=0.85;
+function pnTipoDia(s,k){
+  const R=(s&&s.rutina)||{}, d=R[k], nom=String(d&&(d.tipo||d.nombre)||'');
+  if(!d||!comoArray(d.ejercicios).length) return {t:'descanso', nombre:'Descanso', pierna:false};
+  const limpio=nom.replace(/\s*·\s*D[ií]a (pesado|medio|ligero)\s*$/i,'').trim()||'Entrenamiento';
+  const pierna=/pierna|gl[uú]te|full|cuerpo completo|tren inferior/i.test(nom);
+  let r=1;
+  try{
+    const dd=x=>Object.assign({},x,{ejercicios:comoArray(x.ejercicios)});
+    const ent=DIAS_ORDER.map(x=>R[x]).filter(x=>x&&comoArray(x.ejercicios).length);
+    const c=ent.map(x=>cargaDia(dd(x),s)), con=c.filter(v=>v>0), prom=con.reduce((a,b)=>a+b,0)/(con.length||1);
+    if(prom&&con.length>=2) r=cargaDia(dd(d),s)/prom;
+    else r=/pesado/i.test(nom)?1.2:/ligero/i.test(nom)?0.8:1;
+  }catch(e){ r=/pesado/i.test(nom)?1.2:/ligero/i.test(nom)?0.8:1; }
+  return {t:pierna||r>=PN_DIA_PESADO?'pesado':r<=PN_DIA_LIGERO?'ligero':'medio', nombre:limpio, pierna};
+}
+// Regla activa para el socio: la del plan del nutriólogo si existe, si no la de su filosofía
+function pnReglaDia(s){
+  const plan=s&&s.nutricion&&s.nutricion.plan;
+  if(plan&&plan.ajusteDia) return plan.ajusteDia.on?plan.ajusteDia:null;
+  const F=pnFiloDe(s); return F&&F.cargaDia&&F.cargaDia.on?F.cargaDia:null;
+}
+// Factor de carbohidrato para un día (+% pesado, −% descanso, igual en medio y ligero)
+function pnFactorDia(regla,tipo){ if(!regla) return 0; return tipo==='pesado'?(+regla.pesado||0)/100:tipo==='descanso'?-(+regla.descanso||0)/100:0; }
+function pnEqDia(eq,f){ if(!f) return eq; const o=Object.assign({},eq); ['CER','FRU'].forEach(g=>{ if(o[g]) o[g]=Math.round(o[g]*(1+f)*2)/2; }); return o; }
+function pnNotaDiaHTML(tipo,f){
+  if(tipo.t==='pesado') return `<div class="pn-dia-nota pesado">${ico('flame')}<p><b>Recuerda: hoy es día pesado${tipo.pierna?' ('+esc(tipo.nombre.toLowerCase())+')':''}.</b> Tu menú trae ${f>0?Math.round(f*100)+' % más carbohidrato':'la energía'} para rendir y recuperarte. Come tu comida de antes del entreno a tiempo y toma agua extra.</p></div>`;
+  if(tipo.t==='descanso'&&f<0) return `<div class="pn-dia-nota">${ico('moonz')}<p><b>Hoy descansas.</b> Tu menú trae un poco menos de carbohidrato (${Math.round(-f*100)} %) y la misma proteína para seguir recuperando músculo.</p></div>`;
+  return '';
+}
+// Solo la pestaña del socio usa el ajuste del día (la ficha del staff y el asistente siguen con la meta base)
+let PN_DIA_CTX=null;   // {tipo, f} mientras se pinta la pestaña Nutrición del socio
+(function(){
+  if(typeof nutricionFinal==='function'){
+    const o=nutricionFinal;
+    window.nutricionFinal=nutricionFinal=function(s){
+      const n=o.apply(this,arguments); const C=PN_DIA_CTX;
+      if(!C||!C.f||!n||C.code!==(s&&s.code)) return n;
+      const dc=Math.round(n.carbs*C.f);
+      return Object.assign({},n,{carbs:n.carbs+dc, kcal:n.kcal+dc*4, diaAjuste:C});
+    };
+  }
+  if(typeof nutTabHTML==='function'){
+    const o=nutTabHTML;
+    window.nutTabHTML=nutTabHTML=function(s){
+      const regla=pnReglaDia(s), tipo=pnTipoDia(s,PN_DIA_JS[new Date().getDay()]), f=pnFactorDia(regla,tipo.t);
+      const edad=+(s&&s.edad)||0;
+      if(!regla||(edad>0&&edad<12)) return o.apply(this,arguments);
+      PN_DIA_CTX={code:s.code, tipo, f};
+      try{ return pnNotaDiaHTML(tipo,f)+o.apply(this,arguments); } finally { PN_DIA_CTX=null; }
+    };
+  }
+})();
+
 // ═════════════ Asistente: estado ═════════════
 function pnComidasVacias(n){
   return (MEAL_TEMPLATES[n]||MEAL_TEMPLATES[4]).map(t=>({nombre:t.nombre, hora:MA_HORAS[t.nombre]||'', eq:{}, id:null, q:[], nota:''}));
@@ -272,7 +330,8 @@ function pnInit(s){
   const n=previas.length||(F&&F.comidas)||([3,4,5,6].includes(+s.comidasPorDia)?+s.comidasPorDia:4);
   PN={code:s.code, paso:1, sub:'dia', C, porc:null, porcManual:!!plan.porciones, distManual:previas.some(m=>Object.keys(m.eq).length),
     comidas:previas.length?previas:pnComidasVacias(n), semana:JSON.parse(JSON.stringify(plan.semana||{})), var:JSON.parse(JSON.stringify(plan.var||{})),
-    recs:o.nota||'', agua:nut.agua, pref:Object.assign({},s.nutPrefs||{}), cambios:false};
+    recs:o.nota||'', agua:nut.agua, pref:Object.assign({},s.nutPrefs||{}), cambios:false,
+    ajusteDia:Object.assign({on:false,pesado:15,descanso:15},(F&&F.cargaDia)||{},plan.ajusteDia||{})};
   const M=pnMetas(C,base);
   PN.porc=plan.porciones?Object.assign({},plan.porciones):pnAutoPorciones(M);
   if(!PN.distManual) pnAplicarReparto(false);
@@ -564,10 +623,17 @@ function pnSemanaHTML(){
       ${fid?`<img src="${menuFotoSrc(fid)}" alt="" loading="lazy" width="120" height="76">`:`<span class="ma-ph">${ico('food')}</span>`}
       <span>${p?esc(p.n):'Sin platillo'}</span>${x?'':'<em>Día tipo</em>'}</button></td>`; }).join('')}</tr>`).join('');
   const conDias=PN_DIAS.filter(([d])=>(PN.semana[d]||[]).some(Boolean)).length;
-  return `<p class="pn-nota">Cada día usa el platillo del día tipo. Toca una celda para poner otro platillo ese día: las porciones se ajustan a la misma meta de la comida.</p>
+  const s=pnSocio(), A=PN.ajusteDia;
+  const tipos=PN_DIAS.map(([d])=>pnTipoDia(s,d));
+  const chip=t=>{ const f=pnFactorDia(A.on?A:null,t.t); return `<span class="pn-td ${t.t}">${t.t==='descanso'?'Descanso':esc(t.nombre.length>14?t.nombre.slice(0,13)+'…':t.nombre)}<em>${t.t==='pesado'?'Pesado':t.t==='ligero'?'Ligero':t.t==='medio'?'Medio':''}${f?' · HC '+(f>0?'+':'')+Math.round(f*100)+'%':''}</em></span>`; };
+  const ajuste=`<section class="pn-card pn-aj"><label class="pn-sw-row"><input type="checkbox" ${A.on?'checked':''} onchange="pnAjusteDia('on',this.checked)"><span><b>Ajustar al entrenamiento del día</b> · el carbohidrato sube el día pesado y baja el de descanso; proteína y grasa iguales. El día pesado el socio ve un recordatorio.</span></label>
+    ${A.on?`<div class="pn-aj-in"><label><span>Pesado</span><div class="pn-in"><input inputmode="numeric" value="${A.pesado}" onchange="pnAjusteDia('pesado',this.value)"><span>% más HC</span></div></label>
+      <label><span>Descanso</span><div class="pn-in"><input inputmode="numeric" value="${A.descanso}" onchange="pnAjusteDia('descanso',this.value)"><span>% menos HC</span></div></label></div>`:''}</section>`;
+  return ajuste+`<p class="pn-nota">Cada día usa el platillo del día tipo. Toca una celda para poner otro platillo ese día: las porciones se ajustan a la misma meta de la comida.</p>
     <div class="ma-tools"><button type="button" class="sd-b" onclick="pnSemanaAuto()">${ico('spark')}Planeación semanal automática</button>
       ${conDias?`<button type="button" class="sd-b" onclick="pnSemanaLimpiar()">${ico('refresh')}Todos los días igual al día tipo</button>`:''}</div>
-    <div class="pn-tabla-w"><table class="pn-semana"><thead><tr><th>Tiempo de comida</th>${PN_DIAS.map(([,lb])=>`<th>${lb}</th>`).join('')}</tr></thead><tbody>${filas}</tbody></table></div>`;
+    <div class="pn-tabla-w"><table class="pn-semana"><thead><tr><th>Tiempo de comida</th>${PN_DIAS.map(([,lb])=>`<th>${lb}</th>`).join('')}</tr>
+      <tr class="pn-ent"><th>Entrenamiento</th>${tipos.map(t=>`<th>${chip(t)}</th>`).join('')}</tr></thead><tbody>${filas}</tbody></table></div>`;
 }
 function pnSemanaAuto(){
   if(!PN) return;
@@ -582,6 +648,7 @@ function pnSemanaAuto(){
   PN_DIAS.forEach(([d])=>{ const vistos=new Set(); sem[d].forEach((x,i)=>{ const id=x?x.id:PN.comidas[i].id; if(vistos.has(id)) sem[d][i]=null; vistos.add(id); }); });
   PN.semana=sem; PN.cambios=true; pnRender(); showToast('Semana armada: lunes es el día tipo y el resto rota platillos');
 }
+function pnAjusteDia(k,v){ if(!PN) return; PN.ajusteDia[k]=k==='on'?!!v:Math.max(0,Math.min(40,parseFloat(v)||0)); PN.cambios=true; pnRender(); }
 function pnSemanaLimpiar(){ if(!PN) return; PN.semana={}; PN.cambios=true; pnRender(); }
 
 // ── Buscador de platillos (para el día tipo o para un día de la semana) ──
@@ -665,9 +732,12 @@ function pnPrevia(dia){
   if(!PN) return; const s=pnSocio(), M=pnM();
   const d=dia||PN_PREV_DIA||PN_DIA_JS[new Date().getDay()]; PN_PREV_DIA=d;
   const edad=+s.edad||0, menor=edad>0&&edad<18;
-  const items=PN.comidas.map((m,i)=>{ const x=(PN.semana[d]||[])[i], id=x?x.id:m.id, q=x?x.q:m.q, p=id&&maPlat(id); if(!p) return null;
+  const tipo=pnTipoDia(s,d), fd=pnFactorDia(PN.ajusteDia.on?PN.ajusteDia:null,tipo.t);
+  const items=PN.comidas.map((m,i)=>{ const x=(PN.semana[d]||[])[i], id=x?x.id:m.id, p=id&&maPlat(id); if(!p) return null;
+      let q=x?x.q:m.q; if(fd&&m.eq){ const r=menuEscalar(p,pnMetaComida(pnEqDia(m.eq,fd)),false); if(r) q=r.q; }
       const r=maCalc(id,q); return {nombre:m.nombre, hora:m.hora, p, k:r.k, P:r.p, C:r.c, G:r.l, nota:m.nota||'', rol:'', comps:p.c.map(([f],ci)=>({f,q:+q[ci]||0})).filter(c=>c.q>0||MENU_ALIM[c.f].u==='libre')}; })
     .filter(Boolean).sort((a,b)=>(nxMin(a.hora)??9999)-(nxMin(b.hora)??9999));
+  const dc=Math.round(M.carbs*fd); if(dc){ M.carbs+=dc; M.kcal+=dc*4; }
   const suma=items.reduce((a,m)=>a+m.k,0), dev=M.kcal?(suma-M.kcal)/M.kcal:0, ok=Math.abs(dev)<=MENU_TOL_DIA;
   const tot=(M.prot*4+M.carbs*4+M.grasas*9)||1, pP=M.prot*4/tot*100, pC=M.carbs*4/tot*100, pG=Math.max(0,100-pP-pC);
   const lista=items.map((m,i)=>nxFilaHTML(m,i,true,false,menor,false)).join('');
@@ -675,6 +745,7 @@ function pnPrevia(dia){
     <p class="pn-nota">Vista previa de su pestaña Nutrición. Cada día de la semana muestra los platillos que planeaste para ese día. Todavía no se guarda nada.</p>
     <div class="pn-prev-dias">${PN_DIAS.map(([k,lb])=>`<button type="button" class="ch${k===d?' on':''}" onclick="pnPrevia('${k}')">${lb}</button>`).join('')}</div>
     <div class="pn-tel"><div class="pn-tel-in">
+      ${PN.ajusteDia.on?pnNotaDiaHTML(tipo,fd):''}
       <section class="nx-dia"><div class="nx-dia-h"><div><h2>Tu día</h2><p>Armado por ${esc(pqStaffNombre())}</p></div></div>
         <ol class="nx-lista">${lista||'<li class="nx-vacio">Sin platillos para este día.</li>'}</ol>
         ${menor?`<p class="nx-tot">${ico('info')}<span>Eres menor de edad: tu menú cubre lo que gastas, sin dietas para bajar de peso.</span></p>`
@@ -712,7 +783,8 @@ function pnGuardar(){
     por:pqStaffNombre(), fecha:fechaISO(new Date()), baseObj:s.objetivo||'', baseTdee:b.tdee, basePeso:b.pesoBase,
     calc:{formula:C.formula, factor:C.factor, ajuste:+C.ajuste||0, kcalManual:!!C.kcalManual, modo:C.modo, pk:+C.pk||0, gk:+C.gk||0, pp:+C.pp||0, gp:+C.gp||0,
       geb:M.geb||0, get:M.get||0, datos:{peso:+C.datos.peso||0, est:+C.datos.est||0, edad:+C.datos.edad||0, sexo:C.datos.sexo||'', mlg:+C.datos.mlg||0, fuente:C.datos.fuente||''}},
-    plan:{comidas, porciones:Object.assign({},PN.porc), semana, var:vr, por:pqStaffNombre(), tipo:'nutri', fecha:fechaISO(new Date())} };
+    plan:{comidas, porciones:Object.assign({},PN.porc), semana, var:vr, ajusteDia:{on:!!PN.ajusteDia.on, pesado:+PN.ajusteDia.pesado||0, descanso:+PN.ajusteDia.descanso||0},
+      por:pqStaffNombre(), tipo:'nutri', fecha:fechaISO(new Date())} };
   // El gasto de referencia se toma ya con el plan puesto: la recalibración por peso usa las kcal del plan (js/03)
   const b2=calcNutricion(s); s.nutricion.baseTdee=b2.tdee; s.nutricion.basePeso=b2.pesoBase;
   pqGuardarStaff(s,['nutricion']);
@@ -772,7 +844,8 @@ async function pnPDF(){
   const conSemana=PN_DIAS.some(([d])=>(PN.semana[d]||[]).some(Boolean));
   if(conSemana){
     doc.addPage(); y=18; linea('Planeación semanal',13,'bold',[20,60,40],3);
-    PN_DIAS.forEach(([d,lb])=>{ linea(lb,11,'bold',null,0.5);
+    PN_DIAS.forEach(([d,lb])=>{ const t=pnTipoDia(s,d), f=pnFactorDia(PN.ajusteDia.on?PN.ajusteDia:null,t.t);
+      linea(lb+' · '+(t.t==='descanso'?'Descanso':t.nombre+' ('+(t.t==='pesado'?'día pesado':t.t==='ligero'?'día ligero':'día medio')+')')+(f?' · carbohidrato '+(f>0?'+':'')+Math.round(f*100)+'%':''),11,'bold',null,0.5);
       PN.comidas.forEach((m,i)=>{ const x=(PN.semana[d]||[])[i], p=maPlat(x?x.id:m.id); if(p) linea('   '+m.nombre+': '+p.n,10,'normal',null,0); }); y+=2; });
   }
   if(PN.recs){ y+=2; linea('Recomendaciones generales',13,'bold',[20,60,40],2); linea(PN.recs,10,'normal',null,3); }
@@ -898,7 +971,7 @@ function abrirNutricionStaff(tab){
 function nrFiloActual(){
   const D=DB.entrenadores||{}, e=staffActivoEntId&&D[staffActivoEntId];
   const f=staffRol==='coordinador'?(DB.config&&DB.config.nutFilo):(e&&e.nutFilo);
-  return JSON.parse(JSON.stringify(Object.assign({},PN_FILO_DEF,f||{},{ajuste:Object.assign({},PN_FILO_DEF.ajuste,(f&&f.ajuste)||{}), protKg:Object.assign({},PN_FILO_DEF.protKg,(f&&f.protKg)||{})})));
+  return JSON.parse(JSON.stringify(Object.assign({},PN_FILO_DEF,f||{},{ajuste:Object.assign({},PN_FILO_DEF.ajuste,(f&&f.ajuste)||{}), protKg:Object.assign({},PN_FILO_DEF.protKg,(f&&f.protKg)||{}), cargaDia:Object.assign({},PN_FILO_DEF.cargaDia,(f&&f.cargaDia)||{})})));
 }
 function nrPanelRender(){
   const c=document.getElementById('nr-cuerpo'); if(!c) return;
@@ -917,6 +990,13 @@ function nrPanelRender(){
         ${PN_OBJETIVOS.map(([k,lb])=>`<tr><th>${lb}</th><td><div class="pn-in"><input inputmode="decimal" value="${f.ajuste[k]}" aria-label="Ajuste ${lb}" onchange="NRP.draft.ajuste['${k}']=Math.max(-30,Math.min(25,parseFloat(this.value)||0))"><span>%</span></div></td>
           <td><div class="pn-in"><input inputmode="decimal" value="${f.protKg[k]}" aria-label="Proteína ${lb}" onchange="NRP.draft.protKg['${k}']=Math.max(0.8,Math.min(3.1,parseFloat(this.value)||1.6))"><span>g/kg</span></div></td></tr>`).join('')}
       </tbody></table><p class="pn-nota">Guía del gimnasio: masa +10 a 20 % y 1.6 a 2.2 g/kg; definición −20 a 25 % (máx. −500 kcal) y 2.0 a 2.4 g/kg; recomposición −10 a −15 % y 2.0 a 2.4 g/kg.</p></section>
+      <section class="pn-card"><h3>Ajustar al entrenamiento del día</h3>
+        <label class="pn-sw-row"><input type="checkbox" ${f.cargaDia.on?'checked':''} onchange="NRP.draft.cargaDia.on=this.checked;nrPanelRender()"><span>${f.cargaDia.on?'Activado':'Apagado'}: el carbohidrato del día cambia según lo que le toca entrenar. Proteína y grasa quedan igual.</span></label>
+        ${f.cargaDia.on?`<div class="pn-calc" style="margin-top:10px">
+          <label><span>Día pesado (pierna, cuerpo completo o carga alta)</span><div class="pn-in"><input inputmode="numeric" value="${f.cargaDia.pesado}" onchange="NRP.draft.cargaDia.pesado=Math.max(0,Math.min(40,parseFloat(this.value)||0))"><span>% más carbohidrato</span></div></label>
+          <label><span>Día de descanso</span><div class="pn-in"><input inputmode="numeric" value="${f.cargaDia.descanso}" onchange="NRP.draft.cargaDia.descanso=Math.max(0,Math.min(40,parseFloat(this.value)||0))"><span>% menos carbohidrato</span></div></label>
+        </div>`:''}
+        <p class="pn-nota">Regla propuesta (configurable): ±15 a 20 % de carbohidrato. Lo que manda es el total de la semana; esto acomoda la energía hacia los días que más la necesitan. El día pesado el socio ve un recordatorio.</p></section>
       <div class="pn-acc"><button type="button" class="sd-b" onclick="nrFiloGuardar(true)">Restablecer</button><button type="button" class="sd-pri" onclick="nrFiloGuardar()">Guardar filosofía</button></div>`;
   } else if(NRP.tab==='recetas'){
     const ids=Object.keys(NR).filter(k=>NR[k]).sort((a,b)=>String(NR[a].n).localeCompare(String(NR[b].n)));
@@ -981,8 +1061,14 @@ function nrEscuchar(){
     window.nxPlan=nxPlan=function(s){
       const p=o.apply(this,arguments); if(!p) return p;
       pnRegistrarVariantes(s);
-      const a=p.semana&&p.semana[PN_DIA_JS[new Date().getDay()]]; if(!a) return p;
-      return Object.assign({},p,{comidas:comoArray(p.comidas).map((m,i)=>a[i]&&maPlat(a[i].id)?Object.assign({},m,{id:a[i].id,q:comoArray(a[i].q)}):m)});
+      const a=p.semana&&p.semana[PN_DIA_JS[new Date().getDay()]];
+      let comidas=comoArray(p.comidas).map((m,i)=>a&&a[i]&&maPlat(a[i].id)?Object.assign({},m,{id:a[i].id,q:comoArray(a[i].q)}):m);
+      // Día pesado o de descanso: las porciones de cereal y fruta de cada comida siguen al entrenamiento
+      const C=PN_DIA_CTX&&PN_DIA_CTX.code===s.code?PN_DIA_CTX:null;
+      if(C&&C.f) comidas=comidas.map(m=>{ const pl=maPlat(m.id); if(!pl||!m.eq||!Object.keys(m.eq).length) return m;
+        const r=menuEscalar(pl,pnMetaComida(pnEqDia(m.eq,C.f)),false); return r?Object.assign({},m,{q:r.q.slice()}):m; });
+      if(!a&&!(C&&C.f)) return p;
+      return Object.assign({},p,{comidas});
     };
   }
 })();

@@ -1,3 +1,13 @@
+# Cambios — El carbohidrato sigue al entrenamiento del día (opcional)
+- **Qué hace (js/70):** si se activa, el carbohidrato del día sube el día pesado y baja el de descanso; la proteína y la grasa no cambian. El total de la semana queda casi igual.
+- **Tipo de día:** sale de la rutina del socio (`s.rutina.lun…dom`). Pesado = pierna, glúteo o cuerpo completo, o carga ≥ 25 % arriba del promedio de su semana (`cargaDia` de js/51; `PN_DIA_PESADO`, regla de diseño). Ligero ≤ 85 %. Sin ejercicios = descanso.
+- **Dónde se activa:** en la filosofía del nutriólogo o del gimnasio ("Ajustar al entrenamiento del día", apagado de entrada; +15 % pesado y −15 % descanso por defecto, configurable). Cada plan del asistente tiene su propio interruptor en Distribuye → Planeación semanal, con una fila "Entrenamiento" que muestra el tipo de cada día y el ajuste.
+- **Lo que ve el socio:** solo en su pestaña Nutrición. El día pesado aparece el recordatorio "Recuerda: hoy es día pesado (pierna)…". En descanso, una nota de que lleva un poco menos de carbohidrato. Su meta del día y las porciones de cereal y fruta de cada platillo se ajustan. La ficha del staff y el asistente siguen mostrando la meta base.
+- La vista "Así lo verá el socio" y el PDF muestran el tipo de cada día y el ajuste.
+- Service worker: `retofit-cca-v72`.
+
+---
+
 # Cambios — Vista "Así lo verá el socio", base de platillos ampliada y PDF sin internet
 - **Vista previa (js/70):** en el paso 4 del plan, "Así lo verá el socio" muestra su pestaña Nutrición dentro de un marco de celular, con los mismos componentes de su app (js/50), día por día de la semana, con notas por comida y la recomendación general. No guarda nada.
 - **Base de alimentos (js/48):** de 37 a 73 ingredientes y de 31 a 71 platillos. Nuevos: pan integral, papa, camote, elote, quinoa, amaranto, palomitas, maíz pozolero, garbanzo, haba, pavo, camarón, requesón, salmón, yogur natural, 9 frutas, 9 verduras, nuez, pistache, crema de cacahuate. Platillos mexicanos nuevos de desayuno, colación, comida y cena (sin cerdo), que también usa el menú automático. Las porciones nuevas van marcadas `est:1` (pendientes de revisión del nutriólogo). Los platillos nuevos todavía no tienen foto (`img/menu/<id>.webp`).
