@@ -284,20 +284,15 @@
 .tr-nom:hover{text-decoration-color:currentColor;}
 .tr-ver:focus-visible,.tr-nom:focus-visible{outline:2px solid var(--v2);outline-offset:2px;}
 
-/* Marcado de clases en el Inicio del socio (js/73) */
-.am-card{margin:0 0 14px;padding:14px 16px;border-radius:var(--r-xl,20px);background:linear-gradient(160deg,var(--gx-glass2),var(--gx-glass));border:1px solid var(--gx-line);box-shadow:inset 0 1px 0 var(--gx-hi);}
-.am-h b{display:block;font-family:var(--fd);font-size:var(--fs-lg);}
-.am-h small{display:block;margin-top:2px;font-size:var(--fs-sm);color:var(--mu);line-height:1.4;}
-.am-lista{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px;}
-.am-lista li{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--b);}
-.am-c{flex:1 1 120px;min-width:0;} .am-c b{display:block;font-size:var(--fs-md);} .am-c small{font-size:var(--fs-xs);color:var(--mu);}
-.am-b{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid var(--b2);background:var(--gl);color:var(--tx);font:inherit;font-weight:700;cursor:pointer;}
-.am-b.am-bsi{background:var(--v2);border-color:transparent;color:var(--btn-tx,#fff);}
-.am-est{display:inline-flex;align-items:center;gap:5px;font-weight:700;font-size:var(--fs-sm);}
-.am-lista li.am-si .am-est{color:var(--n);} .am-lista li.am-no .am-est{color:var(--mu);}
-.am-est .ico{width:15px;height:15px;}
-.am-cambiar{min-height:40px;border:0;background:none;color:var(--v);font:inherit;font-size:var(--fs-sm);font-weight:700;cursor:pointer;padding:0 6px;}
-.am-b:focus-visible,.am-cambiar:focus-visible{outline:2px solid var(--v2);outline-offset:2px;}
+/* Casilla de la clase de hoy dentro de "Esta semana" (js/73) */
+.am-hoy{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;}
+.am-chk{display:inline-flex;align-items:center;gap:10px;min-height:40px;padding:4px 6px 4px 12px;border-radius:12px;border:0;background:color-mix(in srgb,var(--tx) 6%,transparent);color:var(--tx);font:500 13.5px/1.2 var(--fb);cursor:pointer;}
+.am-t b{font-weight:700;}
+.am-box{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--tx) 35%,transparent);background:transparent;}
+.am-chk.on .am-box{background:var(--cine-acc,var(--v2));box-shadow:none;color:#fff;}
+html[data-theme="dark"] .am-chk.on .am-box{color:#0A0E13;}
+.am-box .ico{width:16px;height:16px;}
+.am-chk:focus-visible{outline:2px solid var(--v2);outline-offset:2px;}
 
 /* Actividad medida: Requerimientos (2a) y Dietocálculo */
 .am-res p{margin:0 0 8px;font-size:var(--fs-sm);line-height:1.45;color:var(--tx);}

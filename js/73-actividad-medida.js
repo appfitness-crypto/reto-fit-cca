@@ -1,7 +1,7 @@
 /* ═══ Reto Fit CCA: marcado de clases y actividad medida ═══
    Módulo cargado por index.html en orden (script clásico: comparte el ámbito global). Estilos en css/plan-nutri.css.
-   1) Inicio del socio: los días que tiene clase en su plan (clasesGrupales) aparece "Hoy te toca …" con Sí fui / No fui
-      por cada clase (y la de ayer si no la marcó). Solo las clases de su plan; no se agregan otras. Se guarda en
+   1) Inicio del socio, recuadro "Esta semana": los días que tiene clase en su plan (clasesGrupales) aparece una línea
+      "Clase · Body Pump" con una casilla; palomeada = fue, en blanco = no. Solo las clases de su plan. Se guarda en
       s.logs.clases = [{fecha, clase, fue, ts}]. Las clases marcadas NO suman puntos del reto: solo sirven para calorías.
    2) Actividad medida: semanas 1 a 4 se usa el factor fijo (+0.05 por día de entreno, js/03). Desde la semana 5, con al
       menos 3 registros de cada día de la semana, el gasto de ese día es el promedio de lo que realmente hizo:
@@ -23,24 +23,15 @@ function amMarcas(s){ return comoArray(s&&s.logs&&s.logs.clases); }
 function amMarca(s,fecha,clase){ return amMarcas(s).find(x=>x&&x.fecha===fecha&&x.clase===clase)||null; }
 function amEntrenaMismoDia(s,dia){ return comoArray(s&&s.clasesGrupales).some(c=>c&&c.entrenaMismoDia&&(c.dias||[]).includes(dia)); }
 
-// ═════════════ 1) Marcado en el Inicio del socio ═════════════
-function amTarjetaHTML(s){
-  if(!s||!comoArray(s.clasesGrupales).length) return '';
-  const hoy=new Date(), dHoy=AM_JS[hoy.getDay()], fHoy=fechaISO(hoy);
-  const ay=new Date(hoy.getTime()-86400000), dAy=AM_JS[ay.getDay()], fAy=fechaISO(ay);
-  const filas=[];
-  amClasesPlan(s,dHoy).forEach(c=>filas.push({f:fHoy, c, cuando:'hoy'}));
-  amClasesPlan(s,dAy).forEach(c=>{ if(!amMarca(s,fAy,c)) filas.push({f:fAy, c, cuando:'ayer'}); });
-  if(!filas.length) return '';
-  const conGym=amEntrenaMismoDia(s,dHoy)&&amClasesPlan(s,dHoy).length;
-  return `<section class="am-card" aria-label="Tus clases">
-    <div class="am-h"><b>${filas.some(x=>x.cuando==='hoy')?'Hoy te toca clase':'¿Fuiste a tu clase?'}</b>
-      <small>${conGym?'Hoy es clase + tu rutina de gym. ':''}Márcala para que tu plan de comida use lo que de verdad haces.</small></div>
-    <ul class="am-lista">${filas.map(x=>{ const m=amMarca(s,x.f,x.c), id=esc(x.f)+'|'+esc(x.c);
-      return `<li class="${m?(m.fue?'am-si':'am-no'):''}"><span class="am-c"><b>${esc(x.c)}</b><small>${x.cuando==='hoy'?'Hoy':'Ayer'}</small></span>
-        ${m?`<span class="am-est">${m.fue?ico('check')+'Fuiste':'No fuiste'}</span><button type="button" class="am-cambiar" onclick="amMarcar('${esc2(x.f)}','${esc2(x.c)}',null)">Cambiar</button>`
-          :`<button type="button" class="am-b am-bsi" onclick="amMarcar('${esc2(x.f)}','${esc2(x.c)}',true)">Sí fui</button><button type="button" class="am-b am-bno" onclick="amMarcar('${esc2(x.f)}','${esc2(x.c)}',false)">No fui</button>`}</li>`; }).join('')}</ul>
-  </section>`;
+// ═════════════ 1) Marcado en "Esta semana" del Inicio ═════════════
+// Una línea compacta entre "Esta semana" y el contador: "Clase · Body Pump" con una casilla. Palomeada = fue.
+function amHoyHTML(s){
+  if(!s) return '';
+  const hoy=new Date(), d=AM_JS[hoy.getDay()], f=fechaISO(hoy), cl=amClasesPlan(s,d);
+  if(!cl.length) return '';
+  return `<span class="am-hoy">${cl.map(c=>{ const m=amMarca(s,f,c), on=!!(m&&m.fue);
+    return `<button type="button" class="am-chk${on?' on':''}" role="checkbox" aria-checked="${on}" aria-label="Clase de hoy: ${esc(c)}. ${on?'Marcada como hecha':'Toca para marcar que fuiste'}" onclick="amMarcar('${esc2(f)}','${esc2(c)}',${on?'null':'true'})">
+      <span class="am-t">Clase · <b>${esc(c)}</b></span><span class="am-box" aria-hidden="true">${on?ico('check'):''}</span></button>`; }).join('')}</span>`;
 }
 function amMarcar(fecha,clase,fue){
   const s=activeSocio; if(!s) return;
@@ -49,7 +40,6 @@ function amMarcar(fecha,clase,fue){
   s.logs.clases=s.logs.clases.slice(-200);
   dbSave(s.code);
   const y=window.scrollY; refreshDash(); window.scrollTo(0,y);
-  if(fue===true) showToast('¡Bien! Clase registrada');
 }
 
 // ═════════════ 2) Actividad medida ═════════════
@@ -148,14 +138,14 @@ function amResumenHTML(m,b,compacto){
       const k=h.indexOf('<section class="pn-card">\n      <h3>Macronutrientes'); return k>=0?h.slice(0,k)+blk+h.slice(k):h+blk;
     };
   }
-  // Inicio del socio: la tarjeta de clases arriba de "Tu semana"
+  // Inicio del socio: la casilla de la clase de hoy dentro de "Esta semana"
   if(typeof refreshDash==='function'){
     const o=refreshDash;
     window.refreshDash=refreshDash=function(){
       const r=o.apply(this,arguments);
-      try{ const s=activeSocio, sem=document.querySelector('#dsec-inicio .ih-sem'), html=amTarjetaHTML(s);
-        const prev=document.querySelector('#dsec-inicio .am-card'); if(prev) prev.remove();
-        if(html&&sem) sem.insertAdjacentHTML('beforebegin',html); }catch(e){ console.warn('clases',e); }
+      try{ const k=document.querySelector('#dsec-inicio .ih-sem .ih-k'), html=amHoyHTML(activeSocio);
+        const prev=document.querySelector('#dsec-inicio .am-hoy'); if(prev) prev.remove();
+        if(html&&k) k.insertAdjacentHTML('afterend',html); }catch(e){ console.warn('clases',e); }
       return r;
     };
   }

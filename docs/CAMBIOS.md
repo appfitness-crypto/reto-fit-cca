@@ -1,5 +1,5 @@
 # Cambios — Marcado de clases, actividad medida, mascotas del tablero y ver la app desde el ranking
-- **Marcado de clases (js/73):** los días con clase en su plan, el Inicio del socio muestra "Hoy te toca clase" con **Sí fui / No fui** por cada clase (y la de ayer si no la marcó; se puede cambiar). Solo las clases de su plan. Se guarda en `s.logs.clases`. Solo cuentan para calorías, no para puntos del reto.
+- **Marcado de clases (js/73):** los días con clase en su plan, el recuadro "Esta semana" del Inicio muestra, entre el título y el contador, una línea "Clase · Body Pump" con una casilla: palomeada = fue, en blanco = no. Solo las clases de su plan. Se guarda en `s.logs.clases`. Solo cuentan para calorías, no para puntos del reto.
 - **Actividad medida:**
   - Semanas 1 a 4 se usa el estimado fijo (+0.05 por día de entrenamiento).
   - Desde la semana 5, con al menos 3 registros de cada día de la semana, el gasto de cada día es el promedio de sus últimos 3–4 de ese día: rutina de gym (MET 4) + cardio registrado (MET 7) + cada clase marcada con su MET, según su peso.
