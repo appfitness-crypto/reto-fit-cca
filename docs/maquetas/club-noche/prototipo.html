@@ -212,12 +212,14 @@ img{display:block;max-width:100%}
 .fijo.on{visibility:visible}
 
 /* fin */
-.fin{min-height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:0 22px 34px;position:relative}
+.fin{min-height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:170px 22px 30px;position:relative}
 .fin .f{position:absolute;inset:0;background:url(img/maquinas-jardin.webp) center/cover;filter:grayscale(.5) brightness(.55)}
 .fin .f::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(11,11,12,.3),var(--noche) 70%)}
 .fin>*:not(.f){position:relative}
-.fin .tit{font-size:56px}
-.res{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}
+.fin .tit{font-size:48px}
+.fin .card[hidden]{display:none}
+.res{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
+.fin .sub{margin-bottom:14px}
 .res div{padding:14px 10px;text-align:center}
 .res b{display:block;font:700 24px/1 var(--fb);margin-bottom:6px}.res small{font-size:11.5px;color:var(--mu)}
 .pts{display:flex;align-items:center;gap:12px;padding:16px;margin-bottom:16px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 40%,transparent)}
@@ -271,6 +273,61 @@ img{display:block;max-width:100%}
 .fil:first-child{border-top:0}
 .fil span{color:var(--mu);font-size:13.5px}.fil b{font-weight:600;font-size:14px;text-align:right}
 
+/* mascotas · vitrina, avatar y tarjeta (misma estructura que js/58-mascotas.js) */
+.vit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0 14px}
+.mop{position:relative;border-radius:18px;overflow:hidden;background:#0d0b09;box-shadow:inset 0 0 0 1px var(--linea);text-align:center;padding-bottom:12px;transition:transform .3s var(--expo),box-shadow .2s}
+.mop img{width:100%;aspect-ratio:2/3;object-fit:cover;object-position:center 0;transition:filter .3s}
+.mop[aria-pressed=false] img{filter:brightness(.62) saturate(.7)}
+.mop b{display:block;font:600 13.5px/1 var(--fd);text-transform:uppercase;letter-spacing:0;margin-top:8px}
+.mop small{display:block;font-size:10.5px;color:var(--mu);padding:4px 6px 0;line-height:1.3}
+.mop[aria-pressed=true]{box-shadow:inset 0 0 0 2px var(--acc),0 18px 30px -18px var(--glow);transform:translateY(-3px)}
+.mop .chk{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:var(--ink);opacity:0;transform:scale(.6);transition:opacity .2s,transform .3s var(--expo)}
+.mop[aria-pressed=true] .chk{opacity:1;transform:none}
+.evo{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:14px 12px 12px;margin-bottom:14px}
+.evo div{display:grid;justify-items:center;gap:6px}
+.evo img{width:100%;max-width:52px;aspect-ratio:1;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px var(--linea2)}
+.evo span{font:600 9px/1.1 var(--fb);letter-spacing:.06em;text-transform:uppercase;color:var(--mu)}
+.sinm{display:block;width:100%;text-align:left;min-height:44px;padding:10px 0;font-size:13px;color:var(--mu);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--linea2)}
+.acc2{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:6px}
+.avm{position:relative;width:48px;height:48px;flex:none;border-radius:50%}
+.avm svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.avm img{position:absolute;inset:5px;width:38px;height:38px;border-radius:50%;object-fit:cover}
+.avm.cansada img,.mc.cansada .mc-fig img{filter:grayscale(.9) brightness(.55)}
+.avm .zz{position:absolute;right:-4px;top:-4px;width:18px;height:18px;border-radius:50%;background:var(--n3);display:none;place-items:center;font:700 9px/1 var(--fb);color:var(--mu);box-shadow:inset 0 0 0 1px var(--linea2)}
+.avm.cansada .zz{display:grid}
+.mc{margin:16px 16px 0;border-radius:22px;overflow:hidden;background:#0d0b09;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 30%,transparent)}
+.mc-top{display:grid;grid-template-columns:132px minmax(0,1fr);align-items:end}
+.mc-fig{position:relative;height:218px;overflow:hidden}
+.mc-fig img{width:100%;height:100%;object-fit:cover;object-position:center 4%;transition:filter .4s}
+.mc-fig::after{content:"";position:absolute;inset:auto 0 0;height:40%;background:linear-gradient(transparent,#0d0b09)}
+.mc-tx{padding:16px 16px 18px 6px}
+.mc-n{font:600 30px/1 var(--fd);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px}
+.mc-e{font-weight:700;font-size:13px;color:var(--acc)}
+.mc-bar{height:6px;border-radius:3px;background:var(--n3);margin:12px 0 10px;overflow:hidden}
+.mc-bar i{display:block;height:100%;border-radius:3px;background:var(--acc);transition:width .6s var(--expo)}
+.mc-msg{margin:0;font-size:12.5px;color:var(--mu);line-height:1.4}.mc-msg b{color:var(--tx)}
+.mc-et{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:14px 12px 4px;border-top:1px solid var(--linea)}
+.mc-et div{display:grid;justify-items:center;gap:4px;text-align:center}
+.mc-et img{width:44px;height:44px;border-radius:50%;object-fit:cover;filter:grayscale(1) brightness(.4)}
+.mc-et .on img{filter:none}
+.mc-et .hoy img{box-shadow:0 0 0 2px var(--acc),0 0 16px -2px var(--glow)}
+.mc-et span{font:600 9px/1.1 var(--fb);letter-spacing:.05em;text-transform:uppercase;color:var(--mu2)}
+.mc-et .on span{color:var(--tx)}
+.mc-et small{font-size:9.5px;color:var(--mu2)}
+.mc-links{display:flex;flex-wrap:wrap;gap:4px 14px;padding:8px 16px 14px}
+.mc-links button{min-height:40px;font-size:12.5px;font-weight:600;color:var(--mu);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--linea2)}
+.med{width:104px;height:104px;margin:18px auto}
+.fin-m{position:absolute;left:50%;top:30px;translate:-50% 0;height:300px;width:auto;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent);z-index:1}
+.evol{display:flex;align-items:center;gap:12px;padding:14px 16px;margin-bottom:10px;box-shadow:inset 0 0 0 1.5px var(--acc);background:linear-gradient(var(--soft),var(--soft)),var(--n2)}
+.evol img{width:46px;height:46px;border-radius:50%;object-fit:cover}
+.evol b{display:block;font:600 20px/1 var(--fd);text-transform:uppercase}.evol span{font-size:12.5px;color:var(--mu)}
+.ctl{display:grid;gap:10px}
+.ctl label{display:grid;gap:8px;font-size:14px;color:var(--mu)}
+.ctl input[type=range]{width:100%;accent-color:var(--acc)}
+.ctl .tg2{display:flex;align-items:center;gap:10px;min-height:40px;cursor:pointer}
+.ctl .tg2 input{width:20px;height:20px;accent-color:var(--acc)}
+.ctl b{color:var(--tx)}
+
 /* hojas */
 .velo{position:absolute;inset:0;z-index:80;background:rgba(0,0,0,.6);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
 .velo.on{opacity:1;visibility:visible}
@@ -315,12 +372,17 @@ img{display:block;max-width:100%}
     </div>
     <h2>Prueba esto</h2>
     <ul class="prueba">
-      <li><span><b>Soy nuevo</b>: elige tu objetivo y crea tu plan.</span></li>
+      <li><span><b>Soy nuevo</b>: elige tu objetivo, tu mascota y ponle nombre.</span></li>
       <li><span><b>Empezar sesión</b>: ajusta kg y reps, guarda cada serie y mira el descanso.</span></li>
-      <li><span><b>Técnica</b>: abre los pasos del ejercicio.</span></li>
+      <li><span><b>Termina la sesión</b>: con 1,470 pts tu mascota evoluciona a Atleta.</span></li>
       <li><span><b>Flecha atrás</b> en la sesión: te pregunta si quieres salir.</span></li>
       <li><span><b>Perfil → Cerrar sesión</b>: regresas a la portada.</span></li>
     </ul>
+    <h2>Mascota de muestra</h2>
+    <div class="ctl">
+      <label>Puntos del reto: <b id="ctl-pts">1,470 · Entrenado</b><input type="range" id="rng" min="0" max="2400" step="10" value="1470"></label>
+      <label class="tg2"><input type="checkbox" id="chk-cansada">Mascota cansada (5 días sin entrenar)</label>
+    </div>
     <button class="reini" id="reini">Empezar de nuevo</button>
     <p class="nota">Nombres, cifras y entrenador son de muestra.</p>
   </aside>
@@ -381,14 +443,29 @@ img{display:block;max-width:100%}
         </div>
         <div class="campo"><label for="c3">Código de tu entrenador</label><input id="c3" value="ENT-4821"></div>
         <div class="ok-cod"><svg class="ico" style="width:16px;height:16px"><use href="#i-check"/></svg>Rodrigo Martínez · Coach del CCA</div>
-        <button class="btn" data-go="inicio" data-login>Crear mi plan</button>
+        <button class="btn" data-go="mascota">Crear mi plan</button>
+      </div>
+    </section>
+
+    <!-- Elige a tu compañero -->
+    <section class="scr" id="mascota" aria-label="Elige a tu compañero del reto">
+      <div class="barra"><button class="circ" data-back aria-label="Atrás"><svg class="ico"><use href="#i-back"/></svg></button><span class="eti">Último paso</span><span style="width:44px"></span></div>
+      <div class="top" style="padding-top:110px">
+        <div class="eti a">Tu compañero del reto</div>
+        <h2 class="tit">Elige a tu<br>compañero</h2>
+        <p class="sub">Crece contigo: cada punto que ganas lo hace evolucionar en 5 etapas, de Cría a Leyenda.</p>
+        <div class="vit" id="vit"></div>
+        <div class="card evo" id="evo" aria-label="Sus 5 etapas"></div>
+        <div class="campo"><label for="mnom">Ponle nombre</label><input id="mnom" maxlength="18" placeholder="Ej. Rugido"></div>
+        <button class="sinm" id="sinm">Prefiero sin mascota: muéstrame mi nivel como insignia (Bronce, Plata, Oro…)</button>
+        <div class="acc2"><button class="btn sec" id="m-luego">Después</button><button class="btn" id="m-ok">Elegir</button></div>
       </div>
     </section>
 
     <!-- Inicio -->
     <section class="scr" id="inicio" aria-label="Inicio">
       <div class="cab"><div class="f"></div>
-        <div class="hola"><div class="yo"><div class="av">AL</div><div><small>Buenas tardes</small><b>Ana López</b></div></div>
+        <div class="hola"><div class="yo"><button class="avm" id="avm" data-tab="perfil" aria-label="Tu mascota"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="2.5"/><circle id="avm-arc" cx="24" cy="24" r="22" fill="none" stroke="var(--acc)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="69"/></svg><img id="avm-img" alt=""><span class="zz">z</span></button><div><small>Buenas tardes</small><b>Ana López</b></div></div>
           <button class="circ" data-toast="Sin avisos nuevos" aria-label="Avisos"><svg class="ico"><use href="#i-bell"/></svg></button></div>
         <div class="in">
           <div class="eti a">Fase 1 · Adaptación</div>
@@ -441,12 +518,13 @@ img{display:block;max-width:100%}
 
     <!-- Fin -->
     <section class="scr" id="fin" aria-label="Sesión terminada">
-      <div class="fin"><div class="f"></div>
+      <div class="fin"><div class="f"></div><img class="fin-m" id="fin-m" alt="">
         <div class="eti a">Día 2 · Semana 3</div>
         <h2 class="tit">Sesión<br>completa</h2>
         <p class="sub">Tu entrenador ya ve tus registros.</p>
+        <div class="card evol" id="evol" hidden><img id="evol-img" alt=""><div><b id="evol-t"></b><span id="evol-s"></span></div></div>
         <div class="res"><div class="card"><b id="r-ser">10</b><small>series</small></div><div class="card"><b id="r-vol">0</b><small>kg movidos</small></div><div class="card"><b id="r-min">38</b><small id="r-min-l">minutos</small></div></div>
-        <div class="card pts"><b>+40</b><span>puntos para tu lugar en el reto. Subiste al <b style="font:700 13px var(--fb);color:var(--tx)">13°</b>.</span></div>
+        <div class="card pts"><b>+40</b><span id="fin-pts">puntos para tu lugar en el reto.</span></div>
         <button class="btn" data-tab="inicio">Volver al inicio</button>
       </div>
     </section>
@@ -487,6 +565,7 @@ img{display:block;max-width:100%}
     <section class="scr" id="perfil" aria-label="Perfil">
       <div class="top"><div class="eti a">Tu cuenta</div><h2 class="tit">Perfil</h2></div>
       <div class="perfil-cab"><div class="av">AL</div><div><b>Ana López</b><span>Socia #RF-0217 · desde enero 2027</span></div></div>
+      <div id="mi-mascota"></div>
       <div class="card lista">
         <div class="fil"><span>Objetivo</span><b id="obj-perf">Masa muscular</b></div>
         <div class="fil"><span>Entrenador</span><b>Rodrigo Martínez</b></div>
@@ -559,9 +638,9 @@ app.addEventListener('click',e=>{
   else if(b.dataset.toast) toast(b.dataset.toast);
   else if(b.dataset.cerrar!==undefined) cerrarHojas();
 });
-$('#f-entrar').addEventListener('submit',e=>{e.preventDefault();hist=['inicio'];show('inicio','r')});
+$('#f-entrar').addEventListener('submit',e=>{e.preventDefault();hist=['inicio'];show('inicio','r');pintarMascota()});
 $('#logout').addEventListener('click',()=>{hist=['portada'];show('portada','l');toast('Cerraste sesión')});
-$('#reini').addEventListener('click',()=>{cerrarHojas();hecho=false;actualizarRutina();hist=['portada'];show('portada','f')});
+$('#reini').addEventListener('click',()=>{cerrarHojas();hecho=false;Object.assign(st,{sel:'leon',masc:{id:'leon',nombre:'Rugido'},oculta:false,pts:1470,cansada:false,cambio:false});$('#chk-cansada').checked=false;$('#mnom').value='';pintarVitrina();pintarMascota();actualizarRutina();hist=['portada'];show('portada','f')});
 
 /* objetivo */
 const OBJ={"Incremento de masa muscular":"Masa muscular","Bajar porcentaje de grasa":"Bajar grasa","Recomposición corporal":"Recomposición"};
@@ -621,7 +700,15 @@ $('#guardar').addEventListener('click',()=>{
   const all=log.flat();$('#r-ser').textContent=all.length;
   $('#r-vol').textContent=all.reduce((a,s)=>a+s.kg*s.r,0).toLocaleString('es-MX');
   const mins=Math.max(1,Math.round((Date.now()-t0)/60000));$('#r-min').textContent=mins;$('#r-min-l').textContent=mins===1?'minuto':'minutos';
-  hecho=true;actualizarRutina();hist=['fin'];show('fin','r');
+  const antes=etapaDe(st.pts);st.pts+=40;st.cansada=false;$('#chk-cansada').checked=false;const desp=etapaDe(st.pts);
+  const m=mdef(st.masc.id);
+  $('#fin-m').src=st.oculta?'':`img/m-${m.id}-${desp.n}.webp`;$('#fin-m').hidden=st.oculta;
+  const ev=desp.n>antes.n;$('#evol').hidden=!ev;
+  if(ev){$('#evol-img').src=st.oculta?'':`img/a-${m.id}-${desp.n}.webp`;$('#evol-img').hidden=st.oculta;
+    $('#evol-t').textContent=st.oculta?`Subiste a ${NIVELES[desp.n-1]}`:`${st.masc.nombre} evolucionó`;
+    $('#evol-s').textContent=st.oculta?'Nuevo nivel en el reto.':`Ahora es ${desp.nm}. Míralo en tu Perfil.`;}
+  $('#fin-pts').textContent='puntos para tu lugar en el reto. Subiste al 13°.';
+  hecho=true;actualizarRutina();pintarMascota();hist=['fin'];show('fin','r');
 });
 function arrancarDesc(seg){
   pararDesc();let r=seg;const d=$('#desc'),arc=$('#arc');d.hidden=false;
@@ -638,7 +725,7 @@ $('#selsem').addEventListener('click',e=>{const b=e.target.closest('button');if(
 function actualizarRutina(){
   const d=$('#dia2');d.classList.toggle('hecho',hecho);d.classList.toggle('hoyd',!hecho);d.querySelector('.est').textContent=hecho?'Hecho':'Hoy';
   $('#ses-sem').textContent=hecho?2:1;
-  $('#pos').textContent=hecho?13:14;$('#lugar-mini').textContent=(hecho?13:14)+'°';$('#pts').textContent=hecho?'1,280':'1,240';
+  $('#pos').textContent=hecho?13:14;$('#lugar-mini').textContent=(hecho?13:14)+'°';$('#pts').textContent=st.pts.toLocaleString('es-MX');
   $('#nt').innerHTML=hecho?'Te faltan <b>40 puntos</b> para el lugar 10. Una sesión suma 40.':'Te faltan <b>80 puntos</b> para el lugar 10. Una sesión suma 40.';
 }
 
@@ -656,6 +743,68 @@ function draw(){const W=svg.clientWidth,H=svg.clientHeight;if(!W)return;const p=
 const ro=new ResizeObserver(draw);ro.observe(svg);
 $('#tg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;gk=b.dataset.g;$$('#tg button').forEach(x=>x.setAttribute('aria-pressed',x===b));draw()});
 new MutationObserver(draw).observe($('#progreso'),{attributes:true,attributeFilter:['class']});
+
+/* mascotas */
+const MASC=[{id:'leon',nm:'León',frase:'Box: golpea fuerte, nunca se rinde.',ej:'Rugido'},
+            {id:'rinoceronte',nm:'Rinoceronte',frase:'Pierna y potencia: imparable.',ej:'Tanque'},
+            {id:'lobo',nm:'Lobo',frase:'Funcional: entrena en manada.',ej:'Sombra'}];
+const ETAPAS=[{n:1,nm:'Cría',pts:0},{n:2,nm:'Joven',pts:300},{n:3,nm:'Entrenado',pts:800},{n:4,nm:'Atleta',pts:1500},{n:5,nm:'Leyenda',pts:2300}];
+const NIVELES=['Bronce','Plata','Oro','Platino','Leyenda'];
+const st={sel:'leon',masc:{id:'leon',nombre:'Rugido'},oculta:false,pts:1470,cansada:false,cambio:false};
+const etapaDe=p=>ETAPAS.reduce((a,e)=>p>=e.pts?e:a,ETAPAS[0]);
+const mdef=id=>MASC.find(m=>m.id===id);
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function pintarVitrina(){
+  $('#vit').innerHTML=MASC.map(m=>`<button class="mop" data-m="${m.id}" aria-pressed="${st.sel===m.id}"><img src="img/m-${m.id}-5.webp" alt=""><span class="chk"><svg class="ico" style="width:14px;height:14px"><use href="#i-check"/></svg></span><b>${m.nm}</b><small>${m.frase}</small></button>`).join('');
+  $('#evo').innerHTML=ETAPAS.map(e=>`<div><img src="img/a-${st.sel}-${e.n}.webp" alt="${mdef(st.sel).nm}, ${e.nm}"><span>${e.nm}</span></div>`).join('');
+  $('#mnom').placeholder='Ej. '+mdef(st.sel).ej;
+  $('#m-luego').textContent=st.cambio?'Cancelar':'Después';
+}
+$('#vit').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;st.sel=b.dataset.m;pintarVitrina()});
+function entrarInicio(msg){hist=['inicio'];show('inicio','r');pintarMascota();if(msg)toast(msg)}
+$('#m-ok').addEventListener('click',()=>{
+  const nombre=($('#mnom').value.trim().slice(0,18))||mdef(st.sel).ej;
+  st.masc={id:st.sel,nombre};st.oculta=false;
+  if(st.cambio){st.cambio=false;tab('perfil');pintarMascota();toast(`✓ ${nombre} será tu compañero del reto`)}
+  else entrarInicio(`✓ ${nombre} será tu compañero del reto`);
+});
+$('#m-luego').addEventListener('click',()=>{if(st.cambio){st.cambio=false;back()}else entrarInicio()});
+$('#sinm').addEventListener('click',()=>{st.oculta=true;if(st.cambio){st.cambio=false;tab('perfil');pintarMascota()}else entrarInicio('Verás tu nivel como insignia')});
+function medalla(n,sz,ex=''){
+  const C=[['#B9814A','#7A4E24'],['#C3CBD3','#7D8893'],['#E3B54A','#9A7418'],['#A9C6D3','#4F7A8C'],['#CDAE70','#6B5320']][n-1];
+  return `<svg class="med" style="width:${sz}px;height:${sz}px;${ex}" viewBox="0 0 64 64" role="img" aria-label="Nivel ${NIVELES[n-1]}"><defs><linearGradient id="md${n}${sz}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${C[0]}"/><stop offset="1" stop-color="${C[1]}"/></linearGradient></defs><circle cx="32" cy="32" r="29" fill="#0d0b09" stroke="url(#md${n}${sz})" stroke-width="3"/><circle cx="32" cy="32" r="21" fill="url(#md${n}${sz})"/><text x="32" y="38" text-anchor="middle" font-family="Cinzel,serif" font-size="17" font-weight="600" fill="#0d0b09">${['I','II','III','IV','V'][n-1]}</text></svg>`;
+}
+function pintarMascota(){
+  const e=etapaDe(st.pts),sig=ETAPAS[e.n]||null,pct=sig?Math.round((st.pts-e.pts)/(sig.pts-e.pts)*100):100;
+  const m=mdef(st.masc.id);
+  $('#ctl-pts').textContent=`${st.pts.toLocaleString('es-MX')} · ${st.oculta?NIVELES[e.n-1]:e.nm}`;
+  $('#rng').value=st.pts;
+  // avatar en Inicio
+  const a=$('#avm');a.classList.toggle('cansada',st.cansada&&!st.oculta);
+  if(st.oculta){$('#avm-img').src='data:image/svg+xml,'+encodeURIComponent(medalla(e.n,38).replace('class="med" ','xmlns="http://www.w3.org/2000/svg" '));$('#avm-img').alt='Nivel '+NIVELES[e.n-1]}
+  else{$('#avm-img').src=`img/a-${m.id}-${e.n}.webp`;$('#avm-img').alt=`${st.masc.nombre}: ${e.nm}`}
+  $('#avm-arc').style.strokeDashoffset=138.2*(1-pct/100);
+  // tarjeta del perfil
+  const etRow=ETAPAS.map((x,i)=>`<div class="${x.n<=e.n?'on':''} ${x.n===e.n?'hoy':''}">${st.oculta?medalla(x.n,40,'margin:0'):`<img src="img/a-${m.id}-${x.n}.webp" alt="${x.nm}">`}<span>${st.oculta?NIVELES[i]:x.nm}</span><small>${x.pts.toLocaleString('es-MX')}</small></div>`).join('');
+  const nm=esc(st.masc.nombre);
+  const msg=st.cansada?(st.oculta?'Llevas 5 días sin entrenar. Una sesión hoy te devuelve al ritmo.':`${nm} te extraña: llevas 5 días sin entrenar. Una sesión hoy lo anima.`)
+    :sig?`Faltan <b>${(sig.pts-st.pts).toLocaleString('es-MX')} pts</b> para ${st.oculta?'subir a <b>'+NIVELES[sig.n-1]+'</b>':'que evolucione a <b>'+sig.nm+'</b>'}.`
+    :(st.oculta?'Llegaste al nivel más alto del reto.':`¡${nm} llegó a su forma final!`);
+  $('#mi-mascota').innerHTML=`<div class="mc ${st.cansada&&!st.oculta?'cansada':''}">
+    <div class="mc-top"><div class="mc-fig">${st.oculta?medalla(e.n,104):`<img src="img/m-${m.id}-${e.n}.webp" alt="${m.nm}, etapa ${e.n}">`}</div>
+    <div class="mc-tx"><div class="eti">${st.oculta?'Mi nivel en el reto':m.nm} · ${st.oculta?e.n+' de 5':'Etapa '+e.n+' de 5'}</div>
+      <div class="mc-n">${st.oculta?NIVELES[e.n-1]:nm}</div>${st.oculta?'':`<div class="mc-e">${e.nm}</div>`}
+      ${sig?`<div class="mc-bar" aria-hidden="true"><i style="width:${Math.max(3,pct)}%"></i></div>`:'<div style="height:12px"></div>'}
+      <p class="mc-msg">${msg}</p></div></div>
+    <div class="mc-et" aria-label="Etapas">${etRow}</div>
+    <div class="mc-links">${st.oculta?'<button data-mc="mostrar">Mostrar una mascota</button>':'<button data-mc="cambiar">Cambiar nombre o mascota</button><button data-mc="ocultar">Ocultar mascota (modo discreto)</button>'}</div></div>`;
+}
+$('#mi-mascota').addEventListener('click',e=>{const b=e.target.closest('[data-mc]');if(!b)return;
+  if(b.dataset.mc==='cambiar'||b.dataset.mc==='mostrar'){st.cambio=true;st.sel=st.masc.id;$('#mnom').value=st.masc.nombre;pintarVitrina();go('mascota')}
+  if(b.dataset.mc==='ocultar'){st.oculta=true;pintarMascota();toast('Modo discreto: verás tu nivel')}});
+$('#rng').addEventListener('input',e=>{st.pts=+e.target.value;pintarMascota();actualizarRutina(true)});
+$('#chk-cansada').addEventListener('change',e=>{st.cansada=e.target.checked;pintarMascota()});
+pintarVitrina();pintarMascota();
 
 /* nutrición */
 const CM=[{t:'Desayuno · 8:00',n:'Chilaquiles con pollo',k:520,p:32,img:'d-chilaquiles'},{t:'Colación · 11:00',n:'Licuado de plátano',k:310,p:24,img:'c-licuado'},
