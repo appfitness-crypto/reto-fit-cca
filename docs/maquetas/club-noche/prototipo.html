@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0B0B0C">
+<title>Reto Fit CCA · Prototipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Cinzel:wght@500;600&family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: noche de gimnasio del Campestre; sobria, de club, con una sola chispa de color.
+   IDEA: el cartel negro del Reto Fit convertido en app que se usa entre series.
+   PICTURE: un teléfono navegable; fotos reales del club y renders de ejercicios.
+   COLOUR and TYPE: negro cálido, hueso, un acento (oro/lima/olivo), rojo Panatta solo en alertas; Cormorant/Cinzel en títulos, Raleway en todo lo demás.
+   LAYOUT: panel con instrucciones a la izquierda y teléfono; en celular la app ocupa toda la pantalla. */
+:root{color-scheme:dark;
+  --fd:'Cormorant Garamond',Georgia,serif;--fn:'Cinzel',Georgia,serif;--fb:'Raleway',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --expo:cubic-bezier(.16,1,.3,1);
+  --noche:#0B0B0C;--n2:#141416;--n3:#1C1C1F;--linea:rgba(255,255,255,.09);--linea2:rgba(255,255,255,.16);
+  --tx:#F3F1EC;--mu:#A19F9A;--mu2:#77756F;--rojo:#E0484F;
+  --acc:#CDAE70;--acc2:#B8955A;--ink:#140F06;--soft:rgba(205,174,112,.13);--glow:rgba(205,174,112,.35)}
+[data-acento=lima]{--acc:#B6F03C;--acc2:#9AD52A;--ink:#0B1200;--soft:rgba(182,240,60,.12);--glow:rgba(182,240,60,.38)}
+[data-acento=olivo]{--acc:#8DBB4A;--acc2:#628B2F;--ink:#0A1404;--soft:rgba(141,187,74,.13);--glow:rgba(141,187,74,.35)}
+*,*::before,*::after{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;font:15px/1.45 var(--fb);color:var(--tx);background:radial-gradient(1000px 600px at 70% -10%,#1f1d1a,#070708 60%);-webkit-font-smoothing:antialiased;font-feature-settings:"lnum","tnum";overflow-x:clip}
+button,input{font:inherit;color:inherit}
+button{background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:10px}
+img{display:block;max-width:100%}
+.ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* marco de presentación */
+.marco{min-height:100%;display:grid;grid-template-columns:minmax(0,420px) auto;gap:64px;justify-content:center;align-items:center;padding:40px 24px}
+.panel h1{font:600 52px/1 var(--fd);text-transform:uppercase;letter-spacing:.02em;margin:10px 0 14px}
+.panel .k{font:700 12px/1 var(--fb);color:var(--acc)}
+.panel p{color:var(--mu);margin:0 0 22px;font-size:16px}
+.panel h2{font:700 13px/1 var(--fb);color:var(--mu);margin:26px 0 10px}
+.seg{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--linea2);border-radius:99px}
+.seg button{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border-radius:99px;font-weight:600;font-size:14px;color:var(--mu)}
+.seg button i{width:12px;height:12px;border-radius:50%}
+.seg button[aria-pressed=true]{background:var(--n3);color:var(--tx);box-shadow:inset 0 0 0 1px var(--linea2)}
+.prueba{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.prueba li{display:flex;gap:10px;color:var(--mu);font-size:14.5px}
+.prueba li::before{content:"";flex:none;width:6px;height:6px;margin-top:8px;border-radius:50%;background:var(--acc)}
+.prueba b{color:var(--tx);font-weight:600}
+.nota{margin-top:22px;font-size:13px;color:var(--mu2)}
+.reini{margin-top:14px;min-height:40px;padding:0 16px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--linea2);font-weight:600;font-size:14px}
+
+.tel{position:relative;width:380px;height:800px;border-radius:50px;padding:10px;background:linear-gradient(160deg,#2b2b2e,#0d0d0f);box-shadow:0 50px 90px -30px #000,0 0 0 1px rgba(255,255,255,.06)}
+.pant{position:relative;width:100%;height:100%;border-radius:41px;overflow:clip;background:var(--noche);isolation:isolate}
+.isla{position:absolute;top:10px;left:50%;translate:-50% 0;width:106px;height:31px;border-radius:20px;background:#000;z-index:60}
+.sb{position:absolute;inset:0 0 auto;height:50px;display:flex;justify-content:space-between;align-items:center;padding:6px 30px 0;font:700 14px/1 var(--fb);z-index:55;pointer-events:none}
+@media (max-width:860px){.marco{grid-template-columns:1fr;gap:28px;justify-items:center}.panel{max-width:420px}}
+@media (max-width:520px){
+  .marco{display:block;padding:0}.panel{display:none}
+  .tel{width:100%;height:100dvh;border-radius:0;padding:0;background:none;box-shadow:none}
+  .pant{border-radius:0}.isla{display:none}.sb{display:none}
+  .chipacc{display:flex!important}}
+.chipacc{display:none;position:absolute;top:10px;right:12px;z-index:70;gap:4px;padding:4px;border-radius:99px;background:rgba(11,11,12,.6);backdrop-filter:blur(8px)}
+.chipacc button{width:26px;height:26px;border-radius:50%;display:grid;place-items:center}
+.chipacc button i{width:14px;height:14px;border-radius:50%}
+.chipacc button[aria-pressed=true]{box-shadow:0 0 0 2px var(--tx) inset}
+
+/* pantallas */
+.scr{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;background:var(--noche);visibility:hidden;padding-bottom:110px}
+.scr::-webkit-scrollbar{display:none}
+.scr.on{visibility:visible;z-index:2}
+.scr.in-r{animation:inR .42s var(--expo)}.scr.in-l{animation:inL .42s var(--expo)}.scr.in-f{animation:inF .3s ease-out}
+@keyframes inR{from{transform:translateX(34%);opacity:.3}}@keyframes inL{from{transform:translateX(-24%);opacity:.3}}@keyframes inF{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){.scr{animation:none!important}*{transition:none!important}}
+
+.eti{font:600 10.5px/1.2 var(--fb);letter-spacing:.3em;text-transform:uppercase;color:var(--mu)}
+.eti.a{color:var(--acc)}
+.tit{font:600 40px/.92 var(--fd);letter-spacing:.02em;text-transform:uppercase;margin:8px 0 6px;text-wrap:balance}
+.sub{color:var(--mu);font-size:13.5px;margin:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:58px;border-radius:16px;background:var(--acc);color:var(--ink);font:800 14px/1 var(--fb);letter-spacing:.18em;text-transform:uppercase;box-shadow:0 14px 30px -14px var(--glow);transition:transform .18s var(--expo)}
+.btn:active{transform:scale(.97)}
+.btn.sec{background:transparent;color:var(--tx);box-shadow:inset 0 0 0 1px var(--linea2)}
+.btn.rojo{background:transparent;color:var(--rojo);box-shadow:inset 0 0 0 1px rgba(224,72,79,.45)}
+.card{border-radius:20px;background:var(--n2);box-shadow:inset 0 0 0 1px var(--linea)}
+.pad{padding:0 16px}
+.top{padding:62px 22px 6px}
+.circ{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(11,11,12,.55);backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1px var(--linea2)}
+.barra{position:absolute;top:54px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+
+/* tabs */
+.tabs{position:absolute;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px 24px;background:linear-gradient(to top,var(--noche) 62%,rgba(11,11,12,0));transition:transform .35s var(--expo)}
+.tabs.fuera{transform:translateY(110%)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:5px;min-height:52px;padding-top:12px;font:600 10px/1 var(--fb);letter-spacing:.06em;text-transform:uppercase;color:var(--mu2)}
+.tab[aria-current=page]{color:var(--tx)}.tab[aria-current=page] .ico{color:var(--acc)}
+.tab[aria-current=page]::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--acc)}
+
+/* portada */
+#portada{padding:0}
+.p-foto{position:absolute;inset:0;background:url(img/mezzanine.webp) center 30%/cover;filter:grayscale(1) contrast(1.08) brightness(.8)}
+.p-velo{position:absolute;inset:0;background:linear-gradient(rgba(11,11,12,.7),rgba(11,11,12,.15) 24%,rgba(11,11,12,.55) 44%,rgba(11,11,12,.95) 66%,var(--noche))}
+.p-in{position:relative;min-height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;padding:64px 26px 30px}
+.p-in .logo{width:170px;margin-bottom:auto}
+.p-in h2{font:600 80px/.82 var(--fd);text-transform:uppercase;margin:40px 0 0;text-shadow:0 6px 30px rgba(0,0,0,.6)}
+.p-ano{margin:12px 0 16px;font:500 15px/1 var(--fb);letter-spacing:.6em;text-indent:.6em;color:var(--acc);text-transform:uppercase}
+.p-cuenta{display:flex;width:100%;margin:20px 0;border-block:1px solid var(--linea2)}
+.p-cuenta div{flex:1;padding:12px 0}.p-cuenta div+div{border-left:1px solid var(--linea)}
+.p-cuenta b{display:block;font:700 26px/1 var(--fb)}
+.p-cuenta small{font:600 9px/1 var(--fb);letter-spacing:.26em;color:var(--mu);text-transform:uppercase}
+.p-acc{width:100%;display:grid;gap:10px}
+.patros{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;width:100%}
+.patros span{height:36px;border:1px solid color-mix(in srgb,var(--acc) 45%,transparent);border-radius:8px;display:grid;place-items:center;font:600 10px/1 var(--fd);color:var(--mu)}
+
+/* formularios */
+.campo{display:grid;gap:6px;margin-bottom:12px}
+.campo label{font:600 12px/1 var(--fb);color:var(--mu)}
+.campo input{height:54px;border-radius:14px;border:0;background:var(--n2);box-shadow:inset 0 0 0 1px var(--linea2);padding:0 16px;font-size:16px}
+.campo input:focus{outline:0;box-shadow:inset 0 0 0 2px var(--acc)}
+.obj{display:grid;gap:10px;margin:18px 0}
+.obj button{display:flex;align-items:center;gap:14px;text-align:left;padding:16px;border-radius:18px;background:var(--n2);box-shadow:inset 0 0 0 1px var(--linea)}
+.obj button b{display:block;font:600 22px/1 var(--fd);text-transform:uppercase;letter-spacing:.03em}
+.obj button span{font-size:12.5px;color:var(--mu)}
+.obj button .r{margin-left:auto;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--linea2);flex:none}
+.obj button[aria-pressed=true]{box-shadow:inset 0 0 0 1.5px var(--acc);background:linear-gradient(var(--soft),var(--soft)),var(--n2)}
+.obj button[aria-pressed=true] .r{box-shadow:inset 0 0 0 7px var(--acc)}
+.ok-cod{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--acc);margin:-4px 0 18px}
+
+/* inicio */
+.cab{position:relative;height:280px;overflow:hidden}
+.cab .f{position:absolute;inset:0;background:url(img/maquinas-noche.webp) 62% 50%/cover;filter:saturate(.6)}
+.cab::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(11,11,12,.5),rgba(11,11,12,.1) 35%,rgba(11,11,12,.78) 75%,var(--noche))}
+.cab .in{position:absolute;inset:auto 0 0;z-index:2;padding:0 22px 4px}
+.hola{position:absolute;top:56px;left:22px;right:22px;z-index:3;display:flex;justify-content:space-between;align-items:center}
+.yo{display:flex;align-items:center;gap:10px}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:700 13px/1 var(--fb);background:linear-gradient(135deg,#3a3a3e,#1a1a1d);box-shadow:inset 0 0 0 1px var(--linea2);flex:none}
+.hola small{display:block;color:var(--mu);font-size:11.5px}.hola b{font-size:15px}
+.sem{display:flex;align-items:center;gap:12px;margin:10px 0 4px}
+.sem .big{font:500 58px/.8 var(--fn)}
+.sem .de{font-size:13px;color:var(--mu);line-height:1.3}.sem .de b{display:block;color:var(--tx);font-size:14px}
+.riel{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin:14px 0 6px}
+.riel i{height:26px;border-radius:4px;background:var(--n3);position:relative;box-shadow:inset 0 0 0 1px var(--linea)}
+.riel i.ok{background:var(--soft);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 55%,transparent)}
+.riel i.ok::after{content:"";position:absolute;inset:50% auto auto 50%;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:var(--acc)}
+.riel i.hoy{background:var(--acc);box-shadow:0 0 18px -2px var(--glow)}
+.riel i.ev::before{content:"";position:absolute;left:50%;top:-7px;margin-left:-3px;border:3px solid transparent;border-top-color:var(--mu)}
+.fases{display:grid;grid-template-columns:repeat(3,1fr);font:600 8.5px/1.2 var(--fb);letter-spacing:.16em;color:var(--mu2);text-transform:uppercase}
+.fases span:first-child{color:var(--acc)}
+.pila{display:grid;gap:12px;padding:0 16px;margin-top:14px}
+.hoy{overflow:hidden;text-align:left;width:100%}
+.hoy .ft{height:110px;background:url(img/sala-pesas.webp) center 60%/cover;filter:grayscale(.35) brightness(.75)}
+.hoy .ft::after{content:"";display:block;height:100%;background:linear-gradient(transparent 30%,var(--n2))}
+.hoy .tx{padding:0 18px 18px;margin-top:-30px;position:relative}
+.hoy h3{font:600 34px/.95 var(--fd);text-transform:uppercase;margin:8px 0 10px}
+.meta{display:flex;gap:14px;color:var(--mu);font-size:12.5px;margin-bottom:16px}.meta b{color:var(--tx)}
+.coach{display:flex;align-items:center;gap:12px;padding:14px 16px;text-align:left;width:100%}
+.coach .av{background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--ink)}
+.coach p{margin:0;font-size:13px;color:var(--mu);line-height:1.35}.coach p b{display:block;color:var(--tx);font-size:14px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mini{padding:16px;text-align:left}
+.mini .num{display:block;font:700 30px/1 var(--fb);margin:10px 0 4px}
+.mini small{color:var(--mu);font-size:12px}.up{color:var(--acc);font-weight:700}
+.patro{position:relative;border-radius:18px;overflow:hidden;min-height:88px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:url(img/mancuernas.webp) center/cover}
+.patro::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,11,12,.92) 40%,rgba(11,11,12,.55))}
+.patro>*{position:relative}.patro b{font:600 24px/1 var(--fd)}
+
+/* rutina */
+.dias{display:grid;gap:10px;padding:0 16px;margin-top:16px}
+.dia{display:grid;grid-template-columns:62px 1fr auto;gap:14px;align-items:center;padding:14px;text-align:left;width:100%}
+.dia .n{height:62px;border-radius:14px;display:grid;place-items:center;font:500 26px/1 var(--fn);background:var(--n3)}
+.dia.hecho .n{background:var(--soft);color:var(--acc)}
+.dia.hoyd{box-shadow:inset 0 0 0 1.5px var(--acc)}
+.dia.hoyd .n{background:var(--acc);color:var(--ink)}
+.dia b{display:block;font:600 22px/1 var(--fd);text-transform:uppercase}
+.dia span{font-size:12.5px;color:var(--mu)}
+.dia .est{font:700 11px/1 var(--fb);color:var(--mu)}.dia.hecho .est{color:var(--acc)}
+.selsem{display:flex;gap:6px;padding:0 16px;margin-top:14px;overflow-x:auto;scrollbar-width:none}
+.selsem button{flex:none;min-height:38px;padding:0 14px;border-radius:99px;font-weight:700;font-size:12.5px;color:var(--mu);box-shadow:inset 0 0 0 1px var(--linea2)}
+.selsem button[aria-pressed=true]{background:var(--tx);color:var(--noche)}
+
+/* sesión */
+#sesion{padding-bottom:120px}
+.ej-foto{position:relative;height:300px;background:#050506 center 40%/cover no-repeat}
+.ej-foto::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(11,11,12,.45),transparent 30%,transparent 55%,var(--noche))}
+.pasos-ej{display:flex;gap:4px}
+.pasos-ej i{width:22px;height:4px;border-radius:2px;background:var(--linea2)}
+.pasos-ej i.ok{background:var(--acc)}.pasos-ej i.on{background:var(--tx)}
+.ver{position:absolute;right:16px;bottom:74px;z-index:4;display:flex;align-items:center;gap:8px;min-height:44px;font:700 11px/1 var(--fb);letter-spacing:.16em;text-transform:uppercase;padding:0 14px 0 10px;border-radius:99px;background:rgba(11,11,12,.6);backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1px var(--linea2)}
+.ver .pl{width:24px;height:24px;border-radius:50%;background:var(--acc);display:grid;place-items:center;color:var(--ink)}
+.ej-t{position:relative;z-index:3;margin-top:-58px;padding:0 20px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:600 11px/1 var(--fb);padding:7px 11px;border-radius:99px;color:var(--mu);box-shadow:inset 0 0 0 1px var(--linea2)}
+.chip.a{color:var(--acc);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 50%,transparent)}
+.series{margin:16px 16px 0;overflow:hidden}
+.serie{display:grid;grid-template-columns:30px 1fr 1fr 34px;align-items:center;gap:10px;padding:0 14px;height:52px;border-top:1px solid var(--linea)}
+.serie:first-child{border-top:0}
+.serie .n{font-weight:700;font-size:13px;color:var(--mu)}
+.serie .v{font-weight:700;font-size:17px}.serie .v small{font-weight:500;font-size:11px;color:var(--mu);margin-left:3px}
+.serie .ck{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--acc);color:var(--ink)}
+.serie.hecha .v{color:var(--mu)}.serie.pend .v{color:var(--mu2)}
+.serie.act{display:block;height:auto;padding:14px 14px 16px;background:linear-gradient(var(--soft),transparent);box-shadow:inset 2px 0 0 var(--acc)}
+.serie.act .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.serie.act .h small{color:var(--mu);font-size:12px}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.step{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;height:66px;border-radius:14px;background:var(--noche);box-shadow:inset 0 0 0 1px var(--linea2)}
+.step button{height:100%;font-size:24px;color:var(--mu)}
+.step button:active{color:var(--acc)}
+.step div{text-align:center}.step b{display:block;font:700 26px/1 var(--fb)}
+.step small{font:600 9px/1 var(--fb);letter-spacing:.22em;color:var(--mu);text-transform:uppercase}
+.desc{margin:12px 16px 0;display:flex;align-items:center;gap:14px;padding:12px 16px}
+.desc[hidden]{display:none}
+.anillo{width:48px;height:48px;flex:none}
+.anillo circle:last-child{transition:stroke-dashoffset 1s linear}
+.desc b{font:700 22px/1 var(--fb)}.desc small{display:block;color:var(--mu);font-size:12px;margin-top:3px}
+.desc button{margin-left:auto;min-height:40px;padding:0 12px;font:700 11px/1 var(--fb);letter-spacing:.16em;text-transform:uppercase;color:var(--mu)}
+.fijo{position:absolute;left:0;right:0;bottom:0;z-index:30;padding:14px 16px 26px;background:linear-gradient(to top,var(--noche) 70%,transparent);visibility:hidden}
+.fijo.on{visibility:visible}
+
+/* fin */
+.fin{min-height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:0 22px 34px;position:relative}
+.fin .f{position:absolute;inset:0;background:url(img/maquinas-jardin.webp) center/cover;filter:grayscale(.5) brightness(.55)}
+.fin .f::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(11,11,12,.3),var(--noche) 70%)}
+.fin>*:not(.f){position:relative}
+.fin .tit{font-size:56px}
+.res{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}
+.res div{padding:14px 10px;text-align:center}
+.res b{display:block;font:700 24px/1 var(--fb);margin-bottom:6px}.res small{font-size:11.5px;color:var(--mu)}
+.pts{display:flex;align-items:center;gap:12px;padding:16px;margin-bottom:16px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 40%,transparent)}
+.pts b{font:500 34px/1 var(--fn);color:var(--acc)}.pts span{font-size:13px;color:var(--mu)}
+
+/* progreso */
+.lugar{margin:16px 16px 0;position:relative;overflow:hidden;padding:20px 18px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 35%,transparent)}
+.lugar::before{content:"";position:absolute;inset:0;background:url(img/maquinas-jardin.webp) center/cover;opacity:.16;filter:grayscale(1)}
+.lugar>*{position:relative}
+.lugar .fila{display:flex;align-items:flex-end;justify-content:space-between;margin-top:10px}
+.lugar .pos{font:500 76px/.8 var(--fn)}.lugar .pos sup{font-size:28px;color:var(--acc);vertical-align:.9em}
+.lugar .de{text-align:right;color:var(--mu);font-size:12.5px}.lugar .de b{display:block;font:700 26px/1 var(--fb);color:var(--tx);margin-bottom:4px}
+.lugar .nt{margin-top:14px;padding-top:12px;border-top:1px solid var(--linea);font-size:12.5px;color:var(--mu)}.lugar .nt b{color:var(--acc)}
+.graf{margin:12px 16px 0;padding:16px}
+.graf .h{display:flex;justify-content:space-between;align-items:flex-start}
+.graf .h b{font:700 28px/1 var(--fb);display:block;margin-top:6px}
+.graf .d{color:var(--acc);font-weight:700;font-size:13px}
+.tg{display:flex;gap:4px;margin-top:12px}
+.tg button{min-height:34px;padding:0 12px;border-radius:99px;font-size:12px;font-weight:700;color:var(--mu);box-shadow:inset 0 0 0 1px var(--linea)}
+.tg button[aria-pressed=true]{color:var(--ink);background:var(--acc);box-shadow:none}
+.fig{position:relative;height:110px;margin-top:10px}.fig svg{position:absolute;inset:0;width:100%;height:100%}
+.ejes{display:flex;justify-content:space-between;font:600 9px/1 var(--fb);letter-spacing:.16em;color:var(--mu2);text-transform:uppercase;margin-top:6px}
+.medidas{margin:12px 16px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.medidas div{padding:14px 12px}
+.medidas b{display:block;font:700 20px/1 var(--fb);margin:8px 0 4px}
+.medidas small{font-size:11.5px;font-weight:700;color:var(--acc)}.medidas small.mal{color:var(--rojo)}
+.chico{margin:10px 22px 0;font-size:11.5px;color:var(--mu2)}
+
+/* nutrición */
+.macro{margin:16px 16px 0;padding:16px}
+.macro .kc{display:flex;align-items:baseline;gap:8px}.macro .kc b{font:700 34px/1 var(--fb)}.macro .kc span{color:var(--mu);font-size:13px}
+.barras{display:grid;gap:10px;margin-top:14px}
+.barras div{display:grid;grid-template-columns:76px 1fr 64px;align-items:center;gap:10px;font-size:12.5px;color:var(--mu)}
+.barras i{height:6px;border-radius:3px;background:var(--n3);overflow:hidden}.barras i span{display:block;height:100%;background:var(--acc);border-radius:3px}
+.barras em{font-style:normal;text-align:right;color:var(--tx);font-weight:700;white-space:nowrap}
+.comidas{display:grid;gap:10px;margin:12px 16px 0}
+.comida{display:grid;grid-template-columns:96px 1fr;overflow:hidden;text-align:left;width:100%}
+.comida img{width:96px;height:100%;min-height:96px;object-fit:cover}
+.comida div{padding:12px 14px}
+.comida b{display:block;font:600 19px/1.05 var(--fd);text-transform:uppercase;margin:6px 0 4px}
+.comida span{font-size:12px;color:var(--mu)}
+.comida.ok{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 45%,transparent)}
+
+/* perfil */
+.perfil-cab{display:flex;align-items:center;gap:16px;padding:0 22px;margin-top:14px}
+.perfil-cab .av{width:64px;height:64px;font-size:20px}
+.perfil-cab b{display:block;font:600 28px/1 var(--fd);text-transform:uppercase}
+.perfil-cab span{font-size:13px;color:var(--mu)}
+.lista{margin:16px 16px 0;overflow:hidden}
+.fil{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:0 16px;border-top:1px solid var(--linea);width:100%;text-align:left}
+.fil:first-child{border-top:0}
+.fil span{color:var(--mu);font-size:13.5px}.fil b{font-weight:600;font-size:14px;text-align:right}
+
+/* hojas */
+.velo{position:absolute;inset:0;z-index:80;background:rgba(0,0,0,.6);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.velo.on{opacity:1;visibility:visible}
+.hoja{position:absolute;left:0;right:0;bottom:0;z-index:90;max-height:86%;overflow-y:auto;border-radius:26px 26px 0 0;background:var(--n2);box-shadow:inset 0 1px 0 var(--linea2);padding:10px 20px 30px;transform:translateY(105%);visibility:hidden;transition:transform .4s var(--expo),visibility .4s}
+.hoja.on{transform:none;visibility:visible}
+.hoja .asa{width:40px;height:5px;border-radius:3px;background:var(--linea2);margin:0 auto 14px}
+.hoja img{border-radius:16px;margin:12px 0 4px;background:#050506;width:100%;aspect-ratio:4/3;object-fit:cover}
+.hoja ol{margin:14px 0 18px;padding:0;list-style:none;counter-reset:p;display:grid;gap:10px}
+.hoja li{counter-increment:p;display:grid;grid-template-columns:30px 1fr;gap:10px;color:var(--mu);font-size:14px}
+.hoja li::before{content:counter(p);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--acc);font-weight:700;font-size:13px}
+.hoja .bts{display:grid;gap:10px}
+.toast{position:absolute;left:50%;top:60px;visibility:hidden;z-index:95;translate:-50% -20px;opacity:0;padding:12px 16px;border-radius:14px;background:var(--tx);color:var(--noche);font-weight:700;font-size:13px;white-space:nowrap;transition:opacity .25s,translate .35s var(--expo);pointer-events:none}
+.toast.on{visibility:visible;opacity:1;translate:-50% 0}
+</style>
+</head>
+<body data-acento="oro">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></symbol>
+  <symbol id="i-rut" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></symbol>
+  <symbol id="i-prog" viewBox="0 0 24 24"><path d="M3 20h18"/><path d="m4 15 5-5 4 3 7-7"/><path d="M15 6h5v5"/></symbol>
+  <symbol id="i-nut" viewBox="0 0 24 24"><path d="M12 7c-3-3-8-1-8 4 0 5 4 10 8 10s8-5 8-10c0-5-5-7-8-4Z"/><path d="M12 7c0-2 1-4 3-4"/></symbol>
+  <symbol id="i-yo" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 6 2 8 2 8H4s2-2 2-8"/><path d="M10 21h4"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+</svg>
+
+<div class="marco">
+  <aside class="panel">
+    <div class="k">Prototipo navegable · Reto Fit CCA</div>
+    <h1>Club de noche</h1>
+    <p>Úsalo como si fuera la app: entra, muévete por las pestañas, haz una sesión completa y sal.</p>
+    <h2>Color de acción</h2>
+    <div class="seg" role="group" aria-label="Color de acción">
+      <button aria-pressed="true" data-a="oro"><i style="background:#CDAE70"></i>Oro</button>
+      <button aria-pressed="false" data-a="lima"><i style="background:#B6F03C"></i>Lima</button>
+      <button aria-pressed="false" data-a="olivo"><i style="background:#8DBB4A"></i>Olivo</button>
+    </div>
+    <h2>Prueba esto</h2>
+    <ul class="prueba">
+      <li><span><b>Soy nuevo</b>: elige tu objetivo y crea tu plan.</span></li>
+      <li><span><b>Empezar sesión</b>: ajusta kg y reps, guarda cada serie y mira el descanso.</span></li>
+      <li><span><b>Técnica</b>: abre los pasos del ejercicio.</span></li>
+      <li><span><b>Flecha atrás</b> en la sesión: te pregunta si quieres salir.</span></li>
+      <li><span><b>Perfil → Cerrar sesión</b>: regresas a la portada.</span></li>
+    </ul>
+    <button class="reini" id="reini">Empezar de nuevo</button>
+    <p class="nota">Nombres, cifras y entrenador son de muestra.</p>
+  </aside>
+
+  <div class="tel"><div class="pant" id="app">
+    <div class="isla"></div>
+    <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="chipacc" role="group" aria-label="Color de acción">
+      <button aria-pressed="true" data-a="oro" aria-label="Oro"><i style="background:#CDAE70"></i></button>
+      <button aria-pressed="false" data-a="lima" aria-label="Lima"><i style="background:#B6F03C"></i></button>
+      <button aria-pressed="false" data-a="olivo" aria-label="Olivo"><i style="background:#8DBB4A"></i></button>
+    </div>
+
+    <!-- Portada -->
+    <section class="scr on" id="portada" aria-label="Portada">
+      <div class="p-foto"></div><div class="p-velo"></div>
+      <div class="p-in">
+        <img class="logo" src="img/logo-campestre.png" alt="Campestre Aguascalientes">
+        <h2>Reto<br>Fit</h2>
+        <div class="p-ano">Campestre 2027</div>
+        <div class="eti">Fuerza · Nutrición · Recuperación</div>
+        <div class="p-cuenta"><div><b>49</b><small>Días</small></div><div><b>12</b><small>Semanas</small></div><div><b>3</b><small>Objetivos</small></div></div>
+        <div class="p-acc">
+          <button class="btn" data-go="registro">Soy nuevo</button>
+          <button class="btn sec" data-go="entrar">Ya tengo cuenta</button>
+        </div>
+        <div class="eti" style="margin-top:18px">Patrocinadores oficiales</div>
+        <div class="patros"><span>TU MARCA</span><span>TU MARCA</span><span>TU MARCA</span><span>TU MARCA</span></div>
+      </div>
+    </section>
+
+    <!-- Entrar -->
+    <section class="scr" id="entrar" aria-label="Entrar">
+      <div class="barra"><button class="circ" data-back aria-label="Atrás"><svg class="ico"><use href="#i-back"/></svg></button></div>
+      <div class="top" style="padding-top:120px">
+        <div class="eti a">Bienvenida de vuelta</div>
+        <h2 class="tit">Entra a<br>tu reto</h2>
+        <p class="sub" style="margin-bottom:24px">Con el correo con el que te registraste.</p>
+        <form id="f-entrar">
+          <div class="campo"><label for="c1">Correo</label><input id="c1" type="email" value="ana.lopez@correo.mx" autocomplete="off"></div>
+          <div class="campo"><label for="c2">Contraseña</label><input id="c2" type="password" value="contraseña"></div>
+          <button class="btn" style="margin-top:12px">Entrar</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Registro -->
+    <section class="scr" id="registro" aria-label="Registro">
+      <div class="barra"><button class="circ" data-back aria-label="Atrás"><svg class="ico"><use href="#i-back"/></svg></button><span class="eti">Paso 2 de 11</span><span style="width:44px"></span></div>
+      <div class="top" style="padding-top:116px">
+        <div class="eti a">Tu objetivo</div>
+        <h2 class="tit">¿A qué vienes<br>al reto?</h2>
+        <p class="sub">Compites solo contra quien busca lo mismo.</p>
+        <div class="obj" id="obj">
+          <button aria-pressed="true" data-o="Incremento de masa muscular"><div><b>Masa muscular</b><span>Ganar músculo y fuerza</span></div><i class="r"></i></button>
+          <button aria-pressed="false" data-o="Bajar porcentaje de grasa"><div><b>Bajar grasa</b><span>Bajar tu porcentaje de grasa</span></div><i class="r"></i></button>
+          <button aria-pressed="false" data-o="Recomposición corporal"><div><b>Recomposición</b><span>Menos grasa y más músculo a la vez</span></div><i class="r"></i></button>
+        </div>
+        <div class="campo"><label for="c3">Código de tu entrenador</label><input id="c3" value="ENT-4821"></div>
+        <div class="ok-cod"><svg class="ico" style="width:16px;height:16px"><use href="#i-check"/></svg>Rodrigo Martínez · Coach del CCA</div>
+        <button class="btn" data-go="inicio" data-login>Crear mi plan</button>
+      </div>
+    </section>
+
+    <!-- Inicio -->
+    <section class="scr" id="inicio" aria-label="Inicio">
+      <div class="cab"><div class="f"></div>
+        <div class="hola"><div class="yo"><div class="av">AL</div><div><small>Buenas tardes</small><b>Ana López</b></div></div>
+          <button class="circ" data-toast="Sin avisos nuevos" aria-label="Avisos"><svg class="ico"><use href="#i-bell"/></svg></button></div>
+        <div class="in">
+          <div class="eti a">Fase 1 · Adaptación</div>
+          <div class="sem"><span class="big">03</span><span class="de"><b>Semana 3 de 12</b>Día 17 de 84 · faltan 67</span></div>
+          <div class="riel" aria-label="Semana 3 de 12"><i class="ok ev"></i><i class="ok"></i><i class="hoy"></i><i></i><i></i><i class="ev"></i><i></i><i></i><i></i><i></i><i></i><i class="ev"></i></div>
+          <div class="fases"><span>Adaptación</span><span>Fuerza e hipertrofia</span><span>Definición</span></div>
+        </div>
+      </div>
+      <div class="pila">
+        <div class="card hoy"><div class="ft"></div><div class="tx">
+          <div class="eti a">Hoy · Día 2 de 4</div>
+          <h3>Pierna<br>y glúteo</h3>
+          <div class="meta"><span><b>3</b> ejercicios</span><span><b>~40</b> min</span><span><b>10</b> series</span></div>
+          <button class="btn" data-go="sesion" data-start>Empezar sesión <svg class="ico"><use href="#i-arrow"/></svg></button>
+        </div></div>
+        <button class="card coach" data-toast="Mensaje de muestra del entrenador"><div class="av">RM</div><p><b>Plan de Rodrigo M.</b>Tu entrenador ajustó el hip thrust ayer.</p></button>
+        <div class="dos">
+          <button class="card mini" data-tab="rutina"><span class="eti">Esta semana</span><span class="num"><span id="ses-sem">1</span><span style="color:var(--mu);font-size:18px"> / 4</span></span><small>sesiones</small></button>
+          <button class="card mini" data-tab="progreso"><span class="eti">Tu lugar</span><span class="num" id="lugar-mini">14°</span><small><span class="up">▲ 3</span> en tu objetivo</small></button>
+        </div>
+        <div class="patro"><div><b>TU MARCA</b><div class="eti" style="margin-top:6px;font-size:9px">Patrocinador oficial</div></div><svg class="ico" style="color:var(--acc)"><use href="#i-arrow"/></svg></div>
+      </div>
+    </section>
+
+    <!-- Rutina -->
+    <section class="scr" id="rutina" aria-label="Rutina">
+      <div class="top"><div class="eti a">Plan de Rodrigo M.</div><h2 class="tit">Tu rutina</h2><p class="sub">4 días por semana · Fase 1 · Adaptación</p></div>
+      <div class="selsem" id="selsem"></div>
+      <div class="dias">
+        <button class="card dia hecho" data-toast="Ya hiciste este día"><span class="n">1</span><div><b>Torso empuje</b><span>Pecho, hombro, tríceps · 5 ej.</span></div><span class="est">Hecho</span></button>
+        <button class="card dia hoyd" id="dia2" data-go="sesion" data-start><span class="n">2</span><div><b>Pierna y glúteo</b><span>Prensa, hip thrust, rumano · 3 ej.</span></div><span class="est">Hoy</span></button>
+        <button class="card dia" data-toast="Disponible el jueves"><span class="n">3</span><div><b>Torso jalón</b><span>Espalda, bíceps · 5 ej.</span></div><span class="est">Jue</span></button>
+        <button class="card dia" data-toast="Disponible el sábado"><span class="n">4</span><div><b>Cuerpo completo</b><span>Circuito y core · 6 ej.</span></div><span class="est">Sáb</span></button>
+      </div>
+    </section>
+
+    <!-- Sesión -->
+    <section class="scr" id="sesion" aria-label="Sesión">
+      <div class="ej-foto" id="ej-foto"><button class="ver" id="ver"><span class="pl"><svg class="ico" style="width:12px;height:12px"><use href="#i-play"/></svg></span>Técnica</button></div>
+      <div class="barra"><button class="circ" id="salir" aria-label="Salir de la sesión"><svg class="ico"><use href="#i-back"/></svg></button><div class="pasos-ej" id="pasos-ej"></div><span class="eti" id="ej-num" style="color:var(--tx);min-width:44px;text-align:right"></span></div>
+      <div class="ej-t"><div class="eti a" id="ej-eq"></div><h2 class="tit" id="ej-n"></h2><div class="chips" id="ej-chips"></div></div>
+      <div class="card series" id="series"></div>
+      <div class="card desc" id="desc" hidden>
+        <svg class="anillo" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="3"/><circle id="arc" cx="24" cy="24" r="21" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linecap="round" stroke-dasharray="131.9" stroke-dashoffset="0" transform="rotate(-90 24 24)"/></svg>
+        <div><b id="t-desc">1:30</b><small>Descanso</small></div>
+        <button id="saltar">Saltar</button>
+      </div>
+    </section>
+    <div class="fijo" id="fijo"><button class="btn" id="guardar"></button></div>
+
+    <!-- Fin -->
+    <section class="scr" id="fin" aria-label="Sesión terminada">
+      <div class="fin"><div class="f"></div>
+        <div class="eti a">Día 2 · Semana 3</div>
+        <h2 class="tit">Sesión<br>completa</h2>
+        <p class="sub">Tu entrenador ya ve tus registros.</p>
+        <div class="res"><div class="card"><b id="r-ser">10</b><small>series</small></div><div class="card"><b id="r-vol">0</b><small>kg movidos</small></div><div class="card"><b id="r-min">38</b><small id="r-min-l">minutos</small></div></div>
+        <div class="card pts"><b>+40</b><span>puntos para tu lugar en el reto. Subiste al <b style="font:700 13px var(--fb);color:var(--tx)">13°</b>.</span></div>
+        <button class="btn" data-tab="inicio">Volver al inicio</button>
+      </div>
+    </section>
+
+    <!-- Progreso -->
+    <section class="scr" id="progreso" aria-label="Progreso">
+      <div class="top"><div class="eti a" id="obj-prog">Incremento de masa muscular</div><h2 class="tit">Tu progreso</h2><p class="sub">Solo tú ves tu lugar. Nadie ve tu nombre.</p></div>
+      <div class="card lugar">
+        <div class="eti">Tu lugar en tu objetivo</div>
+        <div class="fila"><div class="pos"><span id="pos">14</span><sup>°</sup></div><div class="de"><b id="pts">1,240</b>puntos · de 96 socios</div></div>
+        <div class="nt" id="nt">Te faltan <b>80 puntos</b> para el lugar 10. Una sesión suma 40.</div>
+      </div>
+      <div class="card graf">
+        <div class="h"><div><span class="eti" id="g-lbl">Peso corporal</span><b id="g-val">71.8 kg</b></div><span class="d" id="g-d">▲ 1.6 kg</span></div>
+        <div class="tg" id="tg"><button aria-pressed="true" data-g="peso">Peso</button><button aria-pressed="false" data-g="brazo">Brazo</button><button aria-pressed="false" data-g="fuerza">Fuerza</button></div>
+        <div class="fig"><svg id="g" aria-label="Gráfica"></svg></div>
+        <div class="ejes"><span>Sem 0</span><span>Sem 1</span><span>Sem 2</span><span>Hoy</span></div>
+      </div>
+      <div class="medidas">
+        <div class="card"><span class="eti">Brazo</span><b>32.5</b><small>▲ 0.8 cm</small></div>
+        <div class="card"><span class="eti">Cintura</span><b>78.0</b><small class="mal">▲ 0.5 cm</small></div>
+        <div class="card"><span class="eti">Grasa*</span><b>21.4</b><small>▼ 0.6 %</small></div>
+      </div>
+      <p class="chico">* Estimado con cintura, cuello y cadera; no es una medición clínica. Próxima evaluación: semana 6.</p>
+    </section>
+
+    <!-- Nutrición -->
+    <section class="scr" id="nutricion" aria-label="Nutrición">
+      <div class="top"><div class="eti a">Hoy · Día de entreno</div><h2 class="tit">Tu comida</h2><p class="sub">Toca una comida para marcarla como hecha.</p></div>
+      <div class="card macro">
+        <div class="kc"><b id="kc">0</b><span>de 2,300 kcal</span></div>
+        <div class="barras" id="barras"></div>
+      </div>
+      <div class="comidas" id="comidas"></div>
+    </section>
+
+    <!-- Perfil -->
+    <section class="scr" id="perfil" aria-label="Perfil">
+      <div class="top"><div class="eti a">Tu cuenta</div><h2 class="tit">Perfil</h2></div>
+      <div class="perfil-cab"><div class="av">AL</div><div><b>Ana López</b><span>Socia #RF-0217 · desde enero 2027</span></div></div>
+      <div class="card lista">
+        <div class="fil"><span>Objetivo</span><b id="obj-perf">Masa muscular</b></div>
+        <div class="fil"><span>Entrenador</span><b>Rodrigo Martínez</b></div>
+        <div class="fil"><span>Días por semana</span><b>4</b></div>
+        <div class="fil"><span>Próxima evaluación</span><b>Semana 6</b></div>
+      </div>
+      <div class="card lista">
+        <button class="fil" data-toast="Abre la ficha de mediciones"><span>Mi cuerpo y medidas</span><svg class="ico" style="color:var(--mu)"><use href="#i-chev"/></svg></button>
+        <button class="fil" data-toast="Se descarga el PDF de tu rutina"><span>PDF de mi rutina</span><svg class="ico" style="color:var(--mu)"><use href="#i-chev"/></svg></button>
+      </div>
+      <div class="pad" style="margin-top:16px"><button class="btn rojo" id="logout">Cerrar sesión</button></div>
+    </section>
+
+    <nav class="tabs fuera" id="tabs" aria-label="Pestañas">
+      <button class="tab" data-tab="inicio"><svg class="ico"><use href="#i-home"/></svg>Inicio</button>
+      <button class="tab" data-tab="rutina"><svg class="ico"><use href="#i-rut"/></svg>Rutina</button>
+      <button class="tab" data-tab="progreso"><svg class="ico"><use href="#i-prog"/></svg>Progreso</button>
+      <button class="tab" data-tab="nutricion"><svg class="ico"><use href="#i-nut"/></svg>Nutrición</button>
+      <button class="tab" data-tab="perfil"><svg class="ico"><use href="#i-yo"/></svg>Perfil</button>
+    </nav>
+
+    <div class="velo" id="velo"></div>
+    <div class="hoja" id="h-tec" role="dialog" aria-label="Técnica"><div class="asa"></div>
+      <div class="eti a">Técnica</div><h2 class="tit" id="tec-n" style="font-size:32px"></h2>
+      <img id="tec-img" alt=""><ol id="tec-pasos"></ol>
+      <div class="bts"><button class="btn sec" data-cerrar>Entendido</button></div>
+    </div>
+    <div class="hoja" id="h-salir" role="dialog" aria-label="Salir de la sesión"><div class="asa"></div>
+      <div class="eti a">Sesión en curso</div><h2 class="tit" style="font-size:32px">¿Salir de<br>la sesión?</h2>
+      <p class="sub" style="margin-bottom:18px">Las series que guardaste se quedan. Puedes seguir después desde Inicio.</p>
+      <div class="bts"><button class="btn" data-cerrar>Seguir entrenando</button><button class="btn sec" id="salir-si">Salir</button></div>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+  </div></div>
+</div>
+
+<script>
+{
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const app=$('#app'), tabs=$('#tabs');
+const TABS=['inicio','rutina','progreso','nutricion','perfil'];
+let hist=['portada'], timer=null, toastT=null;
+
+function show(id,dir){
+  const cur=$('.scr.on'); if(cur&&cur.id===id) return;
+  if(cur) cur.classList.remove('on','in-r','in-l','in-f');
+  const n=$('#'+id); n.classList.remove('in-r','in-l','in-f'); void n.offsetWidth;
+  n.classList.add('on','in-'+dir); n.scrollTop=0;
+  tabs.classList.toggle('fuera',!TABS.includes(id));
+  $$('.tab').forEach(t=>t.setAttribute('aria-current',t.dataset.tab===id?'page':'false'));
+  $('#fijo').classList.toggle('on',id==='sesion');
+  if(id!=='sesion') pararDesc();
+}
+function go(id){hist.push(id);show(id,'r')}
+function back(){if(hist.length>1){hist.pop();show(hist[hist.length-1],'l')}}
+function tab(id){hist=[id];show(id,'f')}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1800)}
+
+/* acento */
+$$('[data-a]').forEach(b=>b.addEventListener('click',()=>{document.body.dataset.acento=b.dataset.a;$$('[data-a]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.a===b.dataset.a))}));
+
+/* navegación genérica */
+app.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.start!==undefined) iniciarSesion();
+  if(b.dataset.login!==undefined){hist=['inicio'];show('inicio','r');return}
+  if(b.dataset.go) go(b.dataset.go);
+  else if(b.dataset.tab) tab(b.dataset.tab);
+  else if(b.dataset.back!==undefined) back();
+  else if(b.dataset.toast) toast(b.dataset.toast);
+  else if(b.dataset.cerrar!==undefined) cerrarHojas();
+});
+$('#f-entrar').addEventListener('submit',e=>{e.preventDefault();hist=['inicio'];show('inicio','r')});
+$('#logout').addEventListener('click',()=>{hist=['portada'];show('portada','l');toast('Cerraste sesión')});
+$('#reini').addEventListener('click',()=>{cerrarHojas();hecho=false;actualizarRutina();hist=['portada'];show('portada','f')});
+
+/* objetivo */
+const OBJ={"Incremento de masa muscular":"Masa muscular","Bajar porcentaje de grasa":"Bajar grasa","Recomposición corporal":"Recomposición"};
+$$('#obj button').forEach(b=>b.addEventListener('click',()=>{
+  $$('#obj button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  $('#obj-prog').textContent=b.dataset.o;$('#obj-perf').textContent=OBJ[b.dataset.o];
+}));
+
+/* hojas */
+function abrir(h){$('#velo').classList.add('on');$(h).classList.add('on')}
+function cerrarHojas(){$('#velo').classList.remove('on');$$('.hoja').forEach(h=>h.classList.remove('on'))}
+$('#velo').addEventListener('click',cerrarHojas);
+$('#salir').addEventListener('click',()=>abrir('#h-salir'));
+$('#salir-si').addEventListener('click',()=>{cerrarHojas();tab('inicio');toast('Avance guardado')});
+
+/* sesión */
+const EJ=[
+ {n:'Prensa de piernas',eq:'Máquina · Panatta',img:'ej-prensa-de-piernas',mus:['Cuádriceps','Glúteo'],s:3,kg:120,r:12,prev:'120 kg × 11',d:90,
+  p:['Espalda y cadera pegadas al respaldo.','Pies al ancho de hombros, a media plataforma.','Baja hasta 90° de rodilla sin despegar la cadera.','Empuja con todo el pie; no bloquees las rodillas arriba.']},
+ {n:'Hip thrust',eq:'Barra · Banca',img:'ej-hip-thrust',mus:['Glúteo','Femoral'],s:4,kg:70,r:10,prev:'65 kg × 10',d:90,
+  p:['Escápulas apoyadas en la orilla de la banca.','Barra sobre la cadera, con almohadilla.','Sube hasta que torso y muslos queden en línea.','Aprieta el glúteo 1 segundo arriba y baja controlado.']},
+ {n:'Peso muerto rumano',eq:'Barra libre',img:'ej-peso-muerto-rumano',mus:['Femoral','Glúteo','Espalda baja'],s:3,kg:50,r:10,prev:'50 kg × 10',d:75,
+  p:['Rodillas un poco flexionadas y fijas.','Lleva la cadera hacia atrás con la espalda recta.','Baja la barra pegada a las piernas hasta media espinilla.','Sube empujando la cadera al frente.']}
+];
+let ei=0, log=[], kg=0, reps=0, hecho=false, t0=0;
+function iniciarSesion(){ei=0;log=EJ.map(()=>[]);t0=Date.now();cargarEj()}
+function cargarEj(){const e=EJ[ei];kg=e.kg;reps=e.r;pintar();$('#sesion').scrollTop=0}
+function pintar(){
+  const e=EJ[ei], L=log[ei], si=L.length;
+  $('#ej-foto').style.backgroundImage=`url(img/${e.img}.webp)`;
+  $('#ej-eq').textContent=e.eq;$('#ej-n').textContent=e.n;
+  $('#ej-num').textContent=`${ei+1} / ${EJ.length}`;
+  $('#pasos-ej').innerHTML=EJ.map((_,i)=>`<i class="${i<ei?'ok':i===ei?'on':''}"></i>`).join('');
+  $('#ej-chips').innerHTML=e.mus.map((m,i)=>`<span class="chip ${i?'':'a'}">${m}</span>`).join('')+`<span class="chip">${e.s} × ${e.r}</span>`;
+  let h='';
+  for(let i=0;i<e.s;i++){
+    if(i<si) h+=`<div class="serie hecha"><span class="n">${i+1}</span><span class="v">${fmt(L[i].kg)}<small>kg</small></span><span class="v">${L[i].r}<small>reps</small></span><span class="ck"><svg class="ico" style="width:16px;height:16px"><use href="#i-check"/></svg></span></div>`;
+    else if(i===si) h+=`<div class="serie act"><div class="h"><span class="eti a">Serie ${i+1} de ${e.s}</span><small>La vez pasada: ${e.prev}</small></div>
+      <div class="steps"><div class="step"><button data-k="-2.5" aria-label="Menos peso">−</button><div><b id="v-kg">${fmt(kg)}</b><small>kg</small></div><button data-k="2.5" aria-label="Más peso">+</button></div>
+      <div class="step"><button data-r="-1" aria-label="Menos repeticiones">−</button><div><b id="v-r">${reps}</b><small>reps</small></div><button data-r="1" aria-label="Más repeticiones">+</button></div></div></div>`;
+    else h+=`<div class="serie pend"><span class="n">${i+1}</span><span class="v">${fmt(kg)}<small>kg</small></span><span class="v">${e.r}<small>reps</small></span><span></span></div>`;
+  }
+  $('#series').innerHTML=h;
+  const fin=si>=e.s, ult=ei===EJ.length-1;
+  $('#guardar').innerHTML=fin?(ult?'Terminar sesión <svg class="ico"><use href="#i-check"/></svg>':'Siguiente ejercicio <svg class="ico"><use href="#i-arrow"/></svg>'):'<svg class="ico"><use href="#i-check"/></svg> Guardar serie';
+}
+const fmt=n=>Number.isInteger(n)?String(n):n.toFixed(1);
+$('#series').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.k){kg=Math.max(0,kg+parseFloat(b.dataset.k));$('#v-kg').textContent=fmt(kg)}
+  if(b.dataset.r){reps=Math.max(1,reps+parseInt(b.dataset.r));$('#v-r').textContent=reps}
+});
+$('#guardar').addEventListener('click',()=>{
+  const e=EJ[ei],L=log[ei];
+  if(L.length<e.s){L.push({kg,r:reps});pintar();if(L.length<e.s)arrancarDesc(e.d);else{pararDesc();toast('Ejercicio completo')}return}
+  if(ei<EJ.length-1){ei++;pararDesc();cargarEj();$('#sesion').classList.remove('in-r');void $('#sesion').offsetWidth;$('#sesion').classList.add('in-r');return}
+  const all=log.flat();$('#r-ser').textContent=all.length;
+  $('#r-vol').textContent=all.reduce((a,s)=>a+s.kg*s.r,0).toLocaleString('es-MX');
+  const mins=Math.max(1,Math.round((Date.now()-t0)/60000));$('#r-min').textContent=mins;$('#r-min-l').textContent=mins===1?'minuto':'minutos';
+  hecho=true;actualizarRutina();hist=['fin'];show('fin','r');
+});
+function arrancarDesc(seg){
+  pararDesc();let r=seg;const d=$('#desc'),arc=$('#arc');d.hidden=false;
+  const tick=()=>{$('#t-desc').textContent=`${Math.floor(r/60)}:${String(r%60).padStart(2,'0')}`;arc.style.strokeDashoffset=131.9*(1-r/seg)};
+  tick();timer=setInterval(()=>{r--;if(r<=0){pararDesc();toast('A la siguiente serie');return}tick()},1000);
+}
+function pararDesc(){clearInterval(timer);timer=null;$('#desc').hidden=true}
+$('#saltar').addEventListener('click',pararDesc);
+$('#ver').addEventListener('click',()=>{const e=EJ[ei];$('#tec-n').textContent=e.n;$('#tec-img').src=`img/${e.img}.webp`;$('#tec-img').alt=e.n;$('#tec-pasos').innerHTML=e.p.map(x=>`<li>${x}</li>`).join('');abrir('#h-tec')});
+
+/* rutina */
+$('#selsem').innerHTML=Array.from({length:12},(_,i)=>`<button aria-pressed="${i===2}" data-s="${i+1}">Sem ${i+1}</button>`).join('');
+$('#selsem').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(+b.dataset.s!==3){toast(+b.dataset.s<3?'Semana completada':'Se abre al llegar a esa semana');return}});
+function actualizarRutina(){
+  const d=$('#dia2');d.classList.toggle('hecho',hecho);d.classList.toggle('hoyd',!hecho);d.querySelector('.est').textContent=hecho?'Hecho':'Hoy';
+  $('#ses-sem').textContent=hecho?2:1;
+  $('#pos').textContent=hecho?13:14;$('#lugar-mini').textContent=(hecho?13:14)+'°';$('#pts').textContent=hecho?'1,280':'1,240';
+  $('#nt').innerHTML=hecho?'Te faltan <b>40 puntos</b> para el lugar 10. Una sesión suma 40.':'Te faltan <b>80 puntos</b> para el lugar 10. Una sesión suma 40.';
+}
+
+/* gráfica */
+const G={peso:{l:'Peso corporal',v:'71.8 kg',d:'▲ 1.6 kg',p:[70.2,70.4,70.9,71.1,71.5,71.8]},
+         brazo:{l:'Brazo',v:'32.5 cm',d:'▲ 0.8 cm',p:[31.7,31.8,32,32.1,32.3,32.5]},
+         fuerza:{l:'Hip thrust · máximo',v:'70 kg',d:'▲ 15 kg',p:[55,57.5,60,62.5,65,70]}};
+let gk='peso';const svg=$('#g');
+function draw(){const W=svg.clientWidth,H=svg.clientHeight;if(!W)return;const p=G[gk].p,mn=Math.min(...p),mx=Math.max(...p),pad=10;
+  const pts=p.map((v,i)=>[pad+i*(W-2*pad)/(p.length-1),H-pad-(v-mn)/(mx-mn||1)*(H-2*pad)]);
+  const line=pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' ');const l=pts[pts.length-1];
+  svg.innerHTML=`<defs><linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--acc)" stop-opacity=".28"/><stop offset="1" stop-color="var(--acc)" stop-opacity="0"/></linearGradient></defs>
+  <path d="${line} L${l[0]} ${H} L${pts[0][0]} ${H}Z" fill="url(#gf)"/><path d="${line}" fill="none" stroke="var(--acc)" stroke-width="2.2" stroke-linejoin="round"/><circle cx="${l[0]}" cy="${l[1]}" r="4.5" fill="var(--acc)"/>`;
+  $('#g-lbl').textContent=G[gk].l;$('#g-val').textContent=G[gk].v;$('#g-d').textContent=G[gk].d;}
+const ro=new ResizeObserver(draw);ro.observe(svg);
+$('#tg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;gk=b.dataset.g;$$('#tg button').forEach(x=>x.setAttribute('aria-pressed',x===b));draw()});
+new MutationObserver(draw).observe($('#progreso'),{attributes:true,attributeFilter:['class']});
+
+/* nutrición */
+const CM=[{t:'Desayuno · 8:00',n:'Chilaquiles con pollo',k:520,p:32,img:'d-chilaquiles'},{t:'Colación · 11:00',n:'Licuado de plátano',k:310,p:24,img:'c-licuado'},
+          {t:'Comida · 15:00',n:'Salmón con camote',k:680,p:42,img:'m-salmon-camote'},{t:'Cena · 21:00',n:'Tacos de pechuga',k:460,p:36,img:'n-tacos-pechuga'}];
+const ok=new Set();
+function pintarNut(){
+  $('#comidas').innerHTML=CM.map((c,i)=>`<button class="card comida ${ok.has(i)?'ok':''}" data-c="${i}"><img src="img/${c.img}.webp" alt=""><div><span class="eti ${ok.has(i)?'a':''}">${ok.has(i)?'Hecha · ':''}${c.t}</span><b>${c.n}</b><span>${c.k} kcal · ${c.p} g proteína</span></div></button>`).join('');
+  const k=[...ok].reduce((a,i)=>a+CM[i].k,0),p=[...ok].reduce((a,i)=>a+CM[i].p,0);
+  $('#kc').textContent=k.toLocaleString('es-MX');
+  $('#barras').innerHTML=[['Proteína',p,150,'g'],['Calorías',k,2300,'kcal']].map(([n,v,m,u])=>`<div><span>${n}</span><i><span style="width:${Math.min(100,v/m*100)}%"></span></i><em>${v} / ${m}</em></div>`).join('');
+}
+$('#comidas').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;const i=+b.dataset.c;ok.has(i)?ok.delete(i):ok.add(i);pintarNut()});
+pintarNut();
+}
+</script>
+</body>
+</html>
