@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#DCE6E2">
+<title>Nutrición · vista previa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Vista previa: pestaña Nutrición con los colores, letras y barra de la app actual
+   (salvia #DCE6E2, verde profundo #1D2B27, naranja #F07A2B, Kanit itálica + Figtree)
+   y el acomodo de la propuesta oscura: título "Tu comida", resumen con barras,
+   tarjetas con foto grande a la izquierda y palomita a la derecha.
+   Al tocar una foto se abre la ficha en una ventana de vidrio. */
+:root{
+  --top:#DCE6E2;--bg2:#C9D8D2;--deep:#1D2B27;--deep2:#2C403A;
+  --acc:#F07A2B;--acc2:#FFB07A;
+  --ink:#17231F;--mu:#5E6B66;--mu2:#87928D;
+  --card:rgba(255,255,255,.62);--card-b:rgba(255,255,255,.85);--line:rgba(29,43,39,.12);--trk:rgba(29,43,39,.10);
+  --sh:0 12px 26px -18px rgba(10,20,30,.45);
+  --fd:Kanit,system-ui,sans-serif;--fb:Figtree,system-ui,sans-serif;
+}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#C7D3CE}
+body{color:var(--ink);font:15px/1.5 var(--fb)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+img{display:block}
+
+.phone{position:relative;max-width:430px;margin:0 auto;min-height:100svh;overflow:hidden;
+  background:linear-gradient(180deg,#E6EEEA 0%,var(--top) 35%,var(--bg2) 100%)}
+@media (min-width:600px){
+  body{padding:28px 0;background:radial-gradient(circle at 50% 0,#E9F0EC,#AFC0B9 75%)}
+  .phone{height:880px;min-height:0;border-radius:44px;border:10px solid #1d1d20;box-shadow:0 40px 90px -30px rgba(0,0,0,.5)}
+}
+.scroll{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:0 18px 130px;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+
+/* encabezado */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top) + 28px) 2px 4px}
+.top h1{margin:0;font:italic 800 44px/0.92 var(--fd);letter-spacing:-.01em;text-transform:uppercase;color:var(--deep)}
+.top .day{display:flex;gap:8px;align-items:center;padding-bottom:6px}
+.top .day i{width:12px;height:12px;border-radius:50%;background:var(--deep);opacity:.18}
+.top .day i.on{width:28px;border-radius:99px;opacity:1;background:var(--acc)}
+.lead{margin:10px 2px 18px;color:var(--mu);font-size:15px;max-width:36ch}
+
+.kicker{font:700 12px/1 var(--fb);letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+
+/* resumen */
+.sum{padding:22px;background:var(--card);border:1px solid var(--card-b);border-radius:28px;box-shadow:var(--sh);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.sum-h{display:flex;align-items:baseline;gap:10px}
+.sum-h b{font:italic 800 52px/1 var(--fd);color:var(--deep);font-variant-numeric:tabular-nums}
+.sum-h span{color:var(--mu);font-weight:600;font-size:16px}
+.sum-h em{margin-left:auto;font-style:normal;color:var(--mu);font-weight:600}
+.rows{display:grid;gap:14px;margin-top:18px}
+.row{display:grid;grid-template-columns:76px minmax(0,1fr) auto;align-items:center;gap:14px}
+.row span{color:var(--mu);font-size:14.5px}
+.row b{font:italic 700 16px/1 var(--fd);color:var(--deep);font-variant-numeric:tabular-nums;white-space:nowrap}
+.row b small{font:inherit;color:var(--mu2)}
+.bar{height:8px;border-radius:99px;background:var(--trk);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:inherit;background:var(--deep);transition:width .6s cubic-bezier(.16,1,.3,1)}
+.row:first-child .bar i{background:var(--acc)}
+.sum p{margin:16px 0 0;color:var(--mu);font-size:13.5px}
+
+/* lista */
+.list{display:grid;gap:14px;margin-top:16px}
+.meal{display:grid;grid-template-columns:120px minmax(0,1fr);min-height:136px;background:var(--card);border:1px solid var(--card-b);border-radius:24px;overflow:hidden;box-shadow:var(--sh);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:background .25s}
+.meal.done{background:rgba(255,255,255,.42)}
+.ph{position:relative;overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1),filter .3s}
+.ph:active img{transform:scale(1.05)}
+.meal.done .ph img{filter:saturate(.5) brightness(.9)}
+.receta{position:absolute;left:8px;bottom:8px;display:inline-flex;align-items:center;gap:4px;padding:6px 10px 6px 7px;border-radius:99px;background:var(--acc);color:#fff;font:800 10.5px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;box-shadow:0 6px 14px -6px rgba(240,122,43,.8)}
+.receta svg{width:12px;height:12px}
+.body{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:14px 14px 14px 16px}
+.body .kicker{font-size:11px}
+.body .kicker b{color:var(--mu);font-weight:700}
+.body h4{margin:7px 0 6px;font:italic 800 21px/1 var(--fd);text-transform:uppercase;color:var(--deep);text-wrap:balance}
+.body p{margin:0;color:var(--mu);font-size:13.5px;font-weight:500}
+.chk{width:46px;height:46px;border-radius:50%;border:2px solid rgba(29,43,39,.22);display:grid;place-items:center;color:transparent;transition:background .25s,border-color .25s,color .25s,transform .15s}
+.chk:active{transform:scale(.9)}
+.chk svg{width:20px;height:20px}
+.meal.done .chk{background:var(--deep);border-color:var(--deep);color:#fff}
+.meal.done h4{color:var(--mu)}
+
+/* barra inferior de la app */
+.nav{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 12px);display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:8px;border-radius:30px;background:linear-gradient(160deg,rgba(255,255,255,.92),rgba(255,255,255,.74));border:1px solid rgba(255,255,255,.9);box-shadow:0 14px 30px -16px rgba(10,20,30,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:5}
+.nav a{display:grid;justify-items:center;gap:4px;padding:9px 0 8px;border-radius:22px;color:#47524E;text-decoration:none;font:600 12px/1 var(--fb)}
+.nav a svg{width:23px;height:23px}
+.nav a.on{background:var(--deep);color:#fff}
+
+/* ventana de vidrio */
+.sheet{position:absolute;inset:0;z-index:20;display:grid;align-items:end;padding:calc(env(safe-area-inset-top) + 40px) 12px 12px;visibility:hidden;pointer-events:none}
+.sheet.open{visibility:visible;pointer-events:auto}
+.veil{position:absolute;inset:0;background:var(--glow,#c9a27a);opacity:0;transition:opacity .35s}
+.veil::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 70% at 30% 10%,rgba(255,255,255,.45),transparent 60%),linear-gradient(180deg,rgba(220,230,226,.2),rgba(29,43,39,.35))}
+.sheet.open .veil{opacity:1}
+.glass{position:relative;max-height:100%;display:flex;flex-direction:column;border-radius:34px;overflow:hidden;
+  background:linear-gradient(160deg,rgba(255,255,255,.72),rgba(255,255,255,.48));
+  border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 1px 0 #fff,0 30px 70px -24px rgba(10,20,30,.55);
+  backdrop-filter:blur(26px) saturate(1.4);-webkit-backdrop-filter:blur(26px) saturate(1.4);
+  transform:translateY(40px) scale(.97);opacity:0;transition:transform .45s cubic-bezier(.16,1,.3,1),opacity .3s}
+.sheet.open .glass{transform:none;opacity:1}
+.g-scroll{overflow-y:auto;padding:12px 12px 8px;scrollbar-width:none}
+.g-scroll::-webkit-scrollbar{display:none}
+.g-img{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:1.95/1}
+.g-img img{width:100%;height:100%;object-fit:cover}
+.x{position:absolute;top:12px;right:12px;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.7);border:1px solid #fff;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--deep)}
+.x svg{width:20px;height:20px}
+.g-in{padding:18px 6px 6px}
+.g-in h2{margin:8px 0 18px;font:italic 800 36px/0.95 var(--fd);text-transform:uppercase;color:var(--deep);text-wrap:balance}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tile{padding:14px 4px 12px;text-align:center;border-radius:18px;background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.95)}
+.tile b{display:block;font:italic 700 19px/1 var(--fd);color:var(--deep)}
+.tile span{display:block;margin-top:6px;color:var(--mu);font-size:12px}
+.g-in h5{margin:24px 0 12px;font:700 12px/1 var(--fb);letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+.ing{display:grid;gap:10px;margin:0;padding:0}
+.ing li{list-style:none;display:flex;align-items:center;gap:10px;padding:14px 12px 14px 16px;border-radius:18px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.95)}
+.ing li div{flex:1}
+.ing li b{font:800 15.5px/1.3 var(--fb);color:var(--deep)}
+.ing li strong{font-weight:500}
+.ing li small{display:block;color:var(--mu);font-size:13px;margin-top:3px}
+.swap{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:99px;border:1px solid rgba(29,43,39,.18);background:rgba(255,255,255,.75);font:700 13.5px/1 var(--fb);color:var(--deep);white-space:nowrap}
+.swap svg{width:15px;height:15px}
+.prep{margin:6px 0 0;padding:0 0 0 20px;color:var(--ink);font-size:14.5px}
+.prep li{margin:0 0 6px}
+.g-foot{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;padding:12px;border-top:1px solid rgba(255,255,255,.8);background:rgba(255,255,255,.35)}
+.g-foot button{height:58px;border-radius:20px;font:italic 800 16px/1 var(--fd);text-transform:uppercase;letter-spacing:.02em}
+.b2{background:rgba(255,255,255,.8);color:var(--deep);border:1px solid rgba(29,43,39,.15)!important}
+.b1{background:var(--deep);color:#fff}
+.b1.undo{background:var(--acc)}
+.toast{position:absolute;left:50%;bottom:120px;transform:translate(-50%,20px);opacity:0;padding:11px 18px;border-radius:99px;background:var(--deep);color:#fff;font-size:13.5px;transition:.3s;z-index:30;white-space:nowrap}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="scroll">
+    <header class="top">
+      <h1>Tu comida</h1>
+      <div class="day" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+    </header>
+    <p class="lead">Toca la foto para ver ingredientes y cambiarlos. El círculo la marca como hecha.</p>
+
+    <section class="sum" aria-label="Resumen del día">
+      <div class="sum-h"><b id="kcal">0</b><span>de 2,812 kcal</span><em>hoy</em></div>
+      <div class="rows">
+        <div class="row"><span>Calorías</span><div class="bar"><i id="bk"></i></div><b id="mk">0 <small>/ 2,812</small></b></div>
+        <div class="row"><span>Proteína</span><div class="bar"><i id="bp"></i></div><b id="mp">0 <small>/ 174 g</small></b></div>
+        <div class="row"><span>Carbos</span><div class="bar"><i id="bc"></i></div><b id="mc">0 <small>/ 354 g</small></b></div>
+        <div class="row"><span>Grasas</span><div class="bar"><i id="bg"></i></div><b id="mg">0 <small>/ 78 g</small></b></div>
+      </div>
+      <p>Armado por Coordinador Fitness. Marca con la palomita cada comida al terminarla.</p>
+    </section>
+
+    <div class="list" id="list"></div>
+  </div>
+
+  <nav class="nav" aria-label="Secciones">
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg>Inicio</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 7v10M3 9.5v5M18 7v10M21 9.5v5M6 12h12"/></svg>Rutina</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8M15 7h6v6"/></svg>Progreso</a>
+    <a href="#" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-9 5-14 15-14 0 10-5 15-14 15"/><path d="M5 19 13 11"/></svg>Nutrición</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Perfil</a>
+  </nav>
+
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="g-title">
+    <div class="veil" id="veil"></div>
+    <div class="glass">
+      <div class="g-scroll">
+        <div class="g-img"><img id="g-img" alt=""><button class="x" id="close" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+        <div class="g-in">
+          <div class="kicker" id="g-k"></div>
+          <h2 id="g-title"></h2>
+          <div class="tiles" id="g-tiles"></div>
+          <h5>Ingredientes</h5>
+          <ul class="ing" id="g-ing"></ul>
+          <h5>Preparación</h5>
+          <ol class="prep" id="g-prep"></ol>
+        </div>
+      </div>
+      <div class="g-foot">
+        <button class="b2" id="g-swap">Cambiar comida</button>
+        <button class="b1" id="g-done">Marcar hecha</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+{
+const IMG='../../../img/menu/';
+const meals=[
+ {id:'d',t:'Desayuno',h:'8:00 am',n:'Hot cakes de avena y plátano',img:'d-hotcakes-avena',k:985,p:69,c:128,g:22,glow:'#d9b48a',
+  ing:[['80 g','Avena','Cereales · 2 eq.',1],['2 pzas + 3 claras','Huevo','Proteína animal · 3 eq.',1],['1 pza','Plátano','Frutas · 2 eq.',1],['1 scoop','Proteína en polvo','Proteína animal · 2 eq.',1],['15 g','Crema de cacahuate','Grasas · 1 eq.',1],['1 taza','Leche descremada','Lácteos · 1 eq.',0]],
+  prep:['Licúa la avena, el huevo, las claras, medio plátano y la proteína.','Cocina en sartén antiadherente a fuego medio, 2 min por lado.','Sirve con el resto del plátano y la crema de cacahuate.']},
+ {id:'ca',t:'Colación AM',h:'11:00 am',n:'Yogur griego con fresas',img:'c-yogur-fresa',k:340,p:24,c:42,g:8,glow:'#e3a9a9',
+  ing:[['1 taza','Yogur griego natural','Lácteos · 2 eq.',1],['1 taza','Fresas','Frutas · 1 eq.',1],['20 g','Granola sin azúcar','Cereales · 1 eq.',1]],
+  prep:['Sirve el yogur, agrega las fresas en cuartos y termina con la granola.']},
+ {id:'co',t:'Comida',h:'2:30 pm',n:'Chiles rellenos de panela horneados',img:'m-chile-relleno',k:985,p:60,c:110,g:28,glow:'#dba087',
+  ing:[['2 pzas','Chile poblano','Verduras · 2 eq.',0],['120 g','Queso panela','Proteína animal · 4 eq.',1],['1 taza','Arroz rojo','Cereales · 2 eq.',1],['½ taza','Frijoles de la olla','Leguminosas · 1 eq.',1],['½ taza','Caldillo de jitomate','Verduras · 1 eq.',0],['1 cdita','Aceite de oliva','Grasas · 1 eq.',1]],
+  prep:['Asa y pela los chiles; rellénalos con el panela.','Hornea 15 min a 200 °C.','Sirve sobre el caldillo con arroz y frijoles.']},
+ {id:'cp',t:'Colación PM',h:'5:30 pm',n:'Guayabas con queso panela',img:'c-guayaba-panela',k:135,p:7,c:18,g:4,glow:'#d8d08a',
+  ing:[['2 pzas','Guayaba','Frutas · 1 eq.',1],['30 g','Queso panela','Proteína animal · 1 eq.',1]],
+  prep:['Parte las guayabas en mitades y sirve con el panela en cubos.']},
+ {id:'ce',t:'Cena',h:'9:00 pm',n:'Tacos de pechuga',img:'n-tacos-pechuga',k:367,p:14,c:56,g:16,glow:'#d6b88e',
+  ing:[['90 g','Pechuga de pollo','Proteína animal · 3 eq.',1],['3 pzas','Tortilla de maíz','Cereales · 3 eq.',1],['⅓ pza','Aguacate','Grasas · 2 eq.',1],['Al gusto','Pico de gallo','Verduras · libre',0]],
+  prep:['Asa la pechuga en tiras con sal y limón.','Calienta las tortillas y arma con aguacate y pico de gallo.']}
+];
+const done=new Set();
+const $=s=>document.querySelector(s);
+const ico={chk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+ arr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>',
+ go:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'};
+const fmt=n=>n.toLocaleString('es-MX');
+
+function renderList(){
+  $('#list').innerHTML=meals.map(m=>`
+   <article class="meal${done.has(m.id)?' done':''}">
+     <button class="ph" data-open="${m.id}" aria-label="Ver receta de ${m.n}"><img src="${IMG+m.img}.webp" alt="" loading="lazy"><span class="receta">${ico.arr}Receta</span></button>
+     <div class="body"><div><div class="kicker">${m.t} · <b>${m.h}</b></div><h4>${m.n}</h4><p>${fmt(m.k)} kcal · ${m.p} g proteína</p></div>
+     <button class="chk" data-chk="${m.id}" aria-pressed="${done.has(m.id)}" aria-label="Marcar ${m.n} como hecha">${ico.chk}</button></div>
+   </article>`).join('');
+}
+function renderSum(){
+  const s={k:0,p:0,c:0,g:0};meals.forEach(m=>{if(done.has(m.id)){s.k+=m.k;s.p+=m.p;s.c+=m.c;s.g+=m.g}});
+  $('#kcal').textContent=fmt(s.k);
+  $('#mk').innerHTML=`${fmt(s.k)} <small>/ 2,812</small>`;$('#mp').innerHTML=`${s.p} <small>/ 174 g</small>`;$('#mc').innerHTML=`${s.c} <small>/ 354 g</small>`;$('#mg').innerHTML=`${s.g} <small>/ 78 g</small>`;
+  const w=(v,t)=>Math.min(100,v/t*100)+'%';
+  $('#bk').style.width=w(s.k,2812);$('#bp').style.width=w(s.p,174);$('#bc').style.width=w(s.c,354);$('#bg').style.width=w(s.g,78);
+}
+function render(){renderList();renderSum();}
+let cur=null;
+function toggle(id){done.has(id)?done.delete(id):done.add(id);render();if(cur===id)syncDone();}
+function open(id){
+  const m=meals.find(x=>x.id===id);cur=id;
+  $('#veil').style.setProperty('--glow',m.glow);
+  $('#g-img').src=IMG+m.img+'.webp';
+  $('#g-k').textContent=`${m.t} · ${m.h}`;
+  $('#g-title').textContent=m.n;
+  $('#g-tiles').innerHTML=[[fmt(m.k),'kcal'],[m.p+' g','proteína'],[m.c+' g','carbohid.'],[m.g+' g','grasa']].map(([b,s])=>`<div class="tile"><b>${b}</b><span>${s}</span></div>`).join('');
+  $('#g-ing').innerHTML=m.ing.map(([q,n,e,sw])=>`<li><div><b>${q}</b> <strong>${n}</strong><small>${e}</small></div>${sw?`<button class="swap" data-swap="${n}">${ico.go}Cambiar</button>`:''}</li>`).join('');
+  $('#g-prep').innerHTML=m.prep.map(p=>`<li>${p}</li>`).join('');
+  syncDone();
+  $('.g-scroll').scrollTop=0;
+  $('#sheet').classList.add('open');
+  setTimeout(()=>$('#close').focus(),50);
+}
+function close(){$('#sheet').classList.remove('open');cur=null;}
+function syncDone(){const d=done.has(cur);$('#g-done').textContent=d?'Quitar hecha':'Marcar hecha';$('#g-done').classList.toggle('undo',d);}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1800);}
+
+document.addEventListener('click',e=>{
+  const o=e.target.closest('[data-open]');if(o)return open(o.dataset.open);
+  const c=e.target.closest('[data-chk]');if(c)return toggle(c.dataset.chk);
+  const s=e.target.closest('[data-swap]');if(s)return toast(`Aquí verías opciones para cambiar: ${s.dataset.swap}`);
+  if(e.target.closest('#close')||e.target.id==='veil')return close();
+  if(e.target.closest('#g-done')){toggle(cur);return setTimeout(close,250);}
+  if(e.target.closest('#g-swap'))return toast('Aquí verías otros platillos equivalentes');
+  if(e.target.closest('.nav a')){e.preventDefault();toast('Vista previa: solo Nutrición');}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&cur)close();});
+render();
+}
+</script>
+</body>
+</html>
