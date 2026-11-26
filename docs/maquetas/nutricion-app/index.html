@@ -71,7 +71,10 @@ img{display:block}
 .bar.big{height:7px;margin:10px 0 12px}
 .bar i{display:block;height:100%;width:0;border-radius:inherit;background:var(--deep);transition:width .6s var(--ease)}
 .bar.big i{background:var(--acc)}
-.mac{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.mac{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.agua{text-align:left;display:block}
+.agua em{font-style:normal;display:inline-grid;place-items:center;width:16px;height:16px;margin-left:2px;border-radius:50%;background:#2F8FB8;color:#fff;font-weight:800;font-size:12px;line-height:1;vertical-align:1px}
+.agua .bar i{background:#2F8FB8}
 .mac span{display:block;color:var(--mu);font-size:12.5px}
 .mac b{display:block;margin:2px 0 6px;font:italic 700 15px/1.1 var(--fd);color:var(--deep);font-variant-numeric:tabular-nums;white-space:nowrap}
 .mac b small{font:inherit;color:var(--mu2)}
@@ -208,6 +211,7 @@ img{display:block}
         <div><span>Proteína</span><b id="mp"></b><div class="bar"><i id="bp"></i></div></div>
         <div><span>Carbos</span><b id="mc"></b><div class="bar"><i id="bc"></i></div></div>
         <div><span>Grasas</span><b id="mg"></b><div class="bar"><i id="bg"></i></div></div>
+        <button class="agua" id="agua" aria-label="Agregar un vaso de agua de 250 ml"><span>Agua <em>+</em></span><b id="ma"></b><div class="bar"><i id="ba"></i></div></button>
       </div>
       <div class="calc" id="calc"><div>
         <p class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></svg>Tu menú suma 2,814 kcal, dentro de tu meta.</p>
@@ -222,6 +226,7 @@ img{display:block}
           <li><b>Proteína 144 g</b> · 1.8 g por kg de tu peso (80 kg).</li>
           <li><b>Grasas 78 g</b> · 25 % de tus calorías (mínimo 0.8 g por kg).</li>
           <li><b>Carbos 384 g</b> · las calorías que quedan.</li>
+          <li><b>Agua 2.8 L</b> · 35 ml por kg de tu peso, más 0.5 L por cada sesión de entrenamiento. Toca <b>Agua +</b> para sumar un vaso de 250 ml.</li>
         </ul>
         <p>Calculado con tu peso actual, <b>80 kg</b>. Se actualiza solo al registrar tu peso en Progreso.</p>
         <p>Superávit controlado para construir músculo minimizando grasa. Prioriza carbohidratos alrededor del entrenamiento (antes y después). Creatina monohidratada 3–5 g/día es el suplemento con más evidencia.</p>
@@ -296,7 +301,7 @@ const meals=[
   prep:['Asa la pechuga en tiras con sal y limón.','Calienta las tortillas y arma con aguacate y pico de gallo.']}
 ];
 meals.forEach(m=>m.k=m.p*4+m.c*4+m.g*9);
-const done=new Set();
+const done=new Set();let agua=0;const AGUA=2.8;
 const $=s=>document.querySelector(s);
 const ico={chk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
  arr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>',
@@ -326,7 +331,9 @@ function renderSum(){
   const w=(v,t)=>Math.min(100,v/t*100)+'%';
   $('#bk').style.width=w(s.k,META.k);$('#bp').style.width=w(s.p,META.p);$('#bc').style.width=w(s.c,META.c);$('#bg').style.width=w(s.g,META.g);
 }
-function render(){renderHero();renderList();renderSum();}
+const lit=ml=>String(+(ml/1000).toFixed(2));
+function renderAgua(){$('#ma').innerHTML=`${lit(agua)} <small>/ ${AGUA} L</small>`;$('#ba').style.width=Math.min(100,agua/10/AGUA)+'%';}
+function render(){renderAgua();renderHero();renderList();renderSum();}
 let cur=null;
 function toggle(id){done.has(id)?done.delete(id):done.add(id);render();if(cur===id)syncDone();}
 function open(id){
@@ -351,6 +358,7 @@ document.addEventListener('click',e=>{
   const o=e.target.closest('[data-open]');if(o)return open(o.dataset.open);
   const c=e.target.closest('[data-chk]');if(c)return toggle(c.dataset.chk);
   const s=e.target.closest('[data-swap]');if(s)return toast(`Aquí verías opciones para cambiar: ${s.dataset.swap}`);
+  if(e.target.closest('#agua')){agua=agua>=AGUA*1000?0:agua+250;renderAgua();return toast(agua?`+1 vaso · llevas ${lit(agua)} L`:'Agua reiniciada');}
   if(e.target.closest('#calc-btn')){const b=$('#calc-btn'),on=b.getAttribute('aria-expanded')!=='true';b.setAttribute('aria-expanded',on);$('#calc').classList.toggle('open',on);return;}
   if(e.target.closest('#close')||e.target.closest('#veil'))return close();
   if(e.target.closest('#g-done')){toggle(cur);return setTimeout(close,250);}
