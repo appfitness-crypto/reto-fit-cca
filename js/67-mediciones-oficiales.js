@@ -47,6 +47,7 @@ function ofiEscuchar(){
     const v=sn.val()||{};
     OFI = clave==='staff' ? v : {[activeSocio.code]:v};
     if(document.getElementById('ofi-ov')) ofiPintar();
+    ofiFichaPintar();
   }, e=>{ console.warn('oficial',e&&e.code); ofiClave=''; });
 }
 function ofiDe(code){ return OFI[code]||{}; }
@@ -167,7 +168,7 @@ function ofiGuardar(){
   fbEncolar('/oficial/'+ofiCode+'/med/'+ofiToma,'set',t);
   showToast('✓ Medición '+OFI_TOMAS[ofiToma].toLowerCase()+' guardada');
   if(ofiToma==='ini') ofiToma='mid';
-  ofiPintar();
+  ofiPintar(); ofiFichaPintar();
 }
 function ofiJuezGuardar(){
   const p=parseFloat(String(document.getElementById('ofi-jp').value).replace(',','.'));
@@ -217,6 +218,31 @@ function ofiSocioHTML(s){
   return `<section class="ofi-sm"><h3>Mis mediciones oficiales</h3><p>Las toma el equipo de nutrición con InBody. Con ellas se calcula tu resultado en el reto.</p>${Object.keys(OFI_TOMAS).map(fila).join('')}</section>`;
 }
 
+// ═════════════ Ficha del socio (staff y director): resumen de sus mediciones oficiales ═════════════
+// Tabla Inicial / Intermedia / Final con el cambio, arriba del Resumen. Se repinta sola cuando llega /oficial.
+const OFI_FICHA=[['peso','Peso','kg',0],['mme','Masa muscular','kg',1],['mg','Masa grasa','kg',-1],['pgc','% de grasa','%',-1],['visc','Grasa visceral','',-1],['cint','Cintura','cm',-1],['cad','Cadera','cm',-1],['brazo','Brazo','cm',1]];
+function ofiFichaHTML(s){
+  const m=(ofiDe(s.code).med)||{}, ks=Object.keys(OFI_TOMAS), n=ks.filter(k=>m[k]).length;
+  const btn=`<button type="button" class="sd-b ofi-fx-b" onclick="ofiAbrir('${esc(s.code)}')">${n?'Ver o capturar':'Capturar la inicial'}</button>`;
+  if(!n) return `<section class="fx-sec ofi-fx"><h3>Mediciones oficiales <small>0 de 3</small></h3><div class="fx-panel"><p class="ofi-mu">Todavía no tiene la medición inicial con InBody. Con ella se calcula su resultado en el reto (40 pts).</p>${btn}</div></section>`;
+  const ult=m.fin||m.mid, P=ofiPts(s);
+  const filas=OFI_FICHA.filter(([k])=>ks.some(t=>m[t]&&m[t][k]!=null)).map(([k,nm,u,bueno])=>{
+    const a=m.ini&&m.ini[k], b=ult&&ult[k];
+    let d='—', cls='';
+    if(a!=null && b!=null){ const x=Math.round((b-a)*10)/10; d=(x>0?'+':'')+x+(u?' '+u:''); if(x&&bueno) cls=(x*bueno>0)?'ok':'bad'; }
+    return `<tr><th>${nm}</th>${ks.map(t=>`<td>${m[t]&&m[t][k]!=null?esc(String(m[t][k]))+(u?' <small>'+u+'</small>':''):'—'}</td>`).join('')}<td class="${cls}">${d}</td></tr>`;
+  }).join('');
+  return `<section class="fx-sec ofi-fx"><h3>Mediciones oficiales <small>${n} de 3${P.r?' · resultado '+P.r.pts+'/40':''}</small></h3><div class="fx-panel">
+    <div class="tr-scroll"><table class="ofi-fx-t"><tr><th></th>${ks.map(t=>`<th>${OFI_TOMAS[t]}<small>${m[t]&&m[t].fecha?esc(fmtFecha(m[t].fecha)):'pendiente'}</small></th>`).join('')}<th>Cambio</th></tr>${filas}</table></div>
+    ${btn}</div></section>`;
+}
+function ofiFichaPintar(s){
+  const pane=document.getElementById('sdp-evolucion'); if(!pane) return;
+  s=s||(typeof staffActivoId!=='undefined'&&staffActivoId&&(getSocio(staffActivoId)||(typeof idxLite==='function'?idxLite(staffActivoId):null))); if(!s) return;
+  const h=ofiFichaHTML(s), ya=pane.querySelector('.ofi-fx');
+  if(ya) ya.outerHTML=h; else pane.insertAdjacentHTML('afterbegin',h);
+}
+
 // ═════════════ Enganches ═════════════
 (function(){
   const env=(fn,f)=>{ if(typeof window[fn]!=='function') return; const o=window[fn]; window[fn]=function(){ const r=o.apply(this,arguments); try{ f.apply(this,arguments); }catch(e){ console.warn('oficial',fn,e); } return r; }; };
@@ -226,6 +252,7 @@ function ofiSocioHTML(s){
     const head=document.querySelector('#staff-content .fx-head'); if(!head||!s||head.querySelector('.fx-ofi')) return;
     const m=(ofiDe(s.code).med)||{}, n=Object.keys(m).length;
     head.insertAdjacentHTML('beforeend',`<button type="button" class="fx-chat fx-ofi" onclick="ofiAbrir('${esc(s.code)}')">${ico('clipboard')}<span>Mediciones oficiales</span><i class="ofi-n">${n}/3</i></button>`);
+    ofiFichaPintar(s);
   });
   env('renderPerfilTab',()=>{
     const s=activeSocio, sec=document.getElementById('dsec-perfil'); if(!s||!sec||sec.querySelector('.ofi-sm')) return;
