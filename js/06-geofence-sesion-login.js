@@ -184,6 +184,7 @@ async function restaurarStaff(ses){
   if(!fbListo || !fbAuth){ return; }     // sin Firebase no se puede verificar al staff: se queda en el inicio
   // Con el rol guardado entra de inmediato con lo que hay en el celular y se verifica después
   let dentro=false;
+  if(ses.user && typeof idxCargarLocal==='function') idxCargarLocal(ses.user);   // lista del panel aunque no haya señal
   if(ses.rol && ses.user){ entrarComoStaff(ses.user, ses.rol); dentro=true; if(typeof navRestaurarStaff==='function') navRestaurarStaff(); }
   const est=await fbPrimerEstado;
   const u=est&&est.user;
