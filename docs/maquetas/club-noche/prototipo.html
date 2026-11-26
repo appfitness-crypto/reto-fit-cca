@@ -233,9 +233,9 @@ img{display:block;max-width:100%}
 .fijo.on{visibility:visible}
 
 /* fin */
-.fin{min-height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:170px 22px 30px;position:relative}
+.fin{min-height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:330px 22px 30px;position:relative}
 .fin .f{position:absolute;inset:0;background:url(img/maquinas-jardin.webp) center/cover;filter:grayscale(.5) brightness(.55)}
-.fin .f::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(11,11,12,.3),var(--noche) 70%)}
+.fin .f::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(11,11,12,.72),rgba(11,11,12,.8) 40%,var(--noche) 62%)}
 .fin>*:not(.f){position:relative}
 .fin .tit{font-size:48px}
 .fin .card[hidden]{display:none}
@@ -338,7 +338,11 @@ img{display:block;max-width:100%}
 .mc-links{display:flex;flex-wrap:wrap;gap:4px 14px;padding:8px 16px 14px}
 .mc-links button{min-height:40px;font-size:12.5px;font-weight:600;color:var(--mu);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--linea2)}
 .med{width:104px;height:104px;margin:18px auto}
-.fin-m{position:absolute;left:50%;top:30px;translate:-50% 0;height:300px;width:auto;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent);z-index:1}
+.fin-m{position:absolute;left:50%;top:44px;translate:-50% 0;height:290px;width:auto;max-width:84%;object-fit:contain;object-position:50% 100%;filter:drop-shadow(0 20px 22px rgba(0,0,0,.6));z-index:2}
+.fin-luz{position:absolute;left:50%;top:10px;translate:-50% 0;width:320px;height:360px;background:radial-gradient(closest-side,rgba(255,214,150,.22),rgba(255,214,150,.05) 65%,transparent);z-index:1;pointer-events:none}
+.fin-m[hidden]{display:none}
+.fin>.fin-m,.fin>.fin-luz,.fin>.fin-piso{position:absolute}
+.fin-piso{position:absolute;left:50%;top:322px;translate:-50% 0;width:180px;height:26px;border-radius:50%;background:radial-gradient(rgba(0,0,0,.75),transparent 70%);z-index:1}
 .evol{display:flex;align-items:center;gap:12px;padding:14px 16px;margin-bottom:10px;box-shadow:inset 0 0 0 1.5px var(--acc);background:linear-gradient(var(--soft),var(--soft)),var(--n2)}
 .evol img{width:46px;height:46px;border-radius:50%;object-fit:cover}
 .evol b{display:block;font:600 20px/1 var(--fd);text-transform:uppercase}.evol span{font-size:12.5px;color:var(--mu)}
@@ -547,7 +551,7 @@ img{display:block;max-width:100%}
 
     <!-- Fin -->
     <section class="scr" id="fin" aria-label="Sesión terminada">
-      <div class="fin"><div class="f"></div><img class="fin-m" id="fin-m" alt="">
+      <div class="fin"><div class="f"></div><div class="fin-luz"></div><div class="fin-piso"></div><img class="fin-m" id="fin-m" alt="">
         <div class="eti a">Día 2 · Semana 3</div>
         <h2 class="tit">Sesión<br>completa</h2>
         <p class="sub">Tu entrenador ya ve tus registros.</p>
@@ -731,7 +735,7 @@ $('#guardar').addEventListener('click',()=>{
   const mins=Math.max(1,Math.round((Date.now()-t0)/60000));$('#r-min').textContent=mins;$('#r-min-l').textContent=mins===1?'minuto':'minutos';
   const antes=etapaDe(st.pts);st.pts+=40;st.cansada=false;$('#chk-cansada').checked=false;const desp=etapaDe(st.pts);
   const m=mdef(st.masc.id);
-  $('#fin-m').src=st.oculta?'':`img/m-${m.id}-${desp.n}.webp`;$('#fin-m').hidden=st.oculta;
+  $('#fin-m').src=st.oculta?'':`img/r-${m.id}-${desp.n}.webp`;$('#fin-m').hidden=st.oculta;
   const ev=desp.n>antes.n;$('#evol').hidden=!ev;
   if(ev){$('#evol-img').src=st.oculta?'':`img/a-${m.id}-${desp.n}.webp`;$('#evol-img').hidden=st.oculta;
     $('#evol-t').textContent=st.oculta?`Subiste a ${NIVELES[desp.n-1]}`:`${st.masc.nombre} evolucionó`;
@@ -789,7 +793,7 @@ function pintarVitrina(){
   $('#mnom').placeholder='Ej. '+mdef(st.sel).ej;
   $('#m-luego').textContent=st.cambio?'Cancelar':'Después';
 }
-$('#vit').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;st.sel=b.dataset.m;pintarVitrina()});
+$('#vit').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;const n=$('#mnom');if(MASC.some(x=>x.ej===n.value.trim()))n.value='';st.sel=b.dataset.m;pintarVitrina()});
 function entrarInicio(msg){hist=['inicio'];show('inicio','r');pintarMascota();if(msg)toast(msg)}
 $('#m-ok').addEventListener('click',()=>{
   const nombre=($('#mnom').value.trim().slice(0,18))||mdef(st.sel).ej;
