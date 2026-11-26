@@ -59,23 +59,22 @@ img{display:block}
 
 /* resumen */
 .glassc{background:var(--card);border:1px solid var(--card-b);box-shadow:var(--sh);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.sum{margin-top:16px;padding:22px;border-radius:28px}
-.sum-h{display:flex;align-items:baseline;gap:10px}
-.sum-h b{font:italic 800 52px/1 var(--fd);color:var(--deep);font-variant-numeric:tabular-nums}
-.sum-h span{color:var(--mu);font-weight:600;font-size:16px}
-.sum-h em{margin-left:auto;font-style:normal;color:var(--mu);font-weight:600}
-.rows{display:grid;gap:14px;margin-top:18px}
-.row{display:grid;grid-template-columns:76px minmax(0,1fr) auto;align-items:center;gap:14px}
-.row span{color:var(--mu);font-size:14.5px}
-.row b{font:italic 700 16px/1 var(--fd);color:var(--deep);font-variant-numeric:tabular-nums;white-space:nowrap}
-.row b small{font:inherit;color:var(--mu2)}
-.bar{height:8px;border-radius:99px;background:var(--trk);overflow:hidden}
-.bar i{display:block;height:100%;width:0;border-radius:inherit;background:var(--deep);transition:width .6s var(--ease)}
-.row:first-child .bar i{background:var(--acc)}
-.calc-btn{display:flex;align-items:center;gap:8px;width:100%;margin-top:18px;padding:13px 14px;border-radius:16px;background:rgba(255,255,255,.6);border:1px solid #fff;font-weight:700;color:var(--deep)}
-.calc-btn svg{width:18px;height:18px;flex:none}
-.calc-btn svg:last-child{margin-left:auto;transition:transform .3s var(--ease)}
+.sum{margin-top:14px;padding:16px 18px 16px;border-radius:24px}
+.sum-h{display:flex;align-items:baseline;gap:8px}
+.sum-h b{font:italic 800 34px/1 var(--fd);color:var(--deep);font-variant-numeric:tabular-nums}
+.sum-h span{color:var(--mu);font-weight:600;font-size:14.5px}
+.calc-btn{align-self:center;margin-left:auto;display:inline-flex;align-items:center;gap:5px;min-height:36px;padding:0 10px 0 9px;border-radius:99px;background:rgba(255,255,255,.65);border:1px solid #fff;font-weight:700;font-size:13px;color:var(--deep)}
+.calc-btn svg{width:16px;height:16px;flex:none}
+.calc-btn svg:last-child{width:14px;height:14px;transition:transform .3s var(--ease)}
 .calc-btn[aria-expanded=true] svg:last-child{transform:rotate(180deg)}
+.bar{height:5px;border-radius:99px;background:var(--trk);overflow:hidden}
+.bar.big{height:7px;margin:10px 0 12px}
+.bar i{display:block;height:100%;width:0;border-radius:inherit;background:var(--deep);transition:width .6s var(--ease)}
+.bar.big i{background:var(--acc)}
+.mac{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.mac span{display:block;color:var(--mu);font-size:12.5px}
+.mac b{display:block;margin:2px 0 6px;font:italic 700 15px/1.1 var(--fd);color:var(--deep);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mac b small{font:inherit;color:var(--mu2)}
 .calc{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s var(--ease)}
 .calc.open{grid-template-rows:1fr}
 .calc>div{overflow:hidden}
@@ -199,21 +198,19 @@ img{display:block}
     <button class="hero" id="hero"></button>
 
     <section class="sum glassc" aria-label="Resumen del día">
-      <div class="sum-h"><b id="kcal">0</b><span>de 2,812 kcal</span><em>hoy</em></div>
-      <div class="rows">
-        <div class="row"><span>Calorías</span><div class="bar"><i id="bk"></i></div><b id="mk"></b></div>
-        <div class="row"><span>Proteína</span><div class="bar"><i id="bp"></i></div><b id="mp"></b></div>
-        <div class="row"><span>Carbos</span><div class="bar"><i id="bc"></i></div><b id="mc"></b></div>
-        <div class="row"><span>Grasas</span><div class="bar"><i id="bg"></i></div><b id="mg"></b></div>
+      <div class="sum-h"><b id="kcal">0</b><span>de 2,812 kcal</span>
+        <button class="calc-btn" id="calc-btn" aria-expanded="false" aria-controls="calc" aria-label="Cómo se calculó y aviso">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Cálculo
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button></div>
+      <div class="bar big"><i id="bk"></i></div>
+      <div class="mac">
+        <div><span>Proteína</span><b id="mp"></b><div class="bar"><i id="bp"></i></div></div>
+        <div><span>Carbos</span><b id="mc"></b><div class="bar"><i id="bc"></i></div></div>
+        <div><span>Grasas</span><b id="mg"></b><div class="bar"><i id="bg"></i></div></div>
       </div>
-      <p class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></svg>Tu menú suma 2,814 kcal, dentro de tu meta.</p>
-
-      <button class="calc-btn" id="calc-btn" aria-expanded="false" aria-controls="calc">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
-        Cómo se calculó y aviso
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-      </button>
       <div class="calc" id="calc"><div>
+        <p class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></svg>Tu menú suma 2,814 kcal, dentro de tu meta.</p>
         <ol class="steps">
           <li><i>1</i><span><b>Metabolismo basal</b>Mifflin-St Jeor: hombre, 31 años, 80 kg, 178 cm</span><strong>1,763</strong></li>
           <li><i>2</i><span><b>× Actividad 1.45</b>3 días de entrenamiento por semana</span><strong>2,556</strong></li>
@@ -324,7 +321,7 @@ function renderList(){
 function renderSum(){
   const s={k:0,p:0,c:0,g:0};meals.forEach(m=>{if(done.has(m.id)){s.k+=m.k;s.p+=m.p;s.c+=m.c;s.g+=m.g}});
   $('#kcal').textContent=fmt(s.k);
-  $('#mk').innerHTML=`${fmt(s.k)} <small>/ ${fmt(META.k)}</small>`;$('#mp').innerHTML=`${s.p} <small>/ ${META.p} g</small>`;
+  $('#mp').innerHTML=`${s.p} <small>/ ${META.p} g</small>`;
   $('#mc').innerHTML=`${s.c} <small>/ ${META.c} g</small>`;$('#mg').innerHTML=`${s.g} <small>/ ${META.g} g</small>`;
   const w=(v,t)=>Math.min(100,v/t*100)+'%';
   $('#bk').style.width=w(s.k,META.k);$('#bp').style.width=w(s.p,META.p);$('#bc').style.width=w(s.c,META.c);$('#bg').style.width=w(s.g,META.g);
