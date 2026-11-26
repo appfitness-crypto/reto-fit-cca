@@ -320,7 +320,7 @@ function renderNutricionTab(){
   const s=activeSocio; if(!s) return;
   const nut=nutricionFinal(s);
   // Resumen, menú del día y ajustes: js/50-nutricion-socio.js
-  document.getElementById('dsec-nutricion').innerHTML=appHead('Nutrición',nut.manual?'Tu plan de alimentación, personalizado para ti.':'Tu plan de alimentación, calculado con tus datos.')+nutTabHTML(s);
+  document.getElementById('dsec-nutricion').innerHTML=appHead('Tu comida','Toca la foto para ver ingredientes y cambiarlos. El círculo la marca como hecha.')+nutTabHTML(s);
   nxHojaMontar(s);
 }
 // Tarjetas "flotantes": aparecen al pasar por la mitad de la pantalla y se desvanecen al seguir bajando o subir
