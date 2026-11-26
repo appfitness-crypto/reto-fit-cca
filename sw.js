@@ -8,7 +8,7 @@
    → Los datos de Firebase NUNCA pasan por aquí (van directo).
    → Al desplegar cambios, sube CACHE_VERSION.
    ════════════════════════════════════════════════════════ */
-const CACHE_VERSION = 'retofit-cca-v85';
+const CACHE_VERSION = 'retofit-cca-v86';
 const PRECACHE_LOCAL = [
   './',
   './index.html',
@@ -162,21 +162,74 @@ const CDN_HOSTS = ['www.gstatic.com','cdnjs.cloudflare.com','fonts.googleapis.co
 
 /* Instalar: la app (HTML, css y js) tiene que bajar COMPLETA; si falta un archivo, la instalación falla, la versión
    anterior sigue funcionando con su copia y el navegador lo reintenta después. Antes se activaba a medias y, con la
-   señal lenta, la app abría sin estilos ni código. Fotos, íconos y librerías externas: si alguna falla, no importa. */
+   señal lenta, la app abría sin estilos ni código. Fotos, íconos y librerías externas: si alguna falla, no importa.
+
+   Solo se baja lo que CAMBIÓ: antes cada versión nueva volvía a descargar los ~4.5 MB completos en cada celular
+   (con 700 socios, unos 3 GB por publicación). Ahora, por cada archivo que ya estaba guardado, se le pregunta al
+   servidor con su huella (ETag / Last-Modified); si contesta 304 "sin cambios" (unos cientos de bytes), se reutiliza
+   la copia del celular. Lo guardado al usarse (fotos de ejercicios, menús, mascotas, lector InBody, tipografías)
+   pasa tal cual a la versión nueva en lugar de borrarse y volver a bajarse. */
 const ESENCIAL = (u) => u === './' || /\.(html|css|js)$/.test(u);
+const ALCANCE = new URL(self.registration.scope).pathname;
+// Código de la app (index, js/ y css/ de la raíz): nunca se arrastra de otra versión, siempre sale de la lista de arriba
+function esCodigoApp(url){
+  const u = new URL(url, self.location.href);
+  if (u.origin !== self.location.origin) return false;
+  const rel = u.pathname.indexOf(ALCANCE) === 0 ? u.pathname.slice(ALCANCE.length) : u.pathname.replace(/^\//, '');
+  return rel === '' || /\.html$/.test(rel) || /^(js|css)\/[^\/]+\.(js|css)$/.test(rel);
+}
+async function cachesViejas(){
+  return (await caches.keys()).filter((k) => k !== CACHE_VERSION && k.indexOf('retofit-') === 0).reverse();   // la más nueva primero
+}
+async function buscarVieja(viejas, url){
+  for (const n of viejas){ const r = await (await caches.open(n)).match(url); if (r) return r; }
+  return null;
+}
+// Archivo propio: con copia anterior, petición condicional (304 = se reutiliza); sin copia, descarga normal
+async function bajarPropio(c, url, vieja, opcional){
+  const et = vieja && vieja.headers.get('ETag'), lm = vieja && vieja.headers.get('Last-Modified');
+  if (!et && !lm) return c.add(new Request(url, { cache: 'reload' }));
+  const h = {}; if (et) h['If-None-Match'] = et; if (lm) h['If-Modified-Since'] = lm;
+  let res;
+  try { res = await fetch(url, { headers: h, cache: 'no-store' }); }
+  catch (err) { if (opcional) return c.put(url, vieja); throw err; }   // sin señal: una foto se queda con la copia anterior
+  if (res.status === 304) return c.put(url, vieja);
+  if (res.ok) return c.put(url, res);
+  throw new Error(url + ' ' + res.status);
+}
+// Librerías externas (URLs con versión fija): si ya estaban guardadas, no se vuelven a pedir
+async function bajarCdn(c, url, vieja){
+  if (vieja) return c.put(url, vieja);
+  return c.add(new Request(url, { mode: 'cors', credentials: 'omit' }));
+}
+// Lo que se guardó al usarse (no está en las listas) pasa a la versión nueva; el paso 3 de abajo lo refresca al usarlo
+async function pasarGuardados(c, viejas){
+  const ya = new Set((await c.keys()).map((r) => r.url));
+  for (const n of viejas){
+    const vc = await caches.open(n);
+    for (const req of await vc.keys()){
+      if (ya.has(req.url) || esCodigoApp(req.url)) continue;
+      const r = await vc.match(req);
+      if (r){ await c.put(req, r); ya.add(req.url); }
+    }
+  }
+}
 self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_VERSION).then((c) => {
-      const bajar = (u) => c.add(new Request(u, { cache: 'reload' }));
-      return Promise.all([
-        Promise.all(PRECACHE_LOCAL.filter(ESENCIAL).map(bajar)),
-        Promise.allSettled([
-          ...PRECACHE_LOCAL.filter((u) => !ESENCIAL(u)).map(bajar),
-          ...PRECACHE_CDN.map((u) => c.add(new Request(u, { mode: 'cors', credentials: 'omit' }))),
-        ]),
-      ]);
-    }).then(() => self.skipWaiting())
-  );
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE_VERSION);
+    const viejas = await cachesViejas();
+    const propio = (opcional) => async (u) => bajarPropio(c, u, await buscarVieja(viejas, u), opcional);
+    const cdn = async (u) => bajarCdn(c, u, await buscarVieja(viejas, u));
+    await Promise.all([
+      Promise.all(PRECACHE_LOCAL.filter(ESENCIAL).map(propio(false))),
+      Promise.allSettled([
+        ...PRECACHE_LOCAL.filter((u) => !ESENCIAL(u)).map(propio(true)),
+        ...PRECACHE_CDN.map(cdn),
+      ]),
+    ]);
+    try { await pasarGuardados(c, viejas); } catch (err) {}   // si falla, solo se vuelven a bajar al usarse
+    await self.skipWaiting();
+  })());
 });
 
 /* Activar: borrar cachés de versiones anteriores y tomar control */
@@ -208,12 +261,17 @@ self.addEventListener('fetch', (e) => {
   if (req.mode === 'navigate') {
     e.respondWith(new Promise((resolve) => {
       let listo = false;
-      const usarCache = () => caches.match('./').then((r) => r || caches.match('./index.html')).then((r) => r || Response.error());
+      // La copia de la app vive en './'. Otra página (privacidad.html, eliminar-cuenta.html) se guarda con su propio
+      // nombre: antes pisaba './' y, sin internet, la app abría esa página en lugar del inicio.
+      const esApp = esCodigoApp(req.url) && !/\.html$/.test(new URL(req.url).pathname.replace(/index\.html$/, ''));
+      const llave = esApp ? './' : req;
+      const usarCache = () => (esApp ? Promise.resolve(null) : caches.match(req))
+        .then((r) => r || caches.match('./')).then((r) => r || caches.match('./index.html')).then((r) => r || Response.error());
       const timer = setTimeout(() => {
         usarCache().then((r) => { if (!listo && r.type !== 'error') { listo = true; marcarPagina(e, 'cache'); resolve(r); } });
       }, 4000);
       fetch(req).then((res) => {
-        if (res && res.ok) { const copy = res.clone(); caches.open(CACHE_VERSION).then((c) => c.put('./', copy)); }
+        if (res && res.ok) { const copy = res.clone(); caches.open(CACHE_VERSION).then((c) => c.put(llave, copy)); }
         if (!listo) { listo = true; clearTimeout(timer); marcarPagina(e, 'red'); resolve(res); }
       }).catch(() => {
         clearTimeout(timer);
