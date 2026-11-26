@@ -1776,3 +1776,15 @@ html:is([data-theme="light"],[data-theme="light2"]) #staff-content .ev-card,html
 html[data-theme="dark"] #s-panel .staff-topbar{background:rgba(10,14,19,.96);}
 /* Las pestañas de la ficha usan la clase .tb (la misma de la barra de arriba, que es fija): se quedan en su lugar */
 .fx-tabs .tb{position:static!important;top:auto!important;z-index:auto!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}
+/* Ficha del socio: resumen de mediciones oficiales (js/67-mediciones-oficiales.js) */
+.ofi-fx{margin-bottom:18px;}
+.ofi-fx-t{width:100%;border-collapse:collapse;font-size:var(--fs-sm,13.5px);}
+.ofi-fx-t th,.ofi-fx-t td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--b);white-space:nowrap;}
+.ofi-fx-t tr:first-child th{font-weight:700;color:var(--mu);font-size:12px;}
+.ofi-fx-t tr:first-child th small{display:block;font-weight:500;}
+.ofi-fx-t tr:last-child th,.ofi-fx-t tr:last-child td{border-bottom:0;}
+.ofi-fx-t th{font-weight:650;}
+.ofi-fx-t td small{color:var(--mu);}
+.ofi-fx-t td.ok{color:var(--lime);font-weight:700;}
+.ofi-fx-t td.bad{color:#C0392B;font-weight:700;}
+.ofi-fx-b{margin-top:12px;}

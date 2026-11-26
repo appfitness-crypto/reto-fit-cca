@@ -5,7 +5,7 @@
      8 adultos mayores (60+), con sesiones (pesos por ejercicio), peso corporal y medidas
      de las últimas 5 semanas, repartidos entre los entrenadores que existan. Se guardan en Firebase como
      cualquier socio, con código "demo-NN", la marca demo:true y "(PRUEBA)" en el nombre.
-   · "Borrar socios de prueba": borra solo los expedientes demo-NN (y su índice). Los socios reales no se tocan.
+   · "Borrar socios de prueba": borra solo los expedientes demo-NN (su índice y sus mediciones oficiales). Los socios reales no se tocan.
    · Los socios de prueba viven el reto como si ya hubiera arrancado para ellos (retoDemoInicio, hace 8 semanas):
      suman puntos, crecen sus mascotas, aparecen en el tablero con posiciones y algunos traen sesiones que no
      cuentan (cortas, fuera del gym, repetidas) y un salto de peso sospechoso, para ver los candados.
@@ -153,11 +153,13 @@ function demoRetoBorrar(){
   uiConfirm(`Se borrarán ${cods.size} socios de prueba (los que empiezan con "${DEMO_PREFIJO}"). Los socios reales no se tocan.`, ()=>{
     cods.forEach(c=>{
       delete DB.socios[c];
+      try{ if(typeof OFI!=='undefined') delete OFI[c]; }catch(e){}
       try{ if(typeof IDX!=='undefined') delete IDX[c]; delete BASE[c]; }catch(e){}
       if(fbListo){
         fbEncolar('/socios/'+c,'remove');
         fbEncolar('/indice/'+c,'remove');
         fbEncolar('/huellas/'+c,'remove');
+        fbEncolar('/oficial/'+c,'remove');   // sus mediciones oficiales y calificaciones de jueces
       }
     });
     try{ baseGuardar(); }catch(e){}
