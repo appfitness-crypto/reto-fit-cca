@@ -122,16 +122,37 @@ img{display:block;max-width:100%}
 .ok-cod{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--acc);margin:-4px 0 18px}
 
 /* inicio */
-.cab{position:relative;height:280px;overflow:hidden}
-.cab .f{position:absolute;inset:0;background:url(img/maquinas-noche.webp) 62% 50%/cover;filter:saturate(.6)}
-.cab::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(11,11,12,.5),rgba(11,11,12,.1) 35%,rgba(11,11,12,.78) 75%,var(--noche))}
-.cab .in{position:absolute;inset:auto 0 0;z-index:2;padding:0 22px 4px}
+.cab{position:relative;height:436px;overflow:hidden}
+.cab .luz{position:absolute;right:-30px;top:30px;width:300px;height:380px;background:radial-gradient(closest-side,rgba(255,214,150,.20),rgba(255,214,150,.06) 60%,transparent);z-index:1;pointer-events:none}
+.tag{position:absolute;top:54px;left:20px;right:16px;z-index:4;display:flex;justify-content:space-between;align-items:center}
+.cred{display:inline-flex;align-items:center;gap:8px;font:600 10.5px/1 var(--fb);letter-spacing:.22em;text-transform:uppercase;color:var(--mu)}
+.cred i{width:6px;height:6px;border-radius:50%;background:var(--acc)}
+.figura{position:absolute;right:-6px;bottom:66px;z-index:2;width:188px;height:308px;display:flex;align-items:flex-end;justify-content:center}
+.figura img{position:relative;max-width:100%;max-height:100%;width:auto;object-fit:contain;filter:drop-shadow(0 18px 18px rgba(0,0,0,.55));transition:filter .4s,transform .5s var(--expo);transform-origin:50% 100%}
+.figura:active img{transform:scale(.97)}
+.figura .piso{position:absolute;left:18%;right:18%;bottom:-6px;height:22px;border-radius:50%;background:radial-gradient(rgba(0,0,0,.7),transparent 70%)}
+.figura .zz{position:absolute;top:18%;left:14%;font:600 15px/1 var(--fn);color:var(--mu);letter-spacing:.2em;display:none}
+.figura.cansada img{filter:grayscale(.85) brightness(.5) drop-shadow(0 18px 18px rgba(0,0,0,.55));transform:rotate(-3deg) translateY(6px)}
+.figura.cansada .zz{display:block}
+.figura .med{margin:0 0 80px}
+.figura img[hidden]{display:none}
+.izq{position:absolute;left:20px;top:104px;width:156px;z-index:3}
+.voz{margin-top:20px;padding-top:14px;border-top:1px solid var(--linea2)}
+.vn{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.vn b{font:600 26px/1 var(--fd);text-transform:uppercase;letter-spacing:.02em}
+.vn span{font-weight:700;font-size:12px;color:var(--acc)}
+.vbar{height:4px;border-radius:2px;background:var(--n3);margin:10px 0 10px;overflow:hidden}
+.vbar i{display:block;height:100%;background:var(--acc);border-radius:2px;transition:width .6s var(--expo)}
+.voz p{margin:0;font:italic 600 17px/1.25 var(--fd);color:var(--tx);text-wrap:pretty}
+.cab .f{position:absolute;inset:0;background:url(img/maquinas-noche.webp) 70% 50%/cover;filter:saturate(.5) brightness(.7)}
+.cab::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,11,12,.92) 30%,rgba(11,11,12,.55)),linear-gradient(transparent 60%,var(--noche))}
+.cab .in{position:absolute;inset:auto 0 0;z-index:3;padding:0 20px 4px}
 .hola{position:absolute;top:56px;left:22px;right:22px;z-index:3;display:flex;justify-content:space-between;align-items:center}
 .yo{display:flex;align-items:center;gap:10px}
 .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:700 13px/1 var(--fb);background:linear-gradient(135deg,#3a3a3e,#1a1a1d);box-shadow:inset 0 0 0 1px var(--linea2);flex:none}
 .hola small{display:block;color:var(--mu);font-size:11.5px}.hola b{font-size:15px}
 .sem{display:flex;align-items:center;gap:12px;margin:10px 0 4px}
-.sem .big{font:500 58px/.8 var(--fn)}
+.sem .big{font:500 52px/.8 var(--fn)}
 .sem .de{font-size:13px;color:var(--mu);line-height:1.3}.sem .de b{display:block;color:var(--tx);font-size:14px}
 .riel{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin:14px 0 6px}
 .riel i{height:26px;border-radius:4px;background:var(--n3);position:relative;box-shadow:inset 0 0 0 1px var(--linea)}
@@ -464,12 +485,20 @@ img{display:block;max-width:100%}
 
     <!-- Inicio -->
     <section class="scr" id="inicio" aria-label="Inicio">
-      <div class="cab"><div class="f"></div>
-        <div class="hola"><div class="yo"><button class="avm" id="avm" data-tab="perfil" aria-label="Tu mascota"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="2.5"/><circle id="avm-arc" cx="24" cy="24" r="22" fill="none" stroke="var(--acc)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="69"/></svg><img id="avm-img" alt=""><span class="zz">z</span></button><div><small>Buenas tardes</small><b>Ana López</b></div></div>
+      <div class="cab"><div class="f"></div><div class="luz"></div>
+        <div class="tag"><span class="cred"><i></i>Ana López · RF-0217</span>
           <button class="circ" data-toast="Sin avisos nuevos" aria-label="Avisos"><svg class="ico"><use href="#i-bell"/></svg></button></div>
-        <div class="in">
+        <button class="figura" id="figura" data-tab="perfil" aria-label="Ver tu mascota"><span class="piso"></span><img id="fig-img" alt=""><span class="zz">z z</span></button>
+        <div class="izq">
           <div class="eti a">Fase 1 · Adaptación</div>
-          <div class="sem"><span class="big">03</span><span class="de"><b>Semana 3 de 12</b>Día 17 de 84 · faltan 67</span></div>
+          <div class="sem"><span class="big">03</span><span class="de"><b>Semana 3</b>de 12 · faltan 67</span></div>
+          <div class="voz">
+            <div class="vn"><b id="voz-n">Rugido</b><span id="voz-e">Entrenado</span></div>
+            <div class="vbar" aria-hidden="true"><i id="voz-bar"></i></div>
+            <p id="voz-t">“Hoy toca pierna.”</p>
+          </div>
+        </div>
+        <div class="in">
           <div class="riel" aria-label="Semana 3 de 12"><i class="ok ev"></i><i class="ok"></i><i class="hoy"></i><i></i><i></i><i class="ev"></i><i></i><i></i><i></i><i></i><i></i><i class="ev"></i></div>
           <div class="fases"><span>Adaptación</span><span>Fuerza e hipertrofia</span><span>Definición</span></div>
         </div>
@@ -779,11 +808,19 @@ function pintarMascota(){
   const m=mdef(st.masc.id);
   $('#ctl-pts').textContent=`${st.pts.toLocaleString('es-MX')} · ${st.oculta?NIVELES[e.n-1]:e.nm}`;
   $('#rng').value=st.pts;
-  // avatar en Inicio
-  const a=$('#avm');a.classList.toggle('cansada',st.cansada&&!st.oculta);
-  if(st.oculta){$('#avm-img').src='data:image/svg+xml,'+encodeURIComponent(medalla(e.n,38).replace('class="med" ','xmlns="http://www.w3.org/2000/svg" '));$('#avm-img').alt='Nivel '+NIVELES[e.n-1]}
-  else{$('#avm-img').src=`img/a-${m.id}-${e.n}.webp`;$('#avm-img').alt=`${st.masc.nombre}: ${e.nm}`}
-  $('#avm-arc').style.strokeDashoffset=138.2*(1-pct/100);
+  // mascota en Inicio
+  const fg=$('#figura'),im=$('#fig-img');fg.classList.toggle('cansada',st.cansada&&!st.oculta);
+  fg.querySelector('.med')?.remove();
+  if(st.oculta){im.hidden=true;fg.insertAdjacentHTML('beforeend',medalla(e.n,120));}
+  else{im.hidden=false;im.src=`img/r-${m.id}-${e.n}.webp`;im.alt=`${st.masc.nombre}, ${e.nm}`;im.style.height=e.n===1?'56%':e.n===2?'86%':'100%';}
+  const falta=sig?(sig.pts-st.pts).toLocaleString('es-MX'):'';
+  $('#voz-n').textContent=st.oculta?NIVELES[e.n-1]:st.masc.nombre;
+  $('#voz-e').textContent=st.oculta?`Nivel ${e.n} de 5`:e.nm;
+  $('#voz-bar').style.width=Math.max(3,pct)+'%';
+  $('#voz-t').textContent=st.cansada?(st.oculta?'Llevas 5 días sin entrenar. Hoy es buen día.':'“Llevamos 5 días sin entrenar. ¿Hoy sí?”')
+    :!sig?(st.oculta?'Nivel más alto del reto.':'“Llegamos a Leyenda. Ahora a sostenerlo.”')
+    :st.oculta?`${falta} pts para ${NIVELES[sig.n-1]}.`
+    :hecho?`“Pierna lista. Me faltan ${falta} pts para ${sig.nm}.”`:`“Hoy toca pierna. Me faltan ${falta} pts para ${sig.nm}.”`;
   // tarjeta del perfil
   const etRow=ETAPAS.map((x,i)=>`<div class="${x.n<=e.n?'on':''} ${x.n===e.n?'hoy':''}">${st.oculta?medalla(x.n,40,'margin:0'):`<img src="img/a-${m.id}-${x.n}.webp" alt="${x.nm}">`}<span>${st.oculta?NIVELES[i]:x.nm}</span><small>${x.pts.toLocaleString('es-MX')}</small></div>`).join('');
   const nm=esc(st.masc.nombre);
