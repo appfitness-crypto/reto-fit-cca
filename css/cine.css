@@ -1588,6 +1588,7 @@ html[data-theme="dark"] .sl-selbtn[aria-pressed="true"]{color:#0A0E13;}
 .tr-cats button[aria-pressed="true"]{background:var(--lime);border-color:var(--lime);color:#fff;}
 html[data-theme="dark"] .tr-cats button[aria-pressed="true"]{color:#0A0E13;}
 .tr-cats button[aria-pressed="true"] i{color:inherit;opacity:.8;}
+.tr-cats button.vacio:not([aria-pressed="true"]){opacity:.55;}
 .tr-alerta{display:block;color:#C2410C;font-weight:700;}
 html[data-theme="dark"] .tr-alerta{color:#FDBA74;}
 .fx-cat{display:inline-flex;align-items:center;margin-top:6px;min-height:28px;padding:0 10px;border:1px solid var(--b);border-radius:99px;background:var(--gl);color:var(--tx);font:700 12px/1 var(--fb);cursor:pointer;}
