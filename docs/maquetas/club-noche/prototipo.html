@@ -277,9 +277,15 @@ img{display:block;max-width:100%}
 .barras i{height:6px;border-radius:3px;background:var(--n3);overflow:hidden}.barras i span{display:block;height:100%;background:var(--acc);border-radius:3px}
 .barras em{font-style:normal;text-align:right;color:var(--tx);font-weight:700;white-space:nowrap}
 .comidas{display:grid;gap:10px;margin:12px 16px 0}
-.comida{display:grid;grid-template-columns:96px 1fr;overflow:hidden;text-align:left;width:100%}
-.comida img{width:96px;height:100%;min-height:96px;object-fit:cover}
-.comida div{padding:12px 14px}
+.comida{display:grid;grid-template-columns:104px minmax(0,1fr) 52px;align-items:center;overflow:hidden;text-align:left;width:100%}
+.comida .foto{position:relative;align-self:stretch;min-height:104px}
+.comida .foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.comida .foto em{position:absolute;left:6px;bottom:6px;display:flex;align-items:center;gap:4px;padding:5px 8px 5px 6px;border-radius:99px;font:700 9.5px/1 var(--fb);font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:rgba(15,15,17,.45);backdrop-filter:blur(10px) saturate(1.4);-webkit-backdrop-filter:blur(10px) saturate(1.4);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+.comida .txt{padding:12px 4px 12px 14px;text-align:left}
+.comida .chk{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--mu2);box-shadow:inset 0 0 0 1.5px var(--linea2);transition:background .2s,color .2s,transform .2s var(--expo)}
+.comida .chk:active{transform:scale(.9)}
+.comida.ok .chk{background:var(--acc);color:var(--ink);box-shadow:none}
+.comida .swp{color:var(--acc);font-weight:700}
 .comida b{display:block;font:600 19px/1.05 var(--fd);text-transform:uppercase;margin:6px 0 4px}
 .comida span{font-size:12px;color:var(--mu)}
 .comida.ok{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 45%,transparent)}
@@ -352,6 +358,55 @@ img{display:block;max-width:100%}
 .ctl .tg2{display:flex;align-items:center;gap:10px;min-height:40px;cursor:pointer}
 .ctl .tg2 input{width:20px;height:20px;accent-color:var(--acc)}
 .ctl b{color:var(--tx)}
+
+/* detalle de comida · ventana de vidrio */
+.vid{position:absolute;inset:0;z-index:85;visibility:hidden;opacity:0;transition:opacity .3s,visibility .3s}
+.vid.on{visibility:visible;opacity:1}
+.vid .bg{position:absolute;inset:-30px;background:#111 center/cover;filter:blur(22px) brightness(.5) saturate(1.3);transform:scale(1.08)}
+.vid .panel{position:absolute;left:10px;right:10px;top:58px;bottom:10px;border-radius:30px;overflow:hidden;display:flex;flex-direction:column;
+  background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04) 40%,rgba(20,18,16,.35));backdrop-filter:blur(30px) saturate(1.6);-webkit-backdrop-filter:blur(30px) saturate(1.6);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 0 0 1px rgba(255,255,255,.12),0 40px 70px -20px rgba(0,0,0,.8);transform:translateY(40px) scale(.98);transition:transform .45s var(--expo)}
+.vid.on .panel{transform:none}
+.vid .cuerpo{flex:1;overflow-y:auto;scrollbar-width:none;padding:12px 12px 16px}
+.vid .cuerpo::-webkit-scrollbar{display:none}
+.vid .hero{position:relative;height:178px;border-radius:22px;overflow:hidden}
+.vid .hero img{width:100%;height:100%;object-fit:cover}
+.vid .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,.55))}
+.vid .cerrar{position:absolute;top:10px;right:10px;z-index:2;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(15,15,17,.4);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.vid .cab2{padding:14px 6px 4px}
+.vid .cab2 h3{font:600 30px/.95 var(--fd);text-transform:uppercase;margin:8px 0 0;text-wrap:balance}
+.vid .macros{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:14px 0 4px}
+.vid .macros div{padding:10px 6px;border-radius:14px;text-align:center;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.vid .macros b{display:block;font:700 17px/1 var(--fb)}
+.vid .macros small{font-size:10.5px;color:var(--mu)}
+.vid h4{font:700 11px/1 var(--fb);letter-spacing:.24em;text-transform:uppercase;color:var(--acc);margin:20px 6px 10px}
+.ings{display:grid;gap:6px}
+.ing{border-radius:16px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);overflow:hidden}
+.ing .fila{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 8px 10px 14px}
+.ing .q{font-weight:700;font-size:14px}
+.ing .n{font-size:13.5px;color:var(--tx)}
+.ing .g{display:block;font-size:11px;color:var(--mu);margin-top:2px}
+.ing .g i{font-style:normal;color:var(--acc);font-weight:700}
+.ing .cb{display:flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:99px;font:700 11.5px/1 var(--fb);color:var(--tx);background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.ing .cb[aria-expanded=true]{background:var(--acc);color:var(--ink);box-shadow:none}
+.ing .ops{display:none;flex-wrap:wrap;gap:6px;padding:0 12px 12px}
+.ing.abierto .ops{display:flex}
+.ing .ops button{min-height:36px;padding:0 12px;border-radius:99px;font-size:12.5px;font-weight:600;background:rgba(0,0,0,.25);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.ing .ops button[aria-pressed=true]{box-shadow:inset 0 0 0 1.5px var(--acc);color:var(--acc)}
+.ing .ops small{width:100%;font-size:11px;color:var(--mu)}
+.pasos{margin:0;padding:0;list-style:none;counter-reset:p;display:grid;gap:8px}
+.pasos li{counter-increment:p;display:grid;grid-template-columns:28px 1fr;gap:10px;font-size:13.5px;color:var(--mu);line-height:1.4}
+.pasos li::before{content:counter(p);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);color:var(--tx);font-weight:700;font-size:12px}
+.legal{margin:16px 6px 0;font-size:11px;color:var(--mu2);line-height:1.4}
+.vid .pie{display:grid;grid-template-columns:1fr 1.25fr;gap:8px;padding:10px 12px 12px;background:linear-gradient(transparent,rgba(0,0,0,.25));box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.vid .pie .btn{min-height:52px;font-size:12px;letter-spacing:.12em}
+.vid .pie .btn.sec{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+.alts{display:grid;gap:8px}
+.alt{display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;align-items:center;padding:8px;border-radius:18px;text-align:left;width:100%;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.alt img{width:84px;height:70px;border-radius:12px;object-fit:cover}
+.alt b{display:block;font:600 18px/1.05 var(--fd);text-transform:uppercase;margin-bottom:4px}
+.alt span{font-size:12px;color:var(--mu)}
+.alt.actual{box-shadow:inset 0 0 0 1.5px var(--acc)}
 
 /* hojas */
 .velo{position:absolute;inset:0;z-index:80;background:rgba(0,0,0,.6);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
@@ -586,7 +641,7 @@ img{display:block;max-width:100%}
 
     <!-- Nutrición -->
     <section class="scr" id="nutricion" aria-label="Nutrición">
-      <div class="top"><div class="eti a">Hoy · Día de entreno</div><h2 class="tit">Tu comida</h2><p class="sub">Toca una comida para marcarla como hecha.</p></div>
+      <div class="top"><div class="eti a">Hoy · Día de entreno</div><h2 class="tit">Tu comida</h2><p class="sub">Toca la foto para ver ingredientes y cambiarlos. El círculo la marca como hecha.</p></div>
       <div class="card macro">
         <div class="kc"><b id="kc">0</b><span>de 2,300 kcal</span></div>
         <div class="barras" id="barras"></div>
@@ -620,6 +675,10 @@ img{display:block;max-width:100%}
       <button class="tab" data-tab="perfil"><svg class="ico"><use href="#i-yo"/></svg>Perfil</button>
     </nav>
 
+    <div class="vid" id="vid" role="dialog" aria-modal="true" aria-labelledby="vid-t">
+      <div class="bg" id="vid-bg"></div>
+      <div class="panel"><div class="cuerpo" id="vid-c"></div><div class="pie" id="vid-pie"></div></div>
+    </div>
     <div class="velo" id="velo"></div>
     <div class="hoja" id="h-tec" role="dialog" aria-label="Técnica"><div class="asa"></div>
       <div class="eti a">Técnica</div><h2 class="tit" id="tec-n" style="font-size:32px"></h2>
@@ -848,16 +907,110 @@ $('#chk-cansada').addEventListener('change',e=>{st.cansada=e.target.checked;pint
 pintarVitrina();pintarMascota();
 
 /* nutrición */
-const CM=[{t:'Desayuno · 8:00',n:'Chilaquiles con pollo',k:520,p:32,img:'d-chilaquiles'},{t:'Colación · 11:00',n:'Licuado de plátano',k:310,p:24,img:'c-licuado'},
-          {t:'Comida · 15:00',n:'Salmón con camote',k:680,p:42,img:'m-salmon-camote'},{t:'Cena · 21:00',n:'Tacos de pechuga',k:460,p:36,img:'n-tacos-pechuga'}];
-const ok=new Set();
+const GRP={CER:'Cereales',AOA:'Proteína animal',VER:'Verduras',FRU:'Frutas',LEC:'Lácteos',GRA:'Grasas',LEG:'Leguminosas',LIB:'Libre'};
+const I=(q,n,g,eq,ops)=>({q,n,g,eq,ops:ops||[],o:null});
+const OP={
+ tortilla3:[['3 pzas','Tortilla de maíz'],['1½ rebanadas','Pan integral'],['¾ taza','Arroz cocido']],
+ totopos:[['3 pzas','Tortilla horneada en totopos'],['1½ rebanadas','Pan integral tostado'],['¾ taza','Papa cocida en cubos']],
+ pollo90:[['90 g','Pechuga de pollo'],['1 lata (90 g)','Atún en agua'],['3 claras + 1 huevo','Huevo'],['90 g','Pescado blanco']],
+ pollo100:[['100 g','Pechuga de pollo'],['100 g','Bistec de res magro'],['100 g','Camarón'],['¾ taza','Frijol cocido (más carbohidrato)']],
+ salmon:[['120 g','Salmón'],['120 g','Atún fresco'],['120 g','Pechuga de pollo + 1 cdita de aceite']],
+ queso30:[['30 g','Queso fresco'],['30 g','Queso panela'],['¼ taza','Requesón']],
+ huevo1:[['1 pza','Huevo estrellado'],['2 claras','Clara de huevo'],['30 g','Queso panela']],
+ crema:[['1 cda','Crema ligera'],['⅓ pza','Aguacate'],['1 cdita','Aceite de oliva']],
+ aguacate:[['⅓ pza','Aguacate'],['1 cdita','Aceite de oliva'],['7 mitades','Nuez']],
+ aceite:[['1 cdita','Aceite de oliva'],['⅙ pza','Aguacate'],['5 pzas','Almendra']],
+ leche:[['1 taza','Leche descremada'],['¾ taza','Yogur natural sin azúcar'],['1 taza','Bebida de soya sin azúcar']],
+ yogur:[['½ taza','Yogur griego natural'],['½ taza','Requesón'],['1 taza','Leche descremada']],
+ platano:[['½ pza','Plátano'],['1 taza','Fresas'],['1 pza','Manzana chica']],
+ avena:[['⅓ taza','Avena'],['½ pza','Bolillo integral sin migajón'],['⅓ taza','Amaranto']],
+ camote:[['1 pza (150 g)','Camote horneado'],['1 taza','Arroz integral cocido'],['1 pza (170 g)','Papa cocida']],
+ brocoli:[['1½ taza','Brócoli al vapor'],['1½ taza','Ejotes'],['2 tazas','Ensalada verde']],
+ verdura1:[['1 taza','Calabacita y pimiento'],['1 taza','Nopales asados'],['1 taza','Champiñones']],
+};
+const M={
+ chil:{n:'Chilaquiles con pollo',img:'d-chilaquiles',k:520,p:32,c:52,l:18,
+   ing:[I('3 pzas','Tortilla horneada en totopos','CER','3 eq.',OP.totopos),I('90 g','Pechuga de pollo deshebrada','AOA','3 eq.',OP.pollo90),I('½ taza','Salsa verde','VER','1 eq.'),I('30 g','Queso fresco','AOA','1 eq.',OP.queso30),I('1 pza','Huevo estrellado','AOA','1 eq.',OP.huevo1),I('1 cda','Crema ligera','GRA','1 eq.',OP.crema),I('Al gusto','Cebolla y cilantro','LIB','')],
+   pasos:['Hornea los totopos 10 min a 180 °C, sin aceite.','Calienta la salsa y baña los totopos justo antes de servir.','Agrega el pollo, el queso, la crema y el huevo encima.']},
+ omel:{n:'Omelette de espinaca',img:'d-omelette-espinaca',k:500,p:34,c:44,l:20,
+   ing:[I('2 pzas + 2 claras','Huevo','AOA','3 eq.',OP.huevo1),I('1 taza','Espinaca','VER','1 eq.'),I('30 g','Queso panela','AOA','1 eq.',OP.queso30),I('2 pzas','Tortilla de maíz','CER','2 eq.',OP.tortilla3),I('½ pza','Fruta de temporada','FRU','1 eq.',OP.platano)],
+   pasos:['Bate los huevos y las claras con sal y pimienta.','Saltea la espinaca y vierte el huevo; agrega el queso.','Dobla y sirve con tortillas y fruta.']},
+ avena:{n:'Avena con fruta',img:'d-avena',k:480,p:22,c:70,l:12,
+   ing:[I('⅔ taza','Avena','CER','2 eq.',OP.avena),I('1 taza','Leche descremada','LEC','1 eq.',OP.leche),I('½ pza','Plátano','FRU','1 eq.',OP.platano),I('½ taza','Yogur griego natural','LEC','1 eq.',OP.yogur),I('7 mitades','Nuez','GRA','1 eq.',OP.aguacate)],
+   pasos:['Cuece la avena en la leche 5 min.','Sirve con el yogur, el plátano y la nuez.']},
+ lic:{n:'Licuado de plátano',img:'c-licuado',k:310,p:24,c:40,l:6,
+   ing:[I('1 taza','Leche descremada','LEC','1 eq.',OP.leche),I('½ taza','Yogur griego natural','LEC','1 eq.',OP.yogur),I('½ pza','Plátano','FRU','1 eq.',OP.platano),I('⅓ taza','Avena','CER','1 eq.',OP.avena),I('Al gusto','Canela y hielo','LIB','')],
+   pasos:['Licúa todo 30 segundos con hielo.','Tómalo antes o hasta 1 hora después de entrenar.']},
+ yog:{n:'Yogur con fresas',img:'c-yogur-fresa',k:290,p:20,c:34,l:7,
+   ing:[I('¾ taza','Yogur griego natural','LEC','1½ eq.',OP.yogur),I('1 taza','Fresas','FRU','1 eq.',OP.platano),I('⅓ taza','Amaranto','CER','1 eq.',OP.avena)],
+   pasos:['Sirve el yogur con las fresas picadas y el amaranto encima.']},
+ pep:{n:'Pepino con requesón',img:'c-pepino-requeson',k:250,p:18,c:20,l:9,
+   ing:[I('1 pza','Pepino','VER','1 eq.'),I('½ taza','Requesón','AOA','2 eq.',OP.queso30),I('4 pzas','Galleta salmas','CER','1 eq.',OP.avena),I('Al gusto','Limón, chile y sal','LIB','')],
+   pasos:['Rebana el pepino y úntalo con requesón.','Sazona con limón y chile en polvo.']},
+ salm:{n:'Salmón con camote',img:'m-salmon-camote',k:680,p:42,c:60,l:28,
+   ing:[I('120 g','Salmón','AOA','4 eq.',OP.salmon),I('1 pza (150 g)','Camote horneado','CER','2 eq.',OP.camote),I('1½ taza','Brócoli al vapor','VER','2 eq.',OP.brocoli),I('1 cdita','Aceite de oliva','GRA','1 eq.',OP.aceite),I('⅓ pza','Aguacate','GRA','1 eq.',OP.aguacate),I('Al gusto','Limón y pimienta','LIB','')],
+   pasos:['Hornea el camote 35 min a 200 °C.','Sella el salmón 4 min por lado con el aceite.','Sirve con el brócoli, el aguacate y limón.']},
+ polv:{n:'Pollo en salsa verde',img:'m-pollo-verde',k:660,p:45,c:62,l:22,
+   ing:[I('120 g','Pechuga de pollo','AOA','4 eq.',OP.pollo100),I('½ taza','Salsa verde','VER','1 eq.'),I('½ taza','Arroz cocido','CER','2 eq.',OP.camote),I('½ taza','Frijol de la olla','LEG','1 eq.'),I('⅓ pza','Aguacate','GRA','1 eq.',OP.aguacate)],
+   pasos:['Cuece el pollo en la salsa verde 15 min.','Sirve con arroz, frijoles y aguacate.']},
+ bist:{n:'Bistec con nopales',img:'m-bistec',k:690,p:46,c:58,l:26,
+   ing:[I('120 g','Bistec de res magro','AOA','4 eq.',OP.pollo100),I('1 taza','Nopales asados','VER','1 eq.',OP.verdura1),I('3 pzas','Tortilla de maíz','CER','3 eq.',OP.tortilla3),I('1 cdita','Aceite de oliva','GRA','1 eq.',OP.aceite),I('½ taza','Pico de gallo','VER','1 eq.')],
+   pasos:['Asa el bistec con el aceite, 3 min por lado.','Asa los nopales en el comal.','Sirve con tortillas y pico de gallo.']},
+ tac:{n:'Tacos de pechuga',img:'n-tacos-pechuga',k:460,p:36,c:44,l:14,
+   ing:[I('3 pzas','Tortilla de maíz','CER','3 eq.',OP.tortilla3),I('100 g','Pechuga de pollo','AOA','3 eq.',OP.pollo100),I('1 taza','Calabacita y pimiento','VER','1 eq.',OP.verdura1),I('½ taza','Pico de gallo','VER','1 eq.'),I('⅓ pza','Aguacate','GRA','1 eq.',OP.aguacate)],
+   pasos:['Asa la pechuga en tiras con las verduras.','Calienta las tortillas en el comal.','Arma los tacos con pico de gallo y aguacate.']},
+ ques:{n:'Quesadillas de champiñón',img:'n-quesadillas',k:450,p:28,c:42,l:18,
+   ing:[I('3 pzas','Tortilla de maíz','CER','3 eq.',OP.tortilla3),I('60 g','Queso Oaxaca light','AOA','2 eq.',OP.queso30),I('1 taza','Champiñones','VER','1 eq.',OP.verdura1),I('½ taza','Salsa roja','VER','1 eq.')],
+   pasos:['Saltea los champiñones con ajo.','Rellena las tortillas con queso y champiñones; dóralas en el comal.']},
+ cev:{n:'Ceviche de pescado',img:'n-ceviche',k:420,p:34,c:38,l:12,
+   ing:[I('120 g','Pescado blanco','AOA','4 eq.',OP.pollo90),I('1 taza','Jitomate, pepino y cebolla','VER','1 eq.'),I('3 pzas','Tostada horneada','CER','3 eq.',OP.tortilla3),I('⅓ pza','Aguacate','GRA','1 eq.',OP.aguacate)],
+   pasos:['Cura el pescado en jugo de limón 20 min.','Mezcla con las verduras picadas.','Sirve sobre tostadas horneadas con aguacate.']}
+};
+const CM=[{t:'Desayuno · 8:00',id:'chil',alts:['chil','omel','avena']},{t:'Colación · 11:00',id:'lic',alts:['lic','yog','pep']},
+          {t:'Comida · 15:00',id:'salm',alts:['salm','polv','bist']},{t:'Cena · 21:00',id:'tac',alts:['tac','ques','cev']}];
+const ok=new Set();let vi=-1,vista='det';
+const cambios=i=>M[CM[i].id].ing.filter(x=>x.o!=null).length;
 function pintarNut(){
-  $('#comidas').innerHTML=CM.map((c,i)=>`<button class="card comida ${ok.has(i)?'ok':''}" data-c="${i}"><img src="img/${c.img}.webp" alt=""><div><span class="eti ${ok.has(i)?'a':''}">${ok.has(i)?'Hecha · ':''}${c.t}</span><b>${c.n}</b><span>${c.k} kcal · ${c.p} g proteína</span></div></button>`).join('');
-  const k=[...ok].reduce((a,i)=>a+CM[i].k,0),p=[...ok].reduce((a,i)=>a+CM[i].p,0);
+  $('#comidas').innerHTML=CM.map((c,i)=>{const m=M[c.id],cb=cambios(i);return `<div class="card comida ${ok.has(i)?'ok':''}">
+    <button class="foto" data-ver="${i}" aria-label="Ver ingredientes de ${esc(m.n)}"><img src="img/${m.img}.webp" alt=""><em><svg class="ico" style="width:12px;height:12px"><use href="#i-chev"/></svg>Receta</em></button>
+    <button class="txt" data-ver="${i}"><span class="eti ${ok.has(i)?'a':''}">${ok.has(i)?'Hecha · ':''}${c.t}</span><b>${esc(m.n)}</b><span>${m.k} kcal · ${m.p} g proteína${cb?` · <span class="swp">${cb} cambio${cb>1?'s':''}</span>`:''}</span></button>
+    <button class="chk" data-chk="${i}" aria-pressed="${ok.has(i)}" aria-label="Marcar ${esc(m.n)} como hecha"><svg class="ico" style="width:18px;height:18px"><use href="#i-check"/></svg></button></div>`}).join('');
+  const k=[...ok].reduce((a,i)=>a+M[CM[i].id].k,0),p=[...ok].reduce((a,i)=>a+M[CM[i].id].p,0);
   $('#kc').textContent=k.toLocaleString('es-MX');
-  $('#barras').innerHTML=[['Proteína',p,150,'g'],['Calorías',k,2300,'kcal']].map(([n,v,m,u])=>`<div><span>${n}</span><i><span style="width:${Math.min(100,v/m*100)}%"></span></i><em>${v} / ${m}</em></div>`).join('');
+  $('#barras').innerHTML=[['Proteína',p,150],['Calorías',k,2300]].map(([n,v,m])=>`<div><span>${n}</span><i><span style="width:${Math.min(100,v/m*100)}%"></span></i><em>${v.toLocaleString('es-MX')} / ${m.toLocaleString('es-MX')}</em></div>`).join('');
 }
-$('#comidas').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;const i=+b.dataset.c;ok.has(i)?ok.delete(i):ok.add(i);pintarNut()});
+function pintarVid(){
+  const c=CM[vi],m=M[c.id];$('#vid-bg').style.backgroundImage=`url(img/${m.img}.webp)`;
+  const hero=`<div class="hero"><img src="img/${m.img}.webp" alt=""><button class="cerrar" data-vx aria-label="Cerrar"><svg class="ico"><use href="#i-x"/></svg></button></div>`;
+  if(vista==='alt'){
+    $('#vid-c').innerHTML=hero+`<div class="cab2"><div class="eti a">${c.t}</div><h3 id="vid-t">Cambiar comida</h3><p class="sub" style="margin-top:8px">Opciones con calorías y proteína parecidas, del plan de tu nutrióloga.</p></div>
+      <h4>Elige otra</h4><div class="alts">${c.alts.map(id=>{const a=M[id];return `<button class="alt ${id===c.id?'actual':''}" data-alt="${id}"><img src="img/${a.img}.webp" alt=""><div><b>${esc(a.n)}</b><span>${a.k} kcal · ${a.p} g proteína${id===c.id?' · actual':''}</span></div></button>`}).join('')}</div>`;
+    $('#vid-pie').innerHTML=`<button class="btn sec" data-vv="det" style="grid-column:1/-1">Volver a la receta</button>`;
+  } else {
+    $('#vid-c').innerHTML=hero+`<div class="cab2"><div class="eti a">${c.t}</div><h3 id="vid-t">${esc(m.n)}</h3></div>
+      <div class="macros"><div><b>${m.k}</b><small>kcal</small></div><div><b>${m.p} g</b><small>proteína</small></div><div><b>${m.c} g</b><small>carbohid.</small></div><div><b>${m.l} g</b><small>grasa</small></div></div>
+      <h4>Ingredientes</h4><div class="ings">${m.ing.map((x,j)=>{const cur=x.o!=null?x.ops[x.o]:[x.q,x.n];return `<div class="ing" data-j="${j}"><div class="fila"><div><span class="q">${esc(cur[0])}</span> <span class="n">${esc(cur[1])}</span><span class="g">${GRP[x.g]}${x.eq?' · '+x.eq:''}${x.o!=null?' · <i>cambiado</i>':''}</span></div>
+        ${x.ops.length?`<button class="cb" data-cb="${j}" aria-expanded="false"><svg class="ico" style="width:14px;height:14px"><use href="#i-arrow"/></svg>Cambiar</button>`:''}</div>
+        ${x.ops.length?`<div class="ops"><small>Mismo grupo, misma cantidad de equivalentes:</small>${x.ops.map((o,k)=>`<button data-op="${j}:${k}" aria-pressed="${(x.o??0)===k}">${esc(o[0])} · ${esc(o[1])}</button>`).join('')}</div>`:''}</div>`}).join('')}</div>
+      <h4>Preparación</h4><ol class="pasos">${m.pasos.map(t=>`<li>${esc(t)}</li>`).join('')}</ol>
+      <p class="legal">Sugerencia educativa con equivalentes del Sistema Mexicano de Alimentos Equivalentes. Si tienes una condición médica, revisa tu alimentación con tu médico o nutriólogo.</p>`;
+    $('#vid-pie').innerHTML=`<button class="btn sec" data-vv="alt">Cambiar comida</button><button class="btn" data-vh>${ok.has(vi)?'Quitar hecha':'Marcar hecha'}</button>`;
+  }
+}
+function abrirVid(i){vi=i;vista='det';pintarVid();$('#vid-c').scrollTop=0;$('#vid').classList.add('on')}
+function cerrarVid(){$('#vid').classList.remove('on')}
+$('#comidas').addEventListener('click',e=>{
+  const v=e.target.closest('[data-ver]');if(v){abrirVid(+v.dataset.ver);return}
+  const c=e.target.closest('[data-chk]');if(c){const i=+c.dataset.chk;ok.has(i)?ok.delete(i):ok.add(i);pintarNut()}});
+$('#vid').addEventListener('click',e=>{
+  if(e.target.id==='vid'||e.target.closest('[data-vx]')){cerrarVid();return}
+  const vv=e.target.closest('[data-vv]');if(vv){vista=vv.dataset.vv;pintarVid();$('#vid-c').scrollTop=0;return}
+  if(e.target.closest('[data-vh]')){ok.has(vi)?ok.delete(vi):ok.add(vi);pintarNut();cerrarVid();toast(ok.has(vi)?'Comida marcada como hecha':'Comida desmarcada');return}
+  const cb=e.target.closest('[data-cb]');if(cb){const r=cb.closest('.ing'),ab=!r.classList.contains('abierto');r.classList.toggle('abierto',ab);cb.setAttribute('aria-expanded',ab);return}
+  const op=e.target.closest('[data-op]');if(op){const [j,k]=op.dataset.op.split(':').map(Number);const x=M[CM[vi].id].ing[j];x.o=k===0?null:k;
+    const sc=$('#vid-c').scrollTop;pintarVid();$('#vid-c').scrollTop=sc;pintarNut();toast(k===0?'Ingrediente original':`Cambiado por ${x.ops[k][1].toLowerCase()}`);return}
+  const al=e.target.closest('[data-alt]');if(al){CM[vi].id=al.dataset.alt;vista='det';pintarVid();$('#vid-c').scrollTop=0;pintarNut();toast(`Cambiaste a ${M[al.dataset.alt].n.toLowerCase()}`)}
+});
 pintarNut();
 }
 </script>
