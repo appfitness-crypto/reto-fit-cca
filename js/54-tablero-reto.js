@@ -233,9 +233,12 @@ function abrirTableroReto(obj){
   const totObj = Math.max(1, Object.values(T.porObj).reduce((a,b)=>a+b,0));
   const ents = Object.values(T.porEnt).sort((a,b)=>b.total-a.total);
   const rkObj = trRanking(T.filas, trObj);
-  const catsHay = (typeof RETO_CATS_ORDEN!=='undefined'?RETO_CATS_ORDEN:[]).filter(c=>rkObj.some(r=>r.cat===c));
+  // Todas las categorías siempre a la vista (también Juvenil y Adulto mayor aunque tengan 0 inscritos);
+  // 'sin' junta a quienes no tienen edad o sexo capturados, solo si hay alguno.
+  const enCat = c => c==='sin' ? rkObj.filter(r=>!r.cat) : rkObj.filter(r=>r.cat===c);
+  const catsHay = (typeof RETO_CATS_ORDEN!=='undefined'?RETO_CATS_ORDEN:[]).concat(rkObj.some(r=>!r.cat)?['sin']:[]);
   if(trCat && !catsHay.includes(trCat)) trCat='';
-  const rk = trCat ? rkObj.filter(r=>r.cat===trCat) : rkObj;
+  const rk = trCat ? enCat(trCat) : rkObj;
   const rkVis = trVerTodos ? rk : rk.slice(0,20);
   const iniciales = n=>String(n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 
@@ -294,7 +297,7 @@ function abrirTableroReto(obj){
       </div>
       <p class="tr-mu" style="margin:4px 0 12px">Cada objetivo y categoría compite en su propia tabla. Reto /100 = constancia (40) + resultado de nutrición (40, con sus mediciones oficiales) + jueces (20). Los puntos de la app son los de la mascota.</p>
       <div class="tr-tabs" role="tablist">${objs.map(o=>`<button type="button" role="tab" aria-selected="${o===trObj}" class="tr-tab${o===trObj?' on':''}" onclick="abrirTableroReto('${esc(o)}')">${esc(TR_OBJ_CORTO[o]||objNombre(o))} · ${T.porObj[o]||0}</button>`).join('')}</div>
-      ${catsHay.length?`<div class="tr-cats" role="group" aria-label="Categoría">${['',...catsHay].map(c=>`<button type="button" aria-pressed="${trCat===c}" onclick="trCat='${c}';trVerTodos=false;abrirTableroReto()">${c?esc(retoCategoriaNombre(c)):'Todas'} <i>${c?rkObj.filter(r=>r.cat===c).length:rkObj.length}</i></button>`).join('')}</div>`:''}
+      ${catsHay.length?`<div class="tr-cats" role="group" aria-label="Categoría">${['',...catsHay].map(c=>{ const n=c?enCat(c).length:rkObj.length; return `<button type="button" aria-pressed="${trCat===c}"${n?'':' class="vacio"'} onclick="trCat='${c}';trVerTodos=false;abrirTableroReto()">${c?esc(retoCategoriaNombre(c)):'Todas'} <i>${n}</i></button>`; }).join('')}</div>`:''}
       ${rk.length ? `<div class="tr-scroll"><table class="tr-table tr-rk">
         <tr><th>#</th><th>Socio</th><th>Constancia</th><th>Cambio</th><th>Reto <small>/100</small></th><th>Puntos app</th></tr>
         ${rkVis.map((r,i)=>`<tr class="tr-click" onclick="staffOpenSocio('${esc(r.s.code)}')">
@@ -305,7 +308,7 @@ function abrirTableroReto(obj){
           <td><b>${trPuntajeReto(r)}</b><small class="tr-mu"> · const. ${r.constPts||0} · res. ${r.resPts||0} · jueces ${r.juecesPts||0}</small></td><td>${r.puntos.toLocaleString('es-MX')}</td></tr>`).join('')}
       </table></div>
       ${rk.length>20?`<button type="button" class="tb-btn" style="margin-top:10px" onclick="trVerTodos=!trVerTodos;abrirTableroReto()">${trVerTodos?'Ver solo los primeros 20':'Ver los '+rk.length}</button>`:''}`
-      : `<p class="tr-mu">Todavía no hay socios con este objetivo.</p>`}
+      : `<p class="tr-mu">${trCat&&rkObj.length?`Nadie inscrito en ${esc(retoCategoriaNombre(trCat==='sin'?'':trCat))} con este objetivo.`:'Todavía no hay socios con este objetivo.'}</p>`}
     </div>
 
     <div class="tr-card">
