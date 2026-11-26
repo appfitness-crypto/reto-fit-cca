@@ -1,7 +1,8 @@
 /* ═══ Reto Fit CCA: socios de prueba para ver el tablero ═══
    Módulo cargado por index.html en orden (script clásico: comparte el ámbito global).
    Solo el director. Menú → Reto:
-   · "Cargar 15 socios de prueba": 5 por objetivo, con sesiones (pesos por ejercicio), peso corporal y medidas
+   · "Cargar 30 socios de prueba": 15 adultos (5 por objetivo) + 7 juveniles (14 a 17, en recomposición) y
+     8 adultos mayores (60+), con sesiones (pesos por ejercicio), peso corporal y medidas
      de las últimas 5 semanas, repartidos entre los entrenadores que existan. Se guardan en Firebase como
      cualquier socio, con código "demo-NN", la marca demo:true y "(PRUEBA)" en el nombre.
    · "Borrar socios de prueba": borra solo los expedientes demo-NN (y su índice). Los socios reales no se tocan.
@@ -12,7 +13,7 @@
 
 const DEMO_DIAS=56;            // 8 semanas de historia
 // Trampas de ejemplo por socio (índice en DEMO_SOCIOS): corta, fuera del gym, repetida el mismo día, salto de peso
-const DEMO_TRAMPAS={1:['corta','dup'], 6:['dup'], 7:['salto'], 12:['corta','fuera','dup']};
+const DEMO_TRAMPAS={1:['corta','dup'], 6:['dup'], 7:['salto'], 12:['corta','fuera','dup'], 16:['salto'], 23:['corta','dup']};
 
 const DEMO_PREFIJO='demo-';
 const DEMO_SOCIOS=[
@@ -32,6 +33,23 @@ const DEMO_SOCIOS=[
   ['KARLA DÍAZ','MUJER','RECOMPOSICIÓN CORPORAL',{c:.8,m:.45}],
   ['ÓSCAR FLORES','HOMBRE','RECOMPOSICIÓN CORPORAL',{c:.55,m:.6}],
   ['DANIELA SOTO','MUJER','RECOMPOSICIÓN CORPORAL',{c:.35,m:.25,deja:12}],
+  // Juvenil (14 a 17): siempre en recomposición · edad fija y fuerza menor (fz)
+  ['EMILIANO REYES','HOMBRE','RECOMPOSICIÓN CORPORAL',{c:.9,m:.85,edad:16,fz:.6}],
+  ['SANTIAGO PAZ','HOMBRE','RECOMPOSICIÓN CORPORAL',{c:.75,m:.6,edad:15,fz:.55}],
+  ['MATEO GUZMÁN','HOMBRE','RECOMPOSICIÓN CORPORAL',{c:.6,m:.5,edad:17,fz:.65}],
+  ['IKER CASTILLO','HOMBRE','RECOMPOSICIÓN CORPORAL',{c:.4,m:.3,edad:14,fz:.5,deja:8}],
+  ['XIMENA ROJAS','MUJER','RECOMPOSICIÓN CORPORAL',{c:.95,m:.8,edad:16,fz:.65}],
+  ['REGINA AGUILAR','MUJER','RECOMPOSICIÓN CORPORAL',{c:.7,m:.55,edad:15,fz:.6}],
+  ['CAMILA NÚÑEZ','MUJER','RECOMPOSICIÓN CORPORAL',{c:.5,m:.4,edad:17,fz:.65}],
+  // Adulto mayor (60+)
+  ['JORGE MEDINA','HOMBRE','PERDER PESO',{c:.9,m:.7,edad:63,fz:.7}],
+  ['ROBERTO CAMPOS','HOMBRE','GANAR MÚSCULO',{c:.8,m:.6,edad:67,fz:.65}],
+  ['ENRIQUE SALAS','HOMBRE','RECOMPOSICIÓN CORPORAL',{c:.65,m:.5,edad:61,fz:.7}],
+  ['ARTURO MEJÍA','HOMBRE','PERDER PESO',{c:.45,m:.35,edad:70,fz:.6,deja:10}],
+  ['MARTHA IBARRA','MUJER','PERDER PESO',{c:.85,m:.75,edad:62,fz:.7}],
+  ['ROSA ELENA PONCE','MUJER','GANAR MÚSCULO',{c:.75,m:.55,edad:65,fz:.65}],
+  ['GUADALUPE ROMERO','MUJER','RECOMPOSICIÓN CORPORAL',{c:.9,m:.6,edad:60,fz:.7}],
+  ['TERESA LUNA','MUJER','PERDER PESO',{c:.5,m:.4,edad:68,fz:.6}],
 ];
 const DEMO_EJ={
   HOMBRE:[['Sentadilla libre',60],['Press banca plano',50],['Remo con barra',45],['Peso muerto rumano',60],['Press militar con barra',30],['Jalón al pecho',45]],
@@ -56,7 +74,7 @@ function demoSocio(i, ents, plantilla){
     if(rnd()>pf.c*0.85) continue;
     const ts=inicio+d*dia+ (17+Math.floor(rnd()*4))*3600000, f=d/DEMO_DIAS;
     const del=ejs.slice(0,4+Math.floor(rnd()*2)).map(([n,kg0])=>{
-      const kg=Math.round(kg0*(1+f*0.22*pf.m)*2)/2; return {n, s:4, p:4, kg};
+      const kg=Math.max(2,Math.round(kg0*(pf.fz||1)*(1+f*0.22*pf.m)*2)/2); return {n, s:4, p:4, kg};
     });
     const completa=rnd()<0.75;
     ses.push({fecha:fechaISO(new Date(ts)), ts, diaKey:['dom','lun','mar','mie','jue','vie','sab'][dow], tipo:'Fuerza', ejercicios:del.length,
@@ -89,7 +107,7 @@ function demoSocio(i, ents, plantilla){
   const base=plantilla?JSON.parse(JSON.stringify(plantilla)):{};
   return Object.assign(base,{
     code, id:'#RF-'+code.toUpperCase(), nombre:nom+' (PRUEBA)', demo:true,
-    objetivo:obj, nivel:pf.c>0.8?'INTERMEDIO':'PRINCIPIANTE', edad:24+Math.floor(rnd()*22), genero:gen,
+    objetivo:obj, nivel:pf.c>0.8?'INTERMEDIO':'PRINCIPIANTE', edad:pf.edad||24+Math.floor(rnd()*22), genero:gen,
     peso:peso0, estatura:est, dias:4, cintura:cin0, status:'activo',
     asignado:ent?ent.nombre:'Plan de la app', entrenadorId:ent?ent.id:'', codigoEnt:ent&&ent.codigo||'',
     fechaRegistro:fechaISO(new Date(inicio)),
@@ -108,7 +126,7 @@ function demoRetoCargar(){
   if(staffRol!=='coordinador'){ showToast('Solo el director puede cargar socios de prueba'); return; }
   const ya=demoCodigos().length;
   const ents=demoEntrenadores();
-  uiConfirm(`Se cargarán 15 socios de prueba (5 por objetivo) en la base de datos del reto, ${ents.length?'repartidos entre '+ents.length+' entrenador'+(ents.length>1?'es':''):'sin entrenador asignado'}. Llevan "(PRUEBA)" en el nombre y se borran con "Borrar socios de prueba".${ya?' Los '+ya+' que ya existen se reemplazan.':''}`, ()=>{
+  uiConfirm(`Se cargarán ${DEMO_SOCIOS.length} socios de prueba de todas las categorías (Varonil, Femenil, Juvenil y Adulto mayor) en la base de datos del reto, ${ents.length?'repartidos entre '+ents.length+' entrenador'+(ents.length>1?'es':''):'sin entrenador asignado'}. Llevan "(PRUEBA)" en el nombre y se borran con "Borrar socios de prueba".${ya?' Los '+ya+' que ya existen se reemplazan.':''}`, ()=>{
     let plantilla=null;
     try{ const db=seedDB(); const s0=Object.values(db.socios||db)[0]; plantilla={rutina:s0.rutina, zonas:s0.zonas||[], limitaciones:[], cardio:s0.cardio||''}; }catch(e){}
     for(let i=0;i<DEMO_SOCIOS.length;i++){
@@ -121,7 +139,7 @@ function demoRetoCargar(){
     try{ baseGuardar(); }catch(e){}
     guardarLocal();
     if(typeof staffRenderList==='function') staffRenderList();
-    showToast('✓ 15 socios de prueba cargados');
+    showToast('✓ '+DEMO_SOCIOS.length+' socios de prueba cargados');
     if(typeof abrirTableroReto==='function') abrirTableroReto();
   });
 }
