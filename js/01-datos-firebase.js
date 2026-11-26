@@ -108,6 +108,7 @@ function fbArrancar(){
     fbEscuchar();                       // /config y /entrenadores (una sola vez)
     fbEscucharEntrenadores();           // al pasar de sesión anónima a cuenta con correo
     if(fbEsStaff) fbEscucharStaff();    // todos los socios, solo para el staff
+    if(fbEsStaff) vaciarBandeja();      // lo que dejó pendiente al cerrar sesión
     const w=fbWaiters; fbWaiters=[]; w.forEach(f=>f(true));
     if(fbPrimerResolver){ fbPrimerResolver({user:u,rol:fbRolDB}); fbPrimerResolver=null; }
     actualizarFbBadge();
@@ -300,6 +301,11 @@ const enVuelo=new Set(), OUT_CB={};
 let outSeq=Date.now(), fbConectado=false, fbYaConecto=false, fbEscuchando=false;
 function outGuardar(){ try{ localStorage.setItem(LS_OUT,JSON.stringify(OUTBOX)); }catch(e){} actualizarPillSync(); }
 function baseGuardar(){ try{ localStorage.setItem(LS_BASE,JSON.stringify(BASE)); }catch(e){} }
+// Cambios hechos por el staff: se suben solo con una cuenta del staff. Si alguien cierra sesión con un cambio
+// pendiente, la app sigue en sesión anónima y Firebase lo rechazaría una y otra vez (aviso de reglas en la portada).
+// en.st = uid del staff que lo hizo ('staff' = cualquiera del staff, para los que ya estaban en la bandeja).
+function outEspera(en){ return !!(en && en.st) && !(fbEsStaff && (en.st==='staff' || en.st===fbUid)); }
+function outPendientes(){ return OUTBOX.filter(x=>!outEspera(x)); }
 function quitarEntrada(id){ const n=OUTBOX.length; OUTBOX=OUTBOX.filter(x=>x.id!==id); if(OUTBOX.length!==n) outGuardar(); }
 function tienePendiente(code){ const p='/socios/'+code; return OUTBOX.some(x=>x.path===p||x.path.indexOf(p+'/')===0); }
 
@@ -386,6 +392,7 @@ function aplicarPendientes(raiz,data){
 
 function enviar(en){
   if(!fbListo || !fbDB) return;
+  if(outEspera(en)){ actualizarPillSync(); return; }   // espera a que entre el staff
   const id=en.id, gen=en.gen;
   let p;
   try{
@@ -432,6 +439,12 @@ function enviar(en){
     // Reglas de Firebase: reintentar no sirve… salvo el expediente de un cliente, que NO se tira:
     // se queda en el celular y se vuelve a subir al reconectar (p. ej. cuando se publiquen las reglas correctas)
     if(txt.includes('permission') && en.tipo!=='socio') quitarEntrada(id);
+    // Expediente rechazado sin cuenta del staff (quedó en la bandeja de antes de cerrar sesión): se guarda
+    // para cuando vuelva a entrar el staff, sin repetir el aviso en la portada
+    if(txt.includes('permission') && en.tipo==='socio' && !fbEsStaff && !(typeof activeSocio!=='undefined' && activeSocio && activeSocio.code===en.code)){
+      const cur=OUTBOX.find(x=>x.id===id); if(cur){ cur.st='staff'; outGuardar(); }
+      delete OUT_CB[id]; actualizarPillSync(); return;
+    }
     const cb=OUT_CB[id]; delete OUT_CB[id];
     if(cb && cb.err) cb.err(e); else showToast(fbErrorMsg(e));
     actualizarPillSync();
@@ -466,6 +479,7 @@ function requiereConexion(msg){
 function fbEncolar(path,op,data,cb){
   if(op==='set') OUTBOX=OUTBOX.filter(x=>!(x.tipo!=='socio' && x.path===path && x.op==='set'));
   const en={id:'o'+(++outSeq), path, op, data:(data===undefined?null:limpio(data)), gen:1, ts:Date.now()};
+  if(fbEsStaff && fbUid) en.st=fbUid;
   OUTBOX.push(en); outGuardar();
   if(cb) OUT_CB[en.id]=cb;
   enviar(en);
@@ -475,7 +489,7 @@ function fbEncolar(path,op,data,cb){
 function fbEncolarSocio(code){
   let en=OUTBOX.find(x=>x.tipo==='socio' && x.code===code);
   if(en){ en.gen=(en.gen||1)+1; en.ts=Date.now(); }
-  else { en={id:'o'+(++outSeq), tipo:'socio', code, path:'/socios/'+code, gen:1, ts:Date.now()}; OUTBOX.push(en); }
+  else { en={id:'o'+(++outSeq), tipo:'socio', code, path:'/socios/'+code, gen:1, ts:Date.now()}; if(fbEsStaff && fbUid) en.st=fbUid; OUTBOX.push(en); }
   outGuardar();
   enviar(en);
 }
@@ -490,7 +504,7 @@ function estaSinConexion(){ return !navigator.onLine || (fbListo && fbYaConecto 
 let pillTimer=null, pillHabiaPend=false;
 function actualizarPillSync(){
   const el=document.getElementById('sync-pill'); if(!el) return;
-  const n=OUTBOX.length, cambios=n+' '+(n===1?'cambio':'cambios');
+  const n=outPendientes().length, cambios=n+' '+(n===1?'cambio':'cambios');
   let txt='', cls='';
   if(estaSinConexion()){ cls='off'; txt='Sin conexión · '+(n?cambios+' por subir':'modo local'); }
   else if(n && fbListo){ txt='Sincronizando '+cambios+'…'; }

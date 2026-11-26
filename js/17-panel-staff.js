@@ -17,7 +17,7 @@ function staffLimpiarPanel(){
   c.innerHTML=STAFF_CONTENT_VACIO;
   const l=document.getElementById('staff-list'); if(l) l.innerHTML='';
 }
-function staffLogout(){ staffLimpiarPanel(); borrarSesion(); staffActivoId=null; staffActivoEntId=null; staffRol='entrenador'; try{ if(fbAuth) fbAuth.signOut(); }catch(e){} fbDetenerStaff(); go('s-inicio'); }
+function staffLogout(){ const pend=(typeof OUTBOX!=='undefined'?OUTBOX:[]).filter(x=>x.st).length; if(pend) setTimeout(()=>showToast(pend+' '+(pend===1?'cambio quedó':'cambios quedaron')+' guardado'+(pend===1?'':'s')+' en este celular: se sube'+(pend===1?'':'n')+' cuando vuelvas a entrar con tu cuenta y haya internet.'),600); staffLimpiarPanel(); borrarSesion(); staffActivoId=null; staffActivoEntId=null; staffRol='entrenador'; try{ if(fbAuth) fbAuth.signOut(); }catch(e){} fbDetenerStaff(); go('s-inicio'); }
 
 function fbAbrirSetup(){
   const ta=document.getElementById('fb-config-input');
