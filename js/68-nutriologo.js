@@ -13,8 +13,7 @@ function nutriSincronizar(e){
   if(staffRol!=='coordinador' || !e || e.rol==='coordinador' || !fbListo || !fbDB) return;
   const uid=e.uid||e.id; if(!uid) return;
   const es=typeof entHace==='function' && entHace(e,'nutricion');
-  const r=fbDB.ref('/nutris/'+uid);
-  (es?r.set(true):r.remove()).catch(err=>console.warn('nutris',err&&err.code));
+  fbEncolar('/nutris/'+uid, es?'set':'remove', es?true:undefined, {err:err=>console.warn('nutris',err&&err.code)});   // se sube aunque no haya señal ahora
 }
 (function(){
   if(typeof dbSaveEntrenador==='function'){

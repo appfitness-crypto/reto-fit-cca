@@ -119,7 +119,7 @@ function fbEscuchar(){
   fbEscuchando=true;
   fbDB.ref('.info/connected').on('value', snap=>{
     fbConectado=!!snap.val();
-    if(fbConectado){ fbYaConecto=true; vaciarBandeja(); }
+    if(fbConectado){ fbYaConecto=true; esperaDatos.clear(); vaciarBandeja(); }
     actualizarPillSync();
   });
   fbDB.ref('/config').on('value', snap=>{ DB.config=aplicarPendientes('/config', snap.val()||{}); kbAplicarExtra(); guardarLocal(); if(document.getElementById('s-panel')?.classList.contains('on') && document.querySelector('#staff-content')) { /* sin refrescar la ficha abierta */ } actualizarContadorSocios(); }, ()=>{});
@@ -191,7 +191,10 @@ function fbEscucharSocio(code){
   if(fbSocioCode && fbSocioCode!==code){ try{ fbDB.ref('/socios/'+fbSocioCode).off('value'); }catch(e){} fbSocioCode=null; }
   if(fbSocioCode===code) return;
   fbConUsuario().then(ok=>{
-    if(!ok || fbEsStaff || fbSocioCode===code) return;
+    // Abrió sin señal: Firebase aún no confirma la cuenta. Se reintenta hasta que vuelva la conexión
+    // (antes se rendía y el plan no recibía cambios del entrenador hasta recargar la app)
+    if(!ok){ setTimeout(()=>{ if(activeSocio && activeSocio.code===code && !fbSocioCode) fbEscucharSocio(code); },5000); return; }
+    if(fbEsStaff || fbSocioCode===code) return;
     fbSocioCode=code;
     fbDB.ref('/socios/'+code).on('value', snap=>{
       const raw=snap.val();
@@ -416,7 +419,7 @@ function enviar(en){
   enVuelo.add(id);
   p.then(ok=>{
     enVuelo.delete(id);
-    if(ok===false){ actualizarPillSync(); return; }   // transacción en espera: se reintenta al llegar datos de Firebase
+    if(ok===false){ esperarDatosYReintentar(en); actualizarPillSync(); return; }   // transacción en espera: se reintenta al llegar datos de Firebase
     const cur=OUTBOX.find(x=>x.id===id);
     if(en.tipo!=='socio' && typeof idxTrasEscritura==='function') idxTrasEscritura(en, null);
     if(cur && cur.gen===gen) quitarEntrada(id);
@@ -433,6 +436,31 @@ function enviar(en){
     if(cb && cb.err) cb.err(e); else showToast(fbErrorMsg(e));
     actualizarPillSync();
   });
+}
+// Una transacción de Firebase empieza con lo que hay en la memoria del celular. Si ese expediente no se está
+// escuchando (p. ej. el staff lo editó sin conexión y al volver la señal ya no está abierto), empieza vacía, se
+// cancela y el cambio se quedaba en la bandeja hasta recargar. Aquí se escucha el expediente un momento, se
+// reintenta con los datos ya descargados y se suelta la escucha (una vez por versión del cambio, para no ciclar).
+const esperaDatos=new Map();   // id de la bandeja -> versión (gen) que ya se reintentó
+function esperarDatosYReintentar(en){
+  if(en.tipo!=='socio' || !fbListo || !fbDB || estaSinConexion()) return;
+  if(esperaDatos.get(en.id)===en.gen) return;
+  esperaDatos.set(en.id, en.gen);
+  let ref; try{ ref=fbDB.ref(en.path); }catch(e){ return; }
+  let hecho=false;
+  const h=ref.on('value',()=>{
+    if(hecho) return; hecho=true;
+    setTimeout(()=>{
+      const cur=OUTBOX.find(x=>x.id===en.id);
+      if(cur && !enVuelo.has(cur.id)) enviar(cur);   // la transacción deja su propia escucha mientras corre
+      try{ ref.off('value',h); }catch(e){}
+    },0);
+  },()=>{ hecho=true; });
+}
+// ¿Hay conexión real con Firebase? Para lo que no puede esperar a la bandeja (cuentas, apariencia…)
+function requiereConexion(msg){
+  if(!fbListo || !fbDB || estaSinConexion()){ showToast(msg||'Necesitas conexión a internet para hacer esto.'); return false; }
+  return true;
 }
 // Cambio genérico (staff, conocimiento, entrenadores…)
 function fbEncolar(path,op,data,cb){

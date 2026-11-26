@@ -236,24 +236,25 @@ function chatMarcarLeido(){
 }
 async function chatEnviar(){
   if(!chatAbierto) return;
-  const inp=document.getElementById('chat-in'), btn=document.getElementById('chat-env');
+  const inp=document.getElementById('chat-in');
   const t=String(inp.value||'').trim().slice(0,CHAT_MAX); if(!t) return;
-  if(!navigator.onLine){ showToast('Sin conexión: tu mensaje no se envió.'); return; }
+  if(!fbListo || !fbDB){ showToast('Sin conexión: tu mensaje no se envió.'); return; }
   const {code,quien}=chatAbierto, s=getSocio(code); if(!s) return;
   const ts=Date.now();
   const yo=quien==='s'?(s.nombre||''):(((getEntrenador(staffActivoEntId)||{}).nombre)||(staffRol==='coordinador'?'Director':''));
   const msg={d:quien, t, ts, u:fbUid||'', n:String(yo).split(' ')[0]||''};
-  btn.disabled=true;
+  // Va a la bandeja de pendientes: se ve de inmediato y, si no hay señal, se sube solo al volver
+  // (aunque se cierre la app). La llave la genera el celular, así que no hace falta conexión.
+  const err=e=>{ console.warn('chat',e); showToast(String(e&&e.code||e).toLowerCase().includes('permission')?'No se pudo enviar: falta publicar las reglas nuevas de Firebase.':'No se pudo enviar. Revisa tu conexión.'); };
   try{
-    await fbDB.ref('/chats/'+code).push(msg);
+    const key=fbDB.ref('/chats/'+code).push().key;
+    fbEncolar('/chats/'+code+'/'+key,'set',msg,{err});
     const meta={e:s.entrenadorId||'_dir', ts, d:quien, t:t.slice(0,80)};
     meta[quien==='s'?'ls':'le']=ts;
-    await fbDB.ref('/chatsMeta/'+code).update(meta);
+    fbEncolar('/chatsMeta/'+code,'update',meta,{err:()=>{}});
     inp.value=''; chatCrecer(inp);
-  }catch(e){
-    console.warn('chat',e);
-    showToast(String(e&&e.code||e).includes('permission')?'No se pudo enviar: falta publicar las reglas nuevas de Firebase.':'No se pudo enviar. Revisa tu conexión.');
-  }finally{ btn.disabled=false; }
+    if(estaSinConexion()) showToast('Sin conexión: tu mensaje se enviará en cuanto vuelva la señal.');
+  }catch(e){ err(e); }
 }
 
 // ── Enganches: escuchar al entrar, pintar en lista, ficha y perfil ──

@@ -239,7 +239,7 @@ function aparPayload(){
   return {cfg:out, img};
 }
 async function aparEscribir(cfg, img, msg){
-  if(typeof fbDB==='undefined' || !fbDB || !fbListo){ showToast('Necesitas conexión a internet para guardar'); return false; }
+  if(typeof fbDB==='undefined' || !fbDB || !fbListo || (typeof estaSinConexion==='function' && estaSinConexion())){ showToast('Necesitas conexión a internet para guardar'); return false; }
   try{
     // Copia de la versión actual para poder deshacer
     await fbDB.ref('/apariencia_prev').set({cfg:APAR.cfg||{}, img:APAR.img||{}, guardado:Date.now()});

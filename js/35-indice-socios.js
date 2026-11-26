@@ -19,7 +19,16 @@ const idxCargando=new Map();      // code -> promesa de carga del expediente com
 const idxEscuchas=[];             // códigos con escucha activa (máx. IDX_MAX_ESCUCHAS)
 const IDX_MAX_ESCUCHAS=8;
 
-function idxGuardarLocal(){ try{ localStorage.setItem(LS_IDX, JSON.stringify(IDX)); }catch(e){} }
+function idxGuardarLocal(){ try{ localStorage.setItem(LS_IDX, JSON.stringify(IDX)); if(fbUid) localStorage.setItem(LS_IDX+'_uid', fbUid); }catch(e){} }
+// Sin conexión: la lista del panel sale del índice guardado en el celular, solo si es de la MISMA cuenta
+function idxCargarLocal(uid){
+  if(!uid || Object.keys(IDX).length) return;
+  try{
+    if(localStorage.getItem(LS_IDX+'_uid')!==uid) return;
+    const v=JSON.parse(localStorage.getItem(LS_IDX));
+    if(v && typeof v==='object'){ IDX=v; IDX_LITE={}; }
+  }catch(e){}
+}
 function idxCompleto(s){ return !!(s && !s._lite); }
 
 /* ── Resumen de un socio para el índice ── */
@@ -174,8 +183,16 @@ function idxAplicarSocio(code, raw){
 }
 function idxCargarSocio(code){
   if(!fbListo || !fbDB) return Promise.resolve(getSocio(code));
+  // Sin conexión, Firebase no responde hasta que vuelva la señal: se abre la copia del celular (si la hay) y la
+  // escucha queda puesta para ponerse al día solita al reconectar
+  const enCel=()=>{ const s=DB.socios[code]; return idxCompleto(s)?s:null; };
   if(idxEscuchas.includes(code) && idxCompleto(DB.socios[code])) return Promise.resolve(DB.socios[code]);
-  if(idxCargando.has(code)) return idxCargando.get(code);
+  // Señal muy lenta o sin conexión: a los 6 s se usa lo del celular (o se avisa) en lugar de esperar sin fin
+  const conTope=pr=>{
+    if(enCel() && (estaSinConexion() || !fbConectado)) return Promise.resolve(enCel());
+    return Promise.race([pr, new Promise(r=>setTimeout(()=>r(enCel()),6000))]);
+  };
+  if(idxCargando.has(code)) return conTope(idxCargando.get(code));
   const p=new Promise(res=>{
     let primera=true;
     fbDB.ref('/socios/'+code).on('value', sn=>{
@@ -193,7 +210,7 @@ function idxCargarSocio(code){
     }
   });
   idxCargando.set(code,p);
-  return p;
+  return conTope(p);
 }
 /* Resumen / Respaldo del director: necesitan todos los expedientes (se piden bajo demanda) */
 function idxCargarTodos(){

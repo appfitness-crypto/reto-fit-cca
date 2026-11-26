@@ -234,7 +234,7 @@ function patGuardar(id,p,msg){
   guardarLocal();
   fbEncolar('/config/patrocinadores/'+id, p?'set':'remove', p||undefined);
   // Copia pública para la portada (si la regla todavía no está publicada, no pasa nada)
-  try{ if(typeof fbDB!=='undefined'&&fbDB&&fbListo){ const r=fbDB.ref('/patrocinadores/'+id); (p?r.set(p):r.remove()).catch(()=>{}); } }catch(e){}
+  fbEncolar('/patrocinadores/'+id, p?'set':'remove', p||undefined, {err:()=>{}});
   if(msg) showToast(msg);
   patRepintar(); abrirPatrocinadores();
 }
