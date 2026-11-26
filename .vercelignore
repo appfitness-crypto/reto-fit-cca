@@ -1,0 +1,13 @@
+# Lo mismo que firebase.json deja fuera de Firebase Hosting: no se publica en Vercel
+firebase.json
+.firebaserc
+.github
+.claude
+.impeccable
+node_modules
+docs
+servidor
+herramientas
+*.md
+*.txt
+firebase-rules*.json
