@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1D2B27">
+<title>Portada · 12 cuadros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;1,700;1,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--sage:#DCE6E2;--deep:#1D2B27;--night:#111A17;--acc:#F07A2B;--acc2:#FFB07A;--on:#EEF4F1;--on2:rgba(226,236,232,.78);
+  --fd:Kanit,system-ui,sans-serif;--fb:Figtree,system-ui,sans-serif;--expo:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;background:var(--night)}
+body{color:var(--on);font:15px/1.5 var(--fb);overflow:hidden}
+::selection{background:var(--acc);color:#fff}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible{outline:2px solid var(--acc2);outline-offset:3px}
+.scr{position:relative;height:100svh;max-height:100%;display:flex;flex-direction:column;background:var(--deep);padding-top:calc(env(safe-area-inset-top) + 62px)}
+.bar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 12px) 16px 0}
+.bar img{width:38px;height:38px;border-radius:11px}
+.bar b{font:italic 800 14px/1 var(--fd)}
+.bar span{margin-left:auto;font:600 12.5px/1 var(--fb);color:var(--on2)}
+/* 12 cuadros = 12 semanas; la semana 1 es la grande: tú, hoy */
+.grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:5px;padding:0 12px}
+.c{position:relative;overflow:hidden;border-radius:12px;background:var(--night);animation:pop 700ms var(--expo) both;animation-delay:calc(var(--n) * 55ms + 120ms)}
+.c img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.c::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,26,23,0) 40%,rgba(17,26,23,.75))}
+.c b{position:absolute;z-index:2;left:7px;bottom:5px;font:italic 800 20px/1 var(--fd);color:var(--on)}
+.c.p2 b{color:var(--acc2)}.c.p3 b{color:var(--acc)}
+.c.p1{box-shadow:inset 0 -3px 0 var(--sage)}.c.p2{box-shadow:inset 0 -3px 0 var(--acc2)}.c.p3{box-shadow:inset 0 -3px 0 var(--acc)}
+.c.p1::before,.c.p2::before,.c.p3::before{content:"";position:absolute;z-index:3;left:0;right:0;bottom:0;height:3px}
+.c.p1::before{background:var(--sage)}.c.p2::before{background:var(--acc2)}.c.p3::before{background:var(--acc)}
+.c1{grid-column:1/3;grid-row:1/3;border-radius:18px}
+.c1 img{object-position:50% 22%}
+.c1 b{left:12px;bottom:10px;font-size:64px;line-height:.8}
+.c1 span{position:absolute;z-index:2;left:56px;bottom:14px;font:600 13px/1.15 var(--fb);color:var(--on2)}
+.c1 span em{display:block;font-style:normal;color:var(--on);font-weight:700}
+.c12{grid-column:3/5;grid-row:4/5;border-radius:14px;background:var(--acc)}
+.c12::after{display:none}
+.c12 b{left:auto;right:10px;bottom:2px;font-size:64px;line-height:.78;letter-spacing:-.05em;color:var(--deep)!important}
+.c12 span{position:absolute;left:10px;top:9px;font:700 12.5px/1.15 var(--fb);color:var(--deep)}
+.c12 span em{display:block;font-style:normal;font-weight:600;opacity:.75}
+.leg{display:flex;gap:14px;flex-wrap:wrap;padding:10px 14px 0;font:600 12px/1 var(--fb);color:var(--on2)}
+.leg i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:6px;vertical-align:3px}
+.low{padding:14px 20px calc(18px + env(safe-area-inset-bottom))}
+h1{margin:0 0 8px;font:italic 800 30px/1 var(--fd);text-transform:uppercase;text-wrap:balance}
+h1 i{font-style:inherit;color:var(--acc)}
+.sub{margin:0 0 14px;color:var(--on2);max-width:34ch}
+.pri{display:flex;align-items:center;width:100%;min-height:64px;padding:10px 10px 10px 20px;border-radius:22px;background:#fff;color:#17231F;text-align:left;box-shadow:0 14px 30px -14px rgba(0,0,0,.6)}
+.pri span{flex:1;display:flex;flex-direction:column}
+.pri b{font:700 19px/1.1 var(--fb)}.pri small{font-size:13px;color:#4A5954;margin-top:2px}
+.pri i{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--deep);color:#fff;flex:none}
+.pri svg,.ya svg{width:20px;height:20px}
+.ya{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;margin-top:10px;border-radius:22px;box-shadow:inset 0 0 0 1.5px rgba(238,244,241,.3);font-weight:700;font-size:16.5px}
+.staff{display:block;width:100%;margin-top:2px;min-height:44px;color:var(--on2);font-size:13.5px;font-weight:600}
+.low>*,.leg{animation:up 800ms var(--expo) 850ms both}
+@keyframes pop{from{opacity:0;transform:scale(.86)}}
+@keyframes up{from{opacity:0;transform:translateY(12px)}}
+@media (max-height:720px){.sub{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<main class="scr">
+  <div class="bar"><img src="img/logo.png" alt=""><b>RETO FIT CCA</b><span>Arranca 11 de enero</span></div>
+  <div class="grid" aria-label="Las 12 semanas del reto" id="grid"></div>
+  <div class="leg" aria-hidden="true"><span><i style="background:var(--sage)"></i>Adaptación</span><span><i style="background:var(--acc2)"></i>Fuerza</span><span><i style="background:var(--acc)"></i>Definición</span></div>
+  <div class="low">
+    <h1>Tu reto de <i>12 semanas</i> empieza aquí.</h1>
+    <p class="sub">Tu rutina, tus pesos y la técnica de cada ejercicio, con tu entrenador.</p>
+    <button class="pri"><span><b>Soy nuevo</b><small>Crea tu cuenta y recibe la rutina de tu entrenador.</small></span><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></button>
+    <button class="ya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Ya tengo cuenta</button>
+    <button class="staff">Soy entrenador del reto: entrar con mi cuenta →</button>
+  </div>
+</main>
+<script>
+{
+  // cuadros 2 a 11: recortes de las fotos reales del club
+  const f=[['club-2','30% 50%'],['club-6','70% 40%'],['club-7','40% 50%'],['club-5','60% 40%'],['club-1','50% 30%'],['club-3','30% 50%'],['club-6','20% 70%'],['club-2','80% 40%'],['club-7','80% 60%'],['club-5','20% 70%']];
+  const ph=n=>n<=4?'p1':n<=8?'p2':'p3';
+  let h=`<div class="c c1 p1" style="--n:1"><img src="img/kettlebell.webp" alt="Socia entrenando con kettlebell en el club"><b>1</b><span>Semana 1<em>Empiezas tú</em></span></div>`;
+  for(let n=2;n<=11;n++){const [s,p]=f[n-2];h+=`<div class="c ${ph(n)}" style="--n:${n}"><img src="img/${s}.webp" alt="" style="object-position:${p}"><b>${n}</b></div>`;}
+  h+=`<div class="c c12" style="--n:12"><span>Semana 12<em>Cierre</em></span><b>12</b></div>`;
+  document.getElementById('grid').innerHTML=h;
+}
+</script>
+</body>
+</html>

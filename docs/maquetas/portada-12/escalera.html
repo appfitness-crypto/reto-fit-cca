@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111A17">
+<title>Portada · escalera de 12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;1,700;1,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--sage:#DCE6E2;--deep:#1D2B27;--night:#111A17;--acc:#F07A2B;--acc2:#FFB07A;--on:#EEF4F1;--on2:rgba(226,236,232,.78);
+  --fd:Kanit,system-ui,sans-serif;--fb:Figtree,system-ui,sans-serif;--expo:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;background:var(--night)}
+body{color:var(--on);font:15px/1.5 var(--fb);overflow:hidden}
+::selection{background:var(--acc);color:#fff}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible{outline:2px solid var(--acc2);outline-offset:3px}
+.scr{position:relative;height:100svh;max-height:100%;overflow:hidden;background:var(--night)}
+.ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:45% 30%;filter:contrast(1.08)}
+.scr::before{content:"";position:absolute;inset:0;z-index:1;background:
+  linear-gradient(180deg,rgba(17,26,23,.55) 0%,rgba(17,26,23,0) 22%,rgba(17,26,23,0) 34%,rgba(17,26,23,.8) 52%,var(--deep) 66%),
+  linear-gradient(90deg,rgba(17,26,23,.55),rgba(17,26,23,0) 40%)}
+.bar{position:absolute;z-index:4;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 12px) 16px 0}
+.lad .st:nth-child(-n+0){}
+.bar img{width:38px;height:38px;border-radius:11px}
+.bar b{font:italic 800 14px/1 var(--fd)}
+/* escalera: 12 peldaños, de la semana 1 (abajo) a la 12 (arriba) */
+.lad{position:absolute;z-index:3;right:14px;top:calc(env(safe-area-inset-top) + 70px);bottom:58%;display:flex;flex-direction:column-reverse;justify-content:space-between;width:112px}
+.st{position:relative;display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:1}
+.st i{display:block;height:4px;border-radius:2px;background:rgba(238,244,241,.32);width:calc(18px + var(--n) * 4px);transform-origin:right;animation:rung 700ms var(--expo) both;animation-delay:calc(var(--n) * 70ms + 300ms)}
+.st b{font:italic 700 13px/1 var(--fd);color:var(--on2);width:18px;text-align:right;animation:fade 600ms var(--expo) both;animation-delay:calc(var(--n) * 70ms + 350ms)}
+.st.p2 i{background:rgba(240,122,43,.55)}.st.p3 i{background:var(--acc)}
+.st.top b{font-size:17px;color:var(--acc)}
+.st.top i{height:6px}
+.ph-lb{position:absolute;right:146px;z-index:3;text-shadow:0 1px 2px rgba(0,0,0,.9),0 0 14px rgba(0,0,0,.8);font:600 12px/1.2 var(--fb);color:var(--on2);text-align:right;animation:fade 700ms var(--expo) 1200ms both}
+.ph-lb em{display:block;font-style:normal;color:var(--on);font-weight:700}
+.big{position:relative;margin:0 0 14px -4px;font:italic 800 clamp(120px,min(40vw,22svh),190px)/.74 var(--fd);letter-spacing:-.05em;color:var(--acc);
+  animation:num 1300ms var(--expo) 150ms both}
+.big small{display:block;margin:10px 0 0 8px;font:italic 800 22px/1 var(--fd);letter-spacing:0;color:var(--on);text-transform:uppercase}
+.low{position:absolute;z-index:3;left:0;right:0;bottom:0;padding:0 20px calc(18px + env(safe-area-inset-bottom))}
+.cd{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:7px 12px 7px 9px;border-radius:99px;background:rgba(238,244,241,.1);font:600 13px/1 var(--fb)}
+.cd i{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 0 rgba(240,122,43,.6);animation:pulse 2s ease-out infinite}
+h1{margin:0 0 8px;font:italic 800 30px/1 var(--fd);text-transform:uppercase;text-wrap:balance}
+.sub{margin:0 0 16px;color:var(--on2);max-width:34ch}
+.pri{display:flex;align-items:center;width:100%;min-height:66px;padding:10px 10px 10px 20px;border-radius:22px;background:#fff;color:#17231F;text-align:left;box-shadow:0 14px 30px -14px rgba(0,0,0,.6)}
+.pri span{flex:1;display:flex;flex-direction:column}
+.pri b{font:700 19px/1.1 var(--fb)}.pri small{font-size:13px;color:#4A5954;margin-top:2px}
+.pri i{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--deep);color:#fff;flex:none}
+.pri svg,.ya svg{width:20px;height:20px}
+.ya{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:54px;margin-top:10px;border-radius:22px;box-shadow:inset 0 0 0 1.5px rgba(238,244,241,.3);font-weight:700;font-size:16.5px}
+.staff{display:block;width:100%;margin-top:4px;min-height:44px;color:var(--on2);font-size:13.5px;font-weight:600}
+.low>:not(.big){animation:up 800ms var(--expo) 700ms both}
+@keyframes rung{from{transform:scaleX(0)}}
+@keyframes fade{from{opacity:0}}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+@keyframes num{from{opacity:0;transform:translateY(60px);filter:blur(12px)}}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(240,122,43,0)}100%{box-shadow:0 0 0 0 rgba(240,122,43,0)}}
+@media (max-height:720px){.sub{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<main class="scr">
+  <img class="ph" src="img/club-1.webp" alt="Pasillo del área de pesas del club">
+  <div class="bar"><img src="img/logo.png" alt=""><b>RETO FIT CCA</b></div>
+  <div class="lad" id="lad" aria-hidden="true"></div>
+  <div class="low">
+    <p class="big" aria-label="12 semanas">12<small>semanas</small></p>
+    <p class="cd"><i></i><span id="cd">Arranca el 11 de enero</span></p>
+    <h1>Tu reto empieza aquí.</h1>
+    <p class="sub">Tu rutina, tus pesos y la técnica de cada ejercicio, con tu entrenador.</p>
+    <button class="pri"><span><b>Soy nuevo</b><small>Crea tu cuenta y recibe la rutina de tu entrenador.</small></span><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></button>
+    <button class="ya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Ya tengo cuenta</button>
+    <button class="staff">Soy entrenador del reto: entrar con mi cuenta →</button>
+  </div>
+</main>
+<script>
+{
+  const lad=document.getElementById('lad');
+  lad.innerHTML=Array.from({length:12},(_,k)=>{const n=k+1,p=n<=4?'p1':n<=8?'p2':'p3';return `<div class="st ${p}${n===12?' top':''}" style="--n:${n}"><i></i><b>${n}</b></div>`;}).join('');
+  // etiquetas de fase al lado de cada grupo de peldaños
+  const lbl=[['Semanas 1–4','Adaptación',0.83],['Semanas 5–8','Fuerza e hipertrofia',0.5],['Semanas 9–12','Definición y cierre',0.17]];
+  const scr=document.querySelector('.scr');
+  const place=()=>{scr.querySelectorAll('.ph-lb').forEach(e=>e.remove());const r=lad.getBoundingClientRect(),s=scr.getBoundingClientRect();
+    lbl.forEach(([a,b,f])=>{const e=document.createElement('span');e.className='ph-lb';e.innerHTML=a+'<em>'+b+'</em>';e.style.top=(r.top-s.top+r.height*f-16)+'px';scr.appendChild(e);});};
+  place();addEventListener('resize',place);
+  const ini=new Date(2027,0,11),hoy=new Date();hoy.setHours(0,0,0,0);const d=Math.round((ini-hoy)/864e5);
+  if(d>0)document.getElementById('cd').textContent=`Arranca en ${d} ${d===1?'día':'días'} · 11 de enero`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1D2B27">
+<title>Portada · tres fases</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;1,700;1,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--sage:#DCE6E2;--deep:#1D2B27;--night:#111A17;--acc:#F07A2B;--acc2:#FFB07A;--on:#EEF4F1;--on2:rgba(226,236,232,.78);
+  --fd:Kanit,system-ui,sans-serif;--fb:Figtree,system-ui,sans-serif;--expo:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;background:var(--night)}
+body{color:var(--on);font:15px/1.5 var(--fb);overflow:hidden}
+::selection{background:var(--acc);color:#fff}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible{outline:2px solid var(--acc2);outline-offset:3px}
+.scr{position:relative;height:100svh;max-height:100%;display:flex;flex-direction:column;background:var(--deep)}
+.bar{position:absolute;z-index:4;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 12px) 16px 0}
+.bar img{width:38px;height:38px;border-radius:11px}
+.bar b{font:italic 800 14px/1 var(--fd);letter-spacing:.01em}
+.bar span{margin-left:auto;padding:7px 11px;border-radius:99px;background:rgba(17,26,23,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font:600 12.5px/1 var(--fb)}
+/* tres bandas inclinadas, una por fase */
+.fases{background:var(--acc);position:relative;flex:1 1 auto;min-height:0;display:grid;grid-template-rows:1.15fr 1fr 1fr;margin-bottom:-28px}
+.f{position:relative;overflow:hidden;margin-top:-20px;clip-path:polygon(0 26px,100% 0,100% calc(100% - 0px),0 100%)}
+.f:first-child{margin-top:0;clip-path:none}
+.f img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.f::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(17,26,23,.82) 0%,rgba(17,26,23,.35) 55%,rgba(17,26,23,.05) 100%)}
+.f1 img{object-position:40% 30%}.f2 img{object-position:30% 50%}.f3 img{object-position:50% 45%}
+.t{position:absolute;z-index:2;left:18px;bottom:16px;display:flex;align-items:flex-end;gap:12px}
+.t b{font:italic 800 64px/.78 var(--fd);letter-spacing:-.03em;color:var(--on)}
+.f2 .t b{color:var(--acc)}
+.t span{padding-bottom:4px;font:600 14px/1.15 var(--fb);color:var(--on2)}
+.t span em{display:block;font-style:normal;font-weight:700;color:var(--on)}
+.f1 .t{bottom:26px}
+.low{position:relative;z-index:3;padding:46px 20px calc(18px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(29,43,39,0),var(--deep) 44px);
+  clip-path:polygon(0 28px,100% 0,100% 100%,0 100%)}
+h1{margin:0 0 8px;font:italic 800 34px/.98 var(--fd);text-transform:uppercase;text-wrap:balance}
+h1 i{font-style:inherit;color:var(--acc)}
+.sub{margin:0 0 16px;color:var(--on2);max-width:34ch}
+.pri{display:flex;align-items:center;width:100%;min-height:66px;padding:10px 10px 10px 20px;border-radius:22px;background:#fff;color:#17231F;text-align:left;box-shadow:0 14px 30px -14px rgba(0,0,0,.6)}
+.pri span{flex:1;display:flex;flex-direction:column}
+.pri b{font:700 19px/1.1 var(--fb)}.pri small{font-size:13px;color:#4A5954;margin-top:2px}
+.pri i{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:#fff;flex:none}
+.pri svg,.ya svg{width:20px;height:20px}
+.ya{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:54px;margin-top:10px;border-radius:22px;box-shadow:inset 0 0 0 1.5px rgba(238,244,241,.3);font-weight:700;font-size:16.5px}
+.staff{display:block;width:100%;margin-top:4px;min-height:44px;color:var(--on2);font-size:13.5px;font-weight:600}
+/* entrada: las tres fases se descubren en orden */
+.f{animation:in 1100ms var(--expo) both}.f2{animation-delay:140ms}.f3{animation-delay:280ms}
+.t{animation:up 900ms var(--expo) both}.f1 .t{animation-delay:300ms}.f2 .t{animation-delay:440ms}.f3 .t{animation-delay:580ms}
+.low>*{animation:up 800ms var(--expo) 650ms both}
+@keyframes in{from{clip-path:polygon(0 26px,0 0,0 100%,0 100%);}}
+.f1{animation-name:in1}@keyframes in1{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+@media (max-height:720px){.sub{display:none}.t b{font-size:52px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<main class="scr">
+  <div class="bar"><img src="img/logo.png" alt=""><b>RETO FIT CCA</b><span>Arranca 11 de enero</span></div>
+  <div class="fases" aria-label="Las tres fases del reto">
+    <section class="f f1"><img src="img/club-6.webp" alt="Salón principal del club"><div class="t"><b>1–4</b><span>Semanas<em>Adaptación</em></span></div></section>
+    <section class="f f2"><img src="img/club-2.webp" alt="Racks de mancuernas del club"><div class="t"><b>5–8</b><span>Semanas<em>Fuerza e hipertrofia</em></span></div></section>
+    <section class="f f3"><img src="img/club-7.webp" alt="Máquinas frente al ventanal del club"><div class="t"><b>9–12</b><span>Semanas<em>Definición y cierre</em></span></div></section>
+  </div>
+  <div class="low">
+    <h1>Tu reto de <i>12 semanas</i> empieza aquí.</h1>
+    <p class="sub">Tu rutina, tus pesos y la técnica de cada ejercicio, con tu entrenador.</p>
+    <button class="pri"><span><b>Soy nuevo</b><small>Crea tu cuenta y recibe la rutina de tu entrenador.</small></span><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></button>
+    <button class="ya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Ya tengo cuenta</button>
+    <button class="staff">Soy entrenador del reto: entrar con mi cuenta →</button>
+  </div>
+</main>
+</body>
+</html>
