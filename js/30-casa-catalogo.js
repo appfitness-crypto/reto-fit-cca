@@ -275,10 +275,12 @@ function casaDisponibles(equipo,les){
 // kbBuscar reconoce también los ejercicios de casa (ficha, foto, tip, registro) sin tocar KB_EJERCICIOS
 (function(){
   const orig=kbBuscar;
+  // Orden: nombre exacto del gimnasio → nombre exacto de casa → coincidencia parcial del gimnasio.
+  // Así "Thruster con mochila" es el de casa y no cae en el thruster con mancuernas por parecido.
   kbBuscar=function(nombre){
-    const r=orig(nombre); if(r) return r;
     const n=kbNorm(nombre); if(!n) return null;
-    return KB_CASA.find(e=>kbNorm(e.nm)===n || (e.aka||[]).some(a=>kbNorm(a)===n)) || null;
+    const exacto=e=>kbNorm(e.nm)===n || (e.aka||[]).some(a=>kbNorm(a)===n);
+    return KB_EJERCICIOS.find(exacto) || KB_CASA.find(exacto) || orig(nombre);
   };
 })();
 // Los de casa también se encuentran por id en KB_IDX (alternativas, fichas)

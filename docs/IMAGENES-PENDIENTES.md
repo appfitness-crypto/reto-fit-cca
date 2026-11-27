@@ -2,7 +2,7 @@
 
 Generado con `node herramientas/lista-imagenes.js`. Vuelve a correrlo después de subir fotos: la lista se recalcula con lo que ya está en `img/ejercicios/`.
 
-**Faltan 198 imágenes.** El estilo y las plantillas de los prompts están en [IMAGENES-EJERCICIOS.md](IMAGENES-EJERCICIOS.md) (sección 3: siempre adjunta la sentadilla goblet como referencia).
+**Faltan 200 imágenes.** El estilo y las plantillas de los prompts están en [IMAGENES-EJERCICIOS.md](IMAGENES-EJERCICIOS.md) (sección 3: siempre adjunta la sentadilla goblet como referencia).
 
 **Cómo nombrarlas:** guarda cada imagen con el texto de la columna **Nombre** tal cual (por ejemplo `Salto al cajón.png`) y corre `python3 herramientas/preparar-imagenes.py CARPETA`. El script la deja como el archivo de la columna **Archivo**.
 
@@ -12,10 +12,10 @@ Generado con `node herramientas/lista-imagenes.js`. Vuelve a correrlo después d
 |---|---|
 | Nuevos del catálogo del gimnasio | 42 |
 | Rutinas en casa | 111 |
-| Deportes y rehabilitación | 42 |
+| Deportes y rehabilitación | 44 |
 | Movilidad, estiramiento y calentamiento | 1 |
 | Rutinas de respaldo | 2 |
-| **Total** | **198** |
+| **Total** | **200** |
 
 ## 1. Nuevos del catálogo del gimnasio (42)
 
@@ -184,7 +184,7 @@ Ya salen en las rutinas en casa; hoy muestran la foto del grupo muscular.
 | V-sit alterno | `v-sit-alterno.webp` | Abdomen | peso corporal | Sentado con el torso inclinado y pies elevados; alterna extender cada pierna. | Rutinas en casa |
 | Zancadas caminando | `zancadas-caminando.webp` | Cuádriceps · Glúteo | peso corporal | Pasos largos con el torso erguido; baja sintiendo el glúteo de la pierna de adelante. | Rutinas en casa |
 
-## 3. Deportes y rehabilitación (42)
+## 3. Deportes y rehabilitación (44)
 
 Ya salen en los planes de deporte y en los ejercicios de recuperación por lesión.
 
@@ -214,6 +214,7 @@ Ya salen en los planes de deporte y en los ejercicios de recuperación por lesi�
 | Estiramiento suave de antebrazo | `estiramiento-suave-de-antebrazo.webp` |  |  | Brazo estirado, con la otra mano lleva los dedos hacia atrás suave. Siente el antebrazo, sin dolor articular. | Deportes y rehabilitación |
 | Estiramiento suave de cuádriceps | `estiramiento-suave-de-cuadriceps.webp` | Cuádriceps |  | De pie o acostada boca abajo, lleva el talón al glúteo sintiendo el estiramiento en el frente del muslo, no en la rodilla. Sin rebotes. | Deportes y rehabilitación, Rutinas de respaldo |
 | Extensión de pierna controlada | `extension-de-pierna-controlada.webp` |  |  | Extiende la pierna al frente/lado con control total desde la cadera. | Deportes y rehabilitación |
+| Extensión lumbar controlada | `extension-lumbar-controlada.webp` |  |  | Boca abajo, eleva el pecho poco a poco usando la espalda alta, sin forzar la lumbar. | Deportes y rehabilitación |
 | Extensiones de pie (arco activo) | `extensiones-de-pie-arco-activo.webp` |  |  | Arco de pie controlado, abriendo pecho, con el core activo protegiendo la zona baja. | Deportes y rehabilitación |
 | Flexión cráneo-cervical isométrica | `flexion-craneo-cervical-isometrica.webp` |  |  | Acostada, doble mentón suave sin despegar la cabeza del piso. Activa los músculos profundos que estabilizan el cuello. | Deportes y rehabilitación |
 | Inclinación lateral suave | `inclinacion-lateral-suave.webp` |  |  | Inclina la cabeza suave a cada lado. El trapecio suele compensar y tensarse cuando el hombro duele. | Deportes y rehabilitación |
@@ -230,6 +231,7 @@ Ya salen en los planes de deporte y en los ejercicios de recuperación por lesi�
 | Salto con giro controlado | `salto-con-giro-controlado.webp` | Potencia · Coordinación |  | Salto con media vuelta y aterrizaje firme. Para patadas giradas. | Deportes y rehabilitación |
 | Saltos en un pie (control) | `saltos-en-un-pie-control.webp` |  |  | Salta y aterriza en el mismo pie con estabilidad. Sin bamboleo del tobillo. | Deportes y rehabilitación |
 | Saltos suaves en el sitio | `saltos-suaves-en-el-sitio.webp` |  |  | Salto pequeño con aterrizaje amortiguado, rodillas flexionadas suaves. Introduce impacto poco a poco. | Deportes y rehabilitación |
+| Sentadilla a una pierna asistida (mini) | `sentadilla-a-una-pierna-asistida-mini.webp` |  |  | Apoyándote en una pared o silla, baja un poco en una pierna. Fuerza y equilibrio del tobillo bajo carga. | Deportes y rehabilitación |
 | Split-step reactivo | `split-step-reactivo.webp` | Reacción |  | Pequeño rebote sobre las puntas entre golpes. Te deja listo para salir a cualquier lado. | Deportes y rehabilitación |
 | Swing con balón medicinal | `swing-con-balon-medicinal.webp` | Core rotacional |  | Imita el swing lanzando el balón contra la pared desde la cadera. Potencia específica. | Deportes y rehabilitación |
 

@@ -96,7 +96,7 @@ const KB_METODO_EVITAR = {
 const KB_EJERCICIOS = [
   // ── PIERNA · CUÁDRICEPS / GLÚTEO ──
   {id:'sentadilla', nm:'Sentadilla libre', ms:'Cuádriceps · Glúteo', z:'rack', t:'c', enf:'cuadriceps', ev:['rodilla','lumbar'],
-   alt:{cuadriceps:['prensa','hack','goblet','bulgara'], gluteo:['hip_thrust','bulgara']}, aka:['sentadilla','sentadilla trasera','back squat','sentadilla con barra']},
+   alt:{cuadriceps:['prensa','hack','goblet','bulgara'], gluteo:['hip_thrust','bulgara']}, aka:['sentadilla trasera','back squat','sentadilla con barra']},
   {id:'goblet', nm:'Sentadilla goblet', ms:'Cuádriceps · Glúteo', z:'mancuernas', t:'c', enf:'cuadriceps', ev:['rodilla'],
    alt:{cuadriceps:['prensa','ext_cuad','hack'], gluteo:['hip_thrust','puente']}, aka:[]},
   {id:'frontal', nm:'Sentadilla frontal', ms:'Cuádriceps · Core', z:'rack', t:'c', enf:'cuadriceps', ev:['rodilla','lumbar'],
@@ -608,7 +608,7 @@ const KB_EJERCICIOS = [
   {id:'pm_hex', nm:'Peso muerto con barra hexagonal', ms:'Glúteo · Cuádriceps · Femorales', z:'rack', t:'c', enf:'gluteo', ev:['lumbar'],
    alt:{gluteo:['peso_muerto','hip_thrust','pm_sumo']}, aka:['trap bar deadlift','peso muerto trap bar'], tip:'Dentro de la barra, espalda neutra y pecho arriba; empuja el piso y termina con el glúteo apretado.'},
   {id:'zancada_caminando', nm:'Zancadas caminando con mancuernas', ms:'Cuádriceps · Glúteo', z:'mancuernas', t:'c', enf:'cuadriceps', ev:['rodilla'],
-   alt:{cuadriceps:['desplante','zancada_reversa','bulgara']}, aka:['walking lunges','zancadas caminando'], tip:'Paso largo y controlado, la rodilla de atrás casi toca el piso; empuja con el talón de adelante para avanzar.', lado:true},
+   alt:{cuadriceps:['desplante','zancada_reversa','bulgara']}, aka:['walking lunges'], tip:'Paso largo y controlado, la rodilla de atrás casi toca el piso; empuja con el talón de adelante para avanzar.', lado:true},
   {id:'sentadilla_cosaca', nm:'Sentadilla cosaca', ms:'Aductores · Glúteo · Cuádriceps', z:'corporal', t:'c', enf:'gluteo', ev:['rodilla'],
    alt:{gluteo:['desplante_lateral','sumo_mancuerna','abduccion']}, aka:['cossack squat'], tip:'Baja hacia un lado con el talón pegado y la otra pierna estirada con la punta arriba; siente el aductor de la pierna larga.', nv:2, lado:true},
   {id:'step_up_lateral', nm:'Step-up lateral', ms:'Glúteo medio · Cuádriceps', z:'funcional', t:'c', enf:'gluteo', ev:['rodilla'],
@@ -645,7 +645,7 @@ const KB_EJERCICIOS = [
   {id:'ext_muneca', nm:'Extensión de muñeca con mancuerna', ms:'Antebrazo (extensores)', z:'mancuernas', t:'a', enf:'braquial', ev:['muneca'],
    alt:{braquial:['curl_inverso','curl_muneca','curl_martillo']}, aka:['reverse wrist curl','extension de muneca'], tip:'Antebrazo apoyado y palma hacia abajo; sube el dorso de la mano con peso ligero y baja lento.', lado:true, noSust:true},
   {id:'colgado_barra', nm:'Colgado en barra', ms:'Agarre · Dorsal · Hombro', z:'corporal', t:'a', enf:'braquial', ev:['hombro'],
-   alt:{braquial:['farmer','curl_muneca','dominada_isom']}, aka:['dead hang','colgado activo en barra','colgado activo'], tip:'Cuélgate con los brazos estirados y los hombros activos, lejos de las orejas; respira y aguanta.', iso:true, tt:[20,30,45], noSust:true},
+   alt:{braquial:['farmer','curl_muneca','dominada_isom']}, aka:['dead hang'], tip:'Cuélgate con los brazos estirados y los hombros activos, lejos de las orejas; respira y aguanta.', iso:true, tt:[20,30,45], noSust:true},
   // Core, equilibrio y funcional
   {id:'crunch_inverso', nm:'Crunch inverso', ms:'Abdomen inferior', z:'corporal', t:'a', enf:'abdomen', ev:['lumbar'],
    alt:{abdomen:['elev_rodillas_banco','elev_piernas','rodillas_trx']}, aka:['reverse crunch'], tip:'Acostado, rodillas a 90°; enrolla la cadera hacia el pecho despegando el glúteo del piso y baja lento.'},
