@@ -97,7 +97,7 @@ function rtDiaHTML(s,k){
   </div>
   ${rest?`<div class="rt-rest"><b>Día de descanso</b><p>Puedes dejarlo así o agregar ejercicios para convertirlo en día de entrenamiento.</p>
       <button type="button" class="sd-b p" onclick="staffAddEj('${c}','${k}')">${ico('plus')}Agregar ejercicio</button></div>`
-    :`<ol class="rt-list" id="rt-list">${ej.map((e,ei)=>rtFilaHTML(s,k,e,ei)).join('')}</ol>
+    :`${typeof calStaffHTML==='function'?calStaffHTML(s,k):''}<ol class="rt-list" id="rt-list">${ej.map((e,ei)=>rtFilaHTML(s,k,e,ei)).join('')}</ol>
       <button type="button" class="rt-add" onclick="staffAddEj('${c}','${k}')">${ico('plus')}Agregar ejercicio</button>
       <p class="rt-hint">Toca un ejercicio para editarlo. Arrastra ${ico('grip')} para cambiar el orden.</p>`}`;
 }
