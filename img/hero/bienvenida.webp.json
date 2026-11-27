@@ -1,4 +1,5 @@
 {
-  "prompt": "Generada por el club en ChatGPT con la descripción de la portada: mujer mexicana de unos 30 años haciendo sentadilla goblet en un gimnasio luminoso con ventanales y árboles afuera; ropa verde salvia; toalla y botella naranja; parte inferior despejada para texto. Vertical 3:4.",
-  "createdAt": "2026-11-20T16:09:25.780Z"
+  "fuente": "Copia de img/hero/inicio.webp (remo con mancuerna en el gimnasio del club).",
+  "uso": "La portada y las pantallas de acceso usan la misma foto que la tarjeta de Inicio, para que la transición de js/76-transicion-portada.js se vea como una sola foto que cambia de lugar. La foto anterior (chava con mancuerna) está en docs/fotos-anteriores/.",
+  "createdAt": "2026-11-27"
 }
