@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portada · kettlebell en el club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Vista previa: portada con el 12 y la foto nueva (sentadilla goblet en el gimnasio del club).
+   Capturas de la app real con la foto y el recorte de la persona en su lugar. */
+:root{color-scheme:dark}*{box-sizing:border-box;min-width:0}
+body{margin:0;background:#0B0F0D;color:#EEF4F1;font:16px/1.5 Figtree,system-ui,sans-serif}
+header{max-width:1100px;margin:0 auto;padding:28px max(5vw,16px) 6px}
+h1{margin:0;font:italic 800 clamp(28px,6vw,40px)/1 Kanit,sans-serif;text-transform:uppercase}
+header p{margin:8px 0 0;color:#9FB0A9;max-width:62ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
+.tabs button{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid #2A3631;background:#141B18;color:#EEF4F1;font:600 14px Figtree,sans-serif;cursor:pointer}
+.tabs button[aria-pressed=true]{background:#F07A2B;color:#fff;border-color:#F07A2B}
+main{max-width:1100px;margin:0 auto;padding:18px max(5vw,16px) 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),340px));gap:22px;justify-content:center}
+figure{margin:0}figure img{display:block;width:100%;height:auto;border-radius:28px;border:8px solid #1d1d20}
+figcaption{margin-top:10px;color:#9FB0A9;font-size:14px;text-align:center}
+</style></head><body>
+<header><h1>Portada con kettlebell</h1><p>El 12 va detrás de ella: su cabeza queda entre el 1 y el 2, por delante del número. Gimnasio del club, toalla naranja como único toque de color.</p>
+<div class="tabs" role="group" aria-label="Tema"><button type="button" data-t="light2" aria-pressed="true">Salvia</button><button type="button" data-t="light" aria-pressed="false">Claro</button><button type="button" data-t="dark" aria-pressed="false">Oscuro</button></div></header>
+<main>
+<figure><img id="a" src="img/light2-390.webp" alt="Portada en teléfono grande" width="780" height="1688"><figcaption>Teléfono grande</figcaption></figure>
+<figure><img id="b" src="img/light2-360.webp" alt="Portada en teléfono chico" width="720" height="1480"><figcaption>Teléfono chico</figcaption></figure>
+</main>
+<script>{const bs=document.querySelectorAll('.tabs button');bs.forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.t;bs.forEach(x=>x.setAttribute('aria-pressed',x===b));document.getElementById('a').src='img/'+t+'-390.webp';document.getElementById('b').src='img/'+t+'-360.webp';}));}</script>
+</body></html>
