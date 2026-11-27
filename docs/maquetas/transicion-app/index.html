@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transición en la app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box;min-width:0}
+body{margin:0;background:#0B100E;color:#EEF4F1;font:16px/1.55 Figtree,system-ui,sans-serif}
+header{max-width:1000px;margin:0 auto;padding:28px max(5vw,16px) 4px}
+h1{margin:0;font:italic 800 clamp(26px,6vw,38px)/1 Kanit,sans-serif;text-transform:uppercase}
+header p{margin:8px 0 0;color:#A9B8B2;max-width:64ch}
+main{max-width:1000px;margin:0 auto;padding:20px max(5vw,16px) 36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),360px));gap:24px;justify-content:center}
+figure{margin:0}video{display:block;width:100%;height:auto;border-radius:30px;border:8px solid #1d1d20;background:#000}
+figcaption{margin-top:10px;text-align:center;color:#A9B8B2;font-size:14px}
+ol{max-width:1000px;margin:0 auto;padding:0 max(5vw,16px) 30px 2.6em;color:#C9D5D0}li{margin:6px 0}
+</style></head><body>
+<header><h1>Transición en la app real</h1><p>Grabación de la app con el cambio ya hecho: portada → "Ya tengo cuenta" → escribir correo y contraseña → Inicio. Al final, cómo se ve al abrir la app con la sesión ya iniciada.</p></header>
+<main>
+<figure><video src="dark.mp4" poster="dark.jpg" controls autoplay muted loop playsinline width="780" height="1688"></video><figcaption>Oscuro</figcaption></figure>
+<figure><video src="light2.mp4" poster="light2.jpg" controls muted loop playsinline width="780" height="1688"></video><figcaption>Salvia</figcaption></figure>
+</main>
+<ol><li>La portada ya usa la foto del remo, con la cabeza del chavo delante del 12.</li><li>Al tocar "Ya tengo cuenta", la foto, el chavo y el 12 se acomodan en su lugar del formulario.</li><li>Al entrar, la foto pasa a la tarjeta de Inicio, el 12 se vuelve el entrenamiento de hoy y lo demás llega en cascada.</li><li>Al abrir la app con la sesión iniciada se repite la parte del 12 en medio segundo.</li></ol>
+</body></html>
