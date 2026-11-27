@@ -57,6 +57,16 @@ function rfDesde(nuevo, viejo){
       if(id==='s-dash' && RF_INTRO){ try{ rfIntro(); }catch(e){} }   // al abrir la app con la sesión iniciada
       return r;
     }
+    // Inicio ya se pintó oculto: se espera a que su foto esté decodificada para no mostrar un cuadro vacío (máx. 450 ms)
+    if(id==='s-dash' && !go._rfListo){
+      const fotos = [...document.querySelectorAll('#ci-scene .ci-bg, #ci-scene .ci-cut')].filter(i=>i.decode);
+      if(fotos.length){
+        const self=this, args=arguments;
+        Promise.race([Promise.all(fotos.map(i=>i.decode().catch(()=>{}))), new Promise(res=>setTimeout(res,450))])
+          .then(()=>{ go._rfListo=true; try{ go.apply(self,args); } finally{ go._rfListo=false; } });
+        return;
+      }
+    }
     let antes = null; try{ antes = rfPiezas(document.getElementById(de)); }catch(e){}
     const r = _go.apply(this,arguments);
     try{
