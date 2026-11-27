@@ -987,6 +987,21 @@ html[data-theme="dark"] .cred-obj{color:#0A0E13;}
 .pfl-it>.ico{width:16px;height:16px;color:var(--mu);}
 .pfl-st{flex:none;padding:5px 10px;border-radius:99px;font:700 12px/1 var(--fb);background:color-mix(in srgb,var(--cine-acc) 15%,transparent);color:var(--tx);}
 .pfl-st.ok{background:color-mix(in srgb,#2F7A4A 16%,transparent);}
+/* Entrenador + mensajes en una fila: foto (abre su método), nombre y burbuja de chat */
+.pfl-coach{gap:0;padding:0;cursor:default;}
+.pfl-coach-av{flex:none;display:grid;place-items:center;min-width:44px;min-height:44px;padding:12px 4px 12px 14px;border:0;background:none;cursor:pointer;}
+.pfl-coach-b{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:72px;padding:10px 14px 10px 10px;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;}
+.pfl-coach .pfl-av.foto{width:52px;height:52px;}
+.pfl-coach .pfl-t b{font-size:16px;}
+.pfl-coach .pfl-t small{display:flex;align-items:center;gap:7px;}
+.pfl-coach .pfl-st{padding:3px 8px;font-size:11px;}
+.pfl-chat{position:relative;flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--cine-acc);color:#fff;box-shadow:0 8px 18px -10px color-mix(in srgb,var(--cine-acc) 90%,transparent);transition:transform .15s var(--cine-out,ease);}
+html[data-theme="dark"] .pfl-chat{color:#0A0E13;}
+.pfl-chat .ico{width:21px;height:21px;}
+.pfl-chat .chat-dot{position:absolute;top:-1px;right:-1px;box-shadow:0 0 0 2px var(--cine-deep,#1D2B27);}
+.pfl-coach-b:active .pfl-chat{transform:scale(.92);}
+.pfl-coach-av:focus-visible,.pfl-coach-b:focus-visible{outline:2px solid var(--cine-acc);outline-offset:-4px;border-radius:20px;}
+@media (prefers-reduced-motion:reduce){.pfl-chat{transition:none;}}
 
 /* ═══ BARRA DEL RETO (12 semanas) ═══ */
 .rb12{display:grid;gap:8px;}

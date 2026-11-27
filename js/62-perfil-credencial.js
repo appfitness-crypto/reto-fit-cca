@@ -46,7 +46,18 @@ function perfilListaHTML(s){
     ent?esc(tc(ent.nombre)):'Plan del club',
     (ent?'Tu entrenador':'Un entrenador del gym lo revisa')+(m&&m.tagline?' · «'+esc(m.tagline)+'»':''),
     `<span class="pfl-st ${pend?'pend':(est==='tolerancia'?'tol':'ok')}">${estTxt}</span>`);
-  if(typeof chatFilaPerfilHTML==='function') html+=chatFilaPerfilHTML(s);
+  // Con entrenador: su foto, su nombre y el chat en una sola fila (tocarla abre los mensajes; la foto abre su método)
+  const conChat=ent&&ent.rol!=='coordinador'&&typeof chatAbrir==='function'&&s.code;
+  if(conChat){
+    const nm=esc(tc(ent.nombre));
+    const nuevo=typeof chatSinLeer==='function'&&chatSinLeer(s.code,'s');
+    html=`<div class="pfl-it pfl-coach">
+      <button type="button" class="pfl-coach-av" onclick="abrirMetodoSocio()" aria-label="Ver el método de ${nm}"><span class="pfl-av${ent.foto?' foto':''}">${ent.foto?`<img src="${esc(ent.foto)}" alt="" decoding="async">`:esc(iniciales(ent.nombre))}</span></button>
+      <button type="button" class="pfl-coach-b" onclick="chatAbrir('${esc(s.code)}')" aria-label="Escribirle a ${nm}, tu entrenador${nuevo?'. Tienes mensajes nuevos':''}">
+        <span class="pfl-t"><b>${nm}</b><small><span class="pfl-st ${pend?'pend':(est==='tolerancia'?'tol':'ok')}">${estTxt}</span>Tu entrenador · Escríbele</small></span>
+        <span class="pfl-chat">${ico('chat')}<i class="chat-dot" data-chat-badge="${esc(s.code)}" ${nuevo?'':'hidden'}></i></span>
+      </button></div>`;
+  } else if(typeof chatFilaPerfilHTML==='function') html+=chatFilaPerfilHTML(s);
   if(st){
     const sub=st.antes?'Empieza a crecer cuando arranque el reto':st.sig?`${st.faltan.toLocaleString('es-MX')} pts para ${esc(st.sig.nm)}`:'Llegó a su forma final';
     html+=fila('mascotaAbrir()',`<span class="pfl-ic">${ico('star')}</span>`,`${esc(st.nombre)} · ${esc(st.etapa.nm)}`,'Mi compañero · '+sub);
