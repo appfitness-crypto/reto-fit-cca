@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inicio · remo en el gimnasio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Vista previa: el panel de Inicio del socio con la foto nueva (remo con mancuerna en el gimnasio del club).
+   Capturas de la app real con la foto y su recorte puestos en su lugar; nada más cambia. */
+:root{color-scheme:dark;--bg:#0B0F0D;--ink:#EEF4F1;--mu:#9FB0A9;--acc:#C8F23A}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif}
+header{padding:28px max(5vw,16px) 8px;max-width:1100px;margin:0 auto}
+h1{margin:0;font:italic 800 clamp(28px,6vw,40px)/1 Kanit,sans-serif;text-transform:uppercase}
+header p{margin:8px 0 0;color:var(--mu);max-width:60ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
+.tabs button{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid #2A3631;background:#141B18;color:var(--ink);font:600 14px Figtree,sans-serif;cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--acc);color:#0A0E13;border-color:var(--acc)}
+main{max-width:1100px;margin:0 auto;padding:18px max(5vw,16px) 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:22px;align-items:start}
+figure{margin:0}
+figure img{display:block;width:100%;height:auto;border-radius:28px;border:8px solid #1d1d20;background:#000}
+figcaption{margin-top:10px;color:var(--mu);font-size:14px;text-align:center}
+.tab{max-width:560px}
+small.note{display:block;max-width:1100px;margin:0 auto;padding:0 max(5vw,16px) 30px;color:var(--mu);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Inicio con remo en el gimnasio</h1>
+  <p>Así se ve la tarjeta de arriba del panel del socio con la foto del gimnasio del club y una persona haciendo remo con mancuerna. El título queda a la izquierda, despejado, y la persona a la derecha mirando hacia él.</p>
+  <div class="tabs" role="group" aria-label="Tema">
+    <button type="button" data-t="dark" aria-pressed="true">Oscuro</button>
+    <button type="button" data-t="light2" aria-pressed="false">Salvia</button>
+  </div>
+</header>
+<main>
+  <figure><img id="f1" src="img/dark-390.webp" alt="Panel de Inicio en teléfono" width="780" height="1688"><figcaption>Teléfono</figcaption></figure>
+  <figure class="tab"><img id="f2" src="img/dark-640.webp" alt="Panel de Inicio en tableta" width="1280" height="2000"><figcaption>Tableta</figcaption></figure>
+</main>
+<small class="note">Capturas de la app con un socio de prueba (nombre, mascota y semana son de ejemplo).</small>
+<script>
+{
+  const bs=document.querySelectorAll('.tabs button');
+  bs.forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.t;bs.forEach(x=>x.setAttribute('aria-pressed',x===b));
+    document.getElementById('f1').src='img/'+t+'-390.webp';document.getElementById('f2').src='img/'+t+'-640.webp';}));
+}
+</script>
+</body>
+</html>
