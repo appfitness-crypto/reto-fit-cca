@@ -10,7 +10,7 @@
      de index.html y sw.js. ═══ */
 
 const RF_POCO_MOV = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-const RF_DUR = 850, RF_EASE = 'cubic-bezier(.16,1,.3,1)';
+const RF_DUR = 1300, RF_EASE = 'cubic-bezier(.16,1,.3,1)';
 let RF_INTRO = true;   // la siguiente vez que se pinte Inicio, el 12 se vuelve el entrenamiento
 
 // Rectángulo donde realmente se dibuja una foto con object-fit: cover (incluye la escala que tenga el elemento)
@@ -73,10 +73,16 @@ function rfDesde(nuevo, viejo){
       if(id==='s-dash'){ try{ cineAjustar(document.getElementById('ci-scene')); }catch(e){} if(RF_INTRO){ try{ rfIntro(); }catch(e){} } }   // se pintó oculto: medir ya visible y poner el 12
       const ahora = rfPiezas(document.getElementById(id==='s-dash'?'ci-scene':id));
       // Solo si es la misma foto (con una foto propia de Apariencia en una pantalla y no en la otra, cambio directo)
-      if(antes && ahora && antes.foto && ahora.foto && antes.src && antes.src===ahora.src){
-        const raiz = document.documentElement; raiz.classList.add('rf-mov');
+      // hero/bienvenida.webp es copia exacta de hero/inicio.webp; una foto subida en Apariencia llega con otra dirección
+      const misma = u => String(u||'').replace(/img\/hero\/bienvenida\.webp(\?.*)?$/,'img/hero/inicio.webp');
+      if(antes && ahora && antes.foto && ahora.foto && antes.src && misma(antes.src)===misma(ahora.src)){
+        // La pantalla nueva entra con su desvanecido normal (opacidad 0 → 1), que dejaría ver el fondo claro
+        // detrás de la foto: se termina al instante, solo en esta pantalla y solo en este cambio
+        const nueva = document.getElementById(id);
+        [nueva, ...(nueva?nueva.querySelectorAll('.dash-section.on'):[])].forEach(el=>{ if(el&&el.getAnimations) el.getAnimations().forEach(a=>{ if(a.animationName==='fi') a.finish(); }); });
+        const raiz = document.documentElement; raiz.classList.add('rf-moviendo');
         rfDesde(ahora.foto, antes.foto); rfDesde(ahora.cut, antes.cut); rfDesde(ahora.num, antes.num);
-        setTimeout(()=>raiz.classList.remove('rf-mov'), RF_DUR+50);
+        setTimeout(()=>raiz.classList.remove('rf-moviendo'), RF_DUR+50);
       }
     }catch(e){ console.warn('rf transición',e); }
     return r;
@@ -99,7 +105,7 @@ function rfIntro(){
   sc.classList.add('rf-doce'); if(sec) sec.classList.add('rf-llega');
   const forma = () => {
     if(!n.isConnected) return;   // Inicio se volvió a pintar mientras tanto
-    if(document.documentElement.classList.contains('rf-mov')){ setTimeout(forma,120); return; }
+    if(document.documentElement.classList.contains('rf-moviendo')){ setTimeout(forma,120); return; }
     // Cada cifra viaja al lugar del título (la primera a su inicio, la segunda más adelante) mientras se encoge
     const tr = t.getBoundingClientRect();
     [...n.children].forEach((s,i)=>{
@@ -108,9 +114,9 @@ function rfIntro(){
       s.style.setProperty('--dy', (tr.top + tr.height*0.5 - (r.top + r.height/2)).toFixed(1)+'px');
     });
     sc.classList.remove('rf-doce'); sc.classList.add('rf-forma');
-    setTimeout(()=>{ n.remove(); sc.classList.remove('rf-forma'); if(sec) sec.classList.remove('rf-llega'); }, 1700);
+    setTimeout(()=>{ n.remove(); sc.classList.remove('rf-forma'); if(sec) sec.classList.remove('rf-llega'); }, 2600);
   };
-  setTimeout(forma, 600);
+  setTimeout(forma, 900);
 }
 if(typeof cineInicio==='function'){
   const _ci = cineInicio;
