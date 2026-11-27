@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#DCE6E2">
+<title>Portada · vista previa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,700;1,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Vista previa de la pantalla de inicio (portada "cine") con la foto nueva.
+   Copia del acomodo de css/cine.css: foto a pantalla completa, el 12 gigante detrás de la persona recortada,
+   texto y botones abajo sobre el verde profundo. Tema Salvia. */
+:root{--top:#DCE6E2;--deep:#1D2B27;--acc:#F07A2B;--on:#EEF4F1;--on2:rgba(226,236,232,.76);
+  --fd:Kanit,system-ui,sans-serif;--fb:Figtree,system-ui,sans-serif;--expo:cubic-bezier(.16,1,.3,1);--wc-top:calc(64px + env(safe-area-inset-top,0px))}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:#0f1513}
+body{font:15px/1.5 var(--fb);color:var(--on)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.phone{position:relative;max-width:430px;margin:0 auto;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;
+  background:linear-gradient(180deg,var(--top) 0%,var(--top) 16%,var(--deep) 64%)}
+@media (min-width:600px){body{padding:24px 0;background:radial-gradient(circle at 50% 0,#2a3a35,#0b100e 70%)}.phone{height:880px;border-radius:44px;border:10px solid #1d1d20}}
+.bar{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:10px;height:var(--wc-top);padding:env(safe-area-inset-top,0px) 16px 0;
+  background:linear-gradient(180deg,rgba(220,230,226,.95),rgba(220,230,226,.6))}
+.bar img{width:44px;height:44px;border-radius:12px}
+.bar b{font:italic 800 15px/1 var(--fd);color:var(--deep);letter-spacing:.01em}
+.hero{position:absolute;inset:0;overflow:hidden}
+.cam{position:absolute;inset:0;transform-origin:50% 38%;animation:cam 1900ms var(--expo) both}
+.pic,.cut{position:absolute;left:0;right:0;top:var(--wc-top);bottom:0;width:100%;height:calc(100% - var(--wc-top));object-fit:cover;object-position:46% 0}
+.pic{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 84px);mask-image:linear-gradient(180deg,transparent 0,#000 84px)}
+.num{position:absolute;left:0;right:0;top:calc(var(--wc-top) - 16px);margin:0;text-align:center;color:var(--acc);
+  font:italic 800 min(91vw,calc((100svh - 64px)*.46),380px)/.74 var(--fd);letter-spacing:-.06em;padding-right:5.6%;
+  pointer-events:none;user-select:none;animation:num 1300ms var(--expo) 180ms both}
+@media (min-width:600px){.num{font-size:min(380px,calc((860px - 64px)*.46))}}
+.ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(29,43,39,.7) 100%)}
+.wrap{position:relative;z-index:2;padding:96px 20px calc(18px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,rgba(29,43,39,0) 0,rgba(29,43,39,.78) 64px,var(--deep) 150px)}
+h1{margin:0 0 10px;font:italic 800 clamp(28px,8.2vw,36px)/1 var(--fd);text-transform:uppercase;text-wrap:balance;animation:txt 900ms var(--expo) 520ms both}
+.sub{margin:0 0 18px;color:var(--on2);max-width:34ch;animation:txt 900ms var(--expo) 560ms both}
+.cards{display:grid;gap:10px;animation:up 800ms var(--expo) 900ms both}
+.pri{display:flex;align-items:center;min-height:70px;padding:10px 10px 10px 20px;border-radius:22px;background:#fff;color:#17231F;text-align:left;box-shadow:0 14px 30px -14px rgba(0,0,0,.6)}
+.pri span{flex:1;display:flex;flex-direction:column}
+.pri b{font:700 20px/1.1 var(--fb)}
+.pri small{font-size:13px;color:#4A5954;margin-top:2px}
+.pri i{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--deep);color:#fff;flex:none}
+.pri i svg,.ya svg{width:20px;height:20px}
+.ya{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;border-radius:22px;box-shadow:inset 0 0 0 1.5px rgba(238,244,241,.3);font-weight:700;font-size:17px}
+.staff{display:block;margin:6px auto 0;min-height:44px;color:var(--on2);font-size:14px;font-weight:600}
+.toast{position:absolute;left:50%;bottom:24px;z-index:9;transform:translate(-50%,10px);opacity:0;padding:10px 16px;border-radius:99px;background:#fff;color:#17231F;font-size:13.5px;white-space:nowrap;transition:.3s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.num{display:flex;justify-content:space-between;padding:0 4.5% 0 2.5%;letter-spacing:0}
+.num span{display:block}
+@keyframes cam{from{transform:scale(1.14)}}
+@keyframes num{from{transform:translateY(110px) scale(.94);opacity:0;filter:blur(16px)}}
+@keyframes txt{from{opacity:0;transform:translateY(20px);filter:blur(10px)}}
+@keyframes up{from{opacity:0;transform:translateY(16px)}}
+@media (max-height:700px){.sub{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div class="hero">
+    <div class="cam">
+      <img class="pic" src="img/bienvenida.webp" alt="">
+      <p class="num" aria-hidden="true"><span>1</span><span>2</span></p>
+      <img class="cut" src="img/bienvenida-recorte.webp" alt="">
+    </div>
+    <div class="ov"></div>
+  </div>
+  <div class="bar"><img src="img/logo.png" alt=""><b>RETO FIT</b></div>
+  <div class="wrap">
+    <h1>Tu reto de 12 semanas<br>empieza aquí.</h1>
+    <p class="sub">Tu rutina, tus pesos y la técnica de cada ejercicio, con tu entrenador.</p>
+    <div class="cards">
+      <button class="pri" data-t="Aquí empieza el registro"><span><b>Soy nuevo</b><small>Crea tu cuenta y recibe la rutina de tu entrenador.</small></span>
+        <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></button>
+      <button class="ya" data-t="Aquí se abre el inicio de sesión"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Ya tengo cuenta</button>
+    </div>
+    <button class="staff" data-t="Acceso de entrenadores">Soy entrenador del reto: entrar con mi cuenta →</button>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+{
+  const t=document.getElementById('toast');let h;
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;t.textContent='Vista previa: '+b.dataset.t;t.classList.add('on');clearTimeout(h);h=setTimeout(()=>t.classList.remove('on'),1800);});
+  // tocar la foto repite la entrada animada
+  document.querySelector('.hero').addEventListener('click',()=>{document.querySelectorAll('.cam,.num,h1,.sub,.cards').forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation='';});});
+}
+</script>
+</body>
+</html>
