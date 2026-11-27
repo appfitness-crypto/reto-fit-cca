@@ -25,3 +25,23 @@ html[data-theme] #s-inicio.con-recorte .wc-cut{transform-origin:46% 100%;scale:1
 @media (prefers-reduced-motion:reduce){
   .rf-num{display:none;}
 }
+
+/* ═══ Tableta vertical ═══
+   La portada usaba la franja de computadora (foto de 560 px al centro y un hueco grande debajo) y la tarjeta
+   de Inicio tenía la altura fija del teléfono (560 px): en una tableta alta se perdía casi toda la foto. */
+@media (min-width:700px) and (orientation:portrait){
+  html[data-theme] #s-inicio .wc-hero{left:0;right:0;width:auto;margin-left:0;-webkit-mask-image:none;mask-image:none;}
+  html[data-theme] #s-inicio .wc-num{font-size:min(84vw,calc((100svh - 64px)*.42),720px);}
+  html[data-theme] #s-inicio .inicio-wrap{max-width:640px;padding-top:120px;}
+  /* en tableta cabe la foto completa: sin el acercamiento del teléfono, y el 12 baja para quedar detrás de la cabeza */
+  html[data-theme] #s-inicio.con-recorte .wc-pic .pic.fill img,html[data-theme] #s-inicio.con-recorte .wc-cut{scale:1;}
+  html[data-theme] #s-inicio.con-recorte .wc-num{top:calc(var(--wc-top) + 17svh);}
+  /* la sombra de abajo empieza donde empieza el texto (en el teléfono tapa desde la mitad) */
+  html[data-theme] #s-inicio .wc-ov{background:linear-gradient(180deg,transparent 52%,color-mix(in srgb,var(--cine-deep) 70%,transparent) 64%,var(--cine-deep) 74%);}
+}
+@media (min-width:700px) and (orientation:portrait){
+  html[data-theme] :is(#s-login,#s-registro) .lg-num{top:calc(78px + 12svh + env(safe-area-inset-top,0px));font-size:min(60vw,30svh,520px);}
+}
+@media (min-width:600px){
+  .ci-scene.ih,#s-dash .ci-scene.ih{height:clamp(560px,74svh,1020px);max-height:none;}
+}
