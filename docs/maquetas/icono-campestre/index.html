@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icono Campestre · vista previa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box;min-width:0}
+body{margin:0;background:#0B100E;color:#EEF4F1;font:16px/1.55 Figtree,system-ui,sans-serif}
+::selection{background:#A6E241;color:#0A0E13}
+.w{max-width:1040px;margin:0 auto;padding:0 max(5vw,16px)}
+header{padding:30px 0 8px}
+h1{margin:0;font:italic 800 clamp(28px,6vw,42px)/1 Kanit,sans-serif;text-transform:uppercase}
+h2{margin:34px 0 10px;font:italic 800 22px/1.1 Kanit,sans-serif;text-transform:uppercase}
+p{margin:8px 0 0;color:#A9B8B2;max-width:66ch}
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:18px;max-width:520px}
+.duo figure{margin:0;text-align:center}.duo img{width:100%;height:auto}
+figcaption{margin-top:6px;color:#C9D5D0;font-size:14px}figcaption b{color:#A6E241}
+.full{display:block;width:100%;height:auto;border-radius:20px;margin-top:14px}
+.tabs{display:flex;gap:8px;margin-top:14px}
+.tabs button{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid #2A3631;background:#141B18;color:#EEF4F1;font:600 14px Figtree,sans-serif;cursor:pointer}
+.tabs button[aria-pressed=true]{background:#A6E241;color:#0A0E13;border-color:#A6E241}
+.cmp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+.cmp figure{margin:0}.cmp img{display:block;width:100%;height:auto;border-radius:18px;border:6px solid #1d1d20}
+footer{padding:30px 0 40px;color:#7F8F89;font-size:13px}
+@media(max-width:560px){.cmp{grid-template-columns:1fr}}
+</style></head><body>
+<div class="w">
+<header><h1>Icono con la C de Campestre</h1><p>El icono con la forma oficial del logo de Campestre (el aro verde con la barra azul), comparado con el actual. Le limpié un borde blanco que traía alrededor.</p></header>
+<div class="duo">
+<figure><img src="img/icono-actual.png" alt="Icono actual" width="512" height="512"><figcaption>Actual</figcaption></figure>
+<figure><img src="img/icono-nuevo.png" alt="Icono nuevo" width="512" height="512"><figcaption><b>Nuevo</b></figcaption></figure>
+</div>
+<h2>En la pantalla del celular</h2>
+<p>Actual y nuevo.</p>
+<img class="full" src="img/celular4.webp" alt="Iconos sobre un fondo de pantalla" width="780" height="520">
+<h2>En tamaños chicos</h2>
+<p>Arriba el actual, abajo el nuevo, sobre fondo claro y oscuro.</p><h2>Junto al logo oficial</h2><img class="full" src="img/forma4.webp" alt="Logo oficial y el icono nuevo" width="760" height="380">
+<img class="full" src="img/tamanos4.webp" alt="Comparación de tamaños" width="832" height="320">
+<h2>Dentro de la app</h2>
+<div class="tabs" role="group" aria-label="Tema"><button type="button" data-t="dark" aria-pressed="true">Oscuro</button><button type="button" data-t="light2" aria-pressed="false">Salvia</button></div>
+<div class="cmp">
+<figure><img id="a1" src="img/viejo-dark-portada.webp" alt="Portada con el icono actual" width="780" height="600"><figcaption>Portada · actual</figcaption></figure>
+<figure><img id="b1" src="img/v4-dark-portada.webp" alt="Portada con el icono nuevo" width="780" height="600"><figcaption>Portada · nuevo</figcaption></figure>
+<figure><img id="a2" src="img/viejo-dark-perfil.webp" alt="Perfil con el icono actual" width="780" height="600"><figcaption>Perfil · actual</figcaption></figure>
+<figure><img id="b2" src="img/v4-dark-perfil.webp" alt="Perfil con el icono nuevo" width="780" height="600"><figcaption>Perfil · nuevo</figcaption></figure>
+</div>
+<footer>Capturas de la app con un socio de prueba. La barra de arriba hoy usa un logo animado (video) con la C actual; con el icono nuevo se usaría la imagen fija o una animación nueva.</footer>
+</div>
+<script>{const bs=document.querySelectorAll('.tabs button');bs.forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.t;bs.forEach(x=>x.setAttribute('aria-pressed',x===b));
+document.getElementById('a1').src='img/viejo-'+t+'-portada.webp';document.getElementById('b1').src='img/v4-'+t+'-portada.webp';document.getElementById('a2').src='img/viejo-'+t+'-perfil.webp';document.getElementById('b2').src='img/v4-'+t+'-perfil.webp';}));}</script>
+</body></html>
