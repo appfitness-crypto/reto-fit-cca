@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0E13">
+<title>Portada a Inicio · transición</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,700;1,700;1,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Prototipo: la foto del remo es la misma en la portada y en Inicio. Al entrar, la foto no se va:
+   se encoge hasta volverse la tarjeta de Inicio, el 12 se abre y en su lugar entra el entrenamiento de hoy
+   (detrás de él), y lo demás llega en cascada. Tema oscuro. */
+:root{--t:1;--acc:#C8F23A;--deep:#0A0E13;--deep2:#18212B;--on:#EEF2F6;--on2:rgba(226,232,240,.74);--line:rgba(238,242,246,.14);
+  --fd:Kanit,system-ui,sans-serif;--fb:Figtree,system-ui,sans-serif;--expo:cubic-bezier(.16,1,.3,1);--out:cubic-bezier(.4,0,.6,1)}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:#050709}
+body{color:var(--on);font:15px/1.5 var(--fb)}
+::selection{background:var(--acc);color:var(--deep)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.stage{min-height:100svh;display:grid;place-items:center;gap:14px;padding:0}
+.phone{position:relative;width:100%;max-width:430px;height:100svh;overflow:hidden;background:var(--deep);--H:100svh}
+@media (min-width:600px){.stage{padding:24px 0}.phone{width:390px;height:844px;--H:844px;border-radius:44px;border:10px solid #1d1d20;box-sizing:content-box}}
+
+/* ── la foto compartida ── */
+.card{position:absolute;left:0;right:0;top:0;height:var(--H);overflow:hidden;border-radius:0;z-index:1;
+  transition:height calc(950ms*var(--t)) var(--expo) calc(120ms*var(--t)),border-radius calc(950ms*var(--t)) var(--expo) calc(120ms*var(--t))}
+.s-in .card{height:560px;border-radius:0 0 30px 30px}
+.pic{position:absolute;left:-19px;top:0;width:420px;height:560px;object-fit:cover;transform-origin:0 0;
+  transform:translate(-138px,-176px) scale(1.602);transition:transform calc(950ms*var(--t)) var(--expo) calc(120ms*var(--t))}
+.s-in .pic{transform:none}
+.card::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;
+  background:linear-gradient(180deg,transparent 42%,rgba(10,14,19,.55) 70%,rgba(10,14,19,.96) 100%);transition:opacity calc(600ms*var(--t)) var(--out)}
+/* el 12 de la portada */
+.num{position:absolute;z-index:2;left:0;right:0;top:48px;margin:0;display:flex;justify-content:space-between;padding:0 4.5% 0 2.5%;
+  font:italic 800 355px/.74 var(--fd);color:var(--acc);pointer-events:none}
+.num span{display:block;transition:transform calc(650ms*var(--t)) var(--expo),opacity calc(420ms*var(--t)) var(--out),filter calc(520ms*var(--t)) var(--out)}
+.s-in .num span{opacity:0;filter:blur(14px)}
+.s-in .num span:first-child{transform:translateX(-120px) rotate(-6deg)}
+.s-in .num span:last-child{transform:translateX(120px) rotate(6deg)}
+/* el entrenamiento de hoy, detrás de la persona */
+.ttl{position:absolute;z-index:2;left:16px;right:30%;top:196px;margin:0;font:italic 800 36px/.84 var(--fd);text-transform:uppercase;letter-spacing:-.02em;
+  opacity:0;transform:translateX(-36px);filter:blur(8px);transition:opacity calc(700ms*var(--t)) var(--expo) calc(360ms*var(--t)),transform calc(900ms*var(--t)) var(--expo) calc(360ms*var(--t)),filter calc(700ms*var(--t)) var(--expo) calc(360ms*var(--t))}
+.ttl b{display:block;color:var(--acc)}.ttl span{display:block;color:var(--on);font-size:32px}
+.s-in .ttl{opacity:1;transform:none;filter:none}
+.cut{z-index:3}
+
+/* ── portada ── */
+.pbar{position:absolute;z-index:6;top:0;left:0;right:0;display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top) + 16px) 16px 0;transition:opacity calc(300ms*var(--t)) var(--out)}
+.pbar img{width:56px;height:56px;border-radius:15px}
+.pbar b{font:italic 800 17px/1 var(--fd)}
+.port{position:absolute;z-index:6;left:0;right:0;bottom:0;padding:90px 20px calc(18px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(10,14,19,0),rgba(10,14,19,.85) 70px,var(--deep) 150px);transition:opacity calc(380ms*var(--t)) var(--out),transform calc(520ms*var(--t)) var(--out)}
+.s-in .pbar{opacity:0;pointer-events:none}
+.s-in .port{opacity:0;transform:translateY(60px);pointer-events:none}
+.port h1{margin:0 0 10px;font:italic 800 34px/1 var(--fd);text-transform:uppercase;text-wrap:balance}
+.port p{margin:0 0 18px;color:var(--on2);max-width:34ch}
+.pri{display:flex;align-items:center;width:100%;min-height:70px;padding:10px 10px 10px 20px;border-radius:22px;background:#fff;color:#17231F;text-align:left;box-shadow:0 14px 30px -14px rgba(0,0,0,.6)}
+.pri span{flex:1;display:flex;flex-direction:column}.pri b{font:700 20px/1.1 var(--fb)}.pri small{font-size:13px;color:#4A5954;margin-top:2px}
+.pri i{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--deep);color:#fff;flex:none}
+.pri svg,.ya svg{width:20px;height:20px}
+.ya{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;margin-top:10px;border-radius:22px;box-shadow:inset 0 0 0 1.5px rgba(238,242,246,.3);font-weight:700;font-size:17px}
+.staff{display:block;width:100%;margin-top:6px;min-height:44px;color:var(--on2);font-size:14px;font-weight:600}
+
+/* ── Inicio ── */
+.in{position:absolute;inset:0;z-index:5;pointer-events:none}
+.s-in .in{pointer-events:auto}
+.rb{position:absolute;left:14px;right:14px;top:calc(env(safe-area-inset-top) + 12px);padding:12px 14px 12px;border-radius:20px;background:rgba(10,14,19,.55);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px var(--line)}
+.rb-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.rb-h b{font:italic 800 15px/1 var(--fd);text-transform:uppercase}.rb-h span{font-size:12.5px;color:var(--on2);white-space:nowrap}
+.rb-s{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:10px}
+.rb-s i{height:5px;border-radius:3px;background:rgba(238,242,246,.22)}
+.rb-s i.f{background:none;box-shadow:inset 0 0 0 1.5px var(--acc);height:7px;margin-top:-1px}
+.meta{position:absolute;left:0;right:0;top:376px;padding:0 16px 0 132px}
+.lv{display:flex;align-items:baseline;gap:8px}.lv b{font:italic 800 19px/1 var(--fd)}.lv span{font-size:13px;color:var(--on2)}
+.lvb{display:block;height:5px;margin:8px 0 12px;border-radius:3px;background:rgba(238,242,246,.18)}.lvb i{display:block;width:4%;height:100%;border-radius:inherit;background:var(--acc)}
+.hoy{display:block;font:700 13.5px/1.2 var(--fb);color:var(--acc)}.det{margin:4px 0 14px;font-size:14px;color:var(--on2)}
+.go{display:flex;align-items:center;gap:14px;width:100%;min-height:62px;padding:8px;border-radius:99px;background:var(--acc);color:var(--deep);font:800 20px/1 var(--fb);box-shadow:0 14px 34px -12px rgba(200,242,58,.55)}
+.go i{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--deep);color:var(--acc)}.go svg{width:18px;height:18px}
+.mas{position:absolute;left:10px;top:470px;width:116px;height:116px;object-fit:contain;filter:drop-shadow(0 10px 12px rgba(0,0,0,.45))}
+.sem{position:absolute;left:14px;right:14px;top:580px;padding:14px 16px 16px;border-radius:24px;background:rgba(24,33,43,.72);box-shadow:inset 0 0 0 1px var(--line)}
+.sem small{color:var(--on2);font-weight:600;font-size:13px}.sem div{display:flex;align-items:baseline;justify-content:space-between;margin-top:4px}
+.sem b{font:italic 800 38px/1 var(--fd)}.sem b em{font:600 15px var(--fb);color:var(--on2);font-style:normal;margin-left:6px}.sem span{font-size:14px;color:var(--on2)}
+.nav{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 12px);display:grid;grid-template-columns:repeat(5,1fr);padding:7px;border-radius:30px;
+  background:rgba(18,26,34,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px var(--line)}
+.nav a{display:grid;justify-items:center;gap:4px;padding:9px 0 8px;border-radius:22px;color:var(--on2);text-decoration:none;font:600 11.5px/1 var(--fb)}
+.nav a svg{width:22px;height:22px}.nav a.on{background:rgba(200,242,58,.14);color:var(--acc);box-shadow:inset 0 0 0 1px rgba(200,242,58,.35)}
+/* cascada de llegada */
+.in>*{opacity:0;transition:opacity calc(600ms*var(--t)) var(--expo),transform calc(800ms*var(--t)) var(--expo)}
+.rb{transform:translateY(-18px)}.meta,.mas{transform:translateY(24px)}.sem{transform:translateY(60px)}.nav{transform:translateY(110%)}
+.s-in .in>*{opacity:1;transform:none}
+.s-in .rb{transition-delay:calc(620ms*var(--t))}.s-in .meta{transition-delay:calc(720ms*var(--t))}.s-in .mas{transition-delay:calc(800ms*var(--t))}.s-in .sem{transition-delay:calc(860ms*var(--t))}.s-in .nav{transition-delay:calc(900ms*var(--t))}
+/* al volver a la portada, todo regresa sin esperar */
+.phone:not(.s-in) *{transition-delay:0ms!important}
+.lento{--t:3}
+
+.ctl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:0 16px 20px}
+.ctl button{min-height:44px;padding:0 18px;border-radius:99px;background:#141B18;color:var(--on);box-shadow:inset 0 0 0 1px #2A3631;font-weight:600;font-size:14px}
+.ctl button.pri2{background:var(--acc);color:var(--deep);box-shadow:none}
+@media (max-width:599px){.ctl{position:fixed;z-index:20;left:0;right:0;top:calc(env(safe-area-inset-top) + 92px);justify-content:flex-end;pointer-events:none}.ctl button{pointer-events:auto;background:rgba(20,27,24,.9)}.ctl .hide-m{display:none}}
+.phone:not(.s-in) ~ .ctl .only-in{display:none}
+@media (prefers-reduced-motion:reduce){
+  .card,.pic,.num span,.ttl,.port,.pbar,.in>*{transition:opacity calc(250ms*var(--t)) linear!important;transition-delay:0ms!important}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="phone" id="phone">
+  <div class="card">
+    <img class="pic" src="img/inicio.webp" alt="Socio haciendo remo con mancuerna en el gimnasio del club">
+    <p class="num" aria-hidden="true"><span>1</span><span>2</span></p>
+    <p class="ttl" aria-hidden="true"><b>Pierna B ·</b><span>Día ligero</span></p>
+    <img class="pic cut" src="img/inicio-recorte.webp" alt="">
+  </div>
+
+  <div class="pbar"><img src="img/logo.png" alt=""><b>RETO FIT</b></div>
+  <section class="port" aria-label="Portada">
+    <h1>Tu reto de 12 semanas empieza aquí.</h1>
+    <p>Tu rutina, tus pesos y la técnica de cada ejercicio, con tu entrenador.</p>
+    <button class="pri" data-go><span><b>Soy nuevo</b><small>Crea tu cuenta y recibe la rutina de tu entrenador.</small></span><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></button>
+    <button class="ya" data-go><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Ya tengo cuenta</button>
+    <button class="staff" data-go>Soy entrenador del reto: entrar con mi cuenta →</button>
+  </section>
+
+  <section class="in" aria-label="Inicio">
+    <div class="rb"><div class="rb-h"><b>Arranca en 46 días</b><span>11 de enero · 12 semanas</span></div>
+      <div class="rb-s"><i></i><i></i><i></i><i></i><i></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i class="f"></i></div></div>
+    <img class="mas" src="img/mascota.webp" alt="">
+    <div class="meta">
+      <div class="lv"><b>FORCE</b><span>Cría · 0 pts</span></div><i class="lvb"><i></i></i>
+      <span class="hoy">Hoy · jueves 26</span><p class="det">9 ejercicios · Intermedio</p>
+      <button class="go"><i><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></i>Iniciar</button>
+    </div>
+    <div class="sem"><small>Esta semana</small><div><b>0<em>de 5</em></b><span>0 semanas de racha</span></div></div>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg>Inicio</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 7v10M3 9.5v5M18 7v10M21 9.5v5M6 12h12"/></svg>Rutina</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8M15 7h6v6"/></svg>Progreso</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-9 5-14 15-14 0 10-5 15-14 15"/><path d="M5 19 13 11"/></svg>Nutrición</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Perfil</a>
+    </nav>
+  </section>
+</div>
+<div class="ctl">
+  <button type="button" class="pri2 only-in" id="otra">Ver la transición otra vez</button>
+  <button type="button" class="hide-m" id="lenta">Ver en cámara lenta</button>
+</div>
+</div>
+<script>
+{
+  const ph=document.getElementById('phone');let slow=false;
+  const entrar=()=>{ph.classList.add('s-in');};
+  const salir=()=>{ph.classList.remove('s-in');};
+  document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',entrar));
+  document.getElementById('otra').addEventListener('click',()=>{salir();setTimeout(entrar,900);});
+  document.getElementById('lenta').addEventListener('click',e=>{slow=!slow;ph.classList.toggle('lento',slow);
+    e.currentTarget.textContent=slow?'Velocidad normal':'Ver en cámara lenta';salir();setTimeout(entrar,700);});
+  document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',ev=>{ev.preventDefault();salir();}));
+}
+</script>
+</body>
+</html>
