@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patrocinadores · vista previa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box;min-width:0}
+body{margin:0;background:#0B100E;color:#EEF4F1;font:16px/1.55 Figtree,system-ui,sans-serif}
+.w{max-width:1120px;margin:0 auto;padding:0 max(5vw,16px)}
+header{padding:28px 0 4px}
+h1{margin:0;font:italic 800 clamp(26px,6vw,40px)/1 Kanit,sans-serif;text-transform:uppercase}
+h2{margin:34px 0 8px;font:italic 800 22px/1.1 Kanit,sans-serif;text-transform:uppercase}
+p{margin:8px 0 0;color:#A9B8B2;max-width:66ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tabs button{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid #2A3631;background:#141B18;color:#EEF4F1;font:600 14px Figtree,sans-serif;cursor:pointer}
+.tabs button[aria-pressed=true]{background:#C8F23A;color:#0A0E13;border-color:#C8F23A}
+.g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:14px}
+figure{margin:0}img{display:block;width:100%;height:auto;border-radius:18px;border:6px solid #1d1d20}
+figcaption{margin-top:6px;text-align:center;color:#C9D5D0;font-size:14px}figcaption b{color:#C8F23A}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+ul{color:#C9D5D0;max-width:72ch;padding-left:20px}li{margin:6px 0}
+footer{padding:26px 0 40px;color:#7F8F89;font-size:13px}
+@media(max-width:700px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body><div class="w">
+<header><h1>Patrocinadores más visibles</h1><p>"Presentado por" más grande en la portada, y tarjetas de Aliados que ya no se pierden en el fondo de la app.</p>
+<div class="tabs" role="group" aria-label="Vista"><button type="button" data-v="dark-390" aria-pressed="true">Oscuro</button><button type="button" data-v="light2-390" aria-pressed="false">Salvia</button><button type="button" data-v="dark-800" aria-pressed="false">Tableta</button></div></header>
+<h2>Portada · Presentado por</h2>
+<div class="g"><figure><img id="p0" src="img/antes-dark-390-portada.webp" alt="Portada actual"><figcaption>Actual</figcaption></figure><figure><img id="p1" src="img/despues-dark-390-portada.webp" alt="Portada propuesta"><figcaption><b>Propuesto</b></figcaption></figure></div>
+<h2>Inicio · Aliados del reto</h2>
+<div class="g g4">
+<figure><img id="a0" src="img/antes-dark-390-inicio.webp" alt="Aliados actual"><figcaption>Actual</figcaption></figure>
+<figure><img id="a1" src="img/antes-dark-390-inicio2.webp" alt="Aliados actual, al deslizar"><figcaption>Actual (al deslizar)</figcaption></figure>
+<figure><img id="b0" src="img/despues-dark-390-inicio.webp" alt="Aliados propuesto"><figcaption><b>Propuesto</b></figcaption></figure>
+<figure><img id="b1" src="img/despues-dark-390-inicio2.webp" alt="Aliados propuesto, al deslizar"><figcaption><b>Propuesto (al deslizar)</b></figcaption></figure>
+</div>
+<h2>Qué cambia</h2>
+<ul>
+<li><b>Presentado por:</b> el logo pasa de 40 a 56 px (68 px en tableta) sobre fondo blanco, y el nombre de 13.5 a 16 px (18 en tableta).</li>
+<li><b>Tarjetas de Aliados:</b> borde de color del tema (lima en oscuro, naranja en Salvia) y etiqueta "Aliado", para que se lean como promociones y no como parte de la app.</li>
+<li><b>Logos sueltos sobre fondo claro:</b> antes iban sobre un fondo oscuro difuminado y un logo negro (como H2O power) desaparecía. Ahora se ven completos.</li>
+<li><b>Cuadradas</b> en lugar de altas, para no ocupar media pantalla, y la imagen sigue sin recortarse.</li>
+<li>Debajo del título, "Promociones para ti".</li>
+</ul>
+<footer>Capturas de la app con patrocinadores de prueba armados con recortes de tus capturas; el logo de H2O es un texto de ejemplo para probar un logo negro con fondo transparente.</footer>
+</div>
+<script>{const bs=document.querySelectorAll('.tabs button');bs.forEach(b=>b.addEventListener('click',()=>{const v=b.dataset.v;bs.forEach(x=>x.setAttribute('aria-pressed',x===b));
+const s=(id,src)=>document.getElementById(id).src='img/'+src+'.webp';s('p0','antes-'+v+'-portada');s('p1','despues-'+v+'-portada');s('a0','antes-'+v+'-inicio');s('a1','antes-'+v+'-inicio2');s('b0','despues-'+v+'-inicio');s('b1','despues-'+v+'-inicio2');}));}</script>
+</body></html>
