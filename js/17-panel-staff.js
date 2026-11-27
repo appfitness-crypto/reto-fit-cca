@@ -57,33 +57,35 @@ function actualizarFbBadge(){
   b.className='stf-chip '+(fbListo?'':'warn');
   b.textContent=fbListo?'Conectado a Firebase':'Modo local';
 }
-// ── Menú del staff (celular): agrupa las acciones que antes ocupaban toda la barra ──
+// ── Menú del staff: el reto arriba en mosaico (lo de todos los días), lo demás en listas agrupadas,
+//    el tema en una fila compacta y la cuenta al final (cerrar sesión claro, eliminar cuenta discreto) ──
 function staffMenu(){
-  const grupos=[
-    ['Reto',['btn-tablero','btn-reglas','btn-avisos','btn-reparto','btn-patro']],
-    ['Personas',['btn-mi-codigo','btn-mi-filosofia','btn-nutri','btn-ver-ent','btn-nuevo-ent','btn-conocimiento']],
-    ['Datos y sistema',['btn-resumen','btn-apariencia','btn-lugares','btn-respaldo','btn-firebase','btn-reset']],
-    ['Pruebas (antes del reto)',['btn-demo-cargar','btn-demo-borrar']],
-    ['Cuenta',['btn-eliminar-cuenta','btn-logout']]
-  ];
+  const vis=ids=>ids.map(id=>document.getElementById(id)).filter(b=>b && b.style.display!=='none');
+  const lb=b=>{ const raw=b.textContent.trim(), m=raw.match(/^([^\p{L}\p{N}]+)\s*(.*)$/u); return m?m[2]:raw; };
+  const icn=b=>{ const svg=b.querySelector('svg'); return b.id==='btn-logout'?ico('logout'):(svg?svg.outerHTML:ico('chev')); };
+  const ir=b=>`onclick="staffMenuIr('${b.id}')"`;
+  const fila=(b,cls)=>`<button type="button" class="sm-li${cls||''}" ${ir(b)}><span class="sm-ic">${icn(b)}</span><span class="sm-t">${esc(lb(b))}</span>${ico('chev')}</button>`;
+  const lista=(t,ids,extra)=>{ const it=vis(ids); if(!it.length&&!extra) return ''; return `<div class="sm-g">${t}</div><div class="sm-list">${it.map(b=>fila(b,b.id==='btn-reset'?' warn':'')).join('')}${extra||''}</div>`; };
   let html='';
-  grupos.forEach(([t,ids])=>{
-    const items=ids.map(id=>document.getElementById(id)).filter(b=>b && b.style.display!=='none');
-    if(!items.length) return;
-    html+=`<div class="sm-g">${t}</div>`+items.map(b=>{
-      const raw=b.textContent.trim(); const m=raw.match(/^([^\p{L}\p{N}]+)\s*(.*)$/u);
-      const svg=b.querySelector('svg'); const ic=b.id==='btn-logout'?ico('logout'):(svg?svg.outerHTML:ico('chev')), lb=m?m[2]:raw;
-      const cls=(b.id==='btn-logout'||b.id==='btn-eliminar-cuenta')?' danger':(b.id==='btn-reset'?' warn':'');
-      return `<button type="button" class="sm-row${cls}" onclick="staffMenuIr('${b.id}')"><span class="sm-ic">${ic}</span><span>${esc(lb)}</span></button>`;
-    }).join('');
-  });
+  // Reto: mosaico de 2 columnas (el tablero ocupa todo el ancho)
+  const reto=vis(['btn-tablero','btn-avisos','btn-reparto','btn-reglas','btn-patro']);
+  if(reto.length) html+=`<div class="sm-g">Reto</div><div class="sm-tiles">${reto.map((b,i)=>`<button type="button" class="sm-tile${i===0&&b.id==='btn-tablero'?' ancho':''}" ${ir(b)}><span class="sm-ic">${icn(b)}</span><span class="sm-t">${esc(lb(b))}</span></button>`).join('')}</div>`;
+  html+=lista('Personas',['btn-ver-ent','btn-nuevo-ent','btn-mi-codigo','btn-mi-filosofia','btn-nutri','btn-conocimiento']);
+  // Tema dentro de "Datos y sistema", como una fila más
+  const tA=typeof temaActual==='function'?temaActual():'';
+  const tema=`<div class="sm-li sm-tema-li"><span class="sm-ic">${ico(tA==='dark'?'moon':'sun')}</span><span class="sm-t">Tema</span><div class="sm-tema" role="group" aria-label="Tema de color">${[['light','sun','Claro'],['light2','spark','Salvia'],['dark','moon','Oscuro']].map(([t,i,n])=>`<button type="button" aria-pressed="${tA===t}" onclick="setTema('${t}');staffMenu()" aria-label="${n}">${ico(i)}<span>${n}</span></button>`).join('')}</div></div>`;
+  html+=lista('Datos y sistema',['btn-resumen','btn-apariencia','btn-lugares','btn-respaldo','btn-firebase','btn-reset'],tema);
+  let herr='';
   if(typeof verPerfilActivo==='function'){
     const on=verPerfilActivo();
-    html=html.replace('<div class="sm-g">Cuenta</div>',`<div class="sm-g">Herramientas</div><button type="button" class="sm-row" role="switch" aria-checked="${on}" onclick="verPerfilAlternar();staffMenu()"><span class="sm-ic">${ico('user')}</span><span style="flex:1">Botón "Ver su perfil"<small class="sm-sub">Entra a la app del socio para explicarle cómo funciona</small></span><span class="sm-sw${on?' on':''}" aria-hidden="true"></span></button><div class="sm-g">Cuenta</div>`);
+    herr=`<button type="button" class="sm-li" role="switch" aria-checked="${on}" onclick="verPerfilAlternar();staffMenu()"><span class="sm-ic">${ico('user')}</span><span class="sm-t">Botón "Ver su perfil"<small class="sm-sub">Entra a la app del socio para explicarle cómo funciona</small></span><span class="sm-sw${on?' on':''}" aria-hidden="true"></span></button>`;
   }
-  // Apariencia (antes ocupaba la barra de arriba)
-  const tA=typeof temaActual==='function'?temaActual():'';
-  html=html.replace(/(<div class="sm-g">(?:Pruebas|Cuenta))/,`<div class="sm-g">Tema de color</div><div class="sm-tema" role="group" aria-label="Tema de color">${[['light','sun','Claro'],['light2','spark','Salvia'],['dark','moon','Oscuro']].map(([t,i,n])=>`<button type="button" aria-pressed="${tA===t}" onclick="setTema('${t}');staffMenu()">${ico(i)}${n}</button>`).join('')}</div>$1`);
+  html+=lista('Herramientas',[],herr);
+  html+=lista('Pruebas (antes del reto)',['btn-demo-cargar','btn-demo-borrar']);
+  // Cuenta
+  const out=document.getElementById('btn-logout'), del=document.getElementById('btn-eliminar-cuenta');
+  if(out&&out.style.display!=='none') html+=`<button type="button" class="sm-salir" ${ir(out)}>${ico('logout')}<span>Cerrar sesión</span></button>`;
+  if(del&&del.style.display!=='none') html+=`<button type="button" class="sm-del" ${ir(del)}>Eliminar mi cuenta</button>`;
   document.getElementById('staff-menu-title').textContent='Menú';
   document.getElementById('staff-menu-body').innerHTML=html;
   document.getElementById('modal-staff-menu').classList.add('open');
