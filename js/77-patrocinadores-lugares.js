@@ -314,17 +314,22 @@ if(typeof abrirPatrocinadores==='function'){
 // Antes eran tarjetas grandes al final de Inicio. Avanza solo (se detiene al tocarlo); con "reducir movimiento" queda quieto y se desliza a mano.
 if(typeof patInicioHTML==='function'){ window.patInicioHTML=patInicioHTML=function(){ return ''; }; }
 function patCarMini(){
-  const sc=document.getElementById('ci-scene'); if(!sc) return;
-  sc.querySelector('.pat-cm')?.remove(); sc.classList.remove('con-cm');
+  const sc=document.getElementById('ci-scene');
+  document.querySelectorAll('.pat-cm').forEach(e=>e.remove()); if(!sc) return; sc.classList.remove('con-cm');
   const L=patEn('inicio'); if(!L.length) return;
   const item=(p,i,dup)=>`<button type="button" class="pat-cm-i" data-pat="${esc(p.id)}" onclick="patVer('inicio',${i})"${dup?' aria-hidden="true" tabindex="-1"':` aria-label="${esc(p.nombre)}${p.promo?': '+esc(p.promo):''}. Toca para ver la promoción."`}>${(p.logo||p.img)?`<img src="${esc(p.logo||p.img)}" alt="" decoding="async">`:`<i>${esc(String(p.nombre).trim().charAt(0).toUpperCase())}</i>`}</button>`;
   const mueve=L.length>3 && !(matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
   const fila=L.map((p,i)=>item(p,i)).join('')+(mueve?L.map((p,i)=>item(p,i,true)).join(''):'');
-  const bar=sc.querySelector('.ih-reto');
-  sc.insertAdjacentHTML('beforeend',`<div class="pat-cm${mueve?' mueve':''}" aria-label="Aliados del reto"><span class="pat-cm-k">Aliados del reto</span><div class="pat-cm-v"><div class="pat-cm-f" style="--n:${L.length}">${fila}</div></div></div>`);
-  const cm=sc.querySelector('.pat-cm');
-  const ubicar=()=>{ const top=bar?bar.offsetTop+bar.offsetHeight+10:14; cm.style.top=top+'px'; sc.style.setProperty('--cm',(cm.offsetHeight+12)+'px'); };
+  // Va fuera de la foto (que recorta sus orillas) para cruzar la pantalla de lado a lado
+  const cont=sc.parentElement; if(getComputedStyle(cont).position==='static') cont.style.position='relative';
+  cont.insertAdjacentHTML('beforeend',`<div class="pat-cm${mueve?' mueve':''}" aria-label="Aliados del reto"><span class="pat-cm-k">Aliados del reto</span><div class="pat-cm-v"><div class="pat-cm-f" style="--n:${L.length}">${fila}</div></div></div>`);
+  const cm=cont.lastElementChild, bar=sc.querySelector('.ih-reto');
+  const ubicar=()=>{ if(!cm.isConnected) return; const c=cont.getBoundingClientRect(), r=sc.getBoundingClientRect();
+    const top=(r.top-c.top)+(bar?bar.offsetTop+bar.offsetHeight+10:14);
+    cm.style.top=top+'px'; cm.style.left=(-c.left)+'px'; cm.style.width=document.documentElement.clientWidth+'px';
+    sc.style.setProperty('--cm',(cm.offsetHeight+12)+'px'); };
   ubicar(); sc.classList.add('con-cm'); setTimeout(ubicar,400);
+  if(!patCarMini._rs){ patCarMini._rs=1; let t=0; addEventListener('resize',()=>{ clearTimeout(t); t=setTimeout(()=>{ const x=document.querySelector('.pat-cm'); if(x) patCarMini(); },150); }); }
   if(mueve){ const f=cm.querySelector('.pat-cm-f'); ['pointerdown','touchstart'].forEach(ev=>cm.addEventListener(ev,()=>{ f.classList.add('pausa'); clearTimeout(cm._t); cm._t=setTimeout(()=>f.classList.remove('pausa'),6000); },{passive:true})); }
   L.forEach(p=>patVisto(p.id,'inicio'));
 }

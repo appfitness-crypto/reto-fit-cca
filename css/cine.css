@@ -1934,9 +1934,9 @@ html[data-theme="dark"] .pm-sem button.on{color:#0A0E13;}
 .pat-sem-cod b{color:#17231F;}
 
 /* Aliados en carrusel pequeño dentro de la tarjeta de Inicio (js/77 patCarMini) */
-.pat-cm{position:absolute;left:16px;right:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-radius:18px;background:rgba(10,14,19,.45);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);}
+.pat-cm{position:absolute;z-index:6;display:flex;align-items:center;gap:10px;padding:7px 0 7px max(14px,env(safe-area-inset-left,0px));border-radius:0;background:rgba(10,14,19,.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(255,255,255,.1);color:#fff;}
 .pat-cm-k{flex:none;font:700 10.5px/1.15 var(--fb);letter-spacing:.08em;text-transform:uppercase;color:rgba(238,244,241,.78);max-width:62px;}
-.pat-cm-v{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);}
+.pat-cm-v{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px);mask-image:linear-gradient(90deg,transparent,#000 14px);}
 .pat-cm-v::-webkit-scrollbar{display:none;}
 .pat-cm.mueve .pat-cm-v{overflow:hidden;}
 .pat-cm-f{display:flex;gap:8px;width:max-content;padding:2px 8px;}
