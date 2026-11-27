@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patrocinadores · mapa de lugares</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: panel de trabajo del director, directo; el teléfono habla como la app del socio.
+   IDEA: el tablero de un evento deportivo: cada lugar de la app es un espacio que se asigna a un patrocinador.
+   PICTURE: el panel con el mapa de lugares y, al lado, el teléfono del socio que cambia en vivo.
+   COLOUR y TYPE: los de la app (oscuro #0A0E13, lima #C8F23A); Kanit itálica para títulos, Figtree para texto.
+   LAYOUT: dos columnas en escritorio (panel | teléfono fijo); en celular, pestañas Panel / Vista del socio. */
+:root{color-scheme:dark;--bg:#080B0F;--pan:#10161D;--card:#151C24;--card2:#1B242E;--line:#25303B;--ink:#EEF2F6;--mu:#97A3AF;--mu2:#6E7A86;
+  --acc:#C8F23A;--acc-ink:#0A0E13;--warn:#F2B24C;--fd:Kanit,system-ui,sans-serif;--fb:Figtree,system-ui,sans-serif;--expo:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--fb)}
+::selection{background:var(--acc);color:var(--acc-ink)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h1,h2,h3{margin:0;font-family:var(--fd);font-style:italic;font-weight:800;text-transform:uppercase;line-height:1}
+.top{max-width:1320px;margin:0 auto;padding:24px max(4vw,16px) 6px}
+.top h1{font-size:clamp(26px,4.4vw,40px)}
+.top p{margin:8px 0 0;color:var(--mu);max-width:72ch}
+.vt{display:none;gap:6px;margin:14px 0 0}
+.vt button{flex:1;min-height:44px;border-radius:99px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font-weight:700}
+.vt button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink);box-shadow:none}
+.wrap{max-width:1320px;margin:0 auto;padding:14px max(4vw,16px) 40px;display:grid;grid-template-columns:minmax(0,1fr) 410px;gap:28px;align-items:start}
+@media (max-width:980px){.wrap{grid-template-columns:minmax(0,1fr)}.vt{display:flex}.wrap[data-v=panel] .phone-col{display:none}.wrap[data-v=socio] .panel{display:none}}
+
+/* ── panel del director ── */
+.panel{display:grid;gap:22px}
+.blk{background:var(--pan);border-radius:24px;padding:18px;box-shadow:inset 0 0 0 1px var(--line)}
+.blk-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px}
+.blk-h h2{font-size:22px}
+.blk-h p{margin:4px 0 0;color:var(--mu);font-size:13.5px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:14px;background:var(--acc);color:var(--acc-ink);font-weight:800;white-space:nowrap}
+.btn.s{background:var(--card2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);font-weight:700}
+.btn svg{width:18px;height:18px}
+.pats{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.pat{display:grid;grid-template-columns:48px minmax(0,1fr);gap:4px 12px;align-items:center;padding:12px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);text-align:left}
+.pat.sel{box-shadow:inset 0 0 0 2px var(--acc)}
+.pat .lg{grid-row:1/3}
+.pat b{font-size:15px;line-height:1.2}
+.pat small{color:var(--mu);font-size:12.5px}
+.pat .cnt{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:99px;background:var(--card2);color:var(--mu);font:700 11.5px/1 var(--fb)}
+.chip.n1{background:color-mix(in srgb,var(--acc) 18%,transparent);color:var(--acc)}
+.chip.off{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.lg{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font:italic 800 20px/1 var(--fd);color:#fff;flex:none}
+.lg.sm{width:30px;height:30px;border-radius:9px;font-size:13px}
+.lg.xl{width:64px;height:64px;border-radius:18px;font-size:26px}
+
+/* editor */
+.ed{display:grid;gap:14px}
+.ed-h{display:flex;align-items:center;gap:12px}
+.ed-h h3{font-size:20px}
+.f{display:grid;gap:6px}
+.f span{font-size:12.5px;font-weight:700;color:var(--mu)}
+.f input,.f select{width:100%;min-height:46px;padding:0 14px;border-radius:14px;border:0;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font-size:16px}
+.f input:focus,.f select:focus{outline:none;box-shadow:inset 0 0 0 2px var(--acc)}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.row2{grid-template-columns:minmax(0,1fr)}}
+.niv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.niv button{min-height:58px;padding:6px 8px;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);text-align:left;font-size:12px;color:var(--mu);line-height:1.25}
+.niv button b{display:block;color:var(--ink);font-size:14px}
+.niv button[aria-pressed=true]{box-shadow:inset 0 0 0 2px var(--acc);background:color-mix(in srgb,var(--acc) 8%,var(--card))}
+.colores{display:flex;gap:8px;flex-wrap:wrap}
+.colores button{width:34px;height:34px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
+.colores button[aria-pressed=true]{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--acc)}
+.ed-f{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+.lnk{min-height:44px;padding:0 6px;color:var(--mu);font-weight:700;font-size:13.5px}
+.lnk.dng{color:#FF8A80}
+
+/* mapa de lugares */
+.map{display:grid;gap:8px}
+.zona{margin:10px 2px 2px;font:700 12px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu2)}
+.lug{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:12px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.lug.vacio{background:transparent;box-shadow:inset 0 0 0 1px var(--line),inset 0 0 0 999px rgba(255,255,255,.01)}
+.lug .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--card2);color:var(--acc);grid-row:1/3}
+.lug .ic svg{width:20px;height:20px}
+.lug h4{margin:0;font-size:15px;font-weight:800}
+.lug p{margin:0;color:var(--mu);font-size:12.5px;line-height:1.35}
+.lug .tipo{font-size:11px;font-weight:700;color:var(--mu2);margin-left:6px}
+.lug .acc{grid-row:1/3;grid-column:3;display:flex;gap:6px;align-items:center}
+.lug .asig{grid-column:2/4;display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.asig .tag{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:99px;background:var(--card2);font-weight:700;font-size:12.5px}
+.asig .vac{color:var(--mu2);font-size:12.5px}
+.ver{min-height:40px;padding:0 12px;border-radius:12px;background:var(--card2);box-shadow:inset 0 0 0 1px var(--line);font-weight:700;font-size:12.5px;white-space:nowrap}
+.ver[aria-pressed=true]{background:var(--acc);color:var(--acc-ink);box-shadow:none}
+.tg{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 4px;font-weight:700;font-size:13px;color:var(--mu)}
+.sw{width:42px;height:26px;border-radius:99px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .25s var(--expo)}
+.tg[aria-checked=true] .sw{background:var(--acc)}
+.tg[aria-checked=true] .sw::after{transform:translateX(16px)}
+.tg[aria-checked=true]{color:var(--ink)}
+.sems{grid-column:2/4;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;margin-top:8px}
+.sems button{height:36px;border-radius:9px;background:var(--card2);box-shadow:inset 0 0 0 1px var(--line);font:800 12px/1 var(--fb);color:var(--mu2);display:grid;place-items:center}
+.sems button.on{color:#fff;box-shadow:none}
+@media (max-width:560px){.sems{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.nota{margin:8px 2px 0;color:var(--mu);font-size:12.5px}
+
+/* resultados */
+.res{display:grid;gap:8px}
+.res-r{display:grid;grid-template-columns:30px minmax(0,1fr) 80px 80px;gap:10px;align-items:center;font-size:13.5px}
+.res-r.h{color:var(--mu2);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.res-r b{font-variant-numeric:tabular-nums;text-align:right}
+.res-r .num{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:6px;border-radius:99px;background:var(--card2);overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:inherit}
+
+/* ── teléfono ── */
+.phone-col{position:sticky;top:16px;display:grid;gap:12px}
+.ptabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.ptabs::-webkit-scrollbar{display:none}
+.ptabs button{flex:none;min-height:38px;padding:0 12px;border-radius:99px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font-weight:700;font-size:12.5px;white-space:nowrap;position:relative}
+.ptabs button[aria-pressed=true]{background:var(--ink);color:var(--acc-ink);box-shadow:none}
+.ptabs button.con::after{content:"";position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--acc)}
+.phone{position:relative;height:760px;border-radius:44px;border:9px solid #1d1d20;background:#0A0E13;overflow:hidden;box-shadow:0 30px 60px -30px #000}
+.scr{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:0 0 20px}
+.scr::-webkit-scrollbar{display:none}
+.pcap{text-align:center;color:var(--mu);font-size:12.5px;margin:0}
+.anim{animation:in .45s var(--expo)}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){.anim{animation:none}*{transition:none!important}}
+
+/* piezas de la app dentro del teléfono */
+.sb{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px}
+.sb b{font:italic 800 13px/1 var(--fd)}
+.ph{position:relative;margin:0 0 12px;height:300px;background:linear-gradient(180deg,#26313b,#0A0E13);overflow:hidden}
+.ph .num12{position:absolute;left:0;right:0;top:20px;text-align:center;font:italic 800 200px/.74 var(--fd);color:var(--acc);letter-spacing:-.05em}
+.ph .shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,#0A0E13)}
+.pin{padding:0 16px}
+.h1{font:italic 800 26px/1 var(--fd);text-transform:uppercase;margin:0 0 10px}
+.p{color:var(--mu);font-size:13.5px;margin:0 0 12px}
+.card{border-radius:20px;background:#151C24;box-shadow:inset 0 0 0 1px #25303B;padding:14px;margin:0 0 12px}
+.k{font:700 11px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.big{font:italic 800 34px/1 var(--fd)}
+.firma{display:flex;align-items:center;gap:10px;padding:5px 14px 5px 5px;border-radius:18px;background:#fff;color:#17231F}
+.firma small{display:block;font-size:10.5px;color:#56635E;font-weight:600}
+.firma b{font:700 14px/1.1 var(--fd)}
+.firma .lg{width:44px;height:44px;border-radius:12px;font-size:18px}
+.patrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:color-mix(in srgb,var(--c) 14%,#151C24);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 45%,transparent);margin:0 0 12px}
+.patrow>svg{width:22px;height:22px;flex:none;color:color-mix(in srgb,var(--c) 70%,#fff)}
+.patrow small{display:block;color:var(--mu);font-size:11.5px}
+.patrow b{font-size:14px}
+.patrow .go{margin-left:auto;font-weight:800;font-size:12px;color:var(--acc)}
+.car{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:0 16px 4px;margin:0 -16px}
+.car::-webkit-scrollbar{display:none}
+.tile{flex:0 0 46%;border-radius:18px;overflow:hidden;background:#fff;color:#17231F;box-shadow:0 0 0 1.5px color-mix(in srgb,var(--acc) 55%,transparent)}
+.tile .m{aspect-ratio:1;display:grid;place-items:center;background:#F4F7F5;position:relative}
+.tile .m .lg{width:64px;height:64px;font-size:26px;border-radius:18px}
+.tile .m em{position:absolute;left:8px;top:8px;padding:4px 8px;border-radius:99px;background:#fff;font:700 9.5px/1 var(--fb);letter-spacing:.08em;text-transform:uppercase;font-style:normal;box-shadow:0 2px 8px -3px rgba(0,0,0,.3)}
+.tile .t{padding:9px 10px 11px}
+.tile .t b{display:block;font:700 13px/1.2 var(--fd)}
+.tile .t small{color:#56635E;font-size:11.5px}
+.vacia{border:1.5px dashed #2E3A46;border-radius:16px;padding:12px;color:var(--mu2);font-size:12px;text-align:center;margin:0 0 12px}
+.nav{position:sticky;bottom:0;margin-top:14px;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 10px 12px;background:linear-gradient(180deg,rgba(10,14,19,0),#0A0E13 30%)}
+.nav span{display:grid;justify-items:center;gap:3px;font:600 10px/1 var(--fb);color:var(--mu)}
+.nav span i{width:22px;height:22px;border-radius:7px;background:#1B242E}
+.nav span.on{color:var(--acc)}.nav span.on i{background:color-mix(in srgb,var(--acc) 25%,transparent)}
+.timer{display:grid;place-items:center;margin:20px 16px 14px;aspect-ratio:1;border-radius:50%;box-shadow:inset 0 0 0 10px #1B242E,inset 0 0 0 10px #1B242E}
+.timer b{font:italic 800 64px/1 var(--fd)}
+.timer small{color:var(--mu);font-size:13px}
+.ring{position:relative}
+.ring svg{position:absolute;inset:0}
+.cel{padding:30px 16px 0;text-align:center}
+.cel .big{font-size:52px;color:var(--acc)}
+.cel .lg{margin:18px auto 10px}
+.cupon{display:inline-block;margin-top:10px;padding:10px 16px;border-radius:14px;border:1.5px dashed var(--acc);font:800 18px/1 var(--fb);letter-spacing:.12em}
+.mas{display:grid;place-items:center;height:250px;position:relative}
+.mas .pet{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#7a8a60,#2a3320 70%);display:grid;place-items:center;font:italic 800 20px/1 var(--fd)}
+.mas .acc2{position:absolute;right:calc(50% - 100px);bottom:40px;display:flex;align-items:center;gap:6px;padding:5px 10px 5px 5px;border-radius:99px;background:#fff;color:#17231F;font:700 11px/1 var(--fb);box-shadow:0 8px 18px -8px rgba(0,0,0,.6)}
+.rank{display:grid;gap:6px}
+.rank div{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:#151C24;font-size:13.5px}
+.rank div.yo{box-shadow:inset 0 0 0 1.5px var(--acc)}
+.rank b{font:italic 800 18px/1 var(--fd)}
+.muro{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.muro div{display:grid;justify-items:center;gap:6px;padding:14px 8px;border-radius:16px;background:#151C24;text-align:center;font-size:12.5px;font-weight:700}
+.muro small{color:var(--mu);font-weight:500;font-size:11px}
+.aviso{display:flex;gap:10px;padding:12px;border-radius:18px;background:#fff;color:#17231F;margin:16px;box-shadow:0 12px 26px -12px rgba(0,0,0,.6)}
+.aviso small{display:block;color:#56635E;font-size:11px;font-weight:700}
+.aviso b{display:block;font-size:14px;margin:2px 0}
+.aviso p{margin:0;font-size:12.5px;color:#3E4C57}
+.foot{max-width:1320px;margin:0 auto;padding:0 max(4vw,16px) 40px;color:var(--mu2);font-size:12.5px}
+dialog{border:0;padding:0;background:transparent;color:inherit;max-width:min(560px,94vw);width:100%}
+dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
+dialog .blk{max-height:88svh;overflow:auto}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;padding:11px 18px;border-radius:99px;background:var(--ink);color:var(--acc-ink);font-weight:700;font-size:13.5px;transition:.3s;z-index:9;pointer-events:none;max-width:92vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Patrocinadores · mapa de lugares</h1>
+  <p>Da de alta a cada patrocinador y elige dónde aparece. Un lugar sin patrocinador simplemente no se muestra: la app se ve normal. Puedes cambiarlos de lugar cuando quieras y ver al instante cómo se ve en el teléfono del socio.</p>
+  <div class="vt" role="group" aria-label="Vista"><button type="button" data-v="panel" aria-pressed="true">Panel del director</button><button type="button" data-v="socio" aria-pressed="false">Vista del socio</button></div>
+</header>
+
+<main class="wrap" id="wrap" data-v="panel">
+  <section class="panel" aria-label="Panel del director">
+    <div class="blk">
+      <div class="blk-h"><div><h2>Patrocinadores</h2><p>Toca uno para editarlo.</p></div>
+        <button type="button" class="btn" id="nuevo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Nuevo</button></div>
+      <div class="pats" id="pats"></div>
+    </div>
+
+    <div class="blk">
+      <div class="blk-h"><div><h2>Dónde sale cada uno</h2><p>Los lugares <b>exclusivos</b> son de un solo patrocinador; los <b>compartidos</b> muestran a todos los que actives.</p></div></div>
+      <div class="map" id="map"></div>
+    </div>
+
+    <div class="blk">
+      <div class="blk-h"><div><h2>Resultados para el patrocinador</h2><p>Cuántas veces se vio cada marca y cuántos socios tocaron su promoción. Se entrega como reporte al final del reto.</p></div>
+        <button type="button" class="btn s" id="rep">Copiar reporte</button></div>
+      <div class="res" id="res"></div>
+      <p class="nota">Números de ejemplo para esta vista previa.</p>
+    </div>
+  </section>
+
+  <aside class="phone-col" aria-label="Vista del socio">
+    <div class="ptabs" id="ptabs" role="group" aria-label="Pantalla"></div>
+    <div class="phone"><div class="scr" id="scr"></div></div>
+    <p class="pcap" id="pcap"></p>
+  </aside>
+</main>
+<p class="foot">Vista previa con patrocinadores de ejemplo (nombres de los aliados actuales del club, logos sustituidos por su inicial). En la app real cada uno lleva su logo e imagen.</p>
+
+<dialog id="dlg"><div class="blk ed" id="ed"></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+{
+const COL=['#D12C2C','#C8102E','#F47B20','#1E88E5','#0F9D58','#7B3FE4','#E91E63','#455A64'];
+const NIV={presenta:['Presenta','Portada y tablero'],oficial:['Oficial','Dueño de un momento'],aliado:['Aliado','Carrusel y premios']};
+// Lugares: ex = exclusivo (un patrocinador), co = compartido (todos los activados), sem = por semana
+const LUG=[
+ {z:'Antes de entrar',k:'portada',t:'Portada · Presentado por',d:'Arriba a la derecha en la pantalla de bienvenida. Rota si hay más de uno.',ic:'flag',tipo:'co',scr:'portada'},
+ {z:'Inicio',k:'inicio',t:'Aliados del reto',d:'Tarjetas al final de Inicio con su promoción.',ic:'grid',tipo:'co',scr:'inicio'},
+ {z:'Inicio',k:'semana',t:'Semana cumplida',d:'Festejo al completar las sesiones de la semana, con su cupón. Una marca por semana.',ic:'trophy',tipo:'sem',scr:'semana'},
+ {z:'Entrenamiento',k:'descanso',t:'Descanso entre series',d:'Una línea discreta bajo el cronómetro: “Hidrátate · marca”. Nunca mientras registra series.',ic:'drop',tipo:'ex',scr:'descanso'},
+ {z:'Entrenamiento',k:'fin',t:'Premio al terminar la sesión',d:'Código del día al terminar una sesión que cuenta.',ic:'gift',tipo:'co',scr:'fin'},
+ {z:'Nutrición',k:'hidratacion',t:'Hidratación oficial',d:'Junto al agua del día: “Tu agua de hoy, con marca”.',ic:'drop',tipo:'ex',scr:'nutri'},
+ {z:'Nutrición',k:'suple',t:'Suplementación oficial',d:'Bajo “Cómo se calculó”, con su promoción para socios.',ic:'leaf',tipo:'ex',scr:'nutri'},
+ {z:'Reto',k:'eval',t:'Evaluaciones (semanas 0, 6 y 12)',d:'“Evaluación de mitad del reto, presentada por…”.',ic:'clip',tipo:'ex',scr:'eval'},
+ {z:'Reto',k:'ranking',t:'Ranking presentado por',d:'Encabezado del tablero donde el socio ve su lugar.',ic:'trophy',tipo:'ex',scr:'ranking'},
+ {z:'Reto',k:'mascota',t:'Accesorio de la mascota',d:'Al evolucionar, la mascota trae un objeto con su marca.',ic:'star',tipo:'ex',scr:'mascota'},
+ {z:'Perfil y avisos',k:'muro',t:'Gracias a… (Perfil)',d:'Muro con todos los logos, promociones y enlaces.',ic:'heart',tipo:'co',scr:'muro'},
+ {z:'Perfil y avisos',k:'aviso',t:'Aviso del mes',d:'Una promoción exclusiva al mes en Avisos.',ic:'bell',tipo:'ex',scr:'aviso'}
+];
+const IC={flag:'<path d="M5 21V4m0 0h11l-2 4 2 4H5"/>',grid:'<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/>',trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3"/>',drop:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>',gift:'<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8S10 3 7.5 4.5 9 8 12 8zm0 0s2-5 4.5-3.5S15 8 12 8z"/>',leaf:'<path d="M5 19c0-9 5-14 15-14 0 10-5 15-14 15"/><path d="M5 19 13 11"/>',clip:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/>',star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/>'};
+const svg=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ini=n=>esc(String(n).trim().charAt(0).toUpperCase()||'?');
+const lgo=(p,c)=>`<span class="lg ${c||''}" style="background:${p.c}">${ini(p.n)}</span>`;
+
+let S={pats:[
+  {id:'h2o',n:'H2O power',promo:'2x1 en garrafón para socios',niv:'presenta',c:'#1E88E5',on:true},
+  {id:'gat',n:'Gatorade',promo:'Botella gratis al completar tu semana',niv:'oficial',c:'#F47B20',on:true},
+  {id:'nut',n:'Nutrisport',promo:'10% de descuento en tienda',niv:'oficial',c:'#C8102E',on:true},
+  {id:'pan',n:'Panatta Sport',promo:'Evaluación de composición sin costo',niv:'aliado',c:'#D12C2C',on:true}],
+  lug:{portada:['h2o'],inicio:['h2o','gat','nut','pan'],descanso:'gat',fin:['gat','nut','pan'],hidratacion:'h2o',suple:'nut',eval:'pan',ranking:'h2o',mascota:'gat',muro:['h2o','gat','nut','pan'],aviso:'nut'},
+  sem:{1:'h2o',2:'gat',3:'nut',4:'pan',5:'h2o',6:'gat'}, sel:null, scr:'portada'};
+try{ const g=JSON.parse(localStorage.getItem('pat-mapa')); if(g&&g.pats) S=Object.assign(S,g); }catch(e){}
+const save=()=>{ try{ localStorage.setItem('pat-mapa',JSON.stringify({pats:S.pats,lug:S.lug,sem:S.sem})); }catch(e){} };
+const P=id=>S.pats.find(p=>p.id===id&&p.on);
+const en=k=>{ const v=S.lug[k]; return (Array.isArray(v)?v:v?[v]:[]).map(P).filter(Boolean); };
+const semDe=()=>Object.entries(S.sem).map(([w,id])=>[+w,P(id)]).filter(x=>x[1]);
+const toast=t=>{ const e=document.getElementById('toast'); e.textContent=t; e.classList.add('on'); clearTimeout(e._t); e._t=setTimeout(()=>e.classList.remove('on'),2200); };
+
+function lugaresDe(id){
+  const n=LUG.filter(L=>L.tipo!=='sem'&&en(L.k).some(p=>p.id===id)).length+Object.values(S.sem).filter(x=>x===id).length;
+  return n;
+}
+function rPats(){
+  document.getElementById('pats').innerHTML=S.pats.map(p=>{ const n=lugaresDe(p.id);
+    return `<button type="button" class="pat${S.sel===p.id?' sel':''}" data-ed="${p.id}">${lgo(p)}<b>${esc(p.n)}</b><small>${esc(NIV[p.niv][0])} · ${esc(p.promo||'Sin promoción')}</small>
+      <span class="cnt">${p.on?`<span class="chip${n?' n1':''}">${n?n+(n===1?' lugar':' lugares'):'Sin lugar: no se ve'}</span>`:'<span class="chip off">En pausa</span>'}</span></button>`; }).join('');
+}
+function rMap(){
+  let z='',h='';
+  LUG.forEach(L=>{
+    if(L.z!==z){ z=L.z; h+=`<div class="zona">${esc(z)}</div>`; }
+    const act=en(L.k), vac=L.tipo==='sem'?!semDe().length:!act.length;
+    let ctl='';
+    if(L.tipo==='ex'){
+      ctl=`<div class="asig"><select aria-label="Patrocinador de ${esc(L.t)}" data-ex="${L.k}" class="ver" style="min-width:170px">
+        <option value="">Nadie: no se muestra</option>${S.pats.filter(p=>p.on).map(p=>`<option value="${p.id}"${S.lug[L.k]===p.id?' selected':''}>${esc(p.n)}</option>`).join('')}</select></div>`;
+    } else if(L.tipo==='co'){
+      ctl=`<div class="asig">${S.pats.filter(p=>p.on).map(p=>{ const on=act.some(a=>a.id===p.id); return `<button type="button" class="tg" role="switch" aria-checked="${on}" data-co="${L.k}" data-id="${p.id}"><span class="sw"></span>${esc(p.n)}</button>`; }).join('')||'<span class="vac">Da de alta un patrocinador primero.</span>'}</div>`;
+    } else {
+      ctl=`<div class="sems">${Array.from({length:12},(_,i)=>{ const w=i+1, p=P(S.sem[w]); return `<button type="button" class="${p?'on':''}" style="${p?'background:'+p.c:''}" data-sem="${w}" aria-label="Semana ${w}: ${p?esc(p.n):'sin patrocinador'}" title="${p?esc(p.n):'Sin patrocinador'}">${w}</button>`; }).join('')}</div>
+        <p class="nota" style="grid-column:2/4;margin:4px 0 0">Toca una semana para cambiar de marca (va rotando entre los activos y luego queda vacía).</p>`;
+    }
+    h+=`<div class="lug${vac?' vacio':''}"><span class="ic">${svg(L.ic)}</span><h4>${esc(L.t)}<span class="tipo">${L.tipo==='ex'?'Exclusivo':L.tipo==='co'?'Compartido':'Por semana'}</span></h4>
+      <div class="acc"><button type="button" class="ver" data-scr="${L.scr}" aria-pressed="${S.scr===L.scr}">Ver</button></div>
+      <p>${esc(L.d)}</p>${ctl}</div>`;
+  });
+  document.getElementById('map').innerHTML=h;
+}
+function rRes(){
+  const act=S.pats.filter(p=>p.on); const base={presenta:5200,oficial:3100,aliado:1800};
+  const rows=act.map(p=>{ const n=lugaresDe(p.id), v=n?Math.round(base[p.niv]*(.6+n*.18)):0, t=Math.round(v*.045); return {p,v,t}; });
+  const mx=Math.max(1,...rows.map(r=>r.v));
+  document.getElementById('res').innerHTML=`<div class="res-r h"><span></span><span>Patrocinador</span><span class="num">Vistas</span><span class="num">Toques</span></div>`+rows.map(r=>`<div class="res-r">${lgo(r.p,'sm')}<span>${esc(r.p.n)}<div class="bar"><i style="width:${r.v/mx*100}%"></i></div></span><b>${r.v.toLocaleString('es-MX')}</b><b>${r.t.toLocaleString('es-MX')}</b></div>`).join('');
+  document.getElementById('rep')._txt='Reporte de patrocinio · Reto Fit CCA\n'+rows.map(r=>`${r.p.n}: ${r.v.toLocaleString('es-MX')} vistas, ${r.t.toLocaleString('es-MX')} toques a la promoción`).join('\n');
+}
+
+// ── pantallas del socio ──
+const SCR=[['portada','Portada'],['inicio','Inicio'],['semana','Semana cumplida'],['descanso','Descanso'],['fin','Fin de sesión'],['nutri','Nutrición'],['eval','Evaluación'],['ranking','Ranking'],['mascota','Mascota'],['muro','Perfil'],['aviso','Avisos']];
+const scrCon={portada:()=>en('portada').length,inicio:()=>en('inicio').length,semana:()=>semDe().length,descanso:()=>en('descanso').length,fin:()=>en('fin').length,nutri:()=>en('hidratacion').length+en('suple').length,eval:()=>en('eval').length,ranking:()=>en('ranking').length,mascota:()=>en('mascota').length,muro:()=>en('muro').length,aviso:()=>en('aviso').length};
+const nav=on=>`<div class="nav">${['Inicio','Rutina','Progreso','Nutrición','Perfil'].map(n=>`<span class="${n===on?'on':''}"><i></i>${n}</span>`).join('')}</div>`;
+const sinP=t=>`<div class="vacia">Sin patrocinador en “${esc(t)}”: el socio ve la pantalla normal, sin este espacio.</div>`;
+const fila=(p,k,txt)=>`<div class="patrow" style="--c:${p.c}">${lgo(p,'sm')}<div><small>${esc(k)}</small><b>${esc(txt)}</b></div><span class="go">Ver</span></div>`;
+function pantalla(k){
+  const s=(L)=>en(L)[0];
+  switch(k){
+  case 'portada':{ const p=s('portada');
+    return `<div class="sb"><b>RETO FIT CCA</b>${p?`<div class="firma">${lgo(p)}<div><small>Presentado por</small><b>${esc(p.n)}</b></div></div>`:''}</div>
+      <div class="ph"><div class="num12">12</div><div class="shade"></div></div>
+      <div class="pin"><p class="h1">Tu reto de 12 semanas empieza aquí.</p><p class="p">Tu rutina, tus pesos y la técnica de cada ejercicio, con tu entrenador.</p>${p?'':sinP('Portada')}
+      <div class="card" style="background:#fff;color:#17231F;box-shadow:none"><b>Soy nuevo</b><br><small style="color:#56635E">Crea tu cuenta</small></div></div>`; }
+  case 'inicio':{ const L=en('inicio');
+    return `<div class="ph" style="height:230px"><div class="shade"></div><div style="position:absolute;left:16px;top:70px;font:italic 800 30px/.9 var(--fd);color:var(--acc)">PIERNA B ·<br><span style="color:#fff">DÍA LIGERO</span></div></div>
+      <div class="pin"><div class="card"><span class="k">Esta semana</span><div class="big">3 <small style="font:600 14px var(--fb);color:var(--mu)">de 4</small></div></div>
+      <p class="h1" style="font-size:20px;margin-top:6px">Aliados del reto</p><p class="p" style="margin-top:-6px">Promociones para ti</p>
+      ${L.length?`<div class="car">${L.map(p=>`<div class="tile"><div class="m"><em>Aliado</em>${lgo(p)}</div><div class="t"><b>${esc(p.promo||p.n)}</b><small>${esc(p.n)}</small></div></div>`).join('')}</div>`:sinP('Aliados del reto')}</div>${nav('Inicio')}`; }
+  case 'semana':{ const w=semDe(); const p=(w.find(x=>x[0]===4)||w[0]||[])[1]; const n=(w.find(x=>x[1]===p)||[])[0]||4;
+    return `<div class="cel"><span class="k">Semana ${n} de 12</span><div class="big">¡Cumplida!</div><p class="p">4 de 4 sesiones. Llevas 4 semanas de racha.</p>
+      ${p?`${lgo(p,'xl')}<p class="p" style="margin:0">Tu festejo de esta semana es cortesía de <b style="color:#fff">${esc(p.n)}</b></p><p style="margin:10px 0 0;font-weight:700">${esc(p.promo||'')}</p><span class="cupon">RETO-${n}${String(p.id).toUpperCase().slice(0,3)}</span><p class="p" style="margin-top:8px">Muéstralo en recepción.</p>`:sinP('Semana cumplida')}
+      <div class="card" style="margin-top:18px;background:var(--acc);color:var(--acc-ink);box-shadow:none;font-weight:800">Seguir</div></div>`; }
+  case 'descanso':{ const p=s('descanso');
+    return `<div class="sb"><b>Sentadilla búlgara</b><span style="color:var(--mu);font-size:12px">Serie 2 de 4</span></div>
+      <div class="ring" style="margin:10px 40px"><div class="timer"><div style="text-align:center"><b>0:48</b><br><small>Descanso</small></div></div></div>
+      <div class="pin">${p?`<div class="patrow" style="--c:${p.c};justify-content:center">${svg('drop')}<b style="font-size:13px">Hidrátate · ${esc(p.n)}</b></div>`:sinP('Descanso entre series')}
+      <div class="card" style="text-align:center;font-weight:700">Saltar descanso</div></div>`; }
+  case 'fin':{ const L=en('fin'); const p=L[0];
+    return `<div class="cel"><span class="k">Sesión terminada</span><div class="big" style="color:#fff">+120 pts</div><p class="p">9 ejercicios · 52 min · 2 récords</p>
+      ${p?`<div class="card" style="text-align:left;margin-top:14px">${fila(p,'Tu premio de hoy',p.promo||p.n)}<span class="k">Código del día</span><div class="cupon" style="display:block;text-align:center">${String(p.id).toUpperCase()}-27N</div>${L.length>1?`<p class="p" style="margin:8px 0 0">Mañana otro aliado: ${L.slice(1).map(x=>esc(x.n)).join(', ')}.</p>`:''}</div>`:sinP('Premio al terminar')}</div>`; }
+  case 'nutri':{ const h=s('hidratacion'), su=s('suple');
+    return `<div class="pin" style="padding-top:20px"><p class="h1">Tu comida</p>
+      <div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="big" style="font-size:26px">1,240 <small style="font:600 13px var(--fb);color:var(--mu)">de 2,812 kcal</small></span></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;font-size:11.5px;color:var(--mu)"><span>Proteína<br><b style="color:#fff">62 g</b></span><span>Carbos<br><b style="color:#fff">140 g</b></span><span>Grasas<br><b style="color:#fff">31 g</b></span><span>Agua<br><b style="color:#fff">1.5 / 2.8 L</b></span></div>
+      ${h?`<div class="patrow" style="--c:${h.c};margin:12px 0 0">${svg('drop')}<div><small>Hidratación oficial</small><b>Tu agua de hoy, con ${esc(h.n)}</b></div></div>`:''}</div>
+      ${su?fila(su,'Suplementación oficial del reto',su.promo||su.n):''}
+      ${!h&&!su?sinP('Hidratación y Suplementación'):''}
+      <div class="card"><span class="k">Desayuno · 8:00 am</span><br><b>Hot cakes de avena y plátano</b></div></div>${nav('Nutrición')}`; }
+  case 'eval':{ const p=s('eval');
+    return `<div class="pin" style="padding-top:20px"><span class="k">Semana 6</span><p class="h1" style="margin-top:6px">Evaluación de mitad del reto</p>
+      ${p?`<div class="patrow" style="--c:${p.c}">${lgo(p,'sm')}<div><small>Presentada por</small><b>${esc(p.n)}</b></div></div>`:sinP('Evaluaciones')}
+      <div class="card"><span class="k">Peso</span><div class="big" style="font-size:28px">86.4 kg <small style="font:700 13px var(--fb);color:var(--acc)">−3.1</small></div></div>
+      <div class="card"><span class="k">Cintura</span><div class="big" style="font-size:28px">91 cm <small style="font:700 13px var(--fb);color:var(--acc)">−4</small></div></div></div>`; }
+  case 'ranking':{ const p=s('ranking');
+    return `<div class="pin" style="padding-top:20px"><p class="h1">Tablero del reto</p>
+      ${p?`<div class="patrow" style="--c:${p.c}">${lgo(p,'sm')}<div><small>Ranking presentado por</small><b>${esc(p.n)}</b></div></div>`:sinP('Ranking')}
+      <p class="p">Bajar porcentaje de grasa · solo ves tu lugar.</p>
+      <div class="rank"><div class="yo"><b>7</b><span>Tú</span><span style="color:var(--acc);font-weight:800">2,028 pts</span></div><div><b>·</b><span style="color:var(--mu)">Te faltan 140 pts para el lugar 6</span><span></span></div></div></div>`; }
+  case 'mascota':{ const p=s('mascota');
+    return `<div class="pin" style="padding-top:20px;text-align:center"><span class="k">Tu compañero</span><p class="h1" style="margin-top:6px">Force · Atleta</p></div>
+      <div class="mas"><div class="pet">FORCE</div>${p?`<span class="acc2">${lgo(p,'sm')}${esc(p.n)}</span>`:''}</div>
+      <div class="pin">${p?`<p class="p" style="text-align:center">Al llegar a Atleta, Force estrenó su botella de ${esc(p.n)}.</p>`:sinP('Accesorio de la mascota')}</div>`; }
+  case 'muro':{ const L=en('muro');
+    return `<div class="pin" style="padding-top:20px"><p class="h1">Perfil</p><div class="card"><b>Fer</b><br><small style="color:var(--mu)">Socio #RF-05 · Bajar grasa</small></div>
+      <p class="h1" style="font-size:18px;margin-top:8px">Este reto es posible gracias a</p>
+      ${L.length?`<div class="muro">${L.map(p=>`<div>${lgo(p)}${esc(p.n)}<small>${esc(p.promo||'')}</small></div>`).join('')}</div>`:sinP('Gracias a…')}</div>${nav('Perfil')}`; }
+  case 'aviso':{ const p=s('aviso');
+    return `<div class="pin" style="padding-top:20px"><p class="h1">Avisos</p></div>
+      ${p?`<div class="aviso">${lgo(p,'sm')}<div><small>Promoción del mes · ${esc(p.n)}</small><b>${esc(p.promo||p.n)}</b><p>Solo para socios del reto. Válido hasta fin de mes.</p></div></div>`:`<div class="pin">${sinP('Aviso del mes')}</div>`}
+      <div class="pin"><div class="card"><small style="color:var(--mu)">Del club</small><br><b>Clase especial el jueves 10</b></div></div>`; }
+  }
+}
+const CAP={portada:'Pantalla de bienvenida, antes de entrar.',inicio:'Final de Inicio.',semana:'Aparece una vez al completar la semana.',descanso:'Durante el descanso; nunca mientras registra series.',fin:'Al terminar una sesión que cuenta.',nutri:'Pestaña Nutrición.',eval:'En las semanas 0, 6 y 12.',ranking:'Tablero del reto.',mascota:'Pantalla de la mascota.',muro:'Pestaña Perfil.',aviso:'Pestaña Avisos.'};
+function rPhone(){
+  document.getElementById('ptabs').innerHTML=SCR.map(([k,n])=>`<button type="button" data-scr="${k}" aria-pressed="${S.scr===k}" class="${scrCon[k]()?'con':''}">${n}</button>`).join('');
+  const sc=document.getElementById('scr'); sc.innerHTML=`<div class="anim">${pantalla(S.scr)}</div>`; sc.scrollTop=0;
+  document.getElementById('pcap').textContent=CAP[S.scr]+(scrCon[S.scr]()?'':' Sin patrocinador asignado.');
+  const t=document.querySelector(`#ptabs [data-scr="${S.scr}"]`); if(t) t.scrollIntoView({inline:'center',block:'nearest'});
+}
+function todo(){ rPats(); rMap(); rRes(); rPhone(); save(); }
+
+// ── editor (alta y cambios) ──
+let D=null;
+function editor(id){
+  const p=id?S.pats.find(x=>x.id===id):null;
+  D=p?Object.assign({},p):{id:'p'+Date.now().toString(36),n:'',promo:'',niv:'aliado',c:COL[S.pats.length%COL.length],on:true,nuevo:true};
+  S.sel=p?p.id:null; rPats();
+  const L=LUG.filter(x=>x.tipo!=='sem');
+  document.getElementById('ed').innerHTML=`<div class="ed-h">${lgo(D,'xl')}<div><h3>${p?'Editar patrocinador':'Nuevo patrocinador'}</h3><p class="nota" style="margin:4px 0 0">${p?'Los cambios se ven al instante en la app.':'Mientras no elijas un lugar, no aparece en ninguna parte.'}</p></div></div>
+    <div class="row2"><label class="f"><span>Nombre</span><input id="e-n" value="${esc(D.n)}" placeholder="Ej. Agua del Valle" autocomplete="off"></label>
+      <label class="f"><span>Promoción para socios</span><input id="e-p" value="${esc(D.promo)}" placeholder="Ej. 15% en tienda" autocomplete="off"></label></div>
+    <div class="f"><span>Nivel</span><div class="niv" role="group" aria-label="Nivel">${Object.entries(NIV).map(([k,[a,b]])=>`<button type="button" data-niv="${k}" aria-pressed="${D.niv===k}"><b>${a}</b>${b}</button>`).join('')}</div></div>
+    <div class="f"><span>Color de su tarjeta (en la app va su logo)</span><div class="colores">${COL.map(c=>`<button type="button" data-col="${c}" style="background:${c}" aria-label="Color ${c}" aria-pressed="${D.c===c}"></button>`).join('')}</div></div>
+    <div class="f"><span>Dónde sale</span><div style="display:flex;flex-wrap:wrap;gap:4px 10px">${L.map(x=>{ const v=S.lug[x.k], on=Array.isArray(v)?v.includes(D.id):v===D.id, otro=x.tipo==='ex'&&v&&v!==D.id?P(v):null;
+      return `<button type="button" class="tg" role="switch" aria-checked="${on}" data-elug="${x.k}"><span class="sw"></span>${esc(x.t)}${otro?` <small style="color:var(--warn);font-weight:600">(hoy: ${esc(otro.n)})</small>`:''}</button>`; }).join('')}</div>
+      <p class="nota">En los exclusivos, al activarlo reemplaza al patrocinador que estaba. Las semanas del festejo se eligen en el mapa.</p></div>
+    <div class="ed-f">${p?`<div><button type="button" class="lnk" data-pausa>${D.on?'Pausar':'Reactivar'}</button><button type="button" class="lnk dng" data-borra>Borrar</button></div>`:'<span></span>'}
+      <div style="display:flex;gap:8px"><button type="button" class="btn s" data-cerrar>Cancelar</button><button type="button" class="btn" data-guardar>${p?'Guardar':'Dar de alta'}</button></div></div>`;
+  D._lug=JSON.parse(JSON.stringify(S.lug));
+  document.getElementById('dlg').showModal();
+  setTimeout(()=>document.getElementById('e-n').focus(),30);
+}
+function edLug(k){
+  const x=LUG.find(l=>l.k===k), v=D._lug[k];
+  if(x.tipo==='ex') D._lug[k]=v===D.id?'':D.id;
+  else { const a=Array.isArray(v)?v.slice():[]; const i=a.indexOf(D.id); if(i<0) a.push(D.id); else a.splice(i,1); D._lug[k]=a; }
+  const b=document.querySelector(`[data-elug="${k}"]`); const on=x.tipo==='ex'?D._lug[k]===D.id:D._lug[k].includes(D.id); b.setAttribute('aria-checked',on);
+}
+function edGuardar(){
+  D.n=document.getElementById('e-n').value.trim(); D.promo=document.getElementById('e-p').value.trim();
+  if(!D.n){ toast('Escribe el nombre del patrocinador'); document.getElementById('e-n').focus(); return; }
+  const nuevo=D.nuevo; delete D.nuevo; const lug=D._lug; delete D._lug;
+  const i=S.pats.findIndex(x=>x.id===D.id); if(i<0) S.pats.push(D); else S.pats[i]=D;
+  S.lug=lug; S.sel=null; document.getElementById('dlg').close();
+  const n=lugaresDe(D.id); todo();
+  toast(nuevo?(n?`${D.n} ya aparece en ${n} ${n===1?'lugar':'lugares'}`:`${D.n} dado de alta. Elige dónde sale para que se vea.`):'Cambios guardados');
+}
+
+// ── eventos ──
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button'); if(!t) return;
+  if(t.id==='nuevo') return editor(null);
+  if(t.dataset.ed) return editor(t.dataset.ed);
+  if(t.dataset.scr){ S.scr=t.dataset.scr; rPhone(); rMap(); if(matchMedia('(max-width:980px)').matches) vista('socio'); return; }
+  if(t.dataset.co){ const k=t.dataset.co,id=t.dataset.id, a=(Array.isArray(S.lug[k])?S.lug[k]:[]).slice(), i=a.indexOf(id); if(i<0) a.push(id); else a.splice(i,1); S.lug[k]=a; S.scr=LUG.find(l=>l.k===k).scr; return todo(); }
+  if(t.dataset.sem){ const w=t.dataset.sem, act=S.pats.filter(p=>p.on).map(p=>p.id), cur=S.sem[w], j=act.indexOf(cur); S.sem[w]=j+1<act.length?act[j+1]:''; if(!S.sem[w]) delete S.sem[w]; S.scr='semana'; return todo(); }
+  if(t.dataset.niv){ D.niv=t.dataset.niv; document.querySelectorAll('[data-niv]').forEach(b=>b.setAttribute('aria-pressed',b===t)); return; }
+  if(t.dataset.col){ D.c=t.dataset.col; document.querySelectorAll('[data-col]').forEach(b=>b.setAttribute('aria-pressed',b===t)); document.querySelector('.ed-h .lg').style.background=D.c; return; }
+  if(t.dataset.elug) return edLug(t.dataset.elug);
+  if('guardar' in t.dataset) return edGuardar();
+  if('cerrar' in t.dataset){ S.sel=null; document.getElementById('dlg').close(); return rPats(); }
+  if('pausa' in t.dataset){ D.on=!D.on; t.textContent=D.on?'Pausar':'Reactivar'; toast(D.on?'Se reactivará al guardar':'Al guardar deja de verse en todos los lugares, sin perder su acomodo'); return; }
+  if('borra' in t.dataset){ if(!confirm('¿Borrar este patrocinador? Deja de verse en la app.')) return;
+    S.pats=S.pats.filter(p=>p.id!==D.id); Object.keys(S.lug).forEach(k=>{ const v=S.lug[k]; S.lug[k]=Array.isArray(v)?v.filter(x=>x!==D.id):(v===D.id?'':v); }); Object.keys(S.sem).forEach(w=>{ if(S.sem[w]===D.id) delete S.sem[w]; });
+    document.getElementById('dlg').close(); S.sel=null; todo(); return toast('Patrocinador borrado'); }
+  if(t.id==='rep'){ const txt=t._txt; (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('Reporte copiado'),()=>toast('No se pudo copiar en este navegador')); return; }
+  if(t.closest('.vt')) return vista(t.dataset.v);
+});
+document.addEventListener('input',e=>{ if(e.target.id==='e-n'&&D){ const l=document.querySelector('.ed-h .lg'); if(l) l.textContent=(e.target.value.trim().charAt(0)||'?').toUpperCase(); } });
+document.addEventListener('change',e=>{ const s=e.target.closest('[data-ex]'); if(!s) return; S.lug[s.dataset.ex]=s.value; S.scr=LUG.find(l=>l.k===s.dataset.ex).scr; todo(); });
+document.getElementById('dlg').addEventListener('close',()=>{ S.sel=null; rPats(); });
+function vista(v){ document.getElementById('wrap').dataset.v=v; document.querySelectorAll('.vt button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v)); }
+todo();
+}
+</script>
+</body>
+</html>

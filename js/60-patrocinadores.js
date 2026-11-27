@@ -243,7 +243,7 @@ function patPublicar(){
   const nombre=v('pat-nombre'), promo=v('pat-promo'), detalle=v('pat-detalle'), enlace=v('pat-enlace'), desde=v('pat-desde'), hasta=v('pat-hasta');
   const err=document.getElementById('pat-err');
   if(!nombre){ err.textContent='Escribe el nombre del patrocinador.'; return; }
-  if(!Object.values(patDraft.lugares).some(Boolean)){ err.textContent='Elige al menos un lugar donde salga.'; return; }
+  // Sin lugar se puede dar de alta: no se ve en la app hasta acomodarlo (aquí o en el mapa de lugares, js/77)
   if(desde && hasta && hasta<desde){ err.textContent='La fecha final no puede ser antes de la inicial.'; return; }
   if(enlace && !patUrl({enlace})){ err.textContent='Escribe un WhatsApp de 10 dígitos o una página (ej. www.ejemplo.mx).'; return; }
   if(!fbListo){ err.textContent='Necesitas conexión con la base de datos para publicar.'; return; }
