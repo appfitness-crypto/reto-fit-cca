@@ -81,8 +81,8 @@ if(typeof renderPerfilTab==='function'){
       [sec.querySelector('#mis-puntos'), sec.querySelector('.pf-met')].forEach(el=>el&&el.remove());
       // Mis datos: solo los que cambian (peso, cintura) y los que la app necesita que llene
       sec.querySelectorAll('.pf-grid>.pf-t').forEach(t=>{ const k=(t.querySelector('.pf-k')||{}).textContent||''; if(/^(Objetivo|Nivel|Frecuencia|Edad)$/.test(k.trim())) t.remove(); });
-      // Cerrar sesión como texto, junto a Eliminar mi cuenta
-      sec.querySelectorAll('.pf-card').forEach(c=>{ const b=c.querySelector('.pf-row.danger'); if(b && c.children.length===1){ c.replaceWith(Object.assign(document.createElement('button'),{type:'button',className:'pf-salir',textContent:'Cerrar sesión',onclick:()=>logoutSocio()})); } });
+      // Cerrar sesión como botón claro; Eliminar mi cuenta queda abajo, separado y discreto
+      sec.querySelectorAll('.pf-card').forEach(c=>{ const b=c.querySelector('.pf-row.danger'); if(b && c.children.length===1){ const sb=Object.assign(document.createElement('button'),{type:'button',className:'pf-salir',onclick:()=>logoutSocio()}); sb.innerHTML=ico('logout')+'<span>Cerrar sesión</span>'; c.replaceWith(sb); } });
       if(s.mascotaOculta){ const n=sec.querySelector('#mi-mascota'); if(n) n.classList.add('pf-nivel-c'); }
     }catch(e){ console.warn('credencial',e); }
   };
