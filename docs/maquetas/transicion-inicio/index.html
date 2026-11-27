@@ -37,13 +37,13 @@ button:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
 /* el 12 de la portada */
 .num{position:absolute;z-index:2;left:0;right:0;top:48px;margin:0;display:flex;justify-content:space-between;padding:0 4.5% 0 2.5%;
   font:italic 800 355px/.74 var(--fd);color:var(--acc);pointer-events:none}
-.num span{display:block;transition:transform calc(650ms*var(--t)) var(--expo),opacity calc(420ms*var(--t)) var(--out),filter calc(520ms*var(--t)) var(--out)}
-.s-in .num span{opacity:0;filter:blur(14px)}
-.s-in .num span:first-child{transform:translateX(-120px) rotate(-6deg)}
-.s-in .num span:last-child{transform:translateX(120px) rotate(6deg)}
+.num span{display:block;transition:transform calc(760ms*var(--t)) var(--expo) calc(60ms*var(--t)),opacity calc(520ms*var(--t)) var(--out) calc(140ms*var(--t)),filter calc(520ms*var(--t)) var(--out) calc(140ms*var(--t))}
+.s-in .num span{opacity:0;filter:blur(6px)}
+.s-in .num span:first-child{transform:translate(-30px,48px) scale(.2)}
+.s-in .num span:last-child{transform:translate(-150px,48px) scale(.2)}
 /* el entrenamiento de hoy, detrás de la persona */
-.ttl{position:absolute;z-index:2;left:16px;right:30%;top:196px;margin:0;font:italic 800 36px/.84 var(--fd);text-transform:uppercase;letter-spacing:-.02em;
-  opacity:0;transform:translateX(-36px);filter:blur(8px);transition:opacity calc(700ms*var(--t)) var(--expo) calc(360ms*var(--t)),transform calc(900ms*var(--t)) var(--expo) calc(360ms*var(--t)),filter calc(700ms*var(--t)) var(--expo) calc(360ms*var(--t))}
+.ttl{position:absolute;z-index:2;left:16px;right:30%;top:196px;margin:0;font:italic 800 36px/.84 var(--fd);text-transform:uppercase;letter-spacing:-.02em;transform-origin:0 50%;
+  opacity:0;transform:translate(10px,-70px) scale(1.9);filter:blur(10px);transition:opacity calc(520ms*var(--t)) var(--expo) calc(200ms*var(--t)),transform calc(900ms*var(--t)) var(--expo) calc(140ms*var(--t)),filter calc(620ms*var(--t)) var(--expo) calc(200ms*var(--t))}
 .ttl b{display:block;color:var(--acc)}.ttl span{display:block;color:var(--on);font-size:32px}
 .s-in .ttl{opacity:1;transform:none;filter:none}
 .cut{z-index:3}
@@ -99,7 +99,7 @@ button:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
 /* ── formulario (correo y contraseña): la foto se aleja, el 12 se achica y la hoja sube ── */
 .num{transform-origin:50% 0;transition:transform calc(900ms*var(--t)) var(--expo) calc(80ms*var(--t))}
 .s-log .card{height:68%}
-.s-log .pic{transform:translate(-51px,-80px) scale(1.292)}
+.s-log .pic{transform:translate(-10px,-78px) scale(1.085)}
 .s-log .num{transform:scale(.845)}
 .s-log .pbar,.s-log .port{opacity:0;pointer-events:none}
 .s-log .port{transform:translateY(60px)}
@@ -129,6 +129,11 @@ button:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
 .solo-reg{display:none}.reg .solo-reg{display:block}.reg .solo-log{display:none}
 
 .lento{--t:3}
+.pre .num span{opacity:1!important;filter:none!important;transform:none!important}
+.pre .num{transform:scale(.62)!important}
+.pre .ttl{opacity:0!important;transform:translate(10px,-70px) scale(1.9)!important;filter:blur(10px)!important}
+.pre .in>*{opacity:0!important}
+.pre *{transition:none!important}
 
 .ctl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:0 16px 20px}
 .ctl button{min-height:44px;padding:0 18px;border-radius:99px;background:#141B18;color:var(--on);box-shadow:inset 0 0 0 1px #2A3631;font-weight:600;font-size:14px}
@@ -192,6 +197,7 @@ button:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
 </div>
 <div class="ctl">
   <button type="button" class="pri2 only-in" id="otra">Ver el recorrido otra vez</button>
+  <button type="button" class="only-in" id="abrir">Abrir con sesión iniciada</button>
   <button type="button" class="hide-m" id="lenta">Ver en cámara lenta</button>
 </div>
 </div>
@@ -205,6 +211,9 @@ button:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
   document.getElementById('volver').addEventListener('click',()=>estado('s-port'));
   const recorrido=()=>{estado('s-port');setTimeout(()=>aForm('log'),900);setTimeout(()=>estado('s-in'),900+2000*(slow?3:1));};
   document.getElementById('otra').addEventListener('click',recorrido);
+  // al abrir la app ya con la sesión: la tarjeta aparece con el 12 y en medio segundo se vuelve el entrenamiento de hoy
+  document.getElementById('abrir').addEventListener('click',()=>{ph.classList.add('pre');estado('s-in');void ph.offsetWidth;
+    setTimeout(()=>ph.classList.remove('pre'),550*(slow?3:1));});
   document.getElementById('lenta').addEventListener('click',e=>{slow=!slow;ph.classList.toggle('lento',slow);
     e.currentTarget.textContent=slow?'Velocidad normal':'Ver en cámara lenta';recorrido();});
   document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',ev=>{ev.preventDefault();estado('s-port');}));
