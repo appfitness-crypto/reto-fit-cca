@@ -236,3 +236,45 @@ Si un ejercicio todavía no tiene foto propia, la ficha (y la miniatura) muestra
 | Burpees | `img/ejercicios/burpees.webp` | `img/ejercicios/mini-burpees.webp` |
 | Empuje de trineo | `img/ejercicios/empuje-de-trineo.webp` | `img/ejercicios/mini-empuje-de-trineo.webp` |
 | Jumping jacks | `img/ejercicios/jumping-jacks.webp` | `img/ejercicios/mini-jumping-jacks.webp` |
+| Aducción de cadera en máquina | `img/ejercicios/aduccion-de-cadera-en-maquina.webp` | `img/ejercicios/mini-aduccion-de-cadera-en-maquina.webp` |
+| Aducción de cadera en polea | `img/ejercicios/aduccion-de-cadera-en-polea.webp` | `img/ejercicios/mini-aduccion-de-cadera-en-polea.webp` |
+| Arranque con mancuerna a una mano | `img/ejercicios/arranque-con-mancuerna-a-una-mano.webp` | `img/ejercicios/mini-arranque-con-mancuerna-a-una-mano.webp` |
+| Caminata del oso | `img/ejercicios/caminata-del-oso.webp` | `img/ejercicios/mini-caminata-del-oso.webp` |
+| Cargada con kettlebell | `img/ejercicios/cargada-con-kettlebell.webp` | `img/ejercicios/mini-cargada-con-kettlebell.webp` |
+| Cargada de potencia | `img/ejercicios/cargada-de-potencia.webp` | `img/ejercicios/mini-cargada-de-potencia.webp` |
+| Colgado en barra | `img/ejercicios/colgado-en-barra.webp` | `img/ejercicios/mini-colgado-en-barra.webp` |
+| Crunch inverso | `img/ejercicios/crunch-inverso.webp` | `img/ejercicios/mini-crunch-inverso.webp` |
+| Curl de muñeca con barra | `img/ejercicios/curl-de-muneca-con-barra.webp` | `img/ejercicios/mini-curl-de-muneca-con-barra.webp` |
+| Curl femoral de pie en máquina | `img/ejercicios/curl-femoral-de-pie-en-maquina.webp` | `img/ejercicios/mini-curl-femoral-de-pie-en-maquina.webp` |
+| Curl inverso con barra Z | `img/ejercicios/curl-inverso-con-barra-z.webp` | `img/ejercicios/mini-curl-inverso-con-barra-z.webp` |
+| Elevación de puntas (tibial) | `img/ejercicios/elevacion-de-puntas-tibial.webp` | `img/ejercicios/mini-elevacion-de-puntas-tibial.webp` |
+| Elevación Y en banco inclinado | `img/ejercicios/elevacion-y-en-banco-inclinado.webp` | `img/ejercicios/mini-elevacion-y-en-banco-inclinado.webp` |
+| Encogimientos con barra | `img/ejercicios/encogimientos-con-barra.webp` | `img/ejercicios/mini-encogimientos-con-barra.webp` |
+| Equilibrio en un pie | `img/ejercicios/equilibrio-en-un-pie.webp` | `img/ejercicios/mini-equilibrio-en-un-pie.webp` |
+| Escalera de agilidad | `img/ejercicios/escalera-de-agilidad.webp` | `img/ejercicios/mini-escalera-de-agilidad.webp` |
+| Extensión de muñeca con mancuerna | `img/ejercicios/extension-de-muneca-con-mancuerna.webp` | `img/ejercicios/mini-extension-de-muneca-con-mancuerna.webp` |
+| Hip thrust en Smith | `img/ejercicios/hip-thrust-en-smith.webp` | `img/ejercicios/mini-hip-thrust-en-smith.webp` |
+| Jalón alto con barra | `img/ejercicios/jalon-alto-con-barra.webp` | `img/ejercicios/mini-jalon-alto-con-barra.webp` |
+| Lanzamiento de balón medicinal al pecho | `img/ejercicios/lanzamiento-de-balon-medicinal-al-pecho.webp` | `img/ejercicios/mini-lanzamiento-de-balon-medicinal-al-pecho.webp` |
+| Lanzamiento de balón medicinal al piso | `img/ejercicios/lanzamiento-de-balon-medicinal-al-piso.webp` | `img/ejercicios/mini-lanzamiento-de-balon-medicinal-al-piso.webp` |
+| Lanzamiento rotacional de balón a la pared | `img/ejercicios/lanzamiento-rotacional-de-balon-a-la-pared.webp` | `img/ejercicios/mini-lanzamiento-rotacional-de-balon-a-la-pared.webp` |
+| Levantada turca | `img/ejercicios/levantada-turca.webp` | `img/ejercicios/mini-levantada-turca.webp` |
+| Molino con kettlebell | `img/ejercicios/molino-con-kettlebell.webp` | `img/ejercicios/mini-molino-con-kettlebell.webp` |
+| Peso muerto con barra hexagonal | `img/ejercicios/peso-muerto-con-barra-hexagonal.webp` | `img/ejercicios/mini-peso-muerto-con-barra-hexagonal.webp` |
+| Plancha Copenhague | `img/ejercicios/plancha-copenhague.webp` | `img/ejercicios/mini-plancha-copenhague.webp` |
+| Press cubano | `img/ejercicios/press-cubano.webp` | `img/ejercicios/mini-press-cubano.webp` |
+| Press de hombro con kettlebell | `img/ejercicios/press-de-hombro-con-kettlebell.webp` | `img/ejercicios/mini-press-de-hombro-con-kettlebell.webp` |
+| Press inclinado en Smith | `img/ejercicios/press-inclinado-en-smith.webp` | `img/ejercicios/mini-press-inclinado-en-smith.webp` |
+| Remo Meadows | `img/ejercicios/remo-meadows.webp` | `img/ejercicios/mini-remo-meadows.webp` |
+| Remo Pendlay | `img/ejercicios/remo-pendlay.webp` | `img/ejercicios/mini-remo-pendlay.webp` |
+| Salto al cajón | `img/ejercicios/salto-al-cajon.webp` | `img/ejercicios/mini-salto-al-cajon.webp` |
+| Salto horizontal | `img/ejercicios/salto-horizontal.webp` | `img/ejercicios/mini-salto-horizontal.webp` |
+| Saltos de pantorrilla | `img/ejercicios/saltos-de-pantorrilla.webp` | `img/ejercicios/mini-saltos-de-pantorrilla.webp` |
+| Saltos de patinador | `img/ejercicios/saltos-de-patinador.webp` | `img/ejercicios/mini-saltos-de-patinador.webp` |
+| Sentadilla cosaca | `img/ejercicios/sentadilla-cosaca.webp` | `img/ejercicios/mini-sentadilla-cosaca.webp` |
+| Sentarse y pararse de una silla | `img/ejercicios/sentarse-y-pararse-de-una-silla.webp` | `img/ejercicios/mini-sentarse-y-pararse-de-una-silla.webp` |
+| Step-up lateral | `img/ejercicios/step-up-lateral.webp` | `img/ejercicios/mini-step-up-lateral.webp` |
+| Thruster con mancuernas | `img/ejercicios/thruster-con-mancuernas.webp` | `img/ejercicios/mini-thruster-con-mancuernas.webp` |
+| Wall ball | `img/ejercicios/wall-ball.webp` | `img/ejercicios/mini-wall-ball.webp` |
+| Zancada con salto | `img/ejercicios/zancada-con-salto.webp` | `img/ejercicios/mini-zancada-con-salto.webp` |
+| Zancadas caminando con mancuernas | `img/ejercicios/zancadas-caminando-con-mancuernas.webp` | `img/ejercicios/mini-zancadas-caminando-con-mancuernas.webp` |

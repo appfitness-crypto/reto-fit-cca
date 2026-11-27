@@ -57,7 +57,7 @@ function rutinaUnicaAjustar(rut,ctx,otras){
     for(const c of cand){
       if(hechos>=3) break;
       const usados=huellaSet(huellaRutina(dias));
-      const ops=KB_EJERCICIOS.filter(x=>x.enf===c.kb.enf && x.id!==c.kb.id && !x.rondas && !x._custom && (x.nv||1)<=ctx.nivel && !!x.iso===!!c.kb.iso
+      const ops=KB_EJERCICIOS.filter(x=>x.enf===c.kb.enf && x.id!==c.kb.id && !x.rondas && !x.noSust && !x._custom && (x.nv||1)<=ctx.nivel && !!x.iso===!!c.kb.iso
         && !usados.has(huellaEj(x.nm)) && !peor.o.S.has(huellaEj(x.nm))
         && !ejContraindicado({nm:x.nm},ctx) && !(ctx.evitaNm||[]).some(n=>kbNorm(x.nm).includes(n)));
       if(!ops.length) continue;

@@ -245,7 +245,7 @@ function aplicarMetodologia(semana,ent,ctx,p){
     d.ejercicios=d.ejercicios.filter(e=>{
       const nm=e.nm||e.nombre; if(!nm || !nunca.some(n=>kbNorm(nm).includes(n))) return true;
       const kb=kbBuscar(nm), enf=(kb&&kb.enf)||e.enf;
-      const x=enf && metElegir(KB_EJERCICIOS.filter(c=>c.enf===enf && !c.rondas).map(c=>c.id),ctx,nunca,d.ejercicios);
+      const x=enf && metElegir(KB_EJERCICIOS.filter(c=>c.enf===enf && !c.rondas && !c.noSust).map(c=>c.id),ctx,nunca,d.ejercicios);
       if(!x) return false;
       aplicarEjCatalogo(e,x); return true;
     });
@@ -334,7 +334,7 @@ function aplicarMetodologia(semana,ent,ctx,p){
       const enf=datosEj(comp).enf; if(!enf || cargaLesion(ctx,datosEj(comp))) return;
       let iso=fuerza.find(e=>e!==comp && datosEj(e).tipo==='a' && datosEj(e).enf===enf);
       if(!iso){
-        const x=metElegir(KB_EJERCICIOS.filter(c=>c.enf===enf && c.t==='a' && !c.iso && ['maquina','polea'].includes(c.z)).map(c=>c.id),ctx,nunca,d.ejercicios);
+        const x=metElegir(KB_EJERCICIOS.filter(c=>c.enf===enf && c.t==='a' && !c.iso && !c.noSust && ['maquina','polea'].includes(c.z)).map(c=>c.id),ctx,nunca,d.ejercicios);
         if(!x) return;
         iso=metNuevo(x,{series:3, reps:metRepsTxt(rangos.H,'H'), peso:'Moderado — 55% 1RM'});
         const esf=metEsfuerzo(metodoInt,'H',nivel,pctT,rirT); if(esf){ iso.esfuerzo=esf.txt; iso.rir=esf.rir; }

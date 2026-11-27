@@ -390,7 +390,7 @@ function diversificarSemana(semana,ctx,filo,semilla){
       const prohibido=nunca.some(n=>kbNorm(nm).includes(n));
       const esFirma=firma.some(n=>kbNorm(nm).includes(n)) || princ.has(iE);   // el ejercicio principal del día no se cambia por variedad
       const cargado=!ejLigero(kb);   // un ejercicio con carga real no se cambia por uno con banda, peso corporal o TRX
-      const cands=KB_EJERCICIOS.filter(x=>x.enf===kb.enf && x.id!==kb.id && x.t===kb.t && !!x.iso===!!kb.iso && !x.rondas && !usados.has(x.id) && !(cargado && ejLigero(x))
+      const cands=KB_EJERCICIOS.filter(x=>x.enf===kb.enf && x.id!==kb.id && x.t===kb.t && !!x.iso===!!kb.iso && !x.rondas && !x.noSust && !usados.has(x.id) && !(cargado && ejLigero(x))
         && !ctx.les.some(l=>(x.ev||[]).includes(l)) && (x.nv||1)<=ctx.nivel
         && !nunca.some(n=>kbNorm(x.nm).includes(n)) && !esEjMetabolico(x));   // un swing o un salto no entra como accesorio de fuerza
       if(!cands.length || (!prohibido && (esFirma || rnd()>pCambio))){ usados.add(kb.id); return; }
@@ -454,7 +454,7 @@ function normalizarEmomRutina(rutina){ Object.values(rutina||{}).forEach(d=>(d&&
 function esEjMetabolico(e){
   const kb=kbBuscar(e.nm||e.nombre);
   if(kb && kb.rondas) return !(kb.rx && kb.rx.u && kb.rx.u!=='reps');
-  return /burpee|swing|thruster|wall ?ball|kettlebell|salto|box jump|clean|snatch/i.test(e.nm||e.nombre||'');
+  return /burpee|swing|thruster|wall ?ball|kettlebell|salto|box jump|clean|snatch|cargada|arranque|jal[oó]n alto|lanzamiento|levantada turca|molino/i.test(e.nm||e.nombre||'');
 }
 // Tope de un EMOM según el ejercicio, el nivel, la edad y el IMC: el total de repeticiones queda en un rango sensato
 function emomTope(e,ctx){
@@ -502,7 +502,7 @@ function ejContraindicado(e,ctx){
 }
 function sustitutoSeguro(e,ctx,usados){
   const kb=kbBuscar(e.nm||e.nombre); const enf=(kb&&kb.enf)||e.enf; if(!enf) return null;
-  const cands=KB_EJERCICIOS.filter(x=>x.enf===enf && !x.rondas && !usados.has(x.id) && (x.nv||1)<=ctx.nivel
+  const cands=KB_EJERCICIOS.filter(x=>x.enf===enf && !x.rondas && !x.noSust && !usados.has(x.id) && (x.nv||1)<=ctx.nivel
     && !ctx.les.some(l=>(x.ev||[]).includes(l)) && !(ctx.evitaNm||[]).some(n=>kbNorm(x.nm).includes(n))
     && !((perfilDelicado(ctx)||ctx.guiado) && ejTecnico(x)));
   if(!cands.length) return null;

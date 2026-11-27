@@ -76,7 +76,7 @@ function pqAlternativa(e,de,molestias,usados,rnd,casa){
   let lista=[];
   if(de.kb){ const mapa=de.kb.alt||{}; lista=lista.concat((mapa[de.enf]||mapa[Object.keys(mapa)[0]]||[]).map(porId)); }
   lista=lista.concat(comoArray(e.alternativas).map(a=>a&&(kbBuscar(a.nm)||{nm:a.nm,ms:a.ms,enf:de.enf})));
-  if(de.enf) lista=lista.concat(KB_EJERCICIOS.filter(x=>x.enf===de.enf));
+  if(de.enf) lista=lista.concat(KB_EJERCICIOS.filter(x=>x.enf===de.enf && !x.noSust));
   const vistos=new Set(); lista=lista.filter(x=>{ if(!ok(x)) return false; const k=String(x.nm).toLowerCase(); if(vistos.has(k)) return false; vistos.add(k); return true; });
   if(!lista.length) return null;
   return lista[Math.floor(rnd()*Math.min(3,lista.length))];

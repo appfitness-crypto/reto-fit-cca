@@ -111,13 +111,15 @@ Para la ficha "Cómo se hace", los **pasos** y el **error común** de cada ejerc
 
 ## Estado actual
 
-Hay **226 ejercicios** en el catálogo:
+Hay **268 ejercicios** en el catálogo del gimnasio:
 
 | Estado | Ejercicios | Qué significa |
 |---|---|---|
 | **Listo** | 226 | En el estilo nuevo: 3 ejercicios con imagen y video (sentadilla goblet, peso muerto rumano con mancuernas y sentadilla libre) y 223 con imagen. |
 | **Rehacer** | 0 | Ya no queda ninguna imagen del estilo anterior. |
-| **Falta** | 0 | Todos los ejercicios del catálogo tienen imagen. |
+| **Falta** | 42 | Los que se agregaron en la ampliación v8 (pliometría, balón medicinal, halterofilia, kettlebell, aductores, antebrazo y equilibrio). |
+
+Además, las rutinas en casa, los planes de deporte y rehabilitación y el calentamiento usan ejercicios que todavía no tienen foto. La lista completa de lo que falta, con el nombre exacto de cada archivo, está en [IMAGENES-PENDIENTES.md](IMAGENES-PENDIENTES.md); se recalcula con `node herramientas/lista-imagenes.js`.
 
 
 ### Rack / barra libre
