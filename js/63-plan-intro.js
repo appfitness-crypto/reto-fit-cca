@@ -61,6 +61,9 @@ function rcAlternar(b){
 }
 
 /* ── Introducción a la sesión ── */
+/* Calentamiento del sistema (si el entrenador no escribió el suyo, ver js/78-calentamiento-coach.js).
+   Lubricación articular: primer paso, de cabeza a pies, rápido y sin cansar. */
+const INTRO_LUB=['Lubricación articular','1 min','Cuello · hombros · codos · muñecas · cadera · rodillas · tobillos — 5 círculos por lado'];
 const INTRO_CAL={
   pierna:[['Caminadora o bici','3 min'],['Sentadilla sin peso','2 × 10'],['Zancadas alternas','1 × 8 por pierna']],
   torso:[['Remo o elíptica','3 min'],['Círculos de hombro','2 × 10'],['Lagartijas en pared','1 × 10']],
@@ -86,7 +89,7 @@ function introHTML(s,k){
   const series=ejs.reduce((a,x)=>a+(parseInt(x.series)||0),0);
   const grupos=[...new Set(ejs.map(x=>{ const g=slugImg(String(x.ms||'').split(/[·,]/)[0]), g1=g.split('-')[0]; return [g,g1,GRUPO_ALIAS[g],GRUPO_ALIAS[g1]].find(z=>z&&GRUPOS_IMG.has(z)); }).filter(Boolean))].slice(0,3);
   const zonas=[...new Set(ejs.map(x=>{ const kb=typeof kbBuscar==='function'&&kbBuscar(x.nm); return kb&&DD_ZONA[kb.z]; }).filter(Boolean))];
-  const cal=INTRO_CAL[introTipoCal(d.tipo)], c=introConsejo(s,d);
+  const cal=calPasosDia(s,d), calNom=cal.ent&&cal.fuente!=='sistema'?tc(cal.ent.nombre).split(' ')[0]:'', c=introConsejo(s,d);
   const chip=e?(e.estado==='en curso'?`Semana ${e.semana}${e.fase?' · '+esc(e.fase.nombre):''}`:e.estado==='antes'?`El reto arranca en ${e.faltan} días`:''):'';
   const nomG=g=>({cuadriceps:'Cuádriceps',femorales:'Femorales',gluteo:'Glúteo',gemelos:'Pantorrilla',pecho:'Pecho',dorsal:'Dorsal',espalda:'Espalda',deltoides:'Hombro',biceps:'Bíceps',triceps:'Tríceps',trapecio:'Trapecio',abdomen:'Abdomen',core:'Core',oblicuos:'Oblicuos',erectores:'Lumbar',cardiovascular:'Cardio',recto:'Abdomen',manguito:'Manguito',braquial:'Braquial'}[g]||sc(g));
   return `<div class="si-in">
@@ -100,8 +103,9 @@ function introHTML(s,k){
       <div class="si-coach"><span class="si-av">${c.ent?esc(iniciales(c.ent.nombre)):ico('star')}</span><p><b>${c.ent?'Consejo de '+esc(tc(c.ent.nombre).split(' ')[0]):'Consejo de hoy'}</b>${esc(c.txt)}</p></div>
       ${grupos.length?`<div class="si-sec"><h2>Trabajas</h2></div><div class="si-mus">${grupos.map(g=>`<div><img src="${imgSrc('grupos/'+g+'.webp')}" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span>${esc(nomG(g))}</span></div>`).join('')}</div>`:''}
       ${zonas.length?`<div class="si-sec"><h2>Necesitas</h2></div><div class="si-eq">${zonas.map(z=>`<span>${esc(z)}</span>`).join('')}</div>`:''}
-      <div class="si-sec"><h2>Calienta</h2><small>5 min</small></div>
-      <div class="si-cal">${cal.map(([t,v],i)=>`<label><input type="checkbox"><span>${esc(t)}</span><small>${esc(v)}</small></label>`).join('')}</div>
+      <div class="si-sec"><h2>Calienta</h2><small>${calMinutos(cal.pasos)} min</small></div>
+      ${calNom?`<p class="si-cal-by">Así empieza ${esc(calNom)} sus sesiones</p>`:''}
+      <div class="si-cal">${cal.pasos.map(p=>`<label><input type="checkbox"><span>${esc(p.t)}${p.det?`<em>${esc(p.det)}</em>`:''}</span><small>${esc(p.v||'')}</small></label>`).join('')}</div>
       <div class="si-sec"><h2>Antes de empezar</h2></div>
       <ul class="si-tips">${INTRO_TIPS.map(t=>`<li>${ico('check')}<span>${esc(t)}</span></li>`).join('')}</ul>
       <div class="si-sec"><h2>Tu orden</h2><small>toca para ver la técnica</small></div>

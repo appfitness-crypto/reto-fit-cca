@@ -407,7 +407,7 @@ function aplicarMetodologia(semana,ent,ctx,p){
   }
 
   // 8) Calentamiento y cierre de movilidad (al final, para que queden en primer lugar)
-  const movPrimero=ss.calentamiento==='movilidad' || (pr.movilidad||3)>=4;
+  const movPrimero=(ss.calentamiento==='movilidad' || (pr.movilidad||3)>=4) && !(typeof calTienePropio==='function'&&calTienePropio(ph));   // su calentamiento ya trae la movilidad (js/78)
   dias.forEach(d=>{
     const enf=metEnfDia(d);
     const pierna=[...enf].some(x=>MET_PIERNA.includes(x));

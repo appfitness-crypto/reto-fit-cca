@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es-MX"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reto Fit CCA · Calentamiento del entrenador</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--acc:#D4F25A;--bg:#0D1014;--card:rgba(255,255,255,.06);--mu:rgba(226,236,232,.62);--tx:#EEF4F1;--fd:'Kanit',sans-serif;--fb:'Figtree',system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:#1A1F24;color:var(--tx);font:15px/1.45 var(--fb);-webkit-font-smoothing:antialiased}
+.pg{max-width:1400px;margin:0 auto;padding:40px 24px 80px}
+.pg-h{max-width:900px;margin:0 auto 36px}
+h1{font:italic 800 clamp(30px,4vw,50px)/.95 var(--fd);text-transform:uppercase;margin:0 0 12px}
+.pg-h p{margin:0;color:var(--mu);max-width:70ch;font-size:16px}.pg-h b{color:var(--tx)}
+.rail{display:grid;grid-template-columns:repeat(auto-fit,390px);gap:48px 28px;justify-content:center}
+.shot h2{margin:0 0 4px;font:italic 800 22px/1 var(--fd);text-transform:uppercase}
+.shot .q{margin:0 0 16px;color:var(--mu);font-size:14px;max-width:390px}
+.phone{position:relative;width:390px;height:844px;border-radius:50px;overflow:hidden;background:var(--bg);box-shadow:0 0 0 10px #05070a,0 0 0 11px #3a4148,0 40px 70px -30px #000}
+.scr{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:58px 18px 110px}
+.scr::-webkit-scrollbar{display:none}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.bk{width:36px;height:36px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:18px}
+.top b{font-weight:700}.top small{display:block;color:var(--mu);font-size:12px}
+.prog{height:4px;border-radius:4px;background:rgba(255,255,255,.1);margin-bottom:18px}.prog i{display:block;height:100%;width:60%;background:var(--acc);border-radius:4px}
+.t{font:italic 800 24px/1 var(--fd);text-transform:uppercase;margin:0 0 6px}
+.sub{color:var(--mu);font-size:13.5px;margin:0 0 14px}
+.lbl{font-weight:700;font-size:13px;margin:18px 0 8px;display:flex;justify-content:space-between;align-items:baseline}.lbl small{color:var(--mu);font-weight:500}
+.step{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;padding:12px 12px;border-radius:16px;background:var(--card);margin-bottom:6px}
+.step .h{color:var(--mu);letter-spacing:-2px;padding-top:2px;font-size:13px}
+.step b{display:block;font-weight:600;font-size:14.5px}
+.step em{display:block;font-style:normal;color:var(--mu);font-size:12px;margin-top:2px;line-height:1.35}
+.step .v{font-size:12.5px;color:var(--tx);background:rgba(255,255,255,.08);padding:4px 9px;border-radius:99px;white-space:nowrap}
+.tag{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(212,242,90,.14);color:var(--acc)}
+.tag.g{background:rgba(255,255,255,.08);color:var(--mu)}
+.add{display:flex;align-items:center;justify-content:center;gap:8px;height:46px;border-radius:16px;border:1.5px dashed rgba(255,255,255,.2);color:var(--mu);font-weight:600;font-size:14px}
+.sug{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.sug span{font-size:12.5px;padding:7px 11px;border-radius:99px;background:var(--card);color:var(--mu)}
+.sug span::before{content:"+ ";color:var(--acc)}
+.sw{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:var(--card)}
+.sw p{margin:0;flex:1;font-size:13.5px}.sw p small{display:block;color:var(--mu);font-size:12px}
+.tg{width:46px;height:28px;border-radius:99px;background:var(--acc);position:relative;flex:none}.tg::after{content:"";position:absolute;right:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#0D1014}
+.cta{position:absolute;left:18px;right:18px;bottom:26px;height:56px;border-radius:99px;background:var(--acc);color:#0D1014;display:grid;place-items:center;font-weight:800;font-size:16px}
+/* editor staff */
+.so{display:flex;align-items:center;gap:10px;margin-bottom:14px}.av{width:40px;height:40px;border-radius:50%;background:#2b3a34;display:grid;place-items:center;font-weight:800;font-size:13px}
+.tabs{display:flex;gap:18px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:14px;font-size:14px;color:var(--mu)}.tabs span{padding-bottom:9px}.tabs .on{color:var(--tx);box-shadow:inset 0 -2px var(--acc)}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:14px}
+.wk div{text-align:center;padding:8px 0;border-radius:12px;background:var(--card);font-size:11px;color:var(--mu)}
+.wk div b{display:block;font-size:12.5px;color:var(--tx);margin-top:2px}
+.wk div i{display:block;width:5px;height:5px;border-radius:50%;background:var(--acc);margin:5px auto 0}
+.wk .on{background:var(--acc);color:#0D1014}.wk .on b{color:#0D1014}.wk .on i{background:#0D1014}
+.wk .r{background:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}.wk .r i{background:transparent}
+.dn{font:italic 800 22px/1 var(--fd);text-transform:uppercase}.dm{color:var(--mu);font-size:12.5px;margin:4px 0 14px}
+.blk{border-radius:20px;padding:12px;background:linear-gradient(180deg,rgba(212,242,90,.10),rgba(212,242,90,.03));box-shadow:inset 0 0 0 1px rgba(212,242,90,.25);margin-bottom:16px}
+.blk-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.blk-h b{font:italic 800 16px/1 var(--fd);text-transform:uppercase}.blk-h small{color:var(--acc);font-size:11.5px;font-weight:700}
+.mini{display:flex;justify-content:space-between;gap:10px;padding:9px 4px;border-top:1px solid rgba(255,255,255,.07);font-size:13.5px}
+.mini:first-of-type{border-top:0}.mini span em{display:block;font-style:normal;color:var(--mu);font-size:11.5px}.mini small{color:var(--mu);white-space:nowrap}
+.blk-f{display:flex;gap:8px;margin-top:8px}.blk-f span{flex:1;text-align:center;font-size:12.5px;padding:8px;border-radius:12px;background:rgba(255,255,255,.07)}
+.ej{display:grid;grid-template-columns:22px 44px 1fr;gap:10px;align-items:center;padding:10px;border-radius:16px;background:var(--card);margin-bottom:6px}
+.ej .n{font:italic 800 15px var(--fd);color:var(--acc)}.ej .th{width:44px;height:44px;border-radius:12px;background:#1f272d}
+.ej b{display:block;font-size:14px}.ej small{color:var(--mu);font-size:12px}
+.note{margin-top:12px;font-size:12px;color:var(--mu);display:flex;gap:8px}.note::before{content:"i";flex:none;width:16px;height:16px;border-radius:50%;border:1px solid var(--mu);display:grid;place-items:center;font-size:10px;font-weight:700}
+/* socio */
+.hero{margin:-58px -18px 16px;padding:70px 18px 18px;background:linear-gradient(180deg,#2a3138,#0D1014)}
+.hero h3{font:italic 800 34px/.95 var(--fd);text-transform:uppercase;margin:0 0 10px}
+.nums{display:flex;gap:26px}.nums b{display:block;font:italic 800 22px/1 var(--fd)}.nums small{color:var(--mu);font-size:12px}
+.coach{display:flex;gap:12px;padding:14px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);margin-bottom:18px}
+.coach i{flex:none;width:44px;height:44px;border-radius:50%;background:var(--acc);color:#0D1014;font:italic 800 15px var(--fd);display:grid;place-items:center}
+.coach p{margin:0;font-size:13.5px}.coach p b{display:block;color:var(--acc);font-size:13px}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:6px 0 8px}.sec h4{margin:0;font:italic 800 19px var(--fd);text-transform:uppercase}.sec small{color:var(--mu);font-size:12.5px}
+.by{font-size:12px;color:var(--acc);margin:-4px 0 10px;font-weight:600}
+.ck{display:flex;align-items:center;gap:12px;min-height:52px;padding:10px 14px;border-radius:16px;background:var(--card);margin-bottom:6px;font-size:14px}
+.ck i{flex:none;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.ck span{flex:1}.ck span em{display:block;font-style:normal;font-size:12px;color:var(--mu)}.ck small{color:var(--mu);font-size:12.5px;white-space:nowrap}
+.ck.ok i{background:var(--acc);box-shadow:none}.ck.ok span{color:var(--mu);text-decoration:line-through}.ck.ok span em{text-decoration:none}
+.go{position:absolute;left:14px;right:14px;bottom:22px;height:62px;border-radius:99px;background:var(--acc);color:#0D1014;display:flex;align-items:center;gap:14px;padding:0 20px 0 7px;font:italic 800 19px var(--fd);box-shadow:0 0 40px -6px rgba(212,242,90,.55)}
+.go i{width:48px;height:48px;border-radius:50%;background:#0D1014;display:grid;place-items:center;color:var(--acc);font-style:normal}.go small{margin-left:auto;font:600 14px var(--fb)}
+.flow{max-width:900px;margin:56px auto 0;display:grid;gap:10px;color:var(--mu);font-size:15px}.flow b{color:var(--tx)}
+.flow h3{font:italic 800 24px var(--fd);text-transform:uppercase;color:var(--tx);margin:0 0 6px}
+</style></head><body><div class="pg">
+<div class="pg-h"><h1>Tu calentamiento, en todas tus rutinas</h1>
+<p>El entrenador escribe <b>cómo inicia su sesión</b> una sola vez, en <b>Mi filosofía</b>. Desde ahí se coloca solo al inicio de cada día de entreno (lunes a viernes) de todos sus socios: él lo ve ya puesto en el editor de rutinas y el socio lo ve en <b>Calienta</b> antes de empezar.</p></div>
+
+<div class="rail">
+<!-- 1 Filosofía -->
+<section class="shot"><h2>1 · Mi filosofía</h2><p class="q">Paso "Anatomía de tu sesión": el entrenador arma su calentamiento con sus palabras.</p>
+<div class="phone"><div class="scr">
+  <div class="top"><span class="bk">‹</span><div><b>Tu filosofía de entrenamiento</b><small>Paso 9 de 15</small></div></div>
+  <div class="prog"><i></i></div>
+  <p class="t">Cómo inicias tu sesión</p>
+  <p class="sub">Escribe tu calentamiento tal como lo haces con tus socios. Se pone solo al inicio de cada rutina que generes.</p>
+  <div class="sw"><p>Usarlo en todas mis rutinas<small>Lunes a viernes, en cada día de entreno</small></p><span class="tg"></span></div>
+  <div class="lbl">Tu calentamiento <small>~6 min por día</small></div>
+  <div class="step"><span class="h">⋮⋮</span><div><b>Lubricación articular</b><em>Cabeza a pies: cuello, hombros, codos, muñecas, cadera, rodillas, tobillos. 5 círculos por lado.</em><span class="tag g">Todos los días</span></div><span class="v">1 min</span></div>
+  <div class="step"><span class="h">⋮⋮</span><div><b>Caminadora o bici</b><em>Ritmo suave, que puedas platicar.</em><span class="tag g">Todos los días</span></div><span class="v">3 min</span></div>
+  <div class="step"><span class="h">⋮⋮</span><div><b>Puente de glúteo con liga</b><em>Aprieta arriba 2 segundos.</em><span class="tag">Pierna</span></div><span class="v">2 × 12</span></div>
+  <div class="step"><span class="h">⋮⋮</span><div><b>Face pull con liga</b><em>Codos altos, abre el pecho.</em><span class="tag">Torso</span></div><span class="v">2 × 15</span></div>
+  <div class="add">+ Agregar paso</div>
+  <div class="sug"><span>Sentadilla sin peso</span><span>Zancadas alternas</span><span>Círculos de hombro</span><span>Plancha</span></div>
+</div><div class="cta">Siguiente</div></div></section>
+
+<!-- 2 Editor staff -->
+<section class="shot"><h2>2 · Rutina del socio</h2><p class="q">En el editor del entrenador, cada día ya trae su calentamiento arriba de los ejercicios.</p>
+<div class="phone"><div class="scr">
+  <div class="so"><span class="bk">‹</span><span class="av">AM</span><div><b>Ana Martínez</b><div style="color:var(--mu);font-size:12px">Intermedio · Reto Fit CCA</div></div></div>
+  <div class="tabs"><span>Perfil</span><span class="on">Rutina</span><span>Progreso</span><span>Nutrición</span></div>
+  <div class="wk"><div class="on">LUN<b>Pierna</b><i></i></div><div>MAR<b>Torso</b><i></i></div><div>MIÉ<b>Pierna</b><i></i></div><div>JUE<b>Torso</b><i></i></div><div>VIE<b>Full</b><i></i></div><div class="r">SÁB<b>—</b><i></i></div><div class="r">DOM<b>—</b><i></i></div></div>
+  <div class="dn">Lunes · Pierna B</div><div class="dm">~72 min · 9 ejercicios · 26 series</div>
+  <div class="blk"><div class="blk-h"><b>Calentamiento</b><small>De tu filosofía · 6 min</small></div>
+    <div class="mini"><span>Lubricación articular<em>Cabeza a pies</em></span><small>1 min</small></div>
+    <div class="mini"><span>Caminadora o bici</span><small>3 min</small></div>
+    <div class="mini"><span>Puente de glúteo con liga<em>Solo días de pierna</em></span><small>2 × 12</small></div>
+    <div class="blk-f"><span>Ajustar para Ana</span><span>Editar mi calentamiento</span></div></div>
+  <div class="lbl" style="margin-top:0">Ejercicios <small>toca para editar</small></div>
+  <div class="ej"><span class="n">1</span><span class="th"></span><div><b>Sentadilla Búlgara</b><small>3 × 15-20 · tempo 3-1-1</small></div></div>
+  <div class="ej"><span class="n">2</span><span class="th"></span><div><b>Peso Muerto Sumo</b><small>4 × 15-20</small></div></div>
+  <div class="ej"><span class="n">3</span><span class="th"></span><div><b>Peso muerto convencional</b><small>4 × 15-20</small></div></div>
+  <div class="ej"><span class="n">4</span><span class="th"></span><div><b>Hip thrust</b><small>4 × 12</small></div></div>
+  <div class="note">El martes y jueves (torso) cambia el último paso a Face pull con liga. Si lo ajustas para Ana, solo cambia en su rutina.</div>
+</div></div></section>
+
+<!-- 3 Socio -->
+<section class="shot"><h2>3 · Lo que ve el socio</h2><p class="q">"Calienta" ya no es genérico: son los pasos de su entrenador, con su nombre.</p>
+<div class="phone"><div class="scr">
+  <div class="hero"><h3>Pierna B ·<br>Día medio</h3><div class="nums"><div><b>~72</b><small>min</small></div><div><b>9</b><small>ejercicios</small></div><div><b>26</b><small>series</small></div></div></div>
+  <div class="coach"><i>LF</i><p><b>Consejo de Luis</b>Prepara las articulaciones antes de cargar peso: muévete suave y amplio, sin cansarte.</p></div>
+  <div class="sec"><h4>Calienta</h4><small>6 min</small></div>
+  <div class="by">Así empieza Luis sus sesiones</div>
+  <div class="ck ok"><i></i><span>Lubricación articular<em>Cuello · hombros · codos · muñecas · cadera · rodillas · tobillos — 5 círculos por lado</em></span><small>1 min</small></div>
+  <div class="ck"><i></i><span>Caminadora o bici<em>Ritmo suave, que puedas platicar</em></span><small>3 min</small></div>
+  <div class="ck"><i></i><span>Puente de glúteo con liga<em>Aprieta arriba 2 segundos</em></span><small>2 × 12</small></div>
+  <div class="sec" style="margin-top:18px"><h4>Tu orden</h4><small>toca para ver la técnica</small></div>
+  <div class="ej"><span class="n">1</span><span class="th"></span><div><b>Sentadilla Búlgara</b><small>3 × 15-20 reps · tempo 3-1-1</small></div></div>
+  <div class="ej"><span class="n">2</span><span class="th"></span><div><b>Peso Muerto Sumo</b><small>4 × 15-20 reps</small></div></div>
+</div><div class="go"><i>▶</i>Comenzar<small>3 · 2 · 1</small></div></div></section>
+</div>
+
+<div class="flow"><h3>Cómo funcionaría</h3>
+<div>· <b>Cada paso</b> lleva nombre, cantidad (minutos o series × reps), una nota corta y a qué días aplica: <b>todos</b>, <b>pierna</b>, <b>torso</b> o <b>cardio</b>.</div>
+<div>· <b>Si el entrenador no ha escrito su calentamiento</b>, se usa el actual: lubricación articular + los 3 pasos según el tipo de día.</div>
+<div>· <b>Al cambiar su calentamiento</b>, se actualiza en las rutinas de todos sus socios, menos en las que ajustó a mano para alguien.</div>
+<div>· <b>No cuenta como ejercicio</b>: no suma series ni aparece en la lista de "Tu orden"; sí suma minutos a la duración del día.</div>
+</div></div></body></html>

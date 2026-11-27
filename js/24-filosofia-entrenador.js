@@ -69,6 +69,7 @@ function filoBase(){
     poblaciones:{adaptacion:'',libre:'',mayores:[],obesidad:[]},
     lesiones:{zona:'',dolor:'',derivar:[]},
     horaPico:{sustitucion:'maquina',nota:''},
+    calentamiento:{activo:true,pasos:[]},   // cómo inicia su sesión: pasos que se ponen al inicio de cada día (js/78-calentamiento-coach.js)
     sampleRoutineNote:'',adjustmentPhilosophy:'',
     rutinasModelo:{}};   // hasta 3 rutinas reales del entrenador: fuerza · grasa · rendimiento (ver js/32-filosofia-modelos.js)
 }
@@ -318,7 +319,8 @@ function renderFiloStep(){
       ${filoText('seleccion.nunca','Ej. Press tras nuca (riesgo de hombro), peso muerto en principiantes.')}`;
   } else if(paso==='anatomia'){
     html+=`${T('Anatomía de tu sesión')}
-      ${filoSub('Calentamiento')}
+      ${typeof calFiloHTML==='function'?calFiloHTML():''}
+      ${filoSub('Antes del primer ejercicio')}
       ${filoChoiceGroup('sesion.calentamiento',[{value:'movilidad',label:'Movilidad general + activación'},{value:'aproximacion',label:'Series de aproximación del primer ejercicio'},{value:'especifico',label:'Activación específica del músculo del día'}], F.sesion.calentamiento)}
       ${filoSub('Orden de los ejercicios')}
       ${filoChoiceGroup('sesion.orden',[{value:'compuesto',label:'Compuesto pesado primero, aislamiento al final'},{value:'preagot',label:'A veces pre-agoto antes del compuesto'},{value:'prioridad',label:'Primero lo que el socio más necesita'}], F.sesion.orden)}

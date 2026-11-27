@@ -1311,7 +1311,10 @@ html[data-theme="dark"] .si-hero::after{background:linear-gradient(180deg,rgba(1
 .si-cal input:checked{background:var(--cine-acc);box-shadow:none;}
 .si-cal input:checked::after{content:"";width:9px;height:5px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px);}
 .si-cal label:has(input:checked) span{color:rgba(226,236,232,.6);text-decoration:line-through;}
-.si-cal small{margin-left:auto;color:rgba(226,236,232,.75);font-size:12.5px;}
+.si-cal label span em{display:block;margin-top:2px;font-style:normal;font-size:12px;line-height:1.35;color:rgba(226,236,232,.6);}
+.si-cal-by{margin:-4px 0 10px;font-size:12.5px;font-weight:600;color:var(--cine-acc);}
+.si-cal label:has(em){padding-block:10px;}
+.si-cal small{margin-left:auto;flex:none;color:rgba(226,236,232,.75);font-size:12.5px;}
 .si-tips{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
 .si-tips li{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#EEF4F1;}
 .si-tips .ico{width:16px;height:16px;margin-top:3px;color:var(--cine-acc);stroke-width:3;}
