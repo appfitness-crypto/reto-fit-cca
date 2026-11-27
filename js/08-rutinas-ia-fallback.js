@@ -1394,12 +1394,10 @@ function ejImagenHTML(ejMostrado, tipEsc){
   return `<div class="m-ejimg"><div class="m-ejimg-fig">${pic(basesEjercicio(ejMostrado),'dumbbell')}${tipEsc?`<div class="m-ejimg-tip" id="m-tip">${tipEsc}</div>`:''}</div><div class="m-ejimg-cap">Así se ve este movimiento.</div></div>`;
 }
 
-// Logo animado chico (el de la barra de bienvenida) para el encabezado de cada pantalla
+// Logo chico (el de la barra de bienvenida) para el encabezado de cada pantalla: imagen fija del icono del club
 const sinMovimiento=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 function logoMiniHTML(){
-  return `<div class="lm lm-app">${sinMovimiento()
-    ? `<img src="icons/icon-192.png" alt="${esc(GYM.nombreCorto)}">`
-    : `<video autoplay muted loop playsinline disablepictureinpicture poster="icons/icon-192.png" aria-label="${esc(GYM.nombreCorto)}"><source src="video/logo-animado.mp4" type="video/mp4"><source src="video/logo-animado.webm" type="video/webm"></video>`}</div>`;
+  return `<div class="lm lm-app"><img src="icons/icon-192.png" alt="${esc(GYM.nombreCorto)}"></div>`;
 }
 // Con "reducir movimiento" los logos animados de index.html quedan como imagen fija
 if(sinMovimiento()) document.querySelectorAll('.lm video').forEach(v=>{ const i=new Image(); i.src=v.getAttribute('poster'); i.alt=(window.GYM&&GYM.nombreCorto)||v.getAttribute('aria-label')||''; v.replaceWith(i); });
