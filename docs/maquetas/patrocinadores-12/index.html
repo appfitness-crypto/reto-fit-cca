@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patrocinadores en 12 lugares</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box;min-width:0}
+body{margin:0;background:#0B100E;color:#EEF4F1;font:16px/1.55 Figtree,system-ui,sans-serif}
+.w{max-width:1180px;margin:0 auto;padding:0 max(5vw,16px)}
+header{padding:28px 0 4px}
+h1{margin:0;font:italic 800 clamp(26px,6vw,42px)/1 Kanit,sans-serif;text-transform:uppercase}
+h2{margin:36px 0 8px;font:italic 800 22px/1.1 Kanit,sans-serif;text-transform:uppercase}
+p{margin:8px 0 0;color:#A9B8B2;max-width:70ch}
+.row{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:14px 0 10px}
+.row figure{flex:0 0 min(70vw,250px);scroll-snap-align:start}
+figure{margin:0}img{display:block;width:100%;height:auto;border-radius:20px;border:6px solid #1d1d20}
+figcaption{margin-top:8px;color:#C9D5D0;font-size:13.5px}figcaption b{color:#C8F23A;display:block}
+.g{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;margin-top:14px;align-items:start}
+@media(max-width:760px){.g{grid-template-columns:1fr}}
+ul{color:#C9D5D0;max-width:74ch;padding-left:20px}li{margin:6px 0}
+footer{padding:26px 0 40px;color:#7F8F89;font-size:13px}
+</style></head><body><div class="w">
+<header><h1>Patrocinadores en 12 lugares</h1><p>Ya funcionando en la app (en la rama, todavía sin publicar). Capturas de la app real con patrocinadores de prueba.</p></header>
+<h2>Lo que ve el socio</h2>
+<div class="row">
+<figure><img src="img/s-1-semana.webp" alt="Semana cumplida" loading="lazy"><figcaption><b>Semana cumplida</b>Festejo con su promoción y código, una marca por semana.</figcaption></figure>
+<figure><img src="img/s-2-inicio.webp" alt="Barra del reto" loading="lazy"><figcaption><b>Barra del reto</b>“Presenta H2O power” junto a la semana.</figcaption></figure>
+<figure><img src="img/s-3-aviso.webp" alt="Aviso del mes y evaluación" loading="lazy"><figcaption><b>Aviso del mes y Evaluaciones</b>Promoción del mes (se puede ocultar) y “Presentada por”.</figcaption></figure>
+<figure><img src="img/s-4-nutri.webp" alt="Nutrición" loading="lazy"><figcaption><b>Hidratación y Suplementación oficiales</b>Debajo del resumen de Nutrición.</figcaption></figure>
+<figure><img src="img/s-5-perfil.webp" alt="Perfil" loading="lazy"><figcaption><b>Gracias a…</b>Muro de patrocinadores al final del Perfil.</figcaption></figure>
+<figure><img src="img/s-6-mascota.webp" alt="Mascota" loading="lazy"><figcaption><b>Compañero patrocinado</b>“Equipado por Gatorade”.</figcaption></figure>
+<figure><img src="img/s-7-descanso.webp" alt="Descanso" loading="lazy"><figcaption><b>Descanso entre series</b>“Hidrátate · H2O power” arriba del cronómetro.</figcaption></figure>
+</div>
+<p>Además siguen los tres de antes: Portada (Presentado por), Aliados del reto en Inicio y el premio al terminar la sesión.</p>
+<h2>Panel del director</h2>
+<div class="g">
+<figure><img src="img/panel-mapa.webp" alt="Mapa de lugares" loading="lazy"><figcaption><b>Dónde sale cada uno</b>Exclusivos con selector (al dárselo a uno se le quita al otro), compartidos con botones, y las 12 semanas del festejo.</figcaption></figure>
+<div style="display:grid;gap:18px">
+<figure><img src="img/panel-res.webp" alt="Resultados" loading="lazy"><figcaption><b>Editar y Resultados</b>Botón Editar en cada patrocinador; vistas, personas y toques con “Copiar reporte”.</figcaption></figure>
+<figure><img src="img/panel-movil.webp" alt="Mapa en celular" loading="lazy" style="max-width:300px"><figcaption><b>En el celular del director</b></figcaption></figure>
+</div></div>
+<h2>Cómo funciona</h2>
+<ul>
+<li><b>Dar de alta sin lugar:</b> ya se puede; no aparece en ningún lado (y su tarjeta dice “Sin lugar: no se ve”) hasta que lo acomodes.</li>
+<li><b>Lugar vacío = pantalla normal:</b> si un lugar no tiene patrocinador, el socio no ve nada extra.</li>
+<li><b>Cambios al momento:</b> mover, editar, pausar o borrar se refleja en la app de los socios en cuanto se guarda.</li>
+<li><b>Conteo:</b> una vista por lugar al día por socio, y un toque cada vez que abre la promoción. Se guarda en el expediente de cada socio (no hay que cambiar reglas de la base de datos) y el panel suma todo.</li>
+<li><b>Nunca durante el registro de series:</b> en entrenamiento solo aparece en el descanso y al terminar.</li>
+</ul>
+<footer>Patrocinadores y números de prueba (un socio de prueba). Los logos de prueba son recortes; en la app salen los que suba el director.</footer>
+</div></body></html>
